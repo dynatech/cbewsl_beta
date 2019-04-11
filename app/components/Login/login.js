@@ -4,7 +4,6 @@ import { defaults } from '../../assets/styles/default_styles'
 import { login_styles } from '../../assets/styles/login_styles'
 
 export default class Login extends Component {
-  static navigationOptions = { header: null };
   state = {
     username: "",
     password: ""
