@@ -21,6 +21,14 @@ const defaults = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     padding: 10
+  },
+  heading: {
+    flex: 1,
+    padding: 10,
+    color: '#083451'
+  },
+  container: {
+    flex: 1
   }
 })
 export { defaults }         

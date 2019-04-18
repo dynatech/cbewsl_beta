@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, SafeAreaView, ScrollView, Dimensions} from 'react-native';
+import { Text, View, SafeAreaView, ScrollView, Dimensions} from 'react-native';
 import { dashboard } from '../../assets/styles/dashboard_styles'
 import { createDrawerNavigator , createAppContainer, DrawerItems} from 'react-navigation'
 import Contacts from '../Dashboard/side_menu/contacts'
@@ -11,7 +11,7 @@ import MainDashboard from './main_dashboard'
 const CustomDrawerComponent = (props) => (
   <SafeAreaView>
     <ScrollView>
-      <DrawerItems {...props} />
+      <DrawerItems {...props}/>
     </ScrollView>
   </SafeAreaView>
 )
@@ -33,7 +33,12 @@ const AppDrawerNavigator = createDrawerNavigator({
       }
   }
 }, {
-  contentComponent: CustomDrawerComponent
+  contentComponent: CustomDrawerComponent,
+  drawerBackgroundColor: '#083451',
+  contentOptions: {
+    activeBackgroundColor: 'white',
+    inactiveTintColor: 'white',
+  }
 })
 
 const Landing = createAppContainer(AppDrawerNavigator);

@@ -1,32 +1,36 @@
 import { StyleSheet } from 'react-native'
+import {Dimensions} from 'react-native';
   
+let {width} = Dimensions.get('window');
+let {height} = Dimensions.get('window');
+
 const dashboard = StyleSheet.create({
     menu: {
         flex: 3,
     },
-    heading: {
-        flex: 1,
-        padding: 15,
-    },
     menulogo: {
         flexDirection: 'row',
         flex: 1,
-        justifyContent: 'center'
+        margin: (-1 *(height * 0.09)) ,
+        justifyContent: 'center',
+        paddingBottom: 100,
     },
     logo: {
-        height: 80,
-        width: 80,
-        marginTop: 30
+        height: height * 0.15,
+        width: height * 0.15,
+        maxWidth: 100,
+        maxHeight: 100,
+        marginTop: height * 0.1
     },
     title: {
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 0.1
     },
     titleText: {
-        fontSize: 20,
+        fontSize: height * 0.025,
         color: '#083451',
         textAlign: 'center',
-        fontWeight: '100',
-        paddingTop: 130,
+        fontWeight: '100'
     },
     menuContainer: {
         flex: 1
@@ -34,11 +38,12 @@ const dashboard = StyleSheet.create({
     rowMenu: {
         flexDirection: 'row',
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: 10,
     },
     menuIcons: {
-        width: 100,
-        height: 100
+        width: width * 0.25,
+        height: width * 0.25
     },
     menuButtons: {
         flexWrap: 'wrap',
