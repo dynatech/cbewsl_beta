@@ -23,7 +23,8 @@ const AppDrawerNavigator = createDrawerNavigator({
   about: {
     screen: AboutTheApp,
       navigationOptions: {
-        drawerLabel: "About the app"
+        drawerLabel: "About the app",
+        title: "About the App"
       }
   },
   logout: {

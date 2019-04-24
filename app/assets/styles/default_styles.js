@@ -29,6 +29,10 @@ const defaults = StyleSheet.create({
   },
   container: {
     flex: 1
+  },
+  isScreenActive: {
+    backgroundColor: 'white',
+    color: '#083451'
   }
 })
 export { defaults }         
