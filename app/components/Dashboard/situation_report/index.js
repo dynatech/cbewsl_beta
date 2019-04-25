@@ -1,18 +1,29 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
+import CurrentSituationReport from './current_situation_report'
+import SituationLogs from './situation_logs'
+import {createStackNavigator, createAppContainer} from 'react-navigation';
 
-export default class SituationReport extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
+const SituationReport = createStackNavigator({
+  current_situation_report: {
+    screen: CurrentSituationReport,
+    navigationOptions: {
+      header: null
+    }
+  },
+  situation_logs: {
+    screen: SituationLogs,
+    navigationOptions: {
+      header: null
+    }
   }
+},{
+  transitionConfig: () => ({
+    transitionSpec: {
+      duration: 0
+    }
+  })
+});
+const Container = createAppContainer(SituationReport);
 
-  render() {
-    return (
-      <View>
-        <Text> Situation Report </Text>
-      </View>
-    );
-  }
-}
+export default Container

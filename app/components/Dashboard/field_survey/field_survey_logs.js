@@ -11,15 +11,15 @@ export default class FieldSurveyLogs extends Component {
 
   navigateFieldSurvey(tab) {
     switch(tab) {
-        case "lrs":
-            console.log(tab);
-            this.props.navigation.navigate('latest_report_summary')
-            break;
-        default:
-            console.log("Same page...")
-            break;
+      case "lrs":
+        console.log(tab);
+        this.props.navigation.navigate('latest_report_summary')
+        break;
+      default:
+        console.log("Same page...")
+        break;
     }
-}
+  }
   render() {
     return (
         <ScrollView style={field_survey_styles.container}>

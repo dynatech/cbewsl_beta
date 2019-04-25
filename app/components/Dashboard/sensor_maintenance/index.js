@@ -1,18 +1,36 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
+import Summary from './summary'
+import SensorStatus from './sensor_status'
+import MaintenanceLogs from './maintenance_logs'
+import {createStackNavigator, createAppContainer} from 'react-navigation';
 
-export default class SensorMaintenance extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
+const SensorMaintenance = createStackNavigator({
+  summary: {
+    screen: Summary,
+    navigationOptions: {
+      header: null
+    }
+  },
+  sensor_status: {
+    screen: SensorStatus,
+    navigationOptions: {
+      header: null
+    }
+  },
+  maintenance_logs: {
+    screen: MaintenanceLogs,
+    navigationOptions: {
+      header: null
+    }
   }
+},{
+  transitionConfig: () => ({
+    transitionSpec: {
+      duration: 0
+    }
+  })
+});
+const Container = createAppContainer(SensorMaintenance);
 
-  render() {
-    return (
-      <View>
-        <Text> Sensor Maintenance </Text>
-      </View>
-    );
-  }
-}
+export default Container

@@ -19,9 +19,11 @@ const field_survey_styles = StyleSheet.create({
         justifyContent: 'center'
     },
     menuButton: {
-        padding: 5,
+        padding: 10,
         backgroundColor: '#083451',
-        borderWidth: 2,
+        borderTopWidth: 2,
+        borderRightWidth: 2,
+        borderLeftWidth: 2,
         borderColor: '#083451',
         marginLeft: 1,
         marginRight: 1,
@@ -31,8 +33,10 @@ const field_survey_styles = StyleSheet.create({
         width: (width/2)-10,
     },
     activeButton: {
-        padding: 5,
-        borderWidth: 2,
+        padding: 10,
+        borderTopWidth: 2,
+        borderRightWidth: 2,
+        borderLeftWidth: 2,
         borderColor: '#083451',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,

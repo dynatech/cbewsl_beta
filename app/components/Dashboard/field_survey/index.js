@@ -17,6 +17,12 @@ const FieldSurveyStack = createStackNavigator({
       header: null
     }
   }
+}, {
+  transitionConfig: () => ({
+    transitionSpec: {
+      duration: 0
+    }
+  })
 });
 const Container = createAppContainer(FieldSurveyStack);
 

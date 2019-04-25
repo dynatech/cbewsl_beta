@@ -4,8 +4,7 @@ import { Dimensions } from 'react-native';
 let { width } = Dimensions.get('window');
 let { height } = Dimensions.get('window');
 
-console.info(height)
-const rassessment_styles = StyleSheet.create({ 
+const sensor_maintenance_styles = StyleSheet.create({ 
     container: {
         flex: 1
     },
@@ -15,7 +14,7 @@ const rassessment_styles = StyleSheet.create({
         marginRight: 10,
         flex: 1
     },
-    mapSection: {
+    graphSection: {
         height: (height/2) + 10,
         marginLeft: 10,
         marginRight: 10
@@ -25,7 +24,7 @@ const rassessment_styles = StyleSheet.create({
         justifyContent: 'center'
     },
     menuButton: {
-        padding: 6,
+        padding: 10,
         backgroundColor: '#083451',
         borderTopWidth: 2,
         borderRightWidth: 2,
@@ -39,7 +38,7 @@ const rassessment_styles = StyleSheet.create({
         width: (width/3)-10,
     },
     activeButton: {
-        padding: 6,
+        padding: 10,
         borderTopWidth: 2,
         borderRightWidth: 2,
         borderLeftWidth: 2,
@@ -62,5 +61,5 @@ const rassessment_styles = StyleSheet.create({
 
 })
 
-export { rassessment_styles }         
+export { sensor_maintenance_styles }         
  
