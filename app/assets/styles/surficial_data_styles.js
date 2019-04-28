@@ -4,7 +4,7 @@ import { Dimensions } from 'react-native';
 let { width } = Dimensions.get('window');
 let { height } = Dimensions.get('window');
 
-const field_survey_styles = StyleSheet.create({ 
+const surficial_data_styles = StyleSheet.create({ 
     container: {
         flex: 1
     },
@@ -13,6 +13,11 @@ const field_survey_styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10,
         flex: 1
+    },
+    graphSection: {
+        height: (height/2) + 10,
+        marginLeft: 10,
+        marginRight: 10
     },
     buttonSection: {
         flexDirection: 'row',
@@ -30,7 +35,7 @@ const field_survey_styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         justifyContent: 'center',
-        width: (width/2)-10,
+        width: (width/3)-10,
     },
     activeButton: {
         padding: 10,
@@ -41,7 +46,7 @@ const field_survey_styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         justifyContent: 'center',
-        width: (width/2)-10,
+        width: (width/3)-10,
     },
     buttonText: {
         textAlign: 'center',
@@ -58,5 +63,5 @@ const field_survey_styles = StyleSheet.create({
 
 })
 
-export { field_survey_styles }         
+export { surficial_data_styles }         
  

@@ -4,7 +4,7 @@ import { Dimensions } from 'react-native';
 let { width } = Dimensions.get('window');
 let { height } = Dimensions.get('window');
 
-const field_survey_styles = StyleSheet.create({ 
+const ewi_styles = StyleSheet.create({ 
     container: {
         flex: 1
     },
@@ -13,6 +13,11 @@ const field_survey_styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10,
         flex: 1
+    },
+    graphSection: {
+        height: (height/2) + 10,
+        marginLeft: 10,
+        marginRight: 10
     },
     buttonSection: {
         flexDirection: 'row',
@@ -58,5 +63,5 @@ const field_survey_styles = StyleSheet.create({
 
 })
 
-export { field_survey_styles }         
+export { ewi_styles }         
  

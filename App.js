@@ -67,7 +67,7 @@ const RootStack = createStackNavigator({
   ewi: {
     screen: Ewi,
     navigationOptions: {
-      headerTitle: "Early Warnig Information",
+      headerTitle: "EWI",
       headerTitleStyle: {
         paddingLeft: width * 0.15,
       }

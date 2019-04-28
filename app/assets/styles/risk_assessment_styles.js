@@ -52,12 +52,14 @@ const rassessment_styles = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         alignContent: 'center',
-        color: 'white'
+        color: 'white',
+        fontSize: width*0.035
     },
     buttonActiveText: {
         textAlign: 'center',
         alignContent: 'center',
-        color: '#083451'     
+        color: '#083451',
+        fontSize: width*0.035
     }
 
 })
