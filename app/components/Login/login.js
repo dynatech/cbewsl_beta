@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, Alert, Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, ToastAndroid, Image} from 'react-native';
 import { defaults } from '../../assets/styles/default_styles'
 import { login_styles } from '../../assets/styles/login_styles'
+import Storage from "../utils/storage";
 
 export default class Login extends Component {
   state = {
@@ -9,14 +10,54 @@ export default class Login extends Component {
     password: ""
   }
 
-  checkLogin() {
-    // TODO: Segregate functionalities and add the APIs
+
+  componentWillMount(){
+    let credentials = Storage.getItem("loginCredentials")
+      credentials.then(response => {
+        if (response != null) {
+          this.props.navigation.navigate('dashboard');
+          ToastAndroid.show('Session restored.', ToastAndroid.SHORT);
+        }
+      })
+  }
+
+  validateCredentials() {
     const {username, password} = this.state
-    if (username == "admin" && password == "admin") {
-        this.props.navigation.navigate('dashboard')
-    } else {
-        Alert.alert('Invalid login', 'Username / Password mismatch.')
-    }
+    fetch('http://192.168.150.191:5000/api/login/validate_credentials', {
+      method: 'POST',
+      headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+      username: username,
+      password: password,
+      }),
+    }).then((response) => response.json())
+    .then((responseJson) => {
+      if (responseJson.status == true){
+        this.props.navigation.navigate('dashboard');
+        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+        Storage.setItem("loginCredentials", responseJson);
+        console.log(responseJson)
+        console.log(Storage.getItem("loginCredentials"))
+
+      } else {
+        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+
+  register() {
+    this.props.navigation.navigate('register');
+  }
+
+  forgotPassword() {
+    this.props.navigation.navigate('forgot_password');
   }
 
   render() {
@@ -35,8 +76,14 @@ export default class Login extends Component {
                   <View style={login_styles.inputBackDrop}></View>
                   <TextInput style={[defaults.inputs, login_styles.inputs]} placeholder="Username" onChangeText={text => this.setState({username: text})}/>
                   <TextInput style={[defaults.inputs, login_styles.inputs]} secureTextEntry={true} placeholder="Password" onChangeText={text => this.setState({password: text})}/>
-                  <TouchableOpacity onPress={() => this.checkLogin()} style={defaults.touchableButtons}>
+                  <TouchableOpacity onPress={() => this.validateCredentials()} style={defaults.touchableButtons}>
                       <Text style={defaults.touchableTexts}>Login</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={defaults.accounts} onPress={() => this.register()}>
+                    <Text style={defaults.accountsText}>Register</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={defaults.accounts} onPress={() => this.forgotPassword()}>
+                    <Text style={defaults.accountsText}>Forgot password?</Text>
                   </TouchableOpacity>
                 </View>
             </View>

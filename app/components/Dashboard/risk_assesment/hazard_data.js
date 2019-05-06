@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import MapSection from './map_section'
+import FamilyRiskProfile from './family_risk_profile'
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -8,6 +9,11 @@ export default class HazardData extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      subView: 'maps',
+      buttonMap: rassessment_styles.subActiveButton,
+      buttonTextMap: rassessment_styles.buttonActiveText,
+      buttonFRP: rassessment_styles.subMenuButton,
+      buttonTextFRP: rassessment_styles.buttonText
     };
   }
   
@@ -25,6 +31,22 @@ export default class HazardData extends Component {
         default:
             console.log("Same page...")
             break;
+    }
+  }
+
+  changeSubView(tab) {
+    if (tab == 'maps') {
+      this.setState({subView: tab})
+      this.setState({buttonMap: rassessment_styles.subActiveButton})
+      this.setState({buttonTextMap: rassessment_styles.buttonActiveText})
+      this.setState({buttonFRP: rassessment_styles.subMenuButton})
+      this.setState({buttonTextFRP: rassessment_styles.buttonText})
+    } else {
+      this.setState({subView: tab})
+      this.setState({buttonMap: rassessment_styles.subMenuButton})
+      this.setState({buttonTextMap: rassessment_styles.buttonText})
+      this.setState({buttonFRP: rassessment_styles.subActiveButton})
+      this.setState({buttonTextFRP: rassessment_styles.buttonActiveText})
     }
   }
 
@@ -48,7 +70,15 @@ export default class HazardData extends Component {
             </View>
         </View>
         <View style={rassessment_styles.mapSection}>
-            <MapSection></MapSection>
+          <View style={rassessment_styles.buttonSection}>
+              <TouchableOpacity style={this.state.buttonMap} onPress={()=> this.changeSubView('maps')}>
+                  <Text style={this.state.buttonTextMap}>Maps</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={this.state.buttonFRP} onPress={()=> this.changeSubView('familyriskprofile')}>
+                  <Text style={this.state.buttonTextFRP}>Family Risk Profile</Text>
+              </TouchableOpacity>
+          </View>
+          {this.state.subView === 'maps' ? <MapSection/> : <FamilyRiskProfile/>}
         </View>
       </ScrollView>
       

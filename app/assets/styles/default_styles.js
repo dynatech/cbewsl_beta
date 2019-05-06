@@ -1,5 +1,8 @@
-import { StyleSheet } from 'react-native'
-  
+import { StyleSheet , Dimensions} from 'react-native'
+
+let { width } = Dimensions.get('window');
+let { height } = Dimensions.get('window');
+
 const defaults = StyleSheet.create({ 
   inputs: {
     borderBottomWidth: 3,
@@ -13,7 +16,9 @@ const defaults = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 1,
     borderColor: '#083451',
-    margin: 25
+    marginTop: 25,
+    marginRight: 25,
+    marginLeft: 25
   },
   touchableTexts: {
     color: 'white',
@@ -32,6 +37,14 @@ const defaults = StyleSheet.create({
   },
   isScreenActive: {
     backgroundColor: 'white',
+    color: '#083451'
+  },
+  accounts: {
+    marginRight: width*0.3,
+    marginLeft: width*0.3
+  },
+  accountsText: {
+    textAlign: 'center',
     color: '#083451'
   }
 })

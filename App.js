@@ -9,6 +9,8 @@ import FieldSurvey  from './app/components/Dashboard/field_survey';
 import Reports from './app/components/Dashboard/reports';
 import Ewi from './app/components/Dashboard/early_warning_information'
 import SurficialData from './app/components/Dashboard/surficial_data';
+import Register from './app/components/Login/register';
+import ForgotPassword from './app/components/Login/forgot_password'
 import {createStackNavigator, createAppContainer} from 'react-navigation';
 import { Header, Left, Right, Icon} from 'native-base'
 
@@ -16,12 +18,12 @@ var {width} = Dimensions.get('window');
 
 
 const RootStack = createStackNavigator({
-  // login: {
-  //   screen: Login,
-  //   navigationOptions: {
-  //     header: null
-  //   }
-  // },
+  login: {
+    screen: Login,
+    navigationOptions: {
+      header: null
+    }
+  },
   dashboard: {
     screen: Landing,
     navigationOptions: {
@@ -86,6 +88,24 @@ const RootStack = createStackNavigator({
     screen: SituationReport,
     navigationOptions: {
       headerTitle: "Situation Report",
+      headerTitleStyle: {
+        paddingLeft: width * 0.15,
+      }
+    }
+  },
+  register: {
+    screen: Register,
+    navigationOptions: {
+      headerTitle: "Registration",
+      headerTitleStyle: {
+        paddingLeft: width * 0.15,
+      }
+    }
+  },
+  forgot_password: {
+    screen: ForgotPassword,
+    navigationOptions: {
+      headerTitle: "Forgot Password",
       headerTitleStyle: {
         paddingLeft: width * 0.15,
       }

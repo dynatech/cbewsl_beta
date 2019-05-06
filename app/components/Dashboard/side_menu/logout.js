@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import Storage from '../../utils/storage'
+import { View, ToastAndroid } from 'react-native';
 import { defaults } from '../../../assets/styles/default_styles';
 import { Header, Left, Icon } from 'native-base';
 
@@ -16,12 +17,15 @@ export default class Logout extends Component {
     )
   };
 
+  componentWillMount(){
+    Storage.removeItem("loginCredentials");
+    ToastAndroid.show('Logout successfully!', ToastAndroid.SHORT);
+    this.props.navigation.navigate('login');
+  }
+
   render() {
     return (
       <View style={defaults.container}>
-        <View style={defaults.heading}>
-          <Icon name="home" onPress={() => this.props.navigation.openDrawer()}/>
-        </View>
       </View>
     );
   }

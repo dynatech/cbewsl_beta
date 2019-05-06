@@ -10,13 +10,11 @@ const rassessment_styles = StyleSheet.create({
         flex: 1
     },
     menuSection: {
-        height: (height/2) + 10,
         marginLeft: 10,
         marginRight: 10,
         flex: 1
     },
     mapSection: {
-        height: (height/2) + 10,
         marginLeft: 10,
         marginRight: 10
     },
@@ -38,6 +36,20 @@ const rassessment_styles = StyleSheet.create({
         justifyContent: 'center',
         width: (width/3)-10,
     },
+    subMenuButton: {
+        padding: 6,
+        backgroundColor: '#083451',
+        borderTopWidth: 2,
+        borderRightWidth: 2,
+        borderLeftWidth: 2,
+        borderColor: '#083451',
+        marginLeft: 1,
+        marginRight: 1,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        justifyContent: 'center',
+        width: (width/2)-10,
+    },
     activeButton: {
         padding: 6,
         borderTopWidth: 2,
@@ -48,6 +60,17 @@ const rassessment_styles = StyleSheet.create({
         borderTopRightRadius: 10,
         justifyContent: 'center',
         width: (width/3)-10,
+    },
+    subActiveButton: {
+        padding: 6,
+        borderTopWidth: 2,
+        borderRightWidth: 2,
+        borderLeftWidth: 2,
+        borderColor: '#083451',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        justifyContent: 'center',
+        width: (width/2)-10,
     },
     buttonText: {
         textAlign: 'center',
