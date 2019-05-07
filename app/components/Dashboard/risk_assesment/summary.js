@@ -3,8 +3,9 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import MapSection from './map_section'
 import FamilyRiskProfile from './family_risk_profile'
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
+import { defaults } from '../../../assets/styles/default_styles'
 import { ScrollView } from 'react-native-gesture-handler';
-import { DataTable , Provider as PaperProvider } from 'react-native-paper'
+import { DataTable } from 'react-native-paper'
 
 export default class Summary extends Component {
   constructor(props) {
@@ -89,17 +90,20 @@ export default class Summary extends Component {
                 </TouchableOpacity>
             </View>
             <View>
-            <ScrollView horizontal={true}>
-              <DataTable>
-                <DataTable.Header style={{flex: 1, width: 500}}>
-                  <DataTable.Title >Location</DataTable.Title>
-                  <DataTable.Title>Impact</DataTable.Title>
-                  <DataTable.Title>Adaptive Capacity</DataTable.Title>
-                  <DataTable.Title>Vulnerability</DataTable.Title>
-                </DataTable.Header>
-                {this.state.summary_data}
-              </DataTable>
-            </ScrollView>
+              <ScrollView horizontal={true}>
+                <DataTable>
+                  <DataTable.Header style={{flex: 1, width: 500}}>
+                    <DataTable.Title >Location</DataTable.Title>
+                    <DataTable.Title>Impact</DataTable.Title>
+                    <DataTable.Title>Adaptive Capacity</DataTable.Title>
+                    <DataTable.Title>Vulnerability</DataTable.Title>
+                  </DataTable.Header>
+                  {this.state.summary_data}
+                </DataTable>
+              </ScrollView>
+              <TouchableOpacity style={defaults.button}>
+                <Text style={defaults.buttonText}>EDIT</Text>
+              </TouchableOpacity>
             </View>
         </View>
         <View style={rassessment_styles.mapSection}>

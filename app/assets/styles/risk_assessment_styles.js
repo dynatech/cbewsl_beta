@@ -14,6 +14,9 @@ const rassessment_styles = StyleSheet.create({
         marginRight: 10,
         flex: 1
     },
+    tableContainer: {
+        marginBottom: 20
+    },
     mapSection: {
         marginLeft: 10,
         marginRight: 10

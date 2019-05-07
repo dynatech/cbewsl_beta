@@ -46,6 +46,24 @@ const defaults = StyleSheet.create({
   accountsText: {
     textAlign: 'center',
     color: '#083451'
+  },
+  button: {
+    backgroundColor: '#083451',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#083451',
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 5,
+    marginLeft: 5,
+    width: width * 0.2
+  },
+  buttonText: {
+    color: 'white',
+    textAlign:'center',
+    fontWeight: 'bold',
+    fontSize: 15,
+    padding: 5
   }
 })
 export { defaults }         

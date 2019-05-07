@@ -3,7 +3,9 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import MapSection from './map_section'
 import FamilyRiskProfile from './family_risk_profile'
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
+import { defaults } from '../../../assets/styles/default_styles'
 import { ScrollView } from 'react-native-gesture-handler';
+import { DataTable } from 'react-native-paper'
 
 export default class HazardData extends Component {
   constructor(props) {
@@ -13,7 +15,8 @@ export default class HazardData extends Component {
       buttonMap: rassessment_styles.subActiveButton,
       buttonTextMap: rassessment_styles.buttonActiveText,
       buttonFRP: rassessment_styles.subMenuButton,
-      buttonTextFRP: rassessment_styles.buttonText
+      buttonTextFRP: rassessment_styles.buttonText,
+      hazard_data: []
     };
   }
   
@@ -50,6 +53,25 @@ export default class HazardData extends Component {
     }
   }
 
+  componentDidMount(){
+    fetch('http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
+    .then((responseJson) => {
+      let hazard_data = [];
+      for (const [index, value] of responseJson.entries()) {
+        hazard_data.push(<DataTable.Row style={{width: 500}}>
+          <DataTable.Cell style={{marginRight: 10}}>{value.hazard}</DataTable.Cell>
+          <DataTable.Cell style={{marginRight: 10}}>{value.speed_of_onset}</DataTable.Cell>
+          <DataTable.Cell style={{marginRight: 10}}>{value.early_warning}</DataTable.Cell>
+          <DataTable.Cell style={{marginRight: 10}}>{value.impact}</DataTable.Cell>
+        </DataTable.Row>)
+      }
+      this.setState({hazard_data: hazard_data})
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
   render() {
     return (
       <ScrollView style={rassessment_styles.container}>
@@ -66,7 +88,20 @@ export default class HazardData extends Component {
                 </TouchableOpacity>
             </View>
             <View>
-                <Text> hazard Screen </Text>
+              <ScrollView horizontal={true}>
+                <DataTable>
+                  <DataTable.Header style={{flex: 1, width: 500}}>
+                    <DataTable.Title >Hazard</DataTable.Title>
+                    <DataTable.Title>Speed of Onset</DataTable.Title>
+                    <DataTable.Title>Early Warning</DataTable.Title>
+                    <DataTable.Title>Impact</DataTable.Title>
+                  </DataTable.Header>
+                  {this.state.hazard_data}
+                </DataTable>
+              </ScrollView>
+              <TouchableOpacity style={defaults.button}>
+                <Text style={defaults.buttonText}>EDIT</Text>
+              </TouchableOpacity>
             </View>
         </View>
         <View style={rassessment_styles.mapSection}>

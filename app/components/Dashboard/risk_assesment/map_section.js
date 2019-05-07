@@ -6,6 +6,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
+import { defaults } from '../../../assets/styles/default_styles'
 import { Modal } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { Dimensions } from 'react-native';
@@ -46,6 +47,9 @@ export default class MapSection extends Component {
           transparent={true}>
             <ImageViewer imageUrls={images} enableSwipeDown={true} onSwipeDown={() => {this.HideModalFunction()}}/>
         </Modal>
+        <TouchableOpacity style={defaults.button}>
+          <Text style={defaults.buttonText}>EDIT</Text>
+        </TouchableOpacity>
       </View>
     );
   }
