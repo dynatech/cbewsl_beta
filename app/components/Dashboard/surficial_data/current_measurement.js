@@ -40,9 +40,17 @@ export default class CurrentMeasurement extends Component {
                     <Text style={surficial_data_styles.buttonText}>Monitoring Logs</Text>
                 </TouchableOpacity>
             </View>
-            <View>
-                <Text> Current Measuremnt section </Text>
-            </View>
+        </View>
+        <View style={surficial_data_styles.contentContainer}>
+          <View style={{padding: 10, marginTop: 20, marginBottom: 20}}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>DATE: </Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>TIME: </Text>
+          </View>
+          <View style={{padding: 10}}>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack A: 12</Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack B: 12</Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack C: 12</Text>
+          </View>
         </View>
       </ScrollView>
       

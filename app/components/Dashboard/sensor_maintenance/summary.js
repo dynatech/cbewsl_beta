@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles'
 import { ScrollView } from 'react-native-gesture-handler';
+import RainfallGraph from './rainfall_graph'
 
 export default class Summary extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      one_day_rain: '85%',
+      three_day_rain: '42%'
     };
   }
   
@@ -40,13 +43,21 @@ export default class Summary extends Component {
                     <Text style={sensor_maintenance_styles.buttonText}>Maintenance Logs</Text>
                 </TouchableOpacity>
             </View>
-            <View>
-                <Text> Summary section </Text>
-            </View>
         </View>
-        <View style={sensor_maintenance_styles.graphSection}>
-        <Text> Graph section </Text>
+        <View style={sensor_maintenance_styles.contentContainer}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Rainfall</Text>
+          <View style={sensor_maintenance_styles.subContainer}>
+            <Text>1-day threshold: {this.state.one_day_rain}</Text>
+            <Text>3-day threshold: {this.state.three_day_rain}</Text>
+          </View>
         </View>
+        <View style={sensor_maintenance_styles.graphContainer}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Subsurface</Text>
+          <View style={sensor_maintenance_styles.subContainer}>
+            <Text>No available data.</Text>
+          </View>
+        </View>
+        <RainfallGraph></RainfallGraph>
       </ScrollView>
       
     );

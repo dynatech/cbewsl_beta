@@ -9,7 +9,6 @@ const situation_report_styles = StyleSheet.create({
         flex: 1
     },
     menuSection: {
-        height: (height/2) + 10,
         marginLeft: 10,
         marginRight: 10,
         flex: 1
@@ -54,6 +53,10 @@ const situation_report_styles = StyleSheet.create({
         alignContent: 'center',
         color: '#083451',
         fontSize: width*0.035
+    },
+    contentContainer: {
+        flex: 1,
+        padding: 20
     }
 
 })

@@ -47,9 +47,6 @@ export default class MapSection extends Component {
           transparent={true}>
             <ImageViewer imageUrls={images} enableSwipeDown={true} onSwipeDown={() => {this.HideModalFunction()}}/>
         </Modal>
-        <TouchableOpacity style={defaults.button}>
-          <Text style={defaults.buttonText}>EDIT</Text>
-        </TouchableOpacity>
       </View>
     );
   }

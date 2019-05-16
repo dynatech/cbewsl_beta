@@ -9,13 +9,11 @@ const sensor_maintenance_styles = StyleSheet.create({
         flex: 1
     },
     menuSection: {
-        height: (height/2) + 10,
         marginLeft: 10,
         marginRight: 10,
         flex: 1
     },
     graphSection: {
-        height: (height/2) + 10,
         marginLeft: 10,
         marginRight: 10
     },
@@ -59,8 +57,32 @@ const sensor_maintenance_styles = StyleSheet.create({
         alignContent: 'center',
         color: '#083451',
         fontSize: width*0.035
+    },
+    contentContainer: {
+        padding: 20
+    },
+    graphContainer:{
+        padding: 20
+    },
+    subContainer: {
+        padding: 10
+    },
+    rainfallGraphContainer: {
+        borderTopWidth: 1,
+        borderColor: '#083451',
+        margin: 10,
+        paddingTop: 10 
+    },
+    datetimeContainer: {
+        flexDirection: 'row',
+        margin: width * 0.05
+    },
+    datetimeLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        paddingTop: 5,
+        marginRight: 10
     }
-
 })
 
 export { sensor_maintenance_styles }         

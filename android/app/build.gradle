@@ -149,6 +149,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-sms-android')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])

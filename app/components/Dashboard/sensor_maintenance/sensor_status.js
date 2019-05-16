@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles'
 import { ScrollView } from 'react-native-gesture-handler';
+import RainfallGraph from './rainfall_graph'
 
 export default class SensorStatus extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      rain_gauge_status: null,
+      last_maintenance: null,
+      rain_gauge_name: 'RAIN_UMIG'
     };
   }
   
@@ -40,13 +44,13 @@ export default class SensorStatus extends Component {
                     <Text style={sensor_maintenance_styles.buttonText}>Maintenance Logs</Text>
                 </TouchableOpacity>
             </View>
-            <View>
-                <Text> Sensor Status section </Text>
-            </View>
         </View>
-        <View style={sensor_maintenance_styles.graphSection}>
-        <Text> Graph section </Text>
+        <View style={sensor_maintenance_styles.contentContainer}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center', padding: 20}}>Rain Gauge: {this.state.rain_gauge_name}</Text>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>RAIN GAUGE STATUS: {this.state.rain_gauge_status}</Text>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>LAST MAINTENANCE: {this.state.last_maintenance}</Text>
         </View>
+        <RainfallGraph></RainfallGraph>
       </ScrollView>
       
     );

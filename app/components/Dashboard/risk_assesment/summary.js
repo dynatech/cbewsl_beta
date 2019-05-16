@@ -101,7 +101,7 @@ export default class Summary extends Component {
                   {this.state.summary_data}
                 </DataTable>
               </ScrollView>
-              <TouchableOpacity style={defaults.button}>
+              <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_summary')}>
                 <Text style={defaults.buttonText}>EDIT</Text>
               </TouchableOpacity>
             </View>

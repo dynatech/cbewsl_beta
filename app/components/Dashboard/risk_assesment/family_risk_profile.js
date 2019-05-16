@@ -45,7 +45,7 @@ export default class FamilyRiskProfile extends Component {
             {this.state.family_profile}
           </DataTable>
         </ScrollView>
-        <TouchableOpacity style={defaults.button}>
+        <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_family_risk')}>
           <Text style={defaults.buttonText}>EDIT</Text>
         </TouchableOpacity>
       </View>
