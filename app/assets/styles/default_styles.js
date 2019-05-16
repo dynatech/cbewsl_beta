@@ -56,7 +56,7 @@ const defaults = StyleSheet.create({
     marginBottom: 10,
     marginRight: 5,
     marginLeft: 5,
-    width: width * 0.3
+    width: width * 0.4
   },
   buttonText: {
     color: 'white',

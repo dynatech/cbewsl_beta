@@ -97,7 +97,7 @@ export default class ResourcesAndCapacities extends Component {
                   {this.state.rnc_data}
                 </DataTable>
               </ScrollView>
-              <TouchableOpacity style={defaults.button}>
+              <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_rnc')}>
                 <Text style={defaults.buttonText}>EDIT</Text>
               </TouchableOpacity>
             </View>

@@ -99,7 +99,7 @@ export default class HazardData extends Component {
                   {this.state.hazard_data}
                 </DataTable>
               </ScrollView>
-              <TouchableOpacity style={defaults.button}>
+              <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_hazard_data')}>
                 <Text style={defaults.buttonText}>EDIT</Text>
               </TouchableOpacity>
             </View>

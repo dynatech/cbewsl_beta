@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { View, Text , ScrollView, TouchableOpacity} from 'react-native';
 import { DataTable } from 'react-native-paper'
 import { defaults } from '../../../assets/styles/default_styles'
+import { withNavigation } from 'react-navigation';
 
-export default class FamilyRiskProfile extends Component {
+class FamilyRiskProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
         family_profile: []
     };
   }
-
 
   componentDidMount(){
     fetch('http://192.168.150.191:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
@@ -52,3 +52,5 @@ export default class FamilyRiskProfile extends Component {
     );
   }
 }
+
+export default withNavigation(FamilyRiskProfile)
