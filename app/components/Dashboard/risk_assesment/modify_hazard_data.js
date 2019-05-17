@@ -22,6 +22,10 @@ export default class ModifyHazardData extends Component {
           <DataTable.Cell style={{marginRight: 10}}>{value.speed_of_onset}</DataTable.Cell>
           <DataTable.Cell style={{marginRight: 10}}>{value.early_warning}</DataTable.Cell>
           <DataTable.Cell style={{marginRight: 10}}>{value.impact}</DataTable.Cell>
+          <DataTable.Cell>
+            <Icon name="md-add-circle-outline" style={{color:"blue"}} onPress={()=> this.updateLog(value.hazard_data_id)}></Icon>
+            <Icon name="md-remove-circle-outline" style={{color:"red"}} onPress={()=> this.removeLog(value.hazard_data_id)}></Icon>
+          </DataTable.Cell>
         </DataTable.Row>)
       }
       this.setState({hazard_data: hazard_data})
@@ -42,6 +46,7 @@ export default class ModifyHazardData extends Component {
                     <DataTable.Title>Speed of Onset</DataTable.Title>
                     <DataTable.Title>Early Warning</DataTable.Title>
                     <DataTable.Title>Impact</DataTable.Title>
+                    <DataTable.Title>Actions</DataTable.Title>
                     </DataTable.Header>
                     {this.state.hazard_data}
                 </DataTable>

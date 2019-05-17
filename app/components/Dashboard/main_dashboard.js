@@ -60,7 +60,7 @@ export default class MainDashboard extends Component {
             <View style={[defaults.heading, this.props.style]}>
                 <Icon name="menu" onPress={() => this.props.navigation.openDrawer()}/>
                 <View style={dashboard.menulogo}>
-                    <Image style={dashboard.logo} source={require('../../assets/images/alimodian.jpg')}></Image>
+                    <Image style={dashboard.logo} source={require('../../assets/images/mdrrmo_logo.png')}></Image>
                     <Image style={dashboard.logo} source={require('../../assets/images/dost-phivolcs-logo.png')}></Image>
                     <Image style={dashboard.logo} source={require('../../assets/images/dews-l-logo.png')}></Image>
                 </View>

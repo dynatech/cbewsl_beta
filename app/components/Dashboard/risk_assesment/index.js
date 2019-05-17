@@ -6,6 +6,7 @@ import ResourcesAndCapacities from './resources_and_capacities'
 import ModifySummary from './modify_summary'
 import ModifyFamilyRisk from './modify_family_risk_profile'
 import ModifyHazardData from './modify_hazard_data'
+import ModifyResourceAndCapacities from './modify_rnc'
 import {createStackNavigator, createAppContainer} from 'react-navigation';
 
 const RAssessmentStack = createStackNavigator({

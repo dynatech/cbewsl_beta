@@ -7,6 +7,9 @@ export default class CurrentMeasurement extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      date: null,
+      time: null,
+      crack_sets: null
     };
   }
   
@@ -23,6 +26,26 @@ export default class CurrentMeasurement extends Component {
             console.log("Same page...")
             break;
     }
+  }
+
+  componentDidMount(){
+    fetch('http://192.168.150.191:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
+    .then((responseJson) => {
+      let crack_sets = []
+      this.setState({date: responseJson.date})
+      this.setState({time: responseJson.time})
+
+      for (const [index, value] of responseJson.cracks.entries()) {
+        console.log(value)
+        let key = Object.keys(value)
+        let key_value = Object.values(value)
+        crack_sets.push(<Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack {key}: {key_value}</Text>)
+      }
+      this.setState({crack_sets: crack_sets})
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   render() {
@@ -43,13 +66,11 @@ export default class CurrentMeasurement extends Component {
         </View>
         <View style={surficial_data_styles.contentContainer}>
           <View style={{padding: 10, marginTop: 20, marginBottom: 20}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>DATE: </Text>
-            <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>TIME: </Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>DATE: {this.state.date}</Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>TIME: {this.state.time}</Text>
           </View>
           <View style={{padding: 10}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack A: 12</Text>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack B: 12</Text>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack C: 12</Text>
+            {this.state.crack_sets}
           </View>
         </View>
       </ScrollView>

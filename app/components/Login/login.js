@@ -66,7 +66,7 @@ export default class Login extends Component {
             <View style={login_styles.container}>
                 <View style={login_styles.heading}>
                   <View style={login_styles.menulogo}>
-                      <Image style={login_styles.logo} source={require('../../assets/images/alimodian.jpg')}></Image>
+                      <Image style={login_styles.logo} source={require('../../assets/images/mdrrmo_logo.png')}></Image>
                       <Image style={login_styles.logo} source={require('../../assets/images/dost-phivolcs-logo.png')}></Image>
                       <Image style={login_styles.logo} source={require('../../assets/images/dews-l-logo.png')}></Image>
                   </View>

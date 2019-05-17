@@ -58,11 +58,11 @@ export default class MonitoringLogs extends Component {
                 <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("summary")}>
                     <Text style={surficial_data_styles.buttonText}>Summary</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={surficial_data_styles.activeButton} onPress={() => this.navigateSurficialData("current_measuremnt")}>
-                    <Text style={surficial_data_styles.buttonActiveText}>Current Measurement</Text>
+                <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("current_measuremnt")}>
+                    <Text style={surficial_data_styles.buttonText}>Current Measurement</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={surficial_data_styles.menuButton} >
-                    <Text style={surficial_data_styles.buttonText}>Monitoring Logs</Text>
+                <TouchableOpacity style={surficial_data_styles.activeButton} >
+                    <Text style={surficial_data_styles.buttonActiveText}>Monitoring Logs</Text>
                 </TouchableOpacity>
             </View>
         </View>
