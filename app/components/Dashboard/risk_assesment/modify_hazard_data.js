@@ -3,6 +3,7 @@ import { View, Text ,TouchableOpacity, ScrollView} from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import { DataTable } from 'react-native-paper'
+import { Icon } from 'native-base'
 
 export default class ModifyHazardData extends Component {
   constructor(props) {
