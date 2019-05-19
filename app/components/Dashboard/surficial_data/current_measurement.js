@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles'
 import { ScrollView } from 'react-native-gesture-handler';
+import Storage from '../../utils/storage'
 
 export default class CurrentMeasurement extends Component {
   constructor(props) {
@@ -12,8 +13,7 @@ export default class CurrentMeasurement extends Component {
       crack_sets: null
     };
   }
-  
-  // Refactor this
+
   navigateSurficialData(tab) {
     switch(tab) {
         case "summary":
@@ -29,23 +29,43 @@ export default class CurrentMeasurement extends Component {
   }
 
   componentDidMount(){
-    fetch('http://192.168.150.191:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
-    .then((responseJson) => {
-      let crack_sets = []
-      this.setState({date: responseJson.date})
-      this.setState({time: responseJson.time})
+    let surficial_data_current_meas = Storage.getItem("SurficialDataCurrentMeasurement");
+    surficial_data_current_meas.then(response => {
+      if (response == null) {
+        fetch('http://192.168.150.191:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
+        .then((responseJson) => {
 
-      for (const [index, value] of responseJson.cracks.entries()) {
-        console.log(value)
-        let key = Object.keys(value)
-        let key_value = Object.values(value)
-        crack_sets.push(<Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack {key}: {key_value}</Text>)
+          console.log("Initialize surficial data current measurement.")
+          Storage.setItem("SurficialDataCurrentMeasurement", responseJson);
+          
+          let crack_sets = []
+          this.setState({date: responseJson.date})
+          this.setState({time: responseJson.time})
+    
+          for (const [index, value] of responseJson.cracks.entries()) {
+            console.log(value)
+            let key = Object.keys(value)
+            let key_value = Object.values(value)
+            crack_sets.push(<Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack {key}: {key_value}</Text>)
+          }
+          this.setState({crack_sets: crack_sets})
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      } else {
+        let crack_sets = []
+        this.setState({date: response.date})
+        this.setState({time: response.time})
+  
+        for (const [index, value] of response.cracks.entries()) {
+          let key = Object.keys(value)
+          let key_value = Object.values(value)
+          crack_sets.push(<Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack {key}: {key_value}</Text>)
+        }
+        this.setState({crack_sets: crack_sets})
       }
-      this.setState({crack_sets: crack_sets})
     })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   render() {

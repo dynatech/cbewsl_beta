@@ -6,6 +6,7 @@ import { rassessment_styles } from '../../../assets/styles/risk_assessment_style
 import { defaults } from '../../../assets/styles/default_styles'
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper'
+import Storage from '../../utils/storage'
 
 export default class ResourcesAndCapacities extends Component {
   constructor(props) {
@@ -54,21 +55,40 @@ export default class ResourcesAndCapacities extends Component {
   }
 
   componentDidMount(){
-    fetch('http://192.168.150.191:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
-    .then((responseJson) => {
-      let rnc_data = [];
-      for (const [index, value] of responseJson.entries()) {
-        rnc_data.push(<DataTable.Row style={{width: 500}}>
-          <DataTable.Cell style={{marginRight: 10}}>{value.resource_and_capacity}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.status}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.owner}</DataTable.Cell>
-        </DataTable.Row>)
+    let r_a_rnc = Storage.getItem("RiskAssessmentRNC");
+    r_a_rnc.then(response => {
+      if (response == null) {
+        fetch('http://192.168.150.191:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
+        .then((responseJson) => {
+          console.log("Initialize risk assessment rnc")
+          Storage.setItem("RiskAssessmentRNC", responseJson);
+          let rnc_data = [];
+          for (const [index, value] of responseJson.entries()) {
+            rnc_data.push(<DataTable.Row style={{width: 500}}>
+              <DataTable.Cell style={{marginRight: 10}}>{value.resource_and_capacity}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.status}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.owner}</DataTable.Cell>
+            </DataTable.Row>)
+          }
+          this.setState({rnc_data: rnc_data})
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      } else {
+        let rnc_data = [];
+        for (const [index, value] of response.entries()) {
+          rnc_data.push(<DataTable.Row style={{width: 500}}>
+            <DataTable.Cell style={{marginRight: 10}}>{value.resource_and_capacity}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.status}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.owner}</DataTable.Cell>
+          </DataTable.Row>)
+        }
+        this.setState({rnc_data: rnc_data})
       }
-      this.setState({rnc_data: rnc_data})
-    })
-    .catch((error) => {
-      console.error(error);
     });
+
+
   }
   
   render() {

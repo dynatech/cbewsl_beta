@@ -3,6 +3,7 @@ import { View, Text , ScrollView, TouchableOpacity} from 'react-native';
 import { DataTable } from 'react-native-paper'
 import { defaults } from '../../../assets/styles/default_styles'
 import { withNavigation } from 'react-navigation';
+import Storage from '../../utils/storage'
 
 class FamilyRiskProfile extends Component {
   constructor(props) {
@@ -13,21 +14,39 @@ class FamilyRiskProfile extends Component {
   }
 
   componentDidMount(){
-    fetch('http://192.168.150.191:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
-    .then((responseJson) => {
-      let family_profile = [];
-      for (const [index, value] of responseJson.entries()) {
-          family_profile.push(<DataTable.Row style={{width: 500}}>
-          <DataTable.Cell style={{marginRight: 10}}>{value.family_profile_id}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.members_count}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.vulnerable_members_count}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.vulnerability_nature}</DataTable.Cell>
-        </DataTable.Row>)
+    let r_a_family_risk = Storage.getItem("RiskAssessmentFamilyRiskProfile");
+    r_a_family_risk.then(response => {
+      if (response == null) {
+        fetch('http://192.168.150.191:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
+        .then((responseJson) => {
+          console.log("Initialize risk assessment family profile.")
+          Storage.setItem("RiskAssessmentFamilyRiskProfile", responseJson);
+          let family_profile = [];
+          for (const [index, value] of responseJson.entries()) {
+              family_profile.push(<DataTable.Row style={{width: 500}}>
+              <DataTable.Cell style={{marginRight: 10}}>{value.family_profile_id}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.members_count}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.vulnerable_members_count}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.vulnerability_nature}</DataTable.Cell>
+            </DataTable.Row>)
+          }
+          this.setState({family_profile: family_profile})
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      } else {
+        let family_profile = [];
+        for (const [index, value] of response.entries()) {
+            family_profile.push(<DataTable.Row style={{width: 500}}>
+            <DataTable.Cell style={{marginRight: 10}}>{value.family_profile_id}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.members_count}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.vulnerable_members_count}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.vulnerability_nature}</DataTable.Cell>
+          </DataTable.Row>)
+        }
+        this.setState({family_profile: family_profile})
       }
-      this.setState({family_profile: family_profile})
-    })
-    .catch((error) => {
-      console.error(error);
     });
   }
   
