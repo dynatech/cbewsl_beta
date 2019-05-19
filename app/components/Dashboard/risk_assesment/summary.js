@@ -6,6 +6,7 @@ import { rassessment_styles } from '../../../assets/styles/risk_assessment_style
 import { defaults } from '../../../assets/styles/default_styles'
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper'
+import Storage from '../../utils/storage'
 
 export default class Summary extends Component {
   constructor(props) {
@@ -54,24 +55,43 @@ export default class Summary extends Component {
     }
   }
 
-
   componentDidMount(){
-    fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
-    .then((responseJson) => {
-      let summary_data = [];
-      for (const [index, value] of responseJson.entries()) {
-        summary_data.push(<DataTable.Row style={{width: 500}}>
-          <DataTable.Cell style={{marginRight: 10}}>{value.location}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.impact}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.adaptive_capacity}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.vulnerability}</DataTable.Cell>
-        </DataTable.Row>)
+    let r_a_summary = Storage.getItem("RiskAssessmentSummary");
+
+    r_a_summary.then(response => {
+      if (response == null) {
+        fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
+        .then((responseJson) => {
+          console.log("Initialize risk assessment summary.")
+          Storage.setItem("RiskAssessmentSummary", responseJson);
+          let summary_data = [];
+          for (const [index, value] of responseJson.entries()) {
+            summary_data.push(<DataTable.Row style={{width: 500}}>
+              <DataTable.Cell style={{marginRight: 10}}>{value.location}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.impact}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.adaptive_capacity}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.vulnerability}</DataTable.Cell>
+            </DataTable.Row>)
+          }
+          this.setState({summary_data: summary_data})
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      } else {
+        let summary_data = [];
+        for (const [index, value] of response.entries()) {
+          summary_data.push(<DataTable.Row style={{width: 500}}>
+            <DataTable.Cell style={{marginRight: 10}}>{value.location}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.impact}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.adaptive_capacity}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.vulnerability}</DataTable.Cell>
+          </DataTable.Row>)
+        }
+        this.setState({summary_data: summary_data})
       }
-      this.setState({summary_data: summary_data})
+
     })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   render() {

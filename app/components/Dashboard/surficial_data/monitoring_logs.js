@@ -18,15 +18,14 @@ export default class MonitoringLogs extends Component {
         case "summary":
             this.props.navigation.navigate('summary')
             break;
-        case "current_measuremnt":
-            this.props.navigation.navigate('current_measuremnt')
+        case "current_measurement":
+            this.props.navigation.navigate('current_measurement')
             break;
         default:
             console.log("Same page...")
             break;
     }
   }
-
 
   // componentDidMount(){
   //   fetch('http://192.168.150.191:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
@@ -49,7 +48,6 @@ export default class MonitoringLogs extends Component {
   //   });
   // }
 
-
   render() {
     return (
       <ScrollView style={surficial_data_styles.container}>
@@ -58,7 +56,7 @@ export default class MonitoringLogs extends Component {
                 <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("summary")}>
                     <Text style={surficial_data_styles.buttonText}>Summary</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("current_measuremnt")}>
+                <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("current_measurement")}>
                     <Text style={surficial_data_styles.buttonText}>Current Measurement</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={surficial_data_styles.activeButton} >
@@ -88,7 +86,6 @@ export default class MonitoringLogs extends Component {
           </View>
         </View>
       </ScrollView>
-      
     );
   }
 }

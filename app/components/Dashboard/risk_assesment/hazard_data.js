@@ -6,6 +6,7 @@ import { rassessment_styles } from '../../../assets/styles/risk_assessment_style
 import { defaults } from '../../../assets/styles/default_styles'
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper'
+import Storage from '../../utils/storage'
 
 export default class HazardData extends Component {
   constructor(props) {
@@ -54,22 +55,40 @@ export default class HazardData extends Component {
   }
 
   componentDidMount(){
-    fetch('http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
-    .then((responseJson) => {
-      let hazard_data = [];
-      for (const [index, value] of responseJson.entries()) {
-        hazard_data.push(<DataTable.Row style={{width: 500}}>
-          <DataTable.Cell style={{marginRight: 10}}>{value.hazard}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.speed_of_onset}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.early_warning}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>{value.impact}</DataTable.Cell>
-        </DataTable.Row>)
+    let r_a_hazard_data = Storage.getItem("RiskAssessmentHazardData");
+    r_a_hazard_data.then(response => {
+      if (response == null) {
+        fetch('http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
+        .then((responseJson) => {
+          console.log("Initialize risk assessment hazard data")
+          Storage.setItem("RiskAssessmentHazardData", responseJson);
+          let hazard_data = [];
+          for (const [index, value] of responseJson.entries()) {
+            hazard_data.push(<DataTable.Row style={{width: 500}}>
+              <DataTable.Cell style={{marginRight: 10}}>{value.hazard}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.speed_of_onset}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.early_warning}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>{value.impact}</DataTable.Cell>
+            </DataTable.Row>)
+          }
+          this.setState({hazard_data: hazard_data})
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      } else {
+        let hazard_data = [];
+        for (const [index, value] of response.entries()) {
+          hazard_data.push(<DataTable.Row style={{width: 500}}>
+            <DataTable.Cell style={{marginRight: 10}}>{value.hazard}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.speed_of_onset}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.early_warning}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>{value.impact}</DataTable.Cell>
+          </DataTable.Row>)
+        }
+        this.setState({hazard_data: hazard_data})
       }
-      this.setState({hazard_data: hazard_data})
     })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   render() {
