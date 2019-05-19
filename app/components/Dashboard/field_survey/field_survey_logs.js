@@ -4,6 +4,7 @@ import {field_survey_styles} from '../../../assets/styles/field_survey_styles'
 import {defaults} from '../../../assets/styles/default_styles'
 import { DataTable } from 'react-native-paper'
 import { Icon } from 'native-base'
+import Storage from '../../utils/storage'
 
 export default class FieldSurveyLogs extends Component {
   constructor(props) {
@@ -36,24 +37,46 @@ export default class FieldSurveyLogs extends Component {
   }
 
   componentDidMount(){
-    fetch('http://192.168.150.191:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
-    .then((responseJson) => {
-      let field_logs = [];
-      for (const [index, value] of responseJson.entries()) {
-        field_logs.push(<DataTable.Row style={{width: 500}}>
-          <DataTable.Cell style={{marginRight: -90}}>{value.date}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: 10}}>Field Survey Report {value.date.split(' ')[0]}</DataTable.Cell>
-          <DataTable.Cell style={{marginRight: -190}}>
-            <Icon name="md-add-circle-outline" style={{color:"blue"}} onPress={()=> this.updateLog(value.field_survey_id)}></Icon>
-            <Icon name="md-remove-circle-outline" style={{color:"red"}} onPress={()=> this.removeLog(value.field_survey_id)}></Icon>
-          </DataTable.Cell>
-        </DataTable.Row>)
+    let field_survey_logs = Storage.getItem("FieldSurveyLogs");
+    field_survey_logs.then(response => {
+      if (response == null) {
+        fetch('http://192.168.150.191:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
+        .then((responseJson) => {
+          console.log("Initialize field survey logs.")
+          Storage.setItem("FieldSurveyLogs", responseJson);
+          let field_logs = [];
+          for (const [index, value] of responseJson.entries()) {
+            field_logs.push(<DataTable.Row style={{width: 500}}>
+              <DataTable.Cell style={{marginRight: -90}}>{value.date}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: 10}}>Field Survey Report {value.date.split(' ')[0]}</DataTable.Cell>
+              <DataTable.Cell style={{marginRight: -190}}>
+                <Icon name="md-add-circle-outline" style={{color:"blue"}} onPress={()=> this.updateLog(value.field_survey_id)}></Icon>
+                <Icon name="md-remove-circle-outline" style={{color:"red"}} onPress={()=> this.removeLog(value.field_survey_id)}></Icon>
+              </DataTable.Cell>
+            </DataTable.Row>)
+          }
+          this.setState({field_logs: field_logs})
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      } else {
+        let field_logs = [];
+        for (const [index, value] of response.entries()) {
+          field_logs.push(<DataTable.Row style={{width: 500}}>
+            <DataTable.Cell style={{marginRight: -90}}>{value.date}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: 10}}>Field Survey Report {value.date.split(' ')[0]}</DataTable.Cell>
+            <DataTable.Cell style={{marginRight: -190}}>
+              <Icon name="md-add-circle-outline" style={{color:"blue"}} onPress={()=> this.updateLog(value.field_survey_id)}></Icon>
+              <Icon name="md-remove-circle-outline" style={{color:"red"}} onPress={()=> this.removeLog(value.field_survey_id)}></Icon>
+            </DataTable.Cell>
+          </DataTable.Row>)
+        }
+        this.setState({field_logs: field_logs})
       }
-      this.setState({field_logs: field_logs})
-    })
-    .catch((error) => {
-      console.error(error);
     });
+
+
   }
 
   render() {
