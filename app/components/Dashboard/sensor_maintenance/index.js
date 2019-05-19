@@ -3,7 +3,8 @@ import { View, Text } from 'react-native';
 import Summary from './summary'
 import SensorStatus from './sensor_status'
 import MaintenanceLogs from './maintenance_logs'
-import {createStackNavigator, createAppContainer} from 'react-navigation';
+import SaveMaintenanceLogs from './save_maintenance_logs'
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 const SensorMaintenance = createStackNavigator({
   summary: {
@@ -23,14 +24,20 @@ const SensorMaintenance = createStackNavigator({
     navigationOptions: {
       header: null
     }
-  }
-},{
-  transitionConfig: () => ({
-    transitionSpec: {
-      duration: 0
+  },
+  save_maintenance_logs: {
+    screen: SaveMaintenanceLogs,
+    navigationOptions: {
+      header: null
     }
-  })
-});
+  }
+}, {
+    transitionConfig: () => ({
+      transitionSpec: {
+        duration: 0
+      }
+    })
+  });
 const Container = createAppContainer(SensorMaintenance);
 
 export default Container

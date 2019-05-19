@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import LatestReportSummary from './latest_report_summary'
 import FieldSurveyLogs from './field_survey_logs'
-import {createStackNavigator, createAppContainer} from 'react-navigation';
+import SaveFieldSurveyLogs from './save_field_survey_logs'
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 const FieldSurveyStack = createStackNavigator({
   latest_report_summary: {
@@ -16,14 +17,20 @@ const FieldSurveyStack = createStackNavigator({
     navigationOptions: {
       header: null
     }
+  },
+  save_field_survey_logs: {
+    screen: SaveFieldSurveyLogs,
+    navigationOptions: {
+      header: null
+    }
   }
 }, {
-  transitionConfig: () => ({
-    transitionSpec: {
-      duration: 0
-    }
-  })
-});
+    transitionConfig: () => ({
+      transitionSpec: {
+        duration: 0
+      }
+    })
+  });
 const Container = createAppContainer(FieldSurveyStack);
 
 export default Container
