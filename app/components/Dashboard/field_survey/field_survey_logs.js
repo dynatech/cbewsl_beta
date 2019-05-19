@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text , ScrollView, TouchableOpacity, Dimensions} from 'react-native';
-import {field_survey_styles} from '../../../assets/styles/field_survey_styles'
-import {defaults} from '../../../assets/styles/default_styles'
+import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { field_survey_styles } from '../../../assets/styles/field_survey_styles'
+import { defaults } from '../../../assets/styles/default_styles'
 import { DataTable } from 'react-native-paper'
 import { Icon } from 'native-base'
 import Storage from '../../utils/storage'
@@ -15,7 +15,7 @@ export default class FieldSurveyLogs extends Component {
   }
 
   navigateFieldSurvey(tab) {
-    switch(tab) {
+    switch (tab) {
       case "lrs":
         console.log(tab);
         this.props.navigation.navigate('latest_report_summary')
@@ -35,7 +35,6 @@ export default class FieldSurveyLogs extends Component {
     console.log("UPDATE")
     console.log(id)
   }
-
   componentDidMount(){
     let field_survey_logs = Storage.getItem("FieldSurveyLogs");
     field_survey_logs.then(response => {
@@ -75,8 +74,6 @@ export default class FieldSurveyLogs extends Component {
         this.setState({field_logs: field_logs})
       }
     });
-
-
   }
 
   render() {
@@ -87,20 +84,20 @@ export default class FieldSurveyLogs extends Component {
         <ScrollView style={field_survey_styles.table_container}>
           <View style={field_survey_styles.menuSection}>
             <View style={field_survey_styles.buttonSection}>
-                <TouchableOpacity style={field_survey_styles.menuButton} onPress={() => this.navigateFieldSurvey("lrs")}>
-                    <Text style={field_survey_styles.buttonText}>Latest Report Summary</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={field_survey_styles.activeButton} >
-                    <Text style={field_survey_styles.buttonActiveText}>Field Survey Logs</Text>
-                </TouchableOpacity>
+              <TouchableOpacity style={field_survey_styles.menuButton} onPress={() => this.navigateFieldSurvey("lrs")}>
+                <Text style={field_survey_styles.buttonText}>Latest Report Summary</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={field_survey_styles.activeButton} >
+                <Text style={field_survey_styles.buttonActiveText}>Field Survey Logs</Text>
+              </TouchableOpacity>
             </View>
             <View>
               <ScrollView horizontal={true}>
                 <DataTable>
-                  <DataTable.Header style={{width: 500}}>
-                    <DataTable.Title style={{marginRight: -100}}>Date</DataTable.Title>
+                  <DataTable.Header style={{ width: 500 }}>
+                    <DataTable.Title style={{ marginRight: -100 }}>Date</DataTable.Title>
                     <DataTable.Title>Official Report</DataTable.Title>
-                    <DataTable.Title style={{marginRight: -200}}>Actions</DataTable.Title>
+                    <DataTable.Title style={{ marginRight: -200 }}>Actions</DataTable.Title>
                   </DataTable.Header>
                   {this.state.field_logs}
                 </DataTable>
@@ -108,15 +105,15 @@ export default class FieldSurveyLogs extends Component {
             </View>
           </View>
         </ScrollView>
-        <View style={{textAlign: 'center', flex: 0.5}}>
-          <View style={{justifyContent: 'center', flexDirection: 'row'}}>
-            <TouchableOpacity style={defaults.button}>
+        <View style={{ textAlign: 'center', flex: 0.5 }}>
+          <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+            <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('save_field_survey_log')}>
               <Text style={defaults.buttonText}>Add Log</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-        
+
     );
   }
 }
