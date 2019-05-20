@@ -6,6 +6,8 @@ import Contacts from '../Dashboard/side_menu/contacts'
 import AboutTheApp from '../Dashboard/side_menu/about_the_app'
 import Logout from '../Dashboard/side_menu/logout'
 import MainDashboard from './main_dashboard'
+import DataSyncer from '../Dashboard/side_menu/data_sync'
+import SearchIcon from '../Dashboard/side_menu/search_icon'
 
 const CustomDrawerComponent = (props) => (
   <SafeAreaView>
@@ -25,6 +27,18 @@ const AppDrawerNavigator = createDrawerNavigator({
         title: "About the App"
       }
   },
+  data_sync: {
+    screen: DataSyncer,
+    navigationOptions: {
+      drawerLabel: "Data Synchronization"
+    }
+  },
+  // icon_index: {
+  //   screen: SearchIcon,
+  //   navigationOptions: {
+  //     drawerLabel: "Icon referrence"
+  //   }
+  // },
   logout: {
     screen: Logout,
       navigationOptions: {
