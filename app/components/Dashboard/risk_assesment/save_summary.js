@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
+import Storage from '../../utils/storage'
 
 export default class SaveSummary extends Component {
     constructor(props) {
@@ -13,6 +14,28 @@ export default class SaveSummary extends Component {
             adaptive_capacity: "",
             vulnerability: ""
         };
+    }
+
+    componentWillMount() {
+        const { navigation } = this.props;
+        const data = navigation.getParam("data", "none");
+        if (data != "none") {
+            this.setState({
+                summary_id: data.summary_id,
+                location: data.location,
+                impact: data.impact,
+                adaptive_capacity: data.adaptive_capacity,
+                vulnerability: data.vulnerability
+            });
+        } else {
+            this.setState({
+                summary_id: 0,
+                location: "",
+                impact: "",
+                adaptive_capacity: "",
+                vulnerability: ""
+            });
+        }
     }
 
     saveSummary() {
@@ -36,6 +59,13 @@ export default class SaveSummary extends Component {
                 vulnerability: vulnerability
             }),
         }).then((response) => response.json())
+            .catch((error) => {
+                let offline_data = Storage.getItem('RiskAssessmentSummary')
+                offline_data.then(response => {
+                    Storage.removeItem("RiskAssessmentSummary")
+                    Storage.setItem("RiskAssessmentSummary", response)
+                })
+            })
             .then((responseJson) => {
                 console.log(responseJson)
                 if (responseJson.status == true) {
@@ -54,10 +84,10 @@ export default class SaveSummary extends Component {
         return (
             <ScrollView style={rassessment_styles.container}>
                 <View style={rassessment_styles.menuSection}>
-                    <TextInput style={defaults.inputs} placeholder="Location: E.g. Barangay Hall" onChangeText={text => this.setState({ location: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Impact: E.g. Low" onChangeText={text => this.setState({ impact: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Adaptive Capacity: E.g. High" onChangeText={text => this.setState({ adaptive_capacity: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Vulnerability: E.g. Medium" onChangeText={text => this.setState({ vulnerability: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Location: E.g. Barangay Hall" value={this.state.location} onChangeText={text => this.setState({ location: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Impact: E.g. Low" value={this.state.impact} onChangeText={text => this.setState({ impact: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Adaptive Capacity: E.g. High" value={this.state.adaptive_capacity} onChangeText={text => this.setState({ adaptive_capacity: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Vulnerability: E.g. Medium" value={this.state.vulnerability} onChangeText={text => this.setState({ vulnerability: text })} />
                 </View>
                 <View>
                     <TouchableOpacity onPress={() => this.saveSummary()} style={defaults.touchableButtons}>

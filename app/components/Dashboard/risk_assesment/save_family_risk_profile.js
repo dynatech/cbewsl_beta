@@ -2,16 +2,39 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
+import Storage from '../../utils/storage'
 
 export default class SaveFamilyRiskProfile extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             family_profile_id: 0,
             members_count: "",
             vulnerable_members_count: "",
             vulnerability_nature: ""
         };
+
+    }
+
+    componentWillMount() {
+        const { navigation } = this.props;
+        const data = navigation.getParam("data", "none");
+        if (data != "none") {
+            this.setState({
+                family_profile_id: data.family_profile_id.toString(),
+                members_count: data.members_count.toString(),
+                vulnerable_members_count: data.vulnerable_members_count.toString(),
+                vulnerability_nature: data.vulnerability_nature
+            });
+        } else {
+            this.setState({
+                family_profile_id: 0,
+                members_count: "",
+                vulnerable_members_count: "",
+                vulnerability_nature: ""
+            });
+        }
     }
 
     saveFamilyRiskProfile() {
@@ -33,7 +56,15 @@ export default class SaveFamilyRiskProfile extends Component {
                 vulnerability_nature: vulnerability_nature
             }),
         }).then((response) => response.json())
-            .then((responseJson) => {
+            .catch((error) => {
+                let offline_data = Storage.getItem('RiskAssessmentFamilyRiskProfile')
+                offline_data.then(response => {
+                    // modify offline Data
+                    Storage.removeItem("RiskAssessmentFamilyRiskProfile")
+                    // response = NEWDATA
+                    Storage.setItem("RiskAssessmentFamilyRiskProfile", response)
+                })
+            }).then((responseJson) => {
                 console.log(responseJson)
                 if (responseJson.status == true) {
                     this.props.navigation.navigate('modify_family_risk');
@@ -51,9 +82,9 @@ export default class SaveFamilyRiskProfile extends Component {
         return (
             <ScrollView style={rassessment_styles.container}>
                 <View style={rassessment_styles.menuSection}>
-                    <TextInput style={defaults.inputs} placeholder="Number of Members: E.g. 5" onChangeText={text => this.setState({ members_count: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Vulnerable groups: E.g. 2" onChangeText={text => this.setState({ vulnerable_members_count: text })} />
-                    <TextInput style={defaults.inputs} placeholder="nature of vulnerability: E.g. Children" onChangeText={text => this.setState({ vulnerability_nature: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Number of Members: E.g. 5" value={this.state.members_count} onChangeText={text => this.setState({ members_count: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Vulnerable groups: E.g. 2" value={this.state.vulnerable_members_count} onChangeText={text => this.setState({ vulnerable_members_count: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Nature of vulnerability: E.g. Children" value={this.state.vulnerability_nature} onChangeText={text => this.setState({ vulnerability_nature: text })} />
                 </View>
                 <View>
                     <TouchableOpacity onPress={() => this.saveFamilyRiskProfile()} style={defaults.touchableButtons}>

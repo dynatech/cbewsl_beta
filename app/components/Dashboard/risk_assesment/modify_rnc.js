@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ToastAndroid, Alert } from 'react-native';
 import { DataTable } from 'react-native-paper'
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import { Icon } from 'native-base'
+import { NavigationEvents } from 'react-navigation';
+import Storage from '../../utils/storage'
 
 export default class ModifyResourceAndCapacities extends Component {
   constructor(props) {
@@ -12,8 +14,55 @@ export default class ModifyResourceAndCapacities extends Component {
     };
   }
 
+  updateLog(resource_and_capacity_data) {
+    this.props.navigation.navigate('save_rnc', {
+      data: resource_and_capacity_data
+    })
+  }
 
-  componentDidMount() {
+  removeConfirmation(id) {
+    Alert.alert(
+      'Confirmation',
+      'Are you sure do you want to delete ?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: () => this.removeLog(id) },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  removeLog(id) {
+    fetch('http://192.168.150.191:5000/api/resources_and_capacities/delete_resources_and_capacities', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        resources_and_capacities_id: id
+      }),
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson)
+        if (responseJson.status == true) {
+          this.props.navigation.navigate('modify_rnc');
+          ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+          this.getAllResourcesAndCapacities()
+        } else {
+          ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  getAllResourcesAndCapacities() {
     fetch('http://192.168.150.191:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
       .then((responseJson) => {
         let rnc_data = [];
@@ -23,8 +72,8 @@ export default class ModifyResourceAndCapacities extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
             <DataTable.Cell>
-              <Icon name="md-add-circle-outline" style={{ color: "blue" }} onPress={() => this.updateLog(value.hazard_data_id)}></Icon>
-              <Icon name="md-remove-circle-outline" style={{ color: "red" }} onPress={() => this.removeLog(value.hazard_data_id)}></Icon>
+              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.resources_and_capacities_id)}></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
         }
@@ -38,6 +87,7 @@ export default class ModifyResourceAndCapacities extends Component {
   render() {
     return (
       <ScrollView>
+        <NavigationEvents onDidFocus={() => this.getAllResourcesAndCapacities()} />
         <View style={rassessment_styles.container}>
           <ScrollView horizontal={true}>
             <DataTable>
