@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, ScrollView, Linking} from 'react-native';
 import { defaults } from '../../../assets/styles/default_styles';
 import { Icon } from 'native-base';
 import Storage from '../../utils/storage'
-import { sha512 } from 'react-native-sha512';
 
 export default class DataSyncer extends Component {
   constructor(props) {
@@ -22,16 +21,22 @@ export default class DataSyncer extends Component {
   syncToServer(storage_key) {
     let data = Storage.getItem(storage_key)
     data.then(response => {
-      let raw = JSON.stringify(response)
-      sha512(raw).then( hash => {
-          let salted = storage_key+":"+hash
-          Linking.openURL(`sms:${this.state.server_number}?body=${salted}`);
+      let container = storage_key+":"
+      response.forEach(function(value) {
+        let inner_value = Object.values(value)
+        let counter = 0
+        inner_value.forEach(function(iv) {
+          if (counter == 0) {
+            container = container+iv
+          } else {
+            container = container+"<*>"+iv
+          }
+          counter++
+        })
+        container = container+"||"
       })
+      Linking.openURL(`sms:${this.state.server_number}?body=${container.slice(0, -1)}`);
     })
-  }
-
-  compressData() {
-
   }
 
   render() {
