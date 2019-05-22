@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ToastAndroid, Alert } from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import { DataTable } from 'react-native-paper'
 import { Icon } from 'native-base'
+import { NavigationEvents } from 'react-navigation';
+import Storage from '../../utils/storage'
 
 export default class ModifyHazardData extends Component {
   constructor(props) {
@@ -13,7 +15,55 @@ export default class ModifyHazardData extends Component {
     };
   }
 
-  componentDidMount() {
+  updateLog(hazard_data) {
+    this.props.navigation.navigate('save_hazard_data', {
+      data: hazard_data
+    })
+  }
+
+  removeConfirmation(id) {
+    Alert.alert(
+      'Confirmation',
+      'Are you sure do you want to delete ?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: () => this.removeLog(id) },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  removeLog(id) {
+    fetch('http://192.168.150.191:5000/api/hazard_data/delete_hazard_data', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        hazard_data_id: id
+      }),
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson)
+        if (responseJson.status == true) {
+          ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+          this.props.navigation.navigate('modify_hazard_data');
+          this.getAllHazardData()
+        } else {
+          ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  getAllHazardData() {
     fetch('http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
       .then((responseJson) => {
         let hazard_data = [];
@@ -24,21 +74,45 @@ export default class ModifyHazardData extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
             <DataTable.Cell>
-              <Icon name="md-add-circle-outline" style={{ color: "blue" }} onPress={() => this.updateLog(value.hazard_data_id)}></Icon>
-              <Icon name="md-remove-circle-outline" style={{ color: "red" }} onPress={() => this.removeLog(value.hazard_data_id)}></Icon>
+              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.hazard_data_id)}></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
         }
         this.setState({ hazard_data: hazard_data })
       })
       .catch((error) => {
-        console.error(error);
+        let data_container = Storage.getItem('RiskAssessmentHazardData')
+        let hazard_data = [];
+        data_container.then(response => {
+          if (response != null) {
+            for (const [index, value] of response.entries()) {
+              hazard_data.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.hazard}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.speed_of_onset}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+                <DataTable.Cell>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.hazard_data_id)}></Icon>
+                </DataTable.Cell>
+              </DataTable.Row>)
+            }
+          } else {
+            hazard_data.push(<DataTable.Row style={{ width: 500 }}>
+              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+            </DataTable.Row>)
+          }
+          this.setState({ hazard_data: hazard_data })
+        })
       });
+
   }
 
   render() {
     return (
       <ScrollView>
+        <NavigationEvents onDidFocus={() => this.getAllHazardData()} />
         <View style={rassessment_styles.container}>
           <ScrollView horizontal={true}>
             <DataTable>

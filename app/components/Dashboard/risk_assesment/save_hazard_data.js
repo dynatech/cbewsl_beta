@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
+import Storage from '../../utils/storage'
 
 export default class SaveHazardData extends Component {
     constructor(props) {
@@ -13,6 +14,28 @@ export default class SaveHazardData extends Component {
             early_warning: "",
             impact: ""
         };
+    }
+
+    componentWillMount() {
+        const { navigation } = this.props;
+        const data = navigation.getParam("data", "none");
+        if (data != "none") {
+            this.setState({
+                hazard_data_id: data.hazard_data_id,
+                hazard: data.hazard,
+                speed_of_onset: data.speed_of_onset,
+                early_warning: data.early_warning,
+                impact: data.impact
+            });
+        } else {
+            this.setState({
+                hazard_data_id: 0,
+                hazard: "",
+                speed_of_onset: "",
+                early_warning: "",
+                impact: ""
+            });
+        }
     }
 
     saveHazardData() {
@@ -37,16 +60,34 @@ export default class SaveHazardData extends Component {
             }),
         }).then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson)
                 if (responseJson.status == true) {
-                    this.props.navigation.navigate('modify_hazard_data');
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                    this.props.navigation.navigate('modify_hazard_data');
                 } else {
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                 }
             })
             .catch((error) => {
-                console.error(error);
+                data = {
+                    hazard_data_id: hazard_data_id,
+                    hazard: hazard,
+                    speed_of_onset: speed_of_onset,
+                    early_warning: early_warning,
+                    impact: impact
+                }
+                let offline_data = Storage.getItem("RiskAssessmentHazardData");
+                offline_data.then(response => {
+                    if (response == null) {
+                        Storage.removeItem("RiskAssessmentHazardData")
+                        Storage.setItem("RiskAssessmentHazardData", [data])
+                    } else {
+                        let temp = response
+                        temp.push(data)
+                        Storage.removeItem("RiskAssessmentHazardData")
+                        Storage.setItem("RiskAssessmentHazardData", temp)
+                    }
+                })
+                this.props.navigation.navigate('modify_hazard_data');
             });
     }
 
@@ -54,10 +95,10 @@ export default class SaveHazardData extends Component {
         return (
             <ScrollView style={rassessment_styles.container}>
                 <View style={rassessment_styles.menuSection}>
-                    <TextInput style={defaults.inputs} placeholder="Hazard: E.g. Landslide" onChangeText={text => this.setState({ hazard: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Speed of onset: E.g. Slow" onChangeText={text => this.setState({ speed_of_onset: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Early Warning: E.g. EWS-L" onChangeText={text => this.setState({ early_warning: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Impact: E.g One week" onChangeText={text => this.setState({ impact: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Hazard: E.g. Landslide" value={this.state.hazard} onChangeText={text => this.setState({ hazard: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Speed of onset: E.g. Slow" value={this.state.speed_of_onset} onChangeText={text => this.setState({ speed_of_onset: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Early Warning: E.g. EWS-L" value={this.state.early_warning} onChangeText={text => this.setState({ early_warning: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Impact: E.g One week" value={this.state.impact} onChangeText={text => this.setState({ impact: text })} />
                 </View>
                 <View>
                     <TouchableOpacity onPress={() => this.saveHazardData()} style={defaults.touchableButtons}>

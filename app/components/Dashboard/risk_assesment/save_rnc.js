@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
+import Storage from '../../utils/storage'
 
 export default class SaveResourcesAndCapacities extends Component {
     constructor(props) {
@@ -12,6 +13,26 @@ export default class SaveResourcesAndCapacities extends Component {
             status: "",
             owner: ""
         };
+    }
+
+    componentWillMount() {
+        const { navigation } = this.props;
+        const data = navigation.getParam("data", "none");
+        if (data != "none") {
+            this.setState({
+                resources_and_capacities_id: data.resources_and_capacities_id,
+                resource_and_capacity: data.resource_and_capacity,
+                status: data.status,
+                owner: data.owner
+            });
+        } else {
+            this.setState({
+                resources_and_capacities_id: 0,
+                resource_and_capacity: "",
+                status: "",
+                owner: ""
+            });
+        }
     }
 
     saveRnc() {
@@ -33,6 +54,13 @@ export default class SaveResourcesAndCapacities extends Component {
                 owner: owner
             }),
         }).then((response) => response.json())
+            .catch((error) => {
+                let offline_data = Storage.getItem('RiskAssessmentRNC')
+                offline_data.then(response => {
+                    Storage.removeItem("RiskAssessmentRNC")
+                    Storage.setItem("RiskAssessmentRNC", response)
+                })
+            })
             .then((responseJson) => {
                 console.log(responseJson)
                 if (responseJson.status == true) {
@@ -51,9 +79,9 @@ export default class SaveResourcesAndCapacities extends Component {
         return (
             <ScrollView style={rassessment_styles.container}>
                 <View style={rassessment_styles.menuSection}>
-                    <TextInput style={defaults.inputs} placeholder="Resources / Capacity: E.g. Evacuation center" onChangeText={text => this.setState({ resource_and_capacity: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Status: E.g. Needs repair" onChangeText={text => this.setState({ status: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Owner: E.g. BLGU" onChangeText={text => this.setState({ owner: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Resources / Capacity: E.g. Evacuation center" value={this.state.resource_and_capacity} onChangeText={text => this.setState({ resource_and_capacity: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Status: E.g. Needs repair" value={this.state.status} onChangeText={text => this.setState({ status: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Owner: E.g. BLGU" value={this.state.owner} onChangeText={text => this.setState({ owner: text })} />
                 </View>
                 <View>
                     <TouchableOpacity onPress={() => this.saveRnc()} style={defaults.touchableButtons}>
