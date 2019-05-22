@@ -51,7 +51,7 @@ export default class ModifyHazardData extends Component {
       .then((responseJson) => {
         console.log(responseJson)
         if (responseJson.status == true) {
-          // ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+          ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
           this.props.navigation.navigate('modify_hazard_data');
           this.getAllHazardData()
         } else {
@@ -82,8 +82,31 @@ export default class ModifyHazardData extends Component {
         this.setState({ hazard_data: hazard_data })
       })
       .catch((error) => {
-        console.error(error);
+        let data_container = Storage.getItem('RiskAssessmentHazardData')
+        let hazard_data = [];
+        data_container.then(response => {
+          if (response != null) {
+            for (const [index, value] of response.entries()) {
+              hazard_data.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.hazard}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.speed_of_onset}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+                <DataTable.Cell>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.hazard_data_id)}></Icon>
+                </DataTable.Cell>
+              </DataTable.Row>)
+            }
+          } else {
+            hazard_data.push(<DataTable.Row style={{ width: 500 }}>
+              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+            </DataTable.Row>)
+          }
+          this.setState({ hazard_data: hazard_data })
+        })
       });
+
   }
 
   render() {

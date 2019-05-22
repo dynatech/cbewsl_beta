@@ -64,25 +64,66 @@ export default class ModifySummary extends Component {
   }
 
   getAllRiskAssessmentSummary() {
+    // fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
+    //   .then((responseJson) => {
+    //     let summary_data = [];
+    //     for (const [index, value] of responseJson.entries()) {
+    //       summary_data.push(<DataTable.Row style={{ width: 500 }}>
+    //         <DataTable.Cell>{value.location}</DataTable.Cell>
+    //         <DataTable.Cell>{value.impact}</DataTable.Cell>
+    //         <DataTable.Cell>{value.adaptive_capacity}</DataTable.Cell>
+    //         <DataTable.Cell>{value.vulnerability}</DataTable.Cell>
+    //         <DataTable.Cell>
+    //           <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+    //           <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.summary_id)}></Icon>
+    //         </DataTable.Cell>
+    //       </DataTable.Row>)
+    //     }
+    //     this.setState({ summary_data: summary_data })
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+
     fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
         let summary_data = [];
         for (const [index, value] of responseJson.entries()) {
           summary_data.push(<DataTable.Row style={{ width: 500 }}>
-            <DataTable.Cell>{value.location}</DataTable.Cell>
-            <DataTable.Cell>{value.impact}</DataTable.Cell>
-            <DataTable.Cell>{value.adaptive_capacity}</DataTable.Cell>
-            <DataTable.Cell>{value.vulnerability}</DataTable.Cell>
+            <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
+            <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+            <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
+            <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
             <DataTable.Cell>
               <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
               <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.summary_id)}></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
         }
+
         this.setState({ summary_data: summary_data })
       })
       .catch((error) => {
-        console.error(error);
+        let data_container = Storage.getItem('RiskAssessmentSummary')
+        let summary_data = [];
+        data_container.then(response => {
+          if (response != null) {
+            for (const [index, value] of response.entries()) {
+              summary_data.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
+              </DataTable.Row>)
+            }
+          } else {
+            summary_data.push(<DataTable.Row style={{ width: 500 }}>
+              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+            </DataTable.Row>)
+          }
+
+          this.setState({ summary_data: summary_data })
+        });
       });
   }
 

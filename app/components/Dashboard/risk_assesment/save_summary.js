@@ -59,13 +59,6 @@ export default class SaveSummary extends Component {
                 vulnerability: vulnerability
             }),
         }).then((response) => response.json())
-            .catch((error) => {
-                let offline_data = Storage.getItem('RiskAssessmentSummary')
-                offline_data.then(response => {
-                    Storage.removeItem("RiskAssessmentSummary")
-                    Storage.setItem("RiskAssessmentSummary", response)
-                })
-            })
             .then((responseJson) => {
                 console.log(responseJson)
                 if (responseJson.status == true) {

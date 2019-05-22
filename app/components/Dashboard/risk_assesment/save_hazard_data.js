@@ -59,15 +59,7 @@ export default class SaveHazardData extends Component {
                 impact: impact
             }),
         }).then((response) => response.json())
-            .catch((error) => {
-                let offline_data = Storage.getItem('RiskAssessmentHazardData')
-                offline_data.then(response => {
-                    Storage.removeItem("RiskAssessmentHazardData")
-                    Storage.setItem("RiskAssessmentHazardData", response)
-                })
-            })
             .then((responseJson) => {
-                console.log(responseJson)
                 if (responseJson.status == true) {
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                     this.props.navigation.navigate('modify_hazard_data');
@@ -76,7 +68,26 @@ export default class SaveHazardData extends Component {
                 }
             })
             .catch((error) => {
-                console.error(error);
+                data = {
+                    hazard_data_id: hazard_data_id,
+                    hazard: hazard,
+                    speed_of_onset: speed_of_onset,
+                    early_warning: early_warning,
+                    impact: impact
+                }
+                let offline_data = Storage.getItem("RiskAssessmentHazardData");
+                offline_data.then(response => {
+                    if (response == null) {
+                        Storage.removeItem("RiskAssessmentHazardData")
+                        Storage.setItem("RiskAssessmentHazardData", [data])
+                    } else {
+                        let temp = response
+                        temp.push(data)
+                        Storage.removeItem("RiskAssessmentHazardData")
+                        Storage.setItem("RiskAssessmentHazardData", temp)
+                    }
+                })
+                this.props.navigation.navigate('modify_hazard_data');
             });
     }
 

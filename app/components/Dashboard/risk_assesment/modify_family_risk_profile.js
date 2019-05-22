@@ -65,13 +65,13 @@ export default class ModifyFamilyRisk extends Component {
 
   getAllFamilyProfile() {
     fetch('http://192.168.150.191:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
-    .catch((error) => {
-      let offline_data = Storage.getItem('RiskAssessmentFamilyRiskProfile')
+      .catch((error) => {
+        let offline_data = Storage.getItem('RiskAssessmentFamilyRiskProfile')
         offline_data.then(response => {
-            Storage.removeItem("RiskAssessmentFamilyRiskProfile")
-            Storage.setItem("RiskAssessmentFamilyRiskProfile", response)
+          Storage.removeItem("RiskAssessmentFamilyRiskProfile")
+          Storage.setItem("RiskAssessmentFamilyRiskProfile", response)
         })
-    })
+      })
       .then((responseJson) => {
         let family_profile = [];
         for (const [index, value] of responseJson.entries()) {
