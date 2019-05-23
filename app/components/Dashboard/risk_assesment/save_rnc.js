@@ -54,13 +54,6 @@ export default class SaveResourcesAndCapacities extends Component {
                 owner: owner
             }),
         }).then((response) => response.json())
-            .catch((error) => {
-                let offline_data = Storage.getItem('RiskAssessmentRNC')
-                offline_data.then(response => {
-                    Storage.removeItem("RiskAssessmentRNC")
-                    Storage.setItem("RiskAssessmentRNC", response)
-                })
-            })
             .then((responseJson) => {
                 console.log(responseJson)
                 if (responseJson.status == true) {
@@ -71,7 +64,25 @@ export default class SaveResourcesAndCapacities extends Component {
                 }
             })
             .catch((error) => {
-                console.error(error);
+                data = {
+                    resources_and_capacities_id: resources_and_capacities_id,
+                    resource_and_capacity: resource_and_capacity,
+                    status: status,
+                    owner: owner
+                }
+                let offline_data = Storage.getItem("RiskAssessmentRNC");
+                offline_data.then(response => {
+                    if (response == null) {
+                        Storage.removeItem("RiskAssessmentRNC")
+                        Storage.setItem("RiskAssessmentRNC", [data])
+                    } else {
+                        let temp = response
+                        temp.push(data)
+                        Storage.removeItem("RiskAssessmentRNC")
+                        Storage.setItem("RiskAssessmentRNC", temp)
+                    }
+                })
+                this.props.navigation.navigate('modify_rnc');
             });
     }
 

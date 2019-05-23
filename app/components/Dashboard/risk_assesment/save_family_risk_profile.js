@@ -56,15 +56,7 @@ export default class SaveFamilyRiskProfile extends Component {
                 vulnerability_nature: vulnerability_nature
             }),
         }).then((response) => response.json())
-            .catch((error) => {
-                let offline_data = Storage.getItem('RiskAssessmentFamilyRiskProfile')
-                offline_data.then(response => {
-                    // modify offline Data
-                    Storage.removeItem("RiskAssessmentFamilyRiskProfile")
-                    // response = NEWDATA
-                    Storage.setItem("RiskAssessmentFamilyRiskProfile", response)
-                })
-            }).then((responseJson) => {
+            .then((responseJson) => {
                 console.log(responseJson)
                 if (responseJson.status == true) {
                     this.props.navigation.navigate('modify_family_risk');
@@ -74,7 +66,25 @@ export default class SaveFamilyRiskProfile extends Component {
                 }
             })
             .catch((error) => {
-                console.error(error);
+                data = {
+                    family_profile_id: family_profile_id,
+                    members_count: members_count,
+                    vulnerable_members_count: vulnerable_members_count,
+                    vulnerability_nature: vulnerability_nature
+                }
+                let offline_data = Storage.getItem("RiskAssessmentFamilyRiskProfile");
+                offline_data.then(response => {
+                    if (response == null) {
+                        Storage.removeItem("RiskAssessmentFamilyRiskProfile")
+                        Storage.setItem("RiskAssessmentFamilyRiskProfile", [data])
+                    } else {
+                        let temp = response
+                        temp.push(data)
+                        Storage.removeItem("RiskAssessmentFamilyRiskProfile")
+                        Storage.setItem("RiskAssessmentFamilyRiskProfile", temp)
+                    }
+                })
+                this.props.navigation.navigate('modify_family_risk');
             });
     }
 

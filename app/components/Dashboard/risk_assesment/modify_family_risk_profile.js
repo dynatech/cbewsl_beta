@@ -65,17 +65,10 @@ export default class ModifyFamilyRisk extends Component {
 
   getAllFamilyProfile() {
     fetch('http://192.168.150.191:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
-      .catch((error) => {
-        let offline_data = Storage.getItem('RiskAssessmentFamilyRiskProfile')
-        offline_data.then(response => {
-          Storage.removeItem("RiskAssessmentFamilyRiskProfile")
-          Storage.setItem("RiskAssessmentFamilyRiskProfile", response)
-        })
-      })
       .then((responseJson) => {
-        let family_profile = [];
+        let family_profile_data = [];
         for (const [index, value] of responseJson.entries()) {
-          family_profile.push(<DataTable.Row style={{ width: 500 }}>
+          family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.family_profile_id}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.members_count}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerable_members_count}</DataTable.Cell>
@@ -86,10 +79,34 @@ export default class ModifyFamilyRisk extends Component {
             </DataTable.Cell>
           </DataTable.Row>)
         }
-        this.setState({ family_profile: family_profile })
+        this.setState({ family_profile_data: family_profile_data })
+        console.log("123")
       })
       .catch((error) => {
-        console.error(error);
+        console.log("321")
+        let data_container = Storage.getItem('RiskAssessmentFamilyRiskProfile')
+        let family_profile_data = [];
+        data_container.then(response => {
+          if (response != null) {
+            for (const [index, value] of response.entries()) {
+              family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.family_profile_id}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.members_count}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerable_members_count}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability_nature}</DataTable.Cell>
+                <DataTable.Cell>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.family_profile_id)}></Icon>
+                </DataTable.Cell>
+              </DataTable.Row>)
+            }
+          } else {
+            family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
+              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+            </DataTable.Row>)
+          }
+          this.setState({ family_profile_data: family_profile_data })
+        })
       });
   }
 
@@ -106,7 +123,7 @@ export default class ModifyFamilyRisk extends Component {
               <DataTable.Title>Nature of vulnerability</DataTable.Title>
               <DataTable.Title>Actions</DataTable.Title>
             </DataTable.Header>
-            {this.state.family_profile}
+            {this.state.family_profile_data}
           </DataTable>
         </ScrollView>
         <View style={{ textAlign: 'center', flex: 1 }}>
