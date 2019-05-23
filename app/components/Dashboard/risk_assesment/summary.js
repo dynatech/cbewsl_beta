@@ -60,8 +60,24 @@ export default class Summary extends Component {
 
     fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
-
-        Storage.setItem("RiskAssessmentSummary", responseJson)
+        // let offline_data = Storage.getItem('RiskAssessmentSummary')
+        // let all_data = []
+        // let counter = 0
+        // offline_data.then(data => {
+        //   let temp = data
+        //   temp.forEach((value) => {
+        //     counter += 1
+        //     all_data.push({
+        //       summary_id: value.summary_id,
+        //       local_storage_id: counter,
+        //       location: value.location,
+        //       impact: value.impact,
+        //       adaptive_capacity: value.adaptive_capacity,
+        //       vulnerability: value.vulnerability,
+        //       sync_status: value.sync_status
+        //     })
+        //   })
+        // });
         let summary_data = [];
         for (const [index, value] of responseJson.entries()) {
           summary_data.push(<DataTable.Row style={{ width: 500 }}>
@@ -78,6 +94,7 @@ export default class Summary extends Component {
         let data_container = Storage.getItem('RiskAssessmentSummary')
         let summary_data = [];
         data_container.then(response => {
+          console.log(response)
           if (response != null) {
             for (const [index, value] of response.entries()) {
               summary_data.push(<DataTable.Row style={{ width: 500 }}>

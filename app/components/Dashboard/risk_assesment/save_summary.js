@@ -9,6 +9,7 @@ export default class SaveSummary extends Component {
         super(props);
         this.state = {
             summary_id: 0,
+            local_storage_id: 0,
             location: "",
             impact: "",
             adaptive_capacity: "",
@@ -19,9 +20,11 @@ export default class SaveSummary extends Component {
     componentWillMount() {
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
+        console.log(data)
         if (data != "none") {
             this.setState({
                 summary_id: data.summary_id,
+                local_storage_id: data.local_storage_id,
                 location: data.location,
                 impact: data.impact,
                 adaptive_capacity: data.adaptive_capacity,
@@ -30,6 +33,7 @@ export default class SaveSummary extends Component {
         } else {
             this.setState({
                 summary_id: 0,
+                local_storage_id: 0,
                 location: "",
                 impact: "",
                 adaptive_capacity: "",
@@ -40,6 +44,7 @@ export default class SaveSummary extends Component {
 
     saveSummary() {
         const { summary_id,
+            local_storage_id,
             location,
             impact,
             adaptive_capacity,
@@ -53,6 +58,7 @@ export default class SaveSummary extends Component {
             },
             body: JSON.stringify({
                 summary_id: summary_id,
+                local_storage_id: local_storage_id,
                 location: location,
                 impact: impact,
                 adaptive_capacity: adaptive_capacity,
@@ -69,7 +75,75 @@ export default class SaveSummary extends Component {
                 }
             })
             .catch((error) => {
-                console.error(error);
+                data = {
+                    summary_id: summary_id,
+                    local_storage_id: local_storage_id,
+                    location: location,
+                    impact: impact,
+                    adaptive_capacity: adaptive_capacity,
+                    vulnerability: vulnerability,
+                    sync_status: 1
+                }
+                let offline_data = Storage.getItem("RiskAssessmentSummary");
+                offline_data.then(response => {
+                    if (local_storage_id == 0) {
+                        if (response == null) {
+                            Storage.removeItem("RiskAssessmentSummary")
+                            Storage.setItem("RiskAssessmentSummary", [data])
+                        } else {
+                            let temp = response
+                            temp.push(data)
+                            let updated_data = []
+                            let counter = 0
+                            temp.forEach((value) => {
+                                counter += 1
+                                updated_data.push({
+                                    summary_id: value.summary_id,
+                                    local_storage_id: counter,
+                                    location: value.location,
+                                    impact: value.impact,
+                                    adaptive_capacity: value.adaptive_capacity,
+                                    vulnerability: value.vulnerability,
+                                    sync_status: value.sync_status
+                                })
+                            });
+                            Storage.removeItem("RiskAssessmentSummary")
+                            Storage.setItem("RiskAssessmentSummary", updated_data)
+                        }
+                    } else {
+                        let temp = response
+                        let updated_data = []
+                        let counter = 0
+                        temp.forEach((value) => {
+                            counter += 1
+                            if (local_storage_id == value.local_storage_id) {
+                                updated_data.push({
+                                    summary_id: summary_id,
+                                    local_storage_id: counter,
+                                    location: location,
+                                    impact: impact,
+                                    adaptive_capacity: adaptive_capacity,
+                                    vulnerability: vulnerability,
+                                    sync_status: 2
+                                })
+                            } else {
+                                updated_data.push({
+                                    summary_id: value.summary_id,
+                                    local_storage_id: counter,
+                                    location: value.location,
+                                    impact: value.impact,
+                                    adaptive_capacity: value.adaptive_capacity,
+                                    vulnerability: value.vulnerability,
+                                    sync_status: value.sync_status
+                                })
+                            }
+                        });
+                        Storage.removeItem("RiskAssessmentSummary")
+                        Storage.setItem("RiskAssessmentSummary", updated_data)
+                    }
+                })
+                this.props.navigation.navigate('modify_summary');
+                // 1 - adding |2 - modified |3 - old_data
             });
     }
 
