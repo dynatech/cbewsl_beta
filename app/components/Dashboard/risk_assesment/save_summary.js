@@ -10,11 +10,11 @@ export default class SaveSummary extends Component {
         this.state = {
             summary_id: 0,
             local_storage_id: 0,
+            sync_status: 0,
             location: "",
             impact: "",
             adaptive_capacity: "",
-            vulnerability: "",
-            sync_status: 0,
+            vulnerability: ""
         };
     }
 
@@ -25,21 +25,21 @@ export default class SaveSummary extends Component {
             this.setState({
                 summary_id: data.summary_id,
                 local_storage_id: data.local_storage_id,
+                sync_status: data.sync_status,
                 location: data.location,
                 impact: data.impact,
                 adaptive_capacity: data.adaptive_capacity,
-                vulnerability: data.vulnerability,
-                sync_status: data.sync_status,
+                vulnerability: data.vulnerability
             });
         } else {
             this.setState({
                 summary_id: 0,
                 local_storage_id: 0,
+                sync_status: 0,
                 location: "",
                 impact: "",
                 adaptive_capacity: "",
-                vulnerability: "",
-                sync_status: 0
+                vulnerability: ""
             });
         }
     }
@@ -47,11 +47,11 @@ export default class SaveSummary extends Component {
     saveSummary() {
         const { summary_id,
             local_storage_id,
+            sync_status,
             location,
             impact,
             adaptive_capacity,
-            vulnerability,
-            sync_status } = this.state
+            vulnerability } = this.state
 
         fetch('http://192.168.150.191:5000/api/risk_assesment_summary/save_risk_assessment_summary', {
             method: 'POST',
@@ -81,11 +81,11 @@ export default class SaveSummary extends Component {
                 data = {
                     summary_id: summary_id,
                     local_storage_id: local_storage_id,
+                    sync_status: 1,
                     location: location,
                     impact: impact,
                     adaptive_capacity: adaptive_capacity,
-                    vulnerability: vulnerability,
-                    sync_status: 1
+                    vulnerability: vulnerability
                 }
                 let offline_data = Storage.getItem("RiskAssessmentSummary");
                 offline_data.then(response => {
@@ -103,11 +103,11 @@ export default class SaveSummary extends Component {
                                 updated_data.push({
                                     summary_id: value.summary_id,
                                     local_storage_id: counter,
+                                    sync_status: value.sync_status,
                                     location: value.location,
                                     impact: value.impact,
                                     adaptive_capacity: value.adaptive_capacity,
-                                    vulnerability: value.vulnerability,
-                                    sync_status: value.sync_status
+                                    vulnerability: value.vulnerability
                                 })
                             });
                             Storage.removeItem("RiskAssessmentSummary")
@@ -123,21 +123,21 @@ export default class SaveSummary extends Component {
                                 updated_data.push({
                                     summary_id: summary_id,
                                     local_storage_id: counter,
+                                    sync_status: 2,
                                     location: location,
                                     impact: impact,
                                     adaptive_capacity: adaptive_capacity,
-                                    vulnerability: vulnerability,
-                                    sync_status: 2
+                                    vulnerability: vulnerability
                                 })
                             } else {
                                 updated_data.push({
                                     summary_id: value.summary_id,
                                     local_storage_id: counter,
+                                    sync_status: value.sync_status,
                                     location: value.location,
                                     impact: value.impact,
                                     adaptive_capacity: value.adaptive_capacity,
-                                    vulnerability: value.vulnerability,
-                                    sync_status: value.sync_status
+                                    vulnerability: value.vulnerability
                                 })
                             }
                         });
