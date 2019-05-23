@@ -58,6 +58,7 @@ export default class HazardData extends Component {
   getAllHazardData() {
     fetch('http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
       .then((responseJson) => {
+        Storage.setItem("RiskAssessmentHazardData", responseJson)
         let hazard_data = [];
         for (const [index, value] of responseJson.entries()) {
           hazard_data.push(<DataTable.Row style={{ width: 500 }}>
