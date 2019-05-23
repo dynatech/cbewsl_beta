@@ -57,7 +57,7 @@ export default class Summary extends Component {
   }
 
   getAllRiskAssessmentSummary() {
-
+    // Storage.removeItem('RiskAssessmentSummary')
     fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
         let offline_data = Storage.getItem('RiskAssessmentSummary')
@@ -70,11 +70,11 @@ export default class Summary extends Component {
             all_data.push({
               summary_id: value.summary_id,
               local_storage_id: counter,
+              sync_status: value.sync_status,
               location: value.location,
               impact: value.impact,
               adaptive_capacity: value.adaptive_capacity,
-              vulnerability: value.vulnerability,
-              sync_status: value.sync_status
+              vulnerability: value.vulnerability
             })
           })
         });
@@ -90,11 +90,11 @@ export default class Summary extends Component {
           all_data.push({
             summary_id: value.summary_id,
             local_storage_id: counter,
+            sync_status: 3,
             location: value.location,
             impact: value.impact,
             adaptive_capacity: value.adaptive_capacity,
-            vulnerability: value.vulnerability,
-            sync_status: 3
+            vulnerability: value.vulnerability
           })
         }
         Storage.removeItem("RiskAssessmentSummary")

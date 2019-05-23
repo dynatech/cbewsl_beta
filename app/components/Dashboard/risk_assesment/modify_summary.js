@@ -71,11 +71,11 @@ export default class ModifySummary extends Component {
               updated_data.push({
                 summary_id: value.summary_id,
                 local_storage_id: counter,
+                sync_status: value.sync_status,
                 location: value.location,
                 impact: value.impact,
                 adaptive_capacity: value.adaptive_capacity,
-                vulnerability: value.vulnerability,
-                sync_status: value.sync_status
+                vulnerability: value.vulnerability
               })
             }
           });
@@ -104,11 +104,11 @@ export default class ModifySummary extends Component {
             all_data.push({
               summary_id: value.summary_id,
               local_storage_id: counter,
+              sync_status: value.sync_status,
               location: value.location,
               impact: value.impact,
               adaptive_capacity: value.adaptive_capacity,
-              vulnerability: value.vulnerability,
-              sync_status: value.sync_status
+              vulnerability: value.vulnerability
             })
           })
         });
@@ -128,11 +128,11 @@ export default class ModifySummary extends Component {
           all_data.push({
             summary_id: value.summary_id,
             local_storage_id: counter,
+            sync_status: 3,
             location: value.location,
             impact: value.impact,
             adaptive_capacity: value.adaptive_capacity,
-            vulnerability: value.vulnerability,
-            sync_status: 3
+            vulnerability: value.vulnerability
           })
         }
         Storage.removeItem("RiskAssessmentSummary")
