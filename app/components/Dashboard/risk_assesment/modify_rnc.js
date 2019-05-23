@@ -71,16 +71,29 @@ export default class ModifyResourceAndCapacities extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
-            <DataTable.Cell>
-              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
-              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.resources_and_capacities_id)}></Icon>
-            </DataTable.Cell>
           </DataTable.Row>)
         }
         this.setState({ rnc_data: rnc_data })
       })
       .catch((error) => {
-        console.error(error);
+        let data_container = Storage.getItem('RiskAssessmentRNC')
+        let rnc_data = [];
+        data_container.then(response => {
+          if (response != null) {
+            for (const [index, value] of response.entries()) {
+              rnc_data.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
+              </DataTable.Row>)
+            }
+          } else {
+            rnc_data.push(<DataTable.Row style={{ width: 500 }}>
+              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+            </DataTable.Row>)
+          }
+          this.setState({ rnc_data: rnc_data })
+        })
       });
   }
 

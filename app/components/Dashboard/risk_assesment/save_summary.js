@@ -21,7 +21,6 @@ export default class SaveSummary extends Component {
     componentWillMount() {
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
-        console.log(data)
         if (data != "none") {
             this.setState({
                 summary_id: data.summary_id,
