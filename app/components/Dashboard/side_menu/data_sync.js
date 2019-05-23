@@ -21,6 +21,7 @@ export default class DataSyncer extends Component {
   syncToServer(storage_key) {
     let data = Storage.getItem(storage_key)
     data.then(response => {
+      console.log(response)
       let container = storage_key+":"
       response.forEach(function(value) {
         let inner_value = Object.values(value)
@@ -35,7 +36,7 @@ export default class DataSyncer extends Component {
         })
         container = container+"||"
       })
-      Linking.openURL(`sms:${this.state.server_number}?body=${container.slice(0, -1)}`);
+      Linking.openURL(`sms:${this.state.server_number}?body=${container.slice(0, -2)}`);
     })
   }
 
