@@ -13,7 +13,8 @@ export default class SaveSummary extends Component {
             location: "",
             impact: "",
             adaptive_capacity: "",
-            vulnerability: ""
+            vulnerability: "",
+            sync_status: 0,
         };
     }
 
@@ -28,7 +29,8 @@ export default class SaveSummary extends Component {
                 location: data.location,
                 impact: data.impact,
                 adaptive_capacity: data.adaptive_capacity,
-                vulnerability: data.vulnerability
+                vulnerability: data.vulnerability,
+                sync_status: data.sync_status,
             });
         } else {
             this.setState({
@@ -37,7 +39,8 @@ export default class SaveSummary extends Component {
                 location: "",
                 impact: "",
                 adaptive_capacity: "",
-                vulnerability: ""
+                vulnerability: "",
+                sync_status: 0
             });
         }
     }
@@ -48,7 +51,8 @@ export default class SaveSummary extends Component {
             location,
             impact,
             adaptive_capacity,
-            vulnerability } = this.state
+            vulnerability,
+            sync_status } = this.state
 
         fetch('http://192.168.150.191:5000/api/risk_assesment_summary/save_risk_assessment_summary', {
             method: 'POST',

@@ -82,6 +82,8 @@ export default class ModifySummary extends Component {
           });
           Storage.removeItem("RiskAssessmentSummary")
           Storage.setItem("RiskAssessmentSummary", updated_data)
+
+          console.log(updated_data)
         });
 
       });
