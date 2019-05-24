@@ -58,7 +58,8 @@ export default class HazardData extends Component {
   getAllHazardData() {
     fetch('http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
       .then((responseJson) => {
-        Storage.setItem("RiskAssessmentHazardData", responseJson)
+        let to_local_data = [];
+        let counter = 0
         let hazard_data = [];
         for (const [index, value] of responseJson.entries()) {
           hazard_data.push(<DataTable.Row style={{ width: 500 }}>
@@ -67,7 +68,19 @@ export default class HazardData extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
           </DataTable.Row>)
+          counter += 1
+          to_local_data.push({
+            hazard_data_id: value.hazard_data_id,
+            local_storage_id: counter,
+            sync_status: 3,
+            hazard: value.hazard,
+            speed_of_onset: value.speed_of_onset,
+            early_warning: value.early_warning,
+            impact: value.impact
+          });
         }
+        Storage.removeItem("RiskAssessmentHazardData")
+        Storage.setItem("RiskAssessmentHazardData", to_local_data)
         this.setState({ hazard_data: hazard_data })
       })
       .catch((error) => {

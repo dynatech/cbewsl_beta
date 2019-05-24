@@ -94,25 +94,9 @@ export default class ModifySummary extends Component {
     // Storage.removeItem('RiskAssessmentSummary')
     fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
-        let offline_data = Storage.getItem('RiskAssessmentSummary')
-        let all_data = []
-        let counter = 0
-        offline_data.then(data => {
-          let temp = data
-          temp.forEach((value) => {
-            counter += 1
-            all_data.push({
-              summary_id: value.summary_id,
-              local_storage_id: counter,
-              sync_status: value.sync_status,
-              location: value.location,
-              impact: value.impact,
-              adaptive_capacity: value.adaptive_capacity,
-              vulnerability: value.vulnerability
-            })
-          })
-        });
         let summary_data = [];
+        let to_local_data = [];
+        let counter = 0
         for (const [index, value] of responseJson.entries()) {
           summary_data.push(<DataTable.Row style={{ width: 500 }}>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
@@ -125,7 +109,7 @@ export default class ModifySummary extends Component {
             </DataTable.Cell>
           </DataTable.Row>)
           counter += 1
-          all_data.push({
+          to_local_data.push({
             summary_id: value.summary_id,
             local_storage_id: counter,
             sync_status: 3,
@@ -133,12 +117,16 @@ export default class ModifySummary extends Component {
             impact: value.impact,
             adaptive_capacity: value.adaptive_capacity,
             vulnerability: value.vulnerability
-          })
+          });
         }
         Storage.removeItem("RiskAssessmentSummary")
-        Storage.setItem("RiskAssessmentSummary", all_data)
-        console.log(all_data)
+        Storage.setItem("RiskAssessmentSummary", to_local_data)
+        let data_container = Storage.getItem('RiskAssessmentSummary')
+        data_container.then(response => {
+          console.log(response)
+        });
         this.setState({ summary_data: summary_data })
+
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentSummary')
