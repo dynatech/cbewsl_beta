@@ -21,9 +21,12 @@ export default class SaveHazardData extends Component {
     componentWillMount() {
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
+        console.log(data)
         if (data != "none") {
             this.setState({
                 hazard_data_id: data.hazard_data_id,
+                local_storage_id: data.local_storage_id,
+                sync_status: data.sync_status,
                 hazard: data.hazard,
                 speed_of_onset: data.speed_of_onset,
                 early_warning: data.early_warning,
@@ -60,7 +63,7 @@ export default class SaveHazardData extends Component {
             body: JSON.stringify({
                 hazard_data_id: hazard_data_id,
                 local_storage_id: local_storage_id,
-                sync_status: local_storage_id,
+                sync_status: sync_status,
                 hazard: hazard,
                 speed_of_onset: speed_of_onset,
                 early_warning: early_warning,
@@ -115,7 +118,7 @@ export default class SaveHazardData extends Component {
                 data = {
                     hazard_data_id: hazard_data_id,
                     local_storage_id: local_storage_id,
-                    sync_status: local_storage_id,
+                    sync_status: 1,
                     hazard: hazard,
                     speed_of_onset: speed_of_onset,
                     early_warning: early_warning,
@@ -137,7 +140,7 @@ export default class SaveHazardData extends Component {
                                 updated_data.push({
                                     hazard_data_id: value.hazard_data_id,
                                     local_storage_id: counter,
-                                    sync_status: value.local_storage_id,
+                                    sync_status: value.sync_status,
                                     hazard: value.hazard,
                                     speed_of_onset: value.speed_of_onset,
                                     early_warning: value.early_warning,
@@ -166,7 +169,7 @@ export default class SaveHazardData extends Component {
                             } else {
                                 updated_data.push({
                                     hazard_data_id: value.hazard_data_id,
-                                    local_storage_id: value.counter,
+                                    local_storage_id: counter,
                                     sync_status: value.sync_status,
                                     hazard: value.hazard,
                                     speed_of_onset: value.speed_of_onset,
@@ -175,8 +178,8 @@ export default class SaveHazardData extends Component {
                                 })
                             }
                         });
-                        Storage.removeItem("RiskAssessmentSummary")
-                        Storage.setItem("RiskAssessmentSummary", updated_data)
+                        Storage.removeItem("RiskAssessmentHazardData")
+                        Storage.setItem("RiskAssessmentHazardData", updated_data)
                     }
                 })
                 this.props.navigation.navigate('modify_hazard_data');

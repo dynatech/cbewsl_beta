@@ -81,12 +81,17 @@ export default class HazardData extends Component {
         }
         Storage.removeItem("RiskAssessmentHazardData")
         Storage.setItem("RiskAssessmentHazardData", to_local_data)
+        let data_container = Storage.getItem('RiskAssessmentHazardData')
+        data_container.then(response => {
+          console.log(response)
+        });
         this.setState({ hazard_data: hazard_data })
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentHazardData')
         let hazard_data = [];
         data_container.then(response => {
+          console.log(response)
           if (response != null) {
             for (const [index, value] of response.entries()) {
               hazard_data.push(<DataTable.Row style={{ width: 500 }}>

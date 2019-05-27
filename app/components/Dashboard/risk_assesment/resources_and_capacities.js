@@ -79,6 +79,10 @@ export default class ResourcesAndCapacities extends Component {
         }
         Storage.removeItem("RiskAssessmentRNC")
         Storage.setItem("RiskAssessmentRNC", to_local_data)
+        let data_container = Storage.getItem('RiskAssessmentRNC')
+        data_container.then(response => {
+          console.log(response)
+        });
         this.setState({ rnc_data: rnc_data })
       })
       .catch((error) => {

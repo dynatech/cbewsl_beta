@@ -62,7 +62,6 @@ export default class ModifySummary extends Component {
         let offline_data = Storage.getItem("RiskAssessmentSummary");
         offline_data.then(response => {
           let temp = response
-          // temp.push(data)
           updated_data = []
           counter = 0
           temp.forEach((value) => {
@@ -81,17 +80,14 @@ export default class ModifySummary extends Component {
           });
           Storage.removeItem("RiskAssessmentSummary")
           Storage.setItem("RiskAssessmentSummary", updated_data)
-
-          console.log(updated_data)
         });
 
+        this.getAllRiskAssessmentSummary();
       });
 
-    this.getAllRiskAssessmentSummary()
   }
 
   getAllRiskAssessmentSummary() {
-    // Storage.removeItem('RiskAssessmentSummary')
     fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
         let summary_data = [];
