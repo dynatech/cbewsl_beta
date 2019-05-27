@@ -3,6 +3,10 @@ package com.cbewslprototype;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.tkporter.sendsms.SendSMSPackage;
+import com.pilloxa.backgroundjob.BackgroundJobPackage;
+import com.centaurwarchief.smslistener.SmsListenerPackage;
+import com.sha512lib.Sha512Package;
 import com.rhaker.reactnativesmsandroid.RNSmsAndroidPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -26,6 +30,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            SendSMSPackage.getInstance(),
+            new BackgroundJobPackage(),
+            new SmsListenerPackage(),
+            new Sha512Package(),
             new RNSmsAndroidPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage()
@@ -48,4 +56,6 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
   }
+
+  
 }
