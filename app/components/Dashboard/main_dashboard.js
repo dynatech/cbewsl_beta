@@ -3,6 +3,7 @@ import { View, Text , TouchableOpacity, Image, Linking} from 'react-native';
 import { dashboard } from '../../assets/styles/dashboard_styles'
 import { defaults } from '../../assets/styles/default_styles'
 import { Header, Left, Right, Icon} from 'native-base'
+import { Avatar, Badge, withBadge } from 'react-native-elements'
 
 export default class MainDashboard extends Component {
   constructor(props) {
@@ -95,6 +96,11 @@ export default class MainDashboard extends Component {
                     <TouchableOpacity style={dashboard.menuButtons} onPress={() => this.navigateMenu("ewi")}>
                         <Image style={dashboard.menuIcons} source={require('../../assets/images/ewi.png')} />
                         <Text style={dashboard.menuTexts}>EWI</Text>
+                        <Badge
+                            status="error"
+                            containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+                            value={<Text style={{color: 'white', padding: 20}}>Alert 2</Text>}
+                        />
                     </TouchableOpacity>
                 </View>
                 <View style={dashboard.rowMenu}>

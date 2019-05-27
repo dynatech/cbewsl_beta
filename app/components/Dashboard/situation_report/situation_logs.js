@@ -8,6 +8,7 @@ export default class SituationLogs extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      marked_dates: {'2019-05-17': {marked: true}}
     };
   }
 
@@ -20,6 +21,16 @@ export default class SituationLogs extends Component {
         console.log("Same page...")
         break;
     }
+  }
+
+  displaySituationReportPerDay(date) {
+    console.log("DISPLAY SITUATION REPORT FOR "+date)
+  }
+
+  componentDidMount() {
+    // SET API
+    // SET date marks
+    // Object.assign(obj, {key3: "value3"}); reference for adding object to super object
   }
 
   render() {
@@ -35,7 +46,7 @@ export default class SituationLogs extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Calendar></Calendar>
+        <Calendar markedDates={this.state.marked_dates} onDayPress={(day) => {this.displaySituationReportPerDay(day.dateString)}}></Calendar>
         <View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
             <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('save_situation_report')}>

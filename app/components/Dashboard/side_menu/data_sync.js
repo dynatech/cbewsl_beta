@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, ScrollView, Linking} from 'react-native';
 import { defaults } from '../../../assets/styles/default_styles';
 import { Icon } from 'native-base';
 import Storage from '../../utils/storage'
+import BackgroundJob from 'react-native-background-job';
+import SmsListener from 'react-native-android-sms-listener'
 
 export default class DataSyncer extends Component {
   constructor(props) {
@@ -18,9 +20,21 @@ export default class DataSyncer extends Component {
     )
   };
   
+  componentDidMount() {
+    SmsListener.addListener(message => {
+      console.info(message)
+      if (message.body.indexOf('CBEWSL-L Sync Acknowledgement:') > -1 && message.body.indexOf('CBEWSL-L Sync Acknowledgement:') > -1) {
+        if (message.body.indexOf('Status: Synced')) {
+          alert("Syncing successfull!");
+        }
+      }
+    })
+  }
+
   syncToServer(storage_key) {
     let data = Storage.getItem(storage_key)
     data.then(response => {
+      console.log(response)
       let container = storage_key+":"
       response.forEach(function(value) {
         let inner_value = Object.values(value)
@@ -35,7 +49,7 @@ export default class DataSyncer extends Component {
         })
         container = container+"||"
       })
-      Linking.openURL(`sms:${this.state.server_number}?body=${container.slice(0, -1)}`);
+      Linking.openURL(`sms:${this.state.server_number}?body=${container.slice(0, -2)}`);
     })
   }
 
