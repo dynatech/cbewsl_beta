@@ -3,14 +3,17 @@ import { View, Text, TouchableOpacity, ScrollView, Linking} from 'react-native';
 import { defaults } from '../../../assets/styles/default_styles';
 import { Icon } from 'native-base';
 import Storage from '../../utils/storage'
-import BackgroundJob from 'react-native-background-job';
 import SmsListener from 'react-native-android-sms-listener'
+import { NavigationEvents } from 'react-navigation';
+import SendSMS from 'react-native-sms'
+import Sync from '../../utils/syncer'
 
 export default class DataSyncer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      server_number: '09175392665'
+      server_number: '09175392665',
+      storage_key: ""
     };
   }
 
@@ -20,12 +23,23 @@ export default class DataSyncer extends Component {
     )
   };
   
-  componentDidMount() {
+  loadSMSListener() {
+    console.log("HEY")
     SmsListener.addListener(message => {
-      console.info(message)
-      if (message.body.indexOf('CBEWSL-L Sync Acknowledgement:') > -1 && message.body.indexOf('CBEWSL-L Sync Acknowledgement:') > -1) {
+      if (message.body.indexOf('CBEWS-L Sync Ack') > -1 && message.body.indexOf('CBEWS-L Sync Ack') > -1) {
         if (message.body.indexOf('Status: Synced')) {
-          alert("Syncing successfull!");
+          console.log(message.body)
+          let raw_separator = message.body.split("Synced by:")
+          let name = raw_separator[1].split("(ID: ")[0]
+          let id = raw_separator[1].split("(ID: ")[1]
+          let data = Storage.getItem("loginCredentials")
+
+          data.then(response => {
+            if (response.user_data.account_id == id.slice(0, -1)) {
+              Sync.updateStorage(this.state.storage_key)
+              alert("Syncing successfull!");
+            }
+          })
         }
       }
     })
@@ -33,29 +47,45 @@ export default class DataSyncer extends Component {
 
   syncToServer(storage_key) {
     let data = Storage.getItem(storage_key)
+    let empty_status = false
+    this.setState({storage_key: storage_key})
     data.then(response => {
-      console.log(response)
       let container = storage_key+":"
       response.forEach(function(value) {
-        let inner_value = Object.values(value)
-        let counter = 0
-        inner_value.forEach(function(iv) {
-          if (counter == 0) {
-            container = container+iv
-          } else {
-            container = container+"<*>"+iv
-          }
-          counter++
-        })
-        container = container+"||"
+        if (value.sync_status != 3) {
+          let inner_value = Object.values(value)
+          let counter = 0
+          inner_value.forEach(function(iv) {
+            if (counter == 0) {
+              container = container+iv
+            } else {
+              container = container+"<*>"+iv
+            }
+            counter++
+          })
+          container = container+"||"
+        }
       })
-      Linking.openURL(`sms:${this.state.server_number}?body=${container.slice(0, -2)}`);
+
+      if (container.indexOf("<*>") > -1) {
+        SendSMS.send({
+          body: container.slice(0, -2),
+          recipients: [this.state.server_number],
+          successTypes: ['sent', 'queued'],
+          allowAndroidSendWithoutReadPermission: true
+        }, (completed, cancelled, error) => {
+            // console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error); 
+        });
+      } else {
+        alert("Data is updated.");
+      }
     })
   }
 
   render() {
     return (
       <View style={defaults.container}>
+      <NavigationEvents onDidFocus={() => this.loadSMSListener()} />
         <View style={{ flex: 1, padding: 10}}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="home" style={{color: '#083451', flex: 1}}onPress={() => this.props.navigation.openDrawer()}/>

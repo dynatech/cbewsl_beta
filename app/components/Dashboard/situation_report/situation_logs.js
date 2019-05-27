@@ -46,7 +46,9 @@ export default class SituationLogs extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Calendar markedDates={this.state.marked_dates} onDayPress={(day) => {this.displaySituationReportPerDay(day.dateString)}}></Calendar>
+
+        <Calendar markedDates={this.state.marked_dates} onDayPress={(day) => {this.displaySituationReportPerDay(day.dateString)}} />
+
         <View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
             <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('save_situation_report')}>

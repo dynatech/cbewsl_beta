@@ -10,6 +10,9 @@ const Storage = {
     },
     removeItem: async function (key) {
         return await AsyncStorage.removeItem(key);
+    },
+    updateSyncStatus: async function (obj) {
+        console.log(obj)
     }
 };
 
