@@ -62,6 +62,7 @@ export default class SaveSummary extends Component {
             body: JSON.stringify({
                 summary_id: summary_id,
                 local_storage_id: local_storage_id,
+                sync_status: sync_status,
                 location: location,
                 impact: impact,
                 adaptive_capacity: adaptive_capacity,
@@ -71,8 +72,44 @@ export default class SaveSummary extends Component {
             .then((responseJson) => {
                 console.log(responseJson)
                 if (responseJson.status == true) {
-                    this.props.navigation.navigate('modify_summary');
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                    let data_container = Storage.getItem('RiskAssessmentSummary')
+                    let updated_data = []
+                    data = {
+                        summary_id: summary_id,
+                        local_storage_id: 1,
+                        sync_status: 3,
+                        location: location,
+                        impact: impact,
+                        adaptive_capacity: adaptive_capacity,
+                        vulnerability: vulnerability
+                    }
+                    data_container.then(response => {
+                        if (response == null) {
+                            Storage.removeItem("RiskAssessmentSummary")
+                            Storage.setItem("RiskAssessmentSummary", [data])
+                        } else {
+                            let temp = response
+                            temp.push(data)
+                            let counter = 0
+                            temp.forEach((value) => {
+                                counter += 1
+                                updated_data.push({
+                                    summary_id: value.summary_id,
+                                    local_storage_id: counter,
+                                    sync_status: 3,
+                                    location: value.location,
+                                    impact: value.impact,
+                                    adaptive_capacity: value.adaptive_capacity,
+                                    vulnerability: value.vulnerability
+                                })
+                            });
+                            Storage.removeItem("RiskAssessmentSummary")
+                            Storage.setItem("RiskAssessmentSummary", updated_data)
+                        }
+                    });
+
+                    this.props.navigation.navigate('modify_summary');
                 } else {
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                 }

@@ -9,6 +9,8 @@ export default class SaveResourcesAndCapacities extends Component {
         super(props);
         this.state = {
             resources_and_capacities_id: 0,
+            local_storage_id: 0,
+            sync_status: 0,
             resource_and_capacity: "",
             status: "",
             owner: ""
@@ -21,6 +23,8 @@ export default class SaveResourcesAndCapacities extends Component {
         if (data != "none") {
             this.setState({
                 resources_and_capacities_id: data.resources_and_capacities_id,
+                local_storage_id: data.local_storage_id,
+                sync_status: data.sync_status,
                 resource_and_capacity: data.resource_and_capacity,
                 status: data.status,
                 owner: data.owner
@@ -28,6 +32,8 @@ export default class SaveResourcesAndCapacities extends Component {
         } else {
             this.setState({
                 resources_and_capacities_id: 0,
+                local_storage_id: 0,
+                sync_status: 0,
                 resource_and_capacity: "",
                 status: "",
                 owner: ""
@@ -37,6 +43,8 @@ export default class SaveResourcesAndCapacities extends Component {
 
     saveRnc() {
         const { resources_and_capacities_id,
+            local_storage_id,
+            sync_status,
             resource_and_capacity,
             status,
             owner } = this.state
@@ -49,6 +57,8 @@ export default class SaveResourcesAndCapacities extends Component {
             },
             body: JSON.stringify({
                 resources_and_capacities_id: resources_and_capacities_id,
+                local_storage_id: local_storage_id,
+                sync_status: sync_status,
                 resource_and_capacity: resource_and_capacity,
                 status: status,
                 owner: owner
@@ -57,8 +67,41 @@ export default class SaveResourcesAndCapacities extends Component {
             .then((responseJson) => {
                 console.log(responseJson)
                 if (responseJson.status == true) {
-                    this.props.navigation.navigate('modify_hazard_data');
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                    let data_container = Storage.getItem('RiskAssessmentRNC')
+                    let updated_data = []
+                    data = {
+                        resources_and_capacities_id: resources_and_capacities_id,
+                        local_storage_id: 1,
+                        sync_status: 3,
+                        resource_and_capacity: resource_and_capacity,
+                        status: status,
+                        owner: owner
+                    }
+                    data_container.then(response => {
+                        if (response == null) {
+                            Storage.removeItem("RiskAssessmentRNC")
+                            Storage.setItem("RiskAssessmentRNC", [data])
+                        } else {
+                            let temp = response
+                            temp.push(data)
+                            let counter = 0
+                            temp.forEach((value) => {
+                                counter += 1
+                                updated_data.push({
+                                    resources_and_capacities_id: value.resources_and_capacities_id,
+                                    local_storage_id: counter,
+                                    sync_status: 3,
+                                    resource_and_capacity: value.resource_and_capacity,
+                                    status: value.status,
+                                    owner: value.owner
+                                })
+                            });
+                            Storage.removeItem("RiskAssessmentRNC")
+                            Storage.setItem("RiskAssessmentRNC", updated_data)
+                        }
+                    });
+                    this.props.navigation.navigate('modify_rnc');
                 } else {
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                 }
@@ -66,21 +109,67 @@ export default class SaveResourcesAndCapacities extends Component {
             .catch((error) => {
                 data = {
                     resources_and_capacities_id: resources_and_capacities_id,
+                    local_storage_id: local_storage_id,
+                    sync_status: 1,
                     resource_and_capacity: resource_and_capacity,
                     status: status,
                     owner: owner
                 }
                 let offline_data = Storage.getItem("RiskAssessmentRNC");
                 offline_data.then(response => {
-                    if (response == null) {
-                        Storage.removeItem("RiskAssessmentRNC")
-                        Storage.setItem("RiskAssessmentRNC", [data])
+                    if (local_storage_id == 0) {
+                        if (response == null) {
+                            Storage.removeItem("RiskAssessmentRNC")
+                            Storage.setItem("RiskAssessmentRNC", [data])
+                        } else {
+                            let temp = response
+                            temp.push(data)
+                            let updated_data = []
+                            let counter = 0
+                            temp.forEach((value) => {
+                                counter += 1
+                                updated_data.push({
+                                    resources_and_capacities_id: value.resources_and_capacities_id,
+                                    local_storage_id: counter,
+                                    sync_status: value.sync_status,
+                                    resource_and_capacity: value.resource_and_capacity,
+                                    status: value.status,
+                                    owner: value.owner
+                                })
+                            });
+                            Storage.removeItem("RiskAssessmentRNC")
+                            Storage.setItem("RiskAssessmentRNC", updated_data)
+                        }
                     } else {
                         let temp = response
-                        temp.push(data)
+                        let updated_data = []
+                        let counter = 0
+                        temp.forEach((value) => {
+                            counter += 1
+                            if (local_storage_id == value.local_storage_id) {
+                                updated_data.push({
+                                    resources_and_capacities_id: resources_and_capacities_id,
+                                    local_storage_id: counter,
+                                    sync_status: 2,
+                                    resource_and_capacity: resource_and_capacity,
+                                    status: status,
+                                    owner: owner
+                                })
+                            } else {
+                                updated_data.push({
+                                    resources_and_capacities_id: value.resources_and_capacities_id,
+                                    local_storage_id: counter,
+                                    sync_status: value.sync_status,
+                                    resource_and_capacity: value.resource_and_capacity,
+                                    status: value.status,
+                                    owner: value.owner
+                                })
+                            }
+                        });
                         Storage.removeItem("RiskAssessmentRNC")
-                        Storage.setItem("RiskAssessmentRNC", temp)
+                        Storage.setItem("RiskAssessmentRNC", updated_data)
                     }
+
                 })
                 this.props.navigation.navigate('modify_rnc');
             });

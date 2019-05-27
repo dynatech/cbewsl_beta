@@ -58,7 +58,28 @@ export default class ModifyResourceAndCapacities extends Component {
         }
       })
       .catch((error) => {
-        console.error(error);
+        let offline_data = Storage.getItem("RiskAssessmentRNC");
+        offline_data.then(response => {
+          let temp = response
+          updated_data = []
+          counter = 0
+          temp.forEach((value) => {
+            counter += 1
+            if (id != value.local_storage_id) {
+              updated_data.push({
+                resources_and_capacities_id: value.resources_and_capacities_id,
+                local_storage_id: counter,
+                sync_status: value.sync_status,
+                resource_and_capacity: value.resource_and_capacity,
+                status: value.status,
+                owner: value.owner
+              })
+            }
+          });
+          Storage.removeItem("RiskAssessmentRNC")
+          Storage.setItem("RiskAssessmentRNC", updated_data)
+        });
+        this.getAllResourcesAndCapacities();
       });
   }
 
@@ -66,13 +87,34 @@ export default class ModifyResourceAndCapacities extends Component {
     fetch('http://192.168.150.191:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
       .then((responseJson) => {
         let rnc_data = [];
+        let to_local_data = [];
+        let counter = 0
         for (const [index, value] of responseJson.entries()) {
           rnc_data.push(<DataTable.Row style={{ width: 500 }}>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
+            <DataTable.Cell>
+              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.resources_and_capacities_id)}></Icon>
+            </DataTable.Cell>
           </DataTable.Row>)
+          counter += 1
+          to_local_data.push({
+            resources_and_capacities_id: value.resources_and_capacities_id,
+            local_storage_id: counter,
+            sync_status: 3,
+            resource_and_capacity: value.resource_and_capacity,
+            status: value.status,
+            owner: value.owner
+          })
         }
+        Storage.removeItem("RiskAssessmentRNC")
+        Storage.setItem("RiskAssessmentRNC", to_local_data)
+        let data_container = Storage.getItem('RiskAssessmentRNC')
+        data_container.then(response => {
+          console.log(response)
+        });
         this.setState({ rnc_data: rnc_data })
       })
       .catch((error) => {
@@ -85,6 +127,10 @@ export default class ModifyResourceAndCapacities extends Component {
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
+                <DataTable.Cell>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon>
+                </DataTable.Cell>
               </DataTable.Row>)
             }
           } else {
