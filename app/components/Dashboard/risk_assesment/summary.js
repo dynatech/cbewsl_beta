@@ -57,8 +57,6 @@ export default class Summary extends Component {
   }
 
   getAllRiskAssessmentSummary() {
-
-    // Storage.removeItem('RiskAssessmentSummary')
     fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
         let summary_data = [];
@@ -82,9 +80,14 @@ export default class Summary extends Component {
             vulnerability: value.vulnerability
           });
         }
-        Storage.removeItem("RiskAssessmentSummary");
-        Storage.setItem("RiskAssessmentSummary", to_local_data);
+        Storage.removeItem("RiskAssessmentSummary")
+        Storage.setItem("RiskAssessmentSummary", to_local_data)
+        let data_container = Storage.getItem('RiskAssessmentSummary')
+        data_container.then(response => {
+          console.log(response)
+        });
         this.setState({ summary_data: summary_data })
+
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentSummary')
@@ -105,6 +108,7 @@ export default class Summary extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
+
           this.setState({ summary_data: summary_data })
         });
       });
