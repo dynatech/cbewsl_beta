@@ -107,9 +107,10 @@ export default class SaveHazardData extends Component {
                             Storage.removeItem("RiskAssessmentHazardData")
                             Storage.setItem("RiskAssessmentHazardData", updated_data)
                         }
+
+                        this.props.navigation.navigate('modify_hazard_data');
                     });
 
-                    this.props.navigation.navigate('modify_hazard_data');
                 } else {
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                 }
@@ -126,6 +127,7 @@ export default class SaveHazardData extends Component {
                 }
                 let offline_data = Storage.getItem("RiskAssessmentHazardData");
                 offline_data.then(response => {
+                    data["local_storage_id"] = 1
                     if (local_storage_id == 0) {
                         if (response == null) {
                             Storage.removeItem("RiskAssessmentHazardData")
@@ -181,8 +183,8 @@ export default class SaveHazardData extends Component {
                         Storage.removeItem("RiskAssessmentHazardData")
                         Storage.setItem("RiskAssessmentHazardData", updated_data)
                     }
-                })
-                this.props.navigation.navigate('modify_hazard_data');
+                    this.props.navigation.navigate('modify_hazard_data');
+                });
             });
     }
 
