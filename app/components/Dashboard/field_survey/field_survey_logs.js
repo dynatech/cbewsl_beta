@@ -5,7 +5,8 @@ import { defaults } from '../../../assets/styles/default_styles'
 import { DataTable } from 'react-native-paper'
 import { Icon } from 'native-base'
 import Storage from '../../utils/storage'
-import { NavigationEvents } from 'react-navigation';
+import { NavigationEvents } from 'react-navigation'
+import moment from "moment"
 
 export default class FieldSurveyLogs extends Component {
   constructor(props) {
@@ -99,6 +100,25 @@ export default class FieldSurveyLogs extends Component {
       });
   }
 
+  formatDateTime(date = null) {
+    let timestamp = date
+    let current_timestamp = ""
+    let text_format_timestamp = ""
+    if (timestamp == null) {
+      current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+      text_format_timestamp = moment(new Date()).format("MMMM D, YYYY h:mm:ss A")
+    } else {
+      current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS")
+      text_format_timestamp = moment(date).format("MMMM D, YYYY h:mm:ss A")
+    }
+
+
+    return {
+      current_timestamp: current_timestamp,
+      text_format_timestamp: text_format_timestamp
+    }
+  }
+
 
   getAllFieldSurveyLogs() {
     // Storage.removeItem("FieldSurveyLogs");
@@ -108,8 +128,9 @@ export default class FieldSurveyLogs extends Component {
         let to_local_data = [];
         let counter = 0
         for (const [index, value] of responseJson.entries()) {
+          let format_date_time = this.formatDateTime(date = value.date);
           field_logs.push(<DataTable.Row style={{ width: 500 }}>
-            <DataTable.Cell style={{ marginRight: -90 }}>{value.date}</DataTable.Cell>
+            <DataTable.Cell style={{ marginRight: -90 }}>{format_date_time["text_format_timestamp"]}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>Field Survey Report {value.date.split(' ')[0]}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: -190 }}>
               <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
@@ -143,8 +164,9 @@ export default class FieldSurveyLogs extends Component {
           console.log(response)
           if (response != null) {
             for (const [index, value] of response.entries()) {
+              let format_date_time = this.formatDateTime(date = value.date);
               field_logs.push(<DataTable.Row style={{ width: 500 }}>
-                <DataTable.Cell style={{ marginRight: -90 }}>{value.date}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: -90 }}>{format_date_time["text_format_timestamp"]}</DataTable.Cell>
                 <DataTable.Cell style={{ marginRight: 10 }}>Field Survey Report {value.date}</DataTable.Cell>
                 <DataTable.Cell style={{ marginRight: -190 }}>
                   <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>

@@ -3,6 +3,9 @@ package com.cbewslprototype;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.sha512lib.Sha512Package;
+import com.pilloxa.backgroundjob.BackgroundJobPackage;
+import com.centaurwarchief.smslistener.SmsListenerPackage;
 import com.rhaker.reactnativesmsandroid.RNSmsAndroidPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -26,6 +29,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new Sha512Package(),
+            new BackgroundJobPackage(),
+            new SmsListenerPackage(),
             new RNSmsAndroidPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage()

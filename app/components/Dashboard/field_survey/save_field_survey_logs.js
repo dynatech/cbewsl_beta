@@ -13,7 +13,7 @@ export default class SaveFieldSurveyLogs extends Component {
             local_storage_id: 0,
             sync_status: 0,
             features: "",
-            material_characterization: "",
+            mat_characterization: "",
             mechanism: "",
             exposure: "",
             note: "",
@@ -24,16 +24,13 @@ export default class SaveFieldSurveyLogs extends Component {
     componentWillMount() {
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
-        this.getCurrentDateTime()
-        // console.log(data)
         if (data != "none") {
-            console.log(data.material_characterization)
             this.setState({
                 field_survey_id: data.field_survey_id,
                 local_storage_id: data.local_storage_id,
                 sync_status: data.sync_status,
                 features: data.features,
-                material_characterization: data.material_characterization,
+                mat_characterization: data.mat_characterization,
                 mechanism: data.mechanism,
                 exposure: data.exposure,
                 note: data.note,
@@ -45,7 +42,7 @@ export default class SaveFieldSurveyLogs extends Component {
                 local_storage_id: 0,
                 sync_status: 0,
                 features: "",
-                material_characterization: "",
+                mat_characterization: "",
                 mechanism: "",
                 exposure: "",
                 note: "",
@@ -54,9 +51,18 @@ export default class SaveFieldSurveyLogs extends Component {
         }
     }
 
-    getCurrentDateTime() {
-        let current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
-        let text_format_timestamp = moment(new Date()).format("MMMM D, YYYY h:mm:ss A")
+    formatDateTime(date = null) {
+        let timestamp = date
+        let current_timestamp = ""
+        let text_format_timestamp = ""
+        if (timestamp == null) {
+            current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+            text_format_timestamp = moment(new Date()).format("MMMM D, YYYY h:mm:ss A")
+        } else {
+            current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS")
+            text_format_timestamp = moment(date).format("MMMM D, YYYY h:mm:ss A")
+        }
+
 
         return {
             current_timestamp: current_timestamp,
@@ -69,10 +75,11 @@ export default class SaveFieldSurveyLogs extends Component {
             local_storage_id,
             sync_status,
             features,
-            material_characterization,
+            mat_characterization,
             mechanism,
             exposure,
-            note } = this.state
+            note,
+            date } = this.state
 
         fetch('http://192.168.150.191:5000/api/field_survey/save_field_survey', {
             method: 'POST',
@@ -85,7 +92,7 @@ export default class SaveFieldSurveyLogs extends Component {
                 local_storage_id: local_storage_id,
                 sync_status: sync_status,
                 features: features,
-                material_characterization: material_characterization,
+                mat_characterization: mat_characterization,
                 mechanism: mechanism,
                 exposure: exposure,
                 note: note
@@ -103,15 +110,13 @@ export default class SaveFieldSurveyLogs extends Component {
                         local_storage_id: 1,
                         sync_status: 3,
                         features: features,
-                        material_characterization: material_characterization,
+                        mat_characterization: mat_characterization,
                         mechanism: mechanism,
                         exposure: exposure,
                         note: note
                     }
 
                     data_container.then(response => {
-                        // Storage.removeItem("FieldSurveyLatestReportSummary")
-                        // Storage.setItem("FieldSurveyLatestReportSummary", [data])
                         if (response == null) {
                             Storage.removeItem("FieldSurveyLogs")
                             Storage.setItem("FieldSurveyLogs", [data])
@@ -126,14 +131,19 @@ export default class SaveFieldSurveyLogs extends Component {
                                     local_storage_id: counter,
                                     sync_status: 3,
                                     features: value.features,
-                                    material_characterization: value.material_characterization,
+                                    mat_characterization: value.mat_characterization,
                                     mechanism: value.mechanism,
                                     exposure: value.exposure,
-                                    note: value.note
+                                    note: value.note,
+                                    date: value.date
                                 })
                             });
                             Storage.removeItem("FieldSurveyLogs")
                             Storage.setItem("FieldSurveyLogs", updated_data)
+                        }
+                        if (field_survey_id == 0) {
+                            Storage.removeItem("FieldSurveyLatestReportSummary")
+                            Storage.setItem("FieldSurveyLatestReportSummary", [data])
                         }
                         this.props.navigation.navigate('field_survery_logs');
                     });
@@ -142,18 +152,19 @@ export default class SaveFieldSurveyLogs extends Component {
                 }
             })
             .catch((error) => {
+                let current_date = this.formatDateTime();
                 data = {
                     field_survey_id: field_survey_id,
                     local_storage_id: local_storage_id,
-                    sync_status: 3,
+                    sync_status: 1,
                     features: features,
-                    material_characterization: material_characterization,
+                    mat_characterization: mat_characterization,
                     mechanism: mechanism,
                     exposure: exposure,
-                    note: note
+                    note: note,
+                    date: current_date["text_format_timestamp"]
                 }
-                // Storage.removeItem("FieldSurveyLatestReportSummary")
-                // Storage.setItem("FieldSurveyLatestReportSummary", [data])
+
                 let offline_data = Storage.getItem("FieldSurveyLogs");
                 offline_data.then(response => {
                     if (local_storage_id == 0) {
@@ -173,14 +184,17 @@ export default class SaveFieldSurveyLogs extends Component {
                                     local_storage_id: counter,
                                     sync_status: value.sync_status,
                                     features: value.features,
-                                    material_characterization: value.material_characterization,
+                                    mat_characterization: value.mat_characterization,
                                     mechanism: value.mechanism,
                                     exposure: value.exposure,
-                                    note: value.note
+                                    note: value.note,
+                                    date: value.date
                                 })
                             });
                             Storage.removeItem("FieldSurveyLogs")
                             Storage.setItem("FieldSurveyLogs", updated_data)
+                            Storage.removeItem("FieldSurveyLatestReportSummary")
+                            Storage.setItem("FieldSurveyLatestReportSummary", [data])
                         }
                     } else {
                         let temp = response
@@ -194,21 +208,27 @@ export default class SaveFieldSurveyLogs extends Component {
                                     local_storage_id: counter,
                                     sync_status: 2,
                                     features: features,
-                                    material_characterization: material_characterization,
+                                    mat_characterization: mat_characterization,
                                     mechanism: mechanism,
                                     exposure: exposure,
-                                    note: note
+                                    note: note,
+                                    date: date
                                 })
+                                data["date"] = date
+                                Storage.removeItem("FieldSurveyLatestReportSummary")
+                                Storage.setItem("FieldSurveyLatestReportSummary", [data])
+
                             } else {
                                 updated_data.push({
                                     field_survey_id: value.field_survey_id,
                                     local_storage_id: counter,
                                     sync_status: value.sync_status,
                                     features: value.features,
-                                    material_characterization: value.material_characterization,
+                                    mat_characterization: value.mat_characterization,
                                     mechanism: value.mechanism,
                                     exposure: value.exposure,
-                                    note: value.note
+                                    note: value.note,
+                                    date: value.date
                                 })
                             }
                         });
@@ -226,7 +246,7 @@ export default class SaveFieldSurveyLogs extends Component {
                 <View style={field_survey_styles.menuSection}>
                     <TextInput multiline={true}
                         numberOfLines={4} style={defaults.inputs} placeholder="Features" value={this.state.features} onChangeText={text => this.setState({ features: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Materials characterization" value={this.state.material_characterization} onChangeText={text => this.setState({ material_characterization: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Materials characterization" value={this.state.mat_characterization} onChangeText={text => this.setState({ mat_characterization: text })} />
                     <TextInput style={defaults.inputs} placeholder="Mechanism" value={this.state.mechanism} onChangeText={text => this.setState({ mechanism: text })} />
                     <TextInput style={defaults.inputs} placeholder="Exposure" value={this.state.exposure} onChangeText={text => this.setState({ exposure: text })} />
                     <TextInput style={defaults.inputs} placeholder="Note" value={this.state.note} onChangeText={text => this.setState({ note: text })} />
