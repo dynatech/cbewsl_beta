@@ -107,9 +107,9 @@ export default class SaveSummary extends Component {
                             Storage.removeItem("RiskAssessmentSummary")
                             Storage.setItem("RiskAssessmentSummary", updated_data)
                         }
+                        this.props.navigation.navigate('modify_summary');
                     });
 
-                    this.props.navigation.navigate('modify_summary');
                 } else {
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                 }
@@ -127,6 +127,7 @@ export default class SaveSummary extends Component {
                 let offline_data = Storage.getItem("RiskAssessmentSummary");
                 offline_data.then(response => {
                     if (local_storage_id == 0) {
+                        data["local_storage_id"] = 1
                         if (response == null) {
                             Storage.removeItem("RiskAssessmentSummary")
                             Storage.setItem("RiskAssessmentSummary", [data])
@@ -181,8 +182,8 @@ export default class SaveSummary extends Component {
                         Storage.removeItem("RiskAssessmentSummary")
                         Storage.setItem("RiskAssessmentSummary", updated_data)
                     }
-                })
-                this.props.navigation.navigate('modify_summary');
+                    this.props.navigation.navigate('modify_summary');
+                });
                 // 1 - adding |2 - modified |3 - old_data
             });
     }
