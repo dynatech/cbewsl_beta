@@ -8,7 +8,7 @@ export default class SituationLogs extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      marked_dates: {'2019-05-17': {marked: true}}
+      marked_dates: { '2019-05-17': { marked: true }, '2019-05-18': { marked: true } }
     };
   }
 
@@ -24,14 +24,13 @@ export default class SituationLogs extends Component {
   }
 
   displaySituationReportPerDay(date) {
-    console.log("DISPLAY SITUATION REPORT FOR "+date)
+    console.log("DISPLAY SITUATION REPORT FOR " + date)
+    let selected_date = date.toString()
+    this.state = {
+      marked_dates: { '2019-05-20': { marked: true } }
+    };
   }
 
-  componentDidMount() {
-    // SET API
-    // SET date marks
-    // Object.assign(obj, {key3: "value3"}); reference for adding object to super object
-  }
 
   render() {
     return (
@@ -47,7 +46,7 @@ export default class SituationLogs extends Component {
           </View>
         </View>
 
-        <Calendar markedDates={this.state.marked_dates} onDayPress={(day) => {this.displaySituationReportPerDay(day.dateString)}} />
+        <Calendar markedDates={this.state.marked_dates} onDayPress={(day) => { this.displaySituationReportPerDay(day.dateString) }} />
 
         <View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>

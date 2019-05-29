@@ -110,7 +110,7 @@ export default class LatestReportSummary extends Component {
           to_local_data.push({
             field_survey_id: value.field_survey_id,
             local_storage_id: 1,
-            sync_status: value.sync_status,
+            sync_status: 3,
             features: value.features,
             mat_characterization: value.mat_characterization,
             mechanism: value.mechanism,
@@ -190,29 +190,17 @@ export default class LatestReportSummary extends Component {
               </View>)
             }
           } else {
-            //NO DATA
+            latest_report.push(<View style={{ padding: 10 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 15, fontWeight: 'bold' }}>No latest report summary</Text>
+              </View>
+            </View>)
           }
 
           this.setState({ latest_report: latest_report })
         });
       });
   }
-
-  // componentDidMount(){
-  //   fetch('http://192.168.150.191:5000/api/field_survey/get_latest_field_survey_data').then((response) => response.json())
-  //   .then((responseJson) => {
-  //     let latest_report = [];
-  //     for (const [index, value] of responseJson.entries()) {
-  //       latest_report.push(<View style={{padding: 10}}>
-  //         <Text style={{fontSize: 15, fontWeight: 'bold'}}>Date of Survey: {value.date}</Text>
-  //     </View>)
-  //     }
-  //     this.setState({latest_report: latest_report})
-  //   })
-  //   .catch((error) => {
-  //     console.error(error);
-  //   });
-  // }
 
   render() {
     return (
