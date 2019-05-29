@@ -62,8 +62,8 @@ export default class ModifySummary extends Component {
         let offline_data = Storage.getItem("RiskAssessmentSummary");
         offline_data.then(response => {
           let temp = response
-          updated_data = []
-          counter = 0
+          let updated_data = []
+          let counter = 0
           temp.forEach((value) => {
             counter += 1
             if (id != value.local_storage_id) {

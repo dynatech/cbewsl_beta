@@ -70,7 +70,7 @@ class FamilyRiskProfile extends Component {
     return (
       <View>
         <ScrollView horizontal={true}>
-          {/* <NavigationEvents onDidFocus={() => this.getAllFamilyProfile()} /> */}
+          <NavigationEvents onDidFocus={() => this.getAllFamilyProfile()} />
           <DataTable>
             <DataTable.Header style={{ flex: 1, width: 500 }}>
               <DataTable.Title>Number of members</DataTable.Title>

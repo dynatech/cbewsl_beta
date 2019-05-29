@@ -102,9 +102,10 @@ export default class SaveFamilyRiskProfile extends Component {
                             Storage.removeItem("RiskAssessmentFamilyRiskProfile")
                             Storage.setItem("RiskAssessmentFamilyRiskProfile", updated_data)
                         }
+
+                        this.props.navigation.navigate('modify_family_risk');
                     });
 
-                    this.props.navigation.navigate('modify_family_risk');
                 } else {
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                 }
@@ -121,6 +122,7 @@ export default class SaveFamilyRiskProfile extends Component {
                 let offline_data = Storage.getItem("RiskAssessmentFamilyRiskProfile");
                 offline_data.then(response => {
                     if (local_storage_id == 0) {
+                        data["local_storage_id"] = 1
                         if (response == null) {
                             Storage.removeItem("RiskAssessmentFamilyRiskProfile")
                             Storage.setItem("RiskAssessmentFamilyRiskProfile", [data])
@@ -172,9 +174,8 @@ export default class SaveFamilyRiskProfile extends Component {
                         Storage.removeItem("RiskAssessmentFamilyRiskProfile")
                         Storage.setItem("RiskAssessmentFamilyRiskProfile", updated_data)
                     }
-
-                })
-                this.props.navigation.navigate('modify_family_risk');
+                    this.props.navigation.navigate('modify_family_risk');
+                });
             });
     }
 
