@@ -44,7 +44,37 @@ export default class SaveSituationReport extends Component {
     }
 
     saveSituationReport() {
-
+        const { situation_report_id,
+            local_storage_id,
+            sync_status,
+            summary,
+            pdf_path,
+            image_path } = this.state
+        fetch('http://192.168.150.191:5000/api/situation_report/save_situation_report', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                situation_report_id: situation_report_id,
+                local_storage_id: local_storage_id,
+                sync_status: sync_status,
+                summary: summary,
+                pdf_path: pdf_path,
+                image_path: image_path
+            }),
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.status == true) {
+                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                } else {
+                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
     }
 
     render() {
