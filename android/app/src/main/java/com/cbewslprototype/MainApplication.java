@@ -4,6 +4,10 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.tkporter.sendsms.SendSMSPackage;
+import com.sha512lib.Sha512Package;
+import com.pilloxa.backgroundjob.BackgroundJobPackage;
+import com.centaurwarchief.smslistener.SmsListenerPackage;
+import com.tkporter.sendsms.SendSMSPackage;
 import com.pilloxa.backgroundjob.BackgroundJobPackage;
 import com.centaurwarchief.smslistener.SmsListenerPackage;
 import com.sha512lib.Sha512Package;
@@ -56,6 +60,4 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
   }
-
-  
 }

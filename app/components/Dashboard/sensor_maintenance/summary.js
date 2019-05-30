@@ -3,13 +3,17 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles'
 import { ScrollView } from 'react-native-gesture-handler';
 import RainfallGraph from './rainfall_graph'
+import moment from 'moment'
+import Storage from '../../utils/storage'
 
 export default class Summary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      one_day_rain: '85%',
-      three_day_rain: '42%'
+      one_day_rain: 'Loading...',
+      three_day_rain: 'Loading...',
+      site_code: "umi",
+      date: moment(new Date()).format("YYYY-MM-DD HH:MM:00")
     };
   }
   
@@ -26,6 +30,34 @@ export default class Summary extends Component {
             console.log("Same page...")
             break;
     }
+  }
+
+  componentDidMount() {
+    fetch('http://192.168.150.191:5000/api/rainfall/get_rainfall_data', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        site_code: this.state.site_code,
+        date: this.state.date
+      }),
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        Storage.setItem("RainfallSummary", responseJson)
+        let online = responseJson[0]
+        this.setState({one_day_rain: Math.round((online["1D cml"]/online["half of 2yr max"])*100)})
+        this.setState({three_day_rain: Math.round((online["3D cml"]/online["2yr max"])*100)})
+      })
+      .catch((error) => {
+        let offline_data = Storage.getItem("RainfallSummary");
+        offline_data.then(response => {
+          let offline = response[0]
+          this.setState({one_day_rain: Math.round((offline["1D cml"]/offline["half of 2yr max"])*100)})
+          this.setState({three_day_rain: Math.round((offline["3D cml"]/offline["2yr max"])*100)})
+        });
+      });
   }
 
   render() {
@@ -47,8 +79,8 @@ export default class Summary extends Component {
         <View style={sensor_maintenance_styles.contentContainer}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>Rainfall</Text>
           <View style={sensor_maintenance_styles.subContainer}>
-            <Text>1-day threshold: {this.state.one_day_rain}</Text>
-            <Text>3-day threshold: {this.state.three_day_rain}</Text>
+            <Text>1-day threshold: {this.state.one_day_rain}%</Text>
+            <Text>3-day threshold: {this.state.three_day_rain}%</Text>
           </View>
         </View>
         <View style={sensor_maintenance_styles.graphContainer}>
@@ -57,7 +89,7 @@ export default class Summary extends Component {
             <Text>No available data.</Text>
           </View>
         </View>
-        <RainfallGraph></RainfallGraph>
+        <RainfallGraph/>
       </ScrollView>
       
     );

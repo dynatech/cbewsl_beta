@@ -24,7 +24,6 @@ export default class DataSyncer extends Component {
   };
   
   loadSMSListener() {
-    console.log("HEY")
     SmsListener.addListener(message => {
       if (message.body.indexOf('CBEWS-L Sync Ack') > -1 && message.body.indexOf('CBEWS-L Sync Ack') > -1) {
         if (message.body.indexOf('Status: Synced')) {
