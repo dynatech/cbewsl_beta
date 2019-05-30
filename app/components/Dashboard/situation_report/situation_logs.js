@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { situation_report_styles } from '../../../assets/styles/situation_report_styles'
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import { defaults } from '../../../assets/styles/default_styles'
@@ -13,7 +13,7 @@ export default class SituationLogs extends Component {
     let new_days = {};
     this.state = {
       marked_dates: new_days,
-      date: "",
+      date_selected: "",
       selected_date_situations: []
     };
   }
@@ -57,6 +57,7 @@ export default class SituationLogs extends Component {
   }
 
   displaySituationReportPerDay() {
+    this.setState({ date_selected: "" })
     let next_days = []
     let new_days = {};
     fetch('http://192.168.150.191:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
@@ -100,6 +101,7 @@ export default class SituationLogs extends Component {
 
         let data_container = Storage.getItem("SituationReportLogs")
         data_container.then(response => {
+          console.log(response)
           if (response != null) {
             for (const [index, value] of response.entries()) {
               let format_date_time = this.formatDateTime(date = value.timestamp);
@@ -128,6 +130,7 @@ export default class SituationLogs extends Component {
   }
 
   selectDateToAddReport(date) {
+    this.setState({ date_selected: date })
     let selected_date = this.formatDateTime(date = date)
     fetch('http://192.168.150.191:5000/api/situation_report/get_report_by_date', {
       method: 'POST',
@@ -140,13 +143,10 @@ export default class SituationLogs extends Component {
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson)
         let situation_reports = []
         if (responseJson != null) {
-          console.log("hereeeeee")
           for (const [index, value] of responseJson.entries()) {
             let format_date_time = this.formatDateTime(date = value.timestamp);
-            console.log(value)
             situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
               <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_format_timestamp"]}</Text>
               <Text style={{ fontSize: 15 }}>{value.summary}</Text>
@@ -163,7 +163,57 @@ export default class SituationLogs extends Component {
       })
       .catch((error) => {
         let get_all_marked_dates = this.state.marked_dates
+
+        let situation_reports = []
+        try {
+          let selected_date = get_all_marked_dates[date].day
+          let data_container = Storage.getItem("SituationReportLogs")
+          data_container.then(response => {
+            for (const [index, value] of response.entries()) {
+              let format_date_time = this.formatDateTime(date = value.timestamp);
+              let timestamp = format_date_time["date"]
+              if (timestamp == selected_date) {
+                situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_format_timestamp"]}</Text>
+                  <Text style={{ fontSize: 15 }}>{value.summary}</Text>
+                </View>)
+              }
+            }
+            this.setState({ selected_date_situations: situation_reports })
+          });
+        }
+        catch (err) {
+          situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
+          </View>)
+          this.setState({ selected_date_situations: situation_reports })
+        }
+
       });
+  }
+
+  navigateSaveSituationReport() {
+    let date_selected = this.state.date_selected
+    console.log(date_selected)
+    if (date_selected == "") {
+      // ToastAndroid.show("Please pick a date to add report.", ToastAndroid.SHORT);
+      Alert.alert(
+        'Alert!',
+        'Please pick a date to add report.',
+        [
+          {
+            text: 'Close',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          }
+        ],
+        { cancelable: false },
+      );
+    } else {
+      this.props.navigation.navigate('save_situation_report', {
+        data: date_selected
+      })
+    }
   }
 
 
@@ -186,7 +236,7 @@ export default class SituationLogs extends Component {
 
         <View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-            <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('save_situation_report')}>
+            <TouchableOpacity style={defaults.button} onPress={() => this.navigateSaveSituationReport()}>
               <Text style={defaults.buttonText}>Add Report</Text>
             </TouchableOpacity>
           </View>

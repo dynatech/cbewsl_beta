@@ -13,6 +13,7 @@ export default class SaveSituationReport extends Component {
             situation_report_id: 0,
             local_storage_id: 0,
             sync_status: 0,
+            timestamp: "",
             summary: "",
             pdf_path: "",
             image_path: ""
@@ -21,32 +22,17 @@ export default class SaveSituationReport extends Component {
 
     componentWillMount() {
         const { navigation } = this.props;
-        const data = navigation.getParam("data", "none");
-        if (data != "none") {
-            this.setState({
-                situation_report_id: data.situation_report_id,
-                local_storage_id: data.local_storage_id,
-                sync_status: data.sync_status,
-                summary: data.summary,
-                pdf_path: data.pdf_path,
-                image_path: data.image_path
-            });
-        } else {
-            this.setState({
-                situation_report_id: 0,
-                local_storage_id: 0,
-                sync_status: 0,
-                summary: "",
-                pdf_path: "",
-                image_path: ""
-            });
-        }
+        const selected_date = navigation.getParam("data", "none");
+        this.setState({ timestamp: selected_date })
+        console.log(this.state.timestamp)
     }
 
     saveSituationReport() {
+        console.log(this.state.timestamp)
         const { situation_report_id,
             local_storage_id,
             sync_status,
+            timestamp,
             summary,
             pdf_path,
             image_path } = this.state
@@ -60,6 +46,7 @@ export default class SaveSituationReport extends Component {
                 situation_report_id: situation_report_id,
                 local_storage_id: local_storage_id,
                 sync_status: sync_status,
+                timestamp: timestamp,
                 summary: summary,
                 pdf_path: pdf_path,
                 image_path: image_path
@@ -68,12 +55,116 @@ export default class SaveSituationReport extends Component {
             .then((responseJson) => {
                 if (responseJson.status == true) {
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                    let data_container = Storage.getItem('SituationReportLogs')
+                    let updated_data = []
+                    data = {
+                        situation_report_id: situation_report_id,
+                        local_storage_id: 1,
+                        sync_status: 3,
+                        timestamp: timestamp,
+                        summary: summary,
+                        pdf_path: pdf_path,
+                        image_path: image_path
+                    }
+                    data_container.then(response => {
+                        if (response == null) {
+                            Storage.removeItem("SituationReportLogs")
+                            Storage.setItem("SituationReportLogs", [data])
+                        } else {
+                            let temp = response
+                            temp.push(data)
+                            let counter = 0
+                            temp.forEach((value) => {
+                                counter += 1
+                                updated_data.push({
+                                    situation_report_id: situation_report_id,
+                                    local_storage_id: 1,
+                                    sync_status: 3,
+                                    timestamp: timestamp,
+                                    summary: summary,
+                                    pdf_path: pdf_path,
+                                    image_path: image_path
+                                })
+                            });
+                            Storage.removeItem("SituationReportLogs")
+                            Storage.setItem("SituationReportLogs", updated_data)
+                        }
+                        this.props.navigation.navigate('situation_logs');
+                    });
                 } else {
                     ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                 }
             })
             .catch((error) => {
-                console.log(error)
+                data = {
+                    situation_report_id: situation_report_id,
+                    local_storage_id: local_storage_id,
+                    sync_status: 1,
+                    timestamp: timestamp,
+                    summary: summary,
+                    pdf_path: pdf_path,
+                    image_path: image_path
+                }
+                let offline_data = Storage.getItem("SituationReportLogs");
+                offline_data.then(response => {
+                    if (local_storage_id == 0) {
+                        data["local_storage_id"] = 1
+                        if (response == null) {
+                            Storage.removeItem("SituationReportLogs")
+                            Storage.setItem("SituationReportLogs", [data])
+                        } else {
+                            let temp = response
+                            temp.push(data)
+                            let updated_data = []
+                            let counter = 0
+                            temp.forEach((value) => {
+                                counter += 1
+                                updated_data.push({
+                                    situation_report_id: value.situation_report_id,
+                                    local_storage_id: counter,
+                                    sync_status: value.sync_status,
+                                    timestamp: value.timestamp,
+                                    summary: value.summary,
+                                    pdf_path: value.pdf_path,
+                                    image_path: value.image_path
+                                })
+                            });
+                            Storage.removeItem("SituationReportLogs")
+                            Storage.setItem("SituationReportLogs", updated_data)
+                        }
+                    } else {
+                        let temp = response
+                        let updated_data = []
+                        let counter = 0
+                        temp.forEach((value) => {
+                            counter += 1
+                            if (local_storage_id == value.local_storage_id) {
+                                updated_data.push({
+                                    situation_report_id: situation_report_id,
+                                    local_storage_id: counter,
+                                    sync_status: 2,
+                                    timestamp: timestamp,
+                                    summary: summary,
+                                    pdf_path: pdf_path,
+                                    image_path: image_path
+                                })
+                            } else {
+                                updated_data.push({
+                                    situation_report_id: value.situation_report_id,
+                                    local_storage_id: counter,
+                                    sync_status: value.sync_status,
+                                    timestamp: value.timestamp,
+                                    summary: value.summary,
+                                    pdf_path: value.pdf_path,
+                                    image_path: value.image_path
+                                })
+                            }
+                        });
+                        Storage.removeItem("SituationReportLogs")
+                        Storage.setItem("SituationReportLogs", updated_data)
+                    }
+                    this.props.navigation.navigate('situation_logs');
+                });
             });
     }
 
