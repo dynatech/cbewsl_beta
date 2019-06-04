@@ -36,7 +36,7 @@ export default class CurrentSituationReport extends Component {
       time = moment(new Date()).format("h:mm:ss A")
       text_format_timestamp = moment(new Date()).format("MMMM D, YYYY h:mm:ss A")
     } else {
-      current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+      current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS")
       date = moment(date).format("YYYY/MM/DD")
       time = moment(date).format("h:mm:ss A")
       text_format_timestamp = moment(date).format("MMMM D, YYYY h:mm:ss A")

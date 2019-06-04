@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles'
 import { ScrollView } from 'react-native-gesture-handler';
 import Storage from '../../utils/storage'
+import { NavigationEvents } from 'react-navigation';
+import moment from "moment"
 
 export default class CurrentMeasurement extends Component {
   constructor(props) {
@@ -15,86 +17,90 @@ export default class CurrentMeasurement extends Component {
   }
 
   navigateSurficialData(tab) {
-    switch(tab) {
-        case "summary":
-            this.props.navigation.navigate('summary')
-            break;
-        case "monitoring_logs":
-            this.props.navigation.navigate('monitoring_logs')
-            break;
-        default:
-            console.log("Same page...")
-            break;
+    switch (tab) {
+      case "summary":
+        this.props.navigation.navigate('summary')
+        break;
+      case "monitoring_logs":
+        this.props.navigation.navigate('monitoring_logs')
+        break;
+      default:
+        console.log("Same page...")
+        break;
     }
   }
 
-  componentDidMount(){
-    let surficial_data_current_meas = Storage.getItem("SurficialDataCurrentMeasurement");
-    surficial_data_current_meas.then(response => {
-      if (response == null) {
-        fetch('http://192.168.150.191:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
-        .then((responseJson) => {
+  formatDateTime(date = null) {
+    let timestamp = date
+    let current_timestamp = ""
+    let text_format_timestamp = ""
+    if (timestamp == null) {
+      current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+      date = moment(new Date()).format("MMMM D, YYYY")
+      time = moment(new Date()).format("h:mm A")
+      text_format_timestamp = moment(new Date()).format("MMMM D, YYYY h:mm:ss A")
+    } else {
+      current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS")
+      date = moment(date).format("MMMM D, YYYY")
+      time = moment(date).format("h:mm A")
+      text_format_timestamp = moment(date).format("MMMM D, YYYY h:mm:ss A")
+    }
 
-          console.log("Initialize surficial data current measurement.")
-          Storage.setItem("SurficialDataCurrentMeasurement", responseJson);
-          
-          let crack_sets = []
-          this.setState({date: responseJson.date})
-          this.setState({time: responseJson.time})
-    
-          for (const [index, value] of responseJson.cracks.entries()) {
-            console.log(value)
-            let key = Object.keys(value)
-            let key_value = Object.values(value)
-            crack_sets.push(<Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack {key}: {key_value}</Text>)
-          }
-          this.setState({crack_sets: crack_sets})
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      } else {
+
+    return {
+      current_timestamp: current_timestamp,
+      date: date,
+      time: time,
+      text_format_timestamp: text_format_timestamp
+    }
+  }
+
+  componentDidMount() {
+    fetch('http://192.168.150.191:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
+      .then((responseJson) => {
+        let formmated_timestamp = this.formatDateTime(date = responseJson.current_measurement_date)
         let crack_sets = []
-        this.setState({date: response.date})
-        this.setState({time: response.time})
-  
-        for (const [index, value] of response.cracks.entries()) {
-          let key = Object.keys(value)
-          let key_value = Object.values(value)
-          crack_sets.push(<Text style={{fontSize: 20, fontWeight: 'bold'}}>Crack {key}: {key_value}</Text>)
+
+        this.setState({ date: formmated_timestamp["date"] })
+        this.setState({ time: formmated_timestamp["time"] })
+
+        for (const [index, value] of responseJson.cracks.entries()) {
+          crack_sets.push(<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Crack {value.crack}: {value.measurement}</Text>)
         }
-        this.setState({crack_sets: crack_sets})
-      }
-    })
+        this.setState({ crack_sets: crack_sets })
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   render() {
     return (
       <ScrollView style={surficial_data_styles.container}>
         <View style={surficial_data_styles.menuSection}>
-            <View style={surficial_data_styles.buttonSection}>
-                <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("summary")}>
-                    <Text style={surficial_data_styles.buttonText}>Summary</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={surficial_data_styles.activeButton} >
-                    <Text style={surficial_data_styles.buttonActiveText}>Current Measurement</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("monitoring_logs")}>
-                    <Text style={surficial_data_styles.buttonText}>Monitoring Logs</Text>
-                </TouchableOpacity>
-            </View>
+          <View style={surficial_data_styles.buttonSection}>
+            <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("summary")}>
+              <Text style={surficial_data_styles.buttonText}>Summary</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={surficial_data_styles.activeButton} >
+              <Text style={surficial_data_styles.buttonActiveText}>Current Measurement</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("monitoring_logs")}>
+              <Text style={surficial_data_styles.buttonText}>Monitoring Logs</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={surficial_data_styles.contentContainer}>
-          <View style={{padding: 10, marginTop: 20, marginBottom: 20}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>DATE: {this.state.date}</Text>
-            <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>TIME: {this.state.time}</Text>
+          <View style={{ padding: 10, marginTop: 20, marginBottom: 20 }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center' }}>DATE: {this.state.date}</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center' }}>TIME: {this.state.time}</Text>
           </View>
-          <View style={{padding: 10}}>
+          <View style={{ padding: 10 }}>
             {this.state.crack_sets}
           </View>
         </View>
       </ScrollView>
-      
+
     );
   }
 }
