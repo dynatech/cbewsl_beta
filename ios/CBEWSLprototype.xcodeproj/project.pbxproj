@@ -76,6 +76,9 @@
 		C9DD350A22224CFB8865E1A7 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3EE79FBF326245A09C38E83A /* Octicons.ttf */; };
 		8AC537EC97C6479C8AB091A0 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 17BB807CE28C43BFA48D2ED2 /* SimpleLineIcons.ttf */; };
 		414612533E274B11BCFB95C6 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B0A04BC59F2A4FE8B74FBD5C /* Zocial.ttf */; };
+		2CB89604CF8244CFAA541A82 /* libRNBackgroundJob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 161870FCB6894E0FBB6B2FCF /* libRNBackgroundJob.a */; };
+		5528248594944DB5913FE6EF /* libreact-native-sha512.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 226A86205D8F4579B3694D2F /* libreact-native-sha512.a */; };
+		AEA8B4A46D6E4CBDA7DB6ADC /* libSendSMS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 025A5EB3050347E0989B62E5 /* libSendSMS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -422,6 +425,12 @@
 		3EE79FBF326245A09C38E83A /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		17BB807CE28C43BFA48D2ED2 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		B0A04BC59F2A4FE8B74FBD5C /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		68001A09AF474E6F8E8BF307 /* RNBackgroundJob.xcodeproj */ = {isa = PBXFileReference; name = "RNBackgroundJob.xcodeproj"; path = "../node_modules/react-native-background-job/ios/RNBackgroundJob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		161870FCB6894E0FBB6B2FCF /* libRNBackgroundJob.a */ = {isa = PBXFileReference; name = "libRNBackgroundJob.a"; path = "libRNBackgroundJob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		D695DF09A7FF49DCA3B22AEA /* react-native-sha512.xcodeproj */ = {isa = PBXFileReference; name = "react-native-sha512.xcodeproj"; path = "../node_modules/react-native-sha512/ios/react-native-sha512.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		226A86205D8F4579B3694D2F /* libreact-native-sha512.a */ = {isa = PBXFileReference; name = "libreact-native-sha512.a"; path = "libreact-native-sha512.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		028488137D0F490A82C704A6 /* SendSMS.xcodeproj */ = {isa = PBXFileReference; name = "SendSMS.xcodeproj"; path = "../node_modules/react-native-sms/SendSMS.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		025A5EB3050347E0989B62E5 /* libSendSMS.a */ = {isa = PBXFileReference; name = "libSendSMS.a"; path = "libSendSMS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -452,6 +461,9 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				A4B08422417646F2B305DF88 /* libRNGestureHandler.a in Frameworks */,
 				631E203544914CF88EDE8564 /* libRNVectorIcons.a in Frameworks */,
+				2CB89604CF8244CFAA541A82 /* libRNBackgroundJob.a in Frameworks */,
+				5528248594944DB5913FE6EF /* libreact-native-sha512.a in Frameworks */,
+				AEA8B4A46D6E4CBDA7DB6ADC /* libSendSMS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -645,6 +657,9 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				35B81E59674B42B0BB43C455 /* RNGestureHandler.xcodeproj */,
 				651923AC5B2A4C51AEE99253 /* RNVectorIcons.xcodeproj */,
+				68001A09AF474E6F8E8BF307 /* RNBackgroundJob.xcodeproj */,
+				D695DF09A7FF49DCA3B22AEA /* react-native-sha512.xcodeproj */,
+				028488137D0F490A82C704A6 /* SendSMS.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1351,11 +1366,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
+					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
+					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 				);
 			};
 			name = Debug;
@@ -1381,11 +1402,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
+					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
+					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 				);
 			};
 			name = Release;
@@ -1410,6 +1437,9 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
+					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
+					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 				);
 			};
 			name = Debug;
@@ -1433,6 +1463,9 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
+					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
+					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 				);
 			};
 			name = Release;
@@ -1466,11 +1499,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
+					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
+					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 				);
 			};
 			name = Debug;
@@ -1504,11 +1543,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
+					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
+					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 				);
 			};
 			name = Release;
@@ -1541,11 +1586,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
+					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
+					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 				);
 			};
 			name = Debug;
@@ -1578,11 +1629,17 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
+					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
+					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 				);
 			};
 			name = Release;
