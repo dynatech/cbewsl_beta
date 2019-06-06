@@ -193,9 +193,10 @@ export default class SaveFieldSurveyLogs extends Component {
                             });
                             Storage.removeItem("FieldSurveyLogs")
                             Storage.setItem("FieldSurveyLogs", updated_data)
-                            Storage.removeItem("FieldSurveyLatestReportSummary")
-                            Storage.setItem("FieldSurveyLatestReportSummary", [data])
                         }
+
+                        Storage.removeItem("FieldSurveyLatestReportSummary")
+                        Storage.setItem("FieldSurveyLatestReportSummary", [data])
                     } else {
                         let temp = response
                         let updated_data = []
@@ -214,9 +215,9 @@ export default class SaveFieldSurveyLogs extends Component {
                                     note: note,
                                     date: date
                                 })
-                                data["date"] = date
-                                Storage.removeItem("FieldSurveyLatestReportSummary")
-                                Storage.setItem("FieldSurveyLatestReportSummary", [data])
+                                // data["date"] = date
+                                // Storage.removeItem("FieldSurveyLatestReportSummary")
+                                // Storage.setItem("FieldSurveyLatestReportSummary", [data])
 
                             } else {
                                 updated_data.push({
