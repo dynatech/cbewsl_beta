@@ -45,6 +45,7 @@ export default class Summary extends Component {
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
+        responseJson[0].date = this.state.date
         Storage.setItem("RainfallSummary", responseJson)
         let online = responseJson[0]
         this.setState({one_day_rain: Math.round((online["1D cml"]/online["half of 2yr max"])*100)})

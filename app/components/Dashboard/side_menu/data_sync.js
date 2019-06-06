@@ -111,6 +111,9 @@ export default class DataSyncer extends Component {
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SurficialDataMeasurements')}>
                 <Text style={defaults.touchableTexts}>Surficial Data | Measurements</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SensorMaintenanceMaintenanceLogs')}>
+                <Text style={defaults.touchableTexts}>Sensor Maintenance | Maintenance Logs</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </View>
