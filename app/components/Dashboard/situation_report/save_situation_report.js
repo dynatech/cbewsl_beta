@@ -89,6 +89,11 @@ export default class SaveSituationReport extends Component {
                             Storage.removeItem("SituationReportLogs")
                             Storage.setItem("SituationReportLogs", updated_data)
                         }
+                        if (situation_report_id == 0) {
+                            Storage.removeItem("SituationReportLatest")
+                            Storage.setItem("SituationReportLatest", [data])
+                        }
+
                         this.props.navigation.navigate('situation_logs');
                     });
                 } else {
@@ -132,6 +137,8 @@ export default class SaveSituationReport extends Component {
                             Storage.removeItem("SituationReportLogs")
                             Storage.setItem("SituationReportLogs", updated_data)
                         }
+                        Storage.removeItem("SituationReportLatest")
+                        Storage.setItem("SituationReportLatest", [data])
                     } else {
                         let temp = response
                         let updated_data = []

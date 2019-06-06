@@ -55,17 +55,19 @@ export default class CurrentMeasurement extends Component {
     }
   }
 
-  componentDidMount() {
+  getSurficialCurrentMeasurement() {
     fetch('http://192.168.150.191:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
       .then((responseJson) => {
         let formmated_timestamp = this.formatDateTime(date = responseJson.current_measurement_date)
         let crack_sets = []
+        let counter = 0
+        let to_local_data = []
 
         this.setState({ date: formmated_timestamp["date"] })
         this.setState({ time: formmated_timestamp["time"] })
 
         for (const [index, value] of responseJson.cracks.entries()) {
-          crack_sets.push(<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Crack {value.crack}: {value.measurement}</Text>)
+          crack_sets.push(<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Crack {value.crack}: {value.measurement} cm</Text>)
         }
         this.setState({ crack_sets: crack_sets })
       })
@@ -77,6 +79,7 @@ export default class CurrentMeasurement extends Component {
   render() {
     return (
       <ScrollView style={surficial_data_styles.container}>
+        <NavigationEvents onDidFocus={() => this.getSurficialCurrentMeasurement()} />
         <View style={surficial_data_styles.menuSection}>
           <View style={surficial_data_styles.buttonSection}>
             <TouchableOpacity style={surficial_data_styles.menuButton} onPress={() => this.navigateSurficialData("summary")}>

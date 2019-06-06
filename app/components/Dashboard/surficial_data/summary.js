@@ -7,6 +7,7 @@ import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation';
 import moment from "moment"
+import ChartView from 'react-native-highcharts';
 
 export default class Summary extends Component {
   constructor(props) {
@@ -64,7 +65,7 @@ export default class Summary extends Component {
     this.setState({ surficial_summary: "Last surficial data received is on " + formatted_timestamp["text_format_timestamp"] })
   }
 
-  componentDidMount() {
+  getSurficialData() {
 
     let line_colors = ['#7cb5ec', '#000000', '#8ce77d']
     fetch('http://192.168.150.191:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
@@ -95,6 +96,7 @@ export default class Summary extends Component {
   render() {
     return (
       <ScrollView style={surficial_data_styles.container}>
+        <NavigationEvents onDidFocus={() => this.getSurficialData()} />
         <View style={surficial_data_styles.menuSection}>
           <View style={surficial_data_styles.buttonSection}>
             <TouchableOpacity style={surficial_data_styles.activeButton} >
