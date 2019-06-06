@@ -18,7 +18,10 @@ export default class Summary extends Component {
       buttonTextMap: rassessment_styles.buttonActiveText,
       buttonFRP: rassessment_styles.subMenuButton,
       buttonTextFRP: rassessment_styles.buttonText,
-      summary_data: []
+      summary_data: [],
+      summary_data_paginate: [],
+      page: 0,
+      number_of_pages: 0
     };
   }
 
@@ -84,16 +87,14 @@ export default class Summary extends Component {
         Storage.setItem("RiskAssessmentSummary", to_local_data)
         let data_container = Storage.getItem('RiskAssessmentSummary')
         data_container.then(response => {
-          console.log(response)
         });
         this.setState({ summary_data: summary_data })
-
+        this.tablePaginate(summary_data)
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentSummary')
         let summary_data = [];
         data_container.then(response => {
-          console.log(response)
           if (response != null) {
             for (const [index, value] of response.entries()) {
               summary_data.push(<DataTable.Row style={{ width: 500 }}>
@@ -110,8 +111,39 @@ export default class Summary extends Component {
           }
 
           this.setState({ summary_data: summary_data })
+          this.tablePaginate(summary_data)
         });
       });
+  }
+
+  tablePaginate(summary_data) {
+    let temp = []
+    let counter = 0
+    let number_of_pages = summary_data.length / 6
+    this.setState({number_of_pages: Math.ceil(number_of_pages)})
+    summary_data.forEach(element => {
+      if (counter < 6) {
+        temp.push(element)
+      }
+      counter++
+    });
+    this.setState({summary_data_paginate: temp})
+  }
+
+  changePage(page) {
+    let start = (page*6)
+    let end = start * 2
+    let temp = []
+
+    if (end == 0) {
+      end = 6
+    }
+    
+    for (let counter = start; counter < end; counter ++) {
+      temp.push(this.state.summary_data[counter])
+    }
+    this.setState({summary_data_paginate: temp})
+    this.setState({page: page})
   }
 
   render() {
@@ -139,7 +171,13 @@ export default class Summary extends Component {
                   <DataTable.Title>Adaptive Capacity</DataTable.Title>
                   <DataTable.Title>Vulnerability</DataTable.Title>
                 </DataTable.Header>
-                {this.state.summary_data}
+                {this.state.summary_data_paginate}
+                <DataTable.Pagination
+                  page={this.state.page}
+                  numberOfPages={this.state.number_of_pages}
+                  onPageChange={(page) => { this.changePage(page) }}
+                  label={`Page ${this.state.page} of ${this.state.number_of_pages - 1}`}
+                />
               </DataTable>
             </ScrollView>
             <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_summary')}>

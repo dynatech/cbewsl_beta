@@ -24,7 +24,6 @@ export default class DataSyncer extends Component {
   };
   
   loadSMSListener() {
-    console.log("HEY")
     SmsListener.addListener(message => {
       if (message.body.indexOf('CBEWS-L Sync Ack') > -1 && message.body.indexOf('CBEWS-L Sync Ack') > -1) {
         if (message.body.indexOf('Status: Synced')) {
@@ -111,6 +110,9 @@ export default class DataSyncer extends Component {
             </TouchableOpacity>
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SurficialDataMeasurements')}>
                 <Text style={defaults.touchableTexts}>Surficial Data | Measurements</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SensorMaintenanceMaintenanceLogs')}>
+                <Text style={defaults.touchableTexts}>Sensor Maintenance | Maintenance Logs</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

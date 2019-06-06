@@ -8,16 +8,16 @@ const ewi_styles = StyleSheet.create({
     container: {
         flex: 1
     },
+    menuContainer: {
+        flex: 1,
+        margin: 20,
+        textAlign: 'center',
+        justifyContent: 'center'
+    },
     menuSection: {
-        height: (height/2) + 10,
         marginLeft: 10,
         marginRight: 10,
         flex: 1
-    },
-    graphSection: {
-        height: (height/2) + 10,
-        marginLeft: 10,
-        marginRight: 10
     },
     buttonSection: {
         flexDirection: 'row',
