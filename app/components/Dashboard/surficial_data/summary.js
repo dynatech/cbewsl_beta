@@ -72,8 +72,6 @@ export default class Summary extends Component {
       .then((responseJson) => {
         console.log(responseJson)
         let surficial_data = []
-        let to_local_data = []
-        let counter = 0
         for (const [index, value] of responseJson.entries()) {
           let data = {
             seriesName: value.series_name,
@@ -81,15 +79,32 @@ export default class Summary extends Component {
             color: line_colors[index]
           }
           surficial_data.push(data)
-          // to_local_data.push()
         }
-
+        Storage.removeItem("SurficialDataSummary")
+        Storage.setItem("SurficialDataSummary", responseJson)
+        let data_container = Storage.getItem('SurficialDataSummary')
+        data_container.then(response => {
+          console.log(response)
+        });
         this.analyzeSurficialSummary(surficial_data)
         this.setState({ surficial_data: surficial_data })
-        console.log(surficial_data)
       })
       .catch((error) => {
-        console.error(error);
+        let data_container = Storage.getItem('SurficialDataSummary')
+        let surficial_data = [];
+        data_container.then(response => {
+          for (const [index, value] of response.entries()) {
+            let data = {
+              seriesName: value.series_name,
+              data: value.data,
+              color: line_colors[index]
+            }
+            surficial_data.push(data)
+          }
+          this.analyzeSurficialSummary(surficial_data)
+          this.setState({ surficial_data: surficial_data })
+
+        });
       });
   }
 
