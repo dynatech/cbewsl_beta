@@ -60,14 +60,16 @@ export default class CurrentMeasurement extends Component {
       .then((responseJson) => {
         let formmated_timestamp = this.formatDateTime(date = responseJson.current_measurement_date)
         let crack_sets = []
-        let counter = 0
         let to_local_data = []
-
+        console.log(responseJson)
         this.setState({ date: formmated_timestamp["date"] })
         this.setState({ time: formmated_timestamp["time"] })
 
         for (const [index, value] of responseJson.cracks.entries()) {
           crack_sets.push(<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Crack {value.crack}: {value.measurement} cm</Text>)
+          // to_local_data.push({
+
+          // })
         }
         this.setState({ crack_sets: crack_sets })
       })
