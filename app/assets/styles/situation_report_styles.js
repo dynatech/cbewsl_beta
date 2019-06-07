@@ -4,7 +4,7 @@ import { Dimensions } from 'react-native';
 let { width } = Dimensions.get('window');
 let { height } = Dimensions.get('window');
 
-const situation_report_styles = StyleSheet.create({ 
+const situation_report_styles = StyleSheet.create({
     container: {
         flex: 1
     },
@@ -29,7 +29,7 @@ const situation_report_styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         justifyContent: 'center',
-        width: (width/2)-10,
+        width: (width / 2) - 10,
     },
     activeButton: {
         padding: 10,
@@ -40,26 +40,36 @@ const situation_report_styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         justifyContent: 'center',
-        width: (width/2)-10,
+        width: (width / 2) - 10,
     },
     buttonText: {
         textAlign: 'center',
         alignContent: 'center',
         color: 'white',
-        fontSize: width*0.035
+        fontSize: width * 0.035
     },
     buttonActiveText: {
         textAlign: 'center',
         alignContent: 'center',
         color: '#083451',
-        fontSize: width*0.035
+        fontSize: width * 0.035
     },
     contentContainer: {
         flex: 1,
         padding: 20
+    },
+    button: {
+        backgroundColor: '#083451',
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#083451',
+        marginTop: 10,
+        marginBottom: 10,
+        marginRight: 5,
+        marginLeft: 5,
+        width: 250
     }
 
 })
 
-export { situation_report_styles }         
- 
+export { situation_report_styles }

@@ -80,7 +80,6 @@ export default class MaintenanceLogs extends Component {
             sensor_maintenance_id: value.sensor_maintenance_id,
             local_storage_id: counter,
             sync_status: 3,
-            remarks: value.remarks,
             working_nodes: value.working_nodes,
             anomalous_nodes: value.anomalous_nodes,
             rain_gauge_status: value.rain_gauge_status,
@@ -97,12 +96,31 @@ export default class MaintenanceLogs extends Component {
             }
           };
         });
+        Storage.removeItem("SensorMaintenanceLogs")
+        Storage.setItem("SensorMaintenanceLogs", to_local_data)
         this.setState({ marked_dates: new_days })
 
       })
       .catch((error) => {
-
-
+        let data_container = Storage.getItem('SensorMaintenanceLogs')
+        data_container.then(response => {
+          if (response.length != 0) {
+            for (const [index, value] of response.entries()) {
+              let format_date_time = this.formatDateTime(date = value.timestamp);
+              next_days.push(format_date_time["date"])
+            }
+            next_days.forEach((day) => {
+              new_days = {
+                ...new_days,
+                [day]: {
+                  day,
+                  marked: true
+                }
+              };
+            });
+            this.setState({ marked_dates: new_days })
+          }
+        })
       });
   }
 
@@ -123,10 +141,11 @@ export default class MaintenanceLogs extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         let logs = []
+        let to_local_data = []
         console.log(responseJson)
         if (responseJson.length == 0) {
           logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No logs on this date</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
           </View>)
           this.setState({ selected_date_logs: logs })
         } else {
@@ -145,9 +164,39 @@ export default class MaintenanceLogs extends Component {
 
       })
       .catch((error) => {
-        let get_all_marked_dates = this.state.marked_dates
 
-        let situation_reports = []
+        let logs = []
+        try {
+          let get_all_marked_dates = this.state.marked_dates
+          let date_selected = get_all_marked_dates[date].day
+          let data_container = Storage.getItem('SensorMaintenanceLogs')
+          data_container.then(response => {
+            logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Logs for {selected_date["text_format_timestamp"]}</Text>
+            </View>)
+            for (const [index, value] of response.entries()) {
+              let format_date_time = this.formatDateTime(date = value.timestamp);
+              let timestamp = format_date_time["date"]
+              console.log(timestamp + "|" + date_selected)
+              if (timestamp == date_selected) {
+                logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+                  <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
+                  <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
+                  <Text style={{ fontSize: 15 }}>Rain Guage Status: {value.rain_gauge_status}</Text>
+                </View>)
+              }
+
+            }
+            this.setState({ selected_date_logs: logs })
+          })
+        }
+        catch (err) {
+          logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
+          </View>)
+          this.setState({ selected_date_logs: logs })
+        }
+
 
 
       });
