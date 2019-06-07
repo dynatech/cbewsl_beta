@@ -1,15 +1,23 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles'
 import { ScrollView } from 'react-native-gesture-handler';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import { defaults } from '../../../assets/styles/default_styles'
 import RainfallGraph from './rainfall_graph'
+import Storage from '../../utils/storage'
+import { NavigationEvents } from 'react-navigation'
+import moment from "moment"
 
 export default class MaintenanceLogs extends Component {
   constructor(props) {
     super(props);
+    let new_days = {};
     this.state = {
+      marked_dates: new_days,
+      date_selected: "",
+      selected_date_logs: [],
+      add_report_text: "Add Report"
     };
   }
 
@@ -28,9 +36,149 @@ export default class MaintenanceLogs extends Component {
     }
   }
 
+  formatDateTime(date = null) {
+    let timestamp = date
+    let current_timestamp = ""
+    let text_format_timestamp = ""
+    let date_format = ""
+    let time_format = ""
+    if (timestamp == null) {
+      current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+      date_format = moment(new Date()).format("YYYY-MM-DD")
+      time_format = moment(new Date()).format("h:mm:ss A")
+      text_format_timestamp = moment(new Date()).format("MMMM D, YYYY")
+    } else {
+      current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS")
+      date_format = moment(date).format("YYYY-MM-DD")
+      time_format = moment(date).format("h:mm:ss A")
+      text_format_timestamp = moment(date).format("MMMM D, YYYY")
+    }
+
+
+    return {
+      current_timestamp: current_timestamp,
+      date: date_format,
+      time: time_format,
+      text_format_timestamp: text_format_timestamp
+    }
+  }
+
+  displayMaintenanceLogsPerDay() {
+    this.setState({ date_selected: "" })
+    let next_days = []
+    let new_days = {};
+
+    fetch('http://192.168.150.191:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
+      .then((responseJson) => {
+        let to_local_data = [];
+        for (const [index, value] of responseJson.entries()) {
+          let format_date_time = this.formatDateTime(date = value.timestamp);
+          next_days.push(format_date_time["date"])
+          let counter = 0;
+          counter += 1;
+          to_local_data.push({
+            sensor_maintenance_id: value.sensor_maintenance_id,
+            local_storage_id: counter,
+            sync_status: 3,
+            remarks: value.remarks,
+            working_nodes: value.working_nodes,
+            anomalous_nodes: value.anomalous_nodes,
+            rain_gauge_status: value.rain_gauge_status,
+            timestamp: format_date_time["current_timestamp"],
+          });
+        }
+
+        next_days.forEach((day) => {
+          new_days = {
+            ...new_days,
+            [day]: {
+              day,
+              marked: true
+            }
+          };
+        });
+        this.setState({ marked_dates: new_days })
+
+      })
+      .catch((error) => {
+
+
+      });
+  }
+
+  selectDateToAddLogs(date) {
+    this.setState({ date_selected: date })
+    let selected_date = this.formatDateTime(date = date)
+    button_text = "Add Report for " + selected_date["text_format_timestamp"]
+    this.setState({ add_report_text: button_text })
+    fetch('http://192.168.150.191:5000/api/sensor_maintenance/get_report_by_date', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        date_selected: selected_date["date"]
+      }),
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        let logs = []
+        console.log(responseJson)
+        if (responseJson.length == 0) {
+          logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No logs on this date</Text>
+          </View>)
+          this.setState({ selected_date_logs: logs })
+        } else {
+          logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Logs for {selected_date["text_format_timestamp"]}</Text>
+          </View>)
+          for (const [index, value] of responseJson.entries()) {
+            logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+              <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
+              <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
+              <Text style={{ fontSize: 15 }}>Rain Guage Status: {value.rain_gauge_status}</Text>
+            </View>)
+          }
+          this.setState({ selected_date_logs: logs })
+        }
+
+      })
+      .catch((error) => {
+        let get_all_marked_dates = this.state.marked_dates
+
+        let situation_reports = []
+
+
+      });
+  }
+
+  navigateSaveMaintenanceLogs() {
+    let date_selected = this.state.date_selected
+    if (date_selected == "") {
+      Alert.alert(
+        'Alert!',
+        'Please pick a date to add report.',
+        [
+          {
+            text: 'Close',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          }
+        ],
+        { cancelable: false },
+      );
+    } else {
+      this.props.navigation.navigate('save_maintenance_logs', {
+        data: date_selected
+      })
+    }
+  }
+
   render() {
     return (
       <ScrollView style={sensor_maintenance_styles.container}>
+        <NavigationEvents onDidFocus={() => this.displayMaintenanceLogsPerDay()} />
         <View style={sensor_maintenance_styles.menuSection}>
           <View style={sensor_maintenance_styles.buttonSection}>
             <TouchableOpacity style={sensor_maintenance_styles.menuButton} onPress={() => this.navigateSensorMaintenace("summary")}>
@@ -44,13 +192,16 @@ export default class MaintenanceLogs extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Calendar></Calendar>
+        <Calendar markedDates={this.state.marked_dates} onDayPress={(day) => { this.selectDateToAddLogs(day.dateString) }}></Calendar>
         <View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-            <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('save_maintenance_logs')}>
-              <Text style={defaults.buttonText}>Add Report</Text>
+            <TouchableOpacity style={sensor_maintenance_styles.button} onPress={() => this.navigateSaveMaintenanceLogs()}>
+              <Text style={defaults.buttonText}>{this.state.add_report_text}</Text>
             </TouchableOpacity>
           </View>
+        </View>
+        <View style={sensor_maintenance_styles.contentContainer}>
+          {this.state.selected_date_logs}
         </View>
         <RainfallGraph></RainfallGraph>
       </ScrollView>

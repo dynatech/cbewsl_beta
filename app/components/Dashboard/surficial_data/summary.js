@@ -72,6 +72,8 @@ export default class Summary extends Component {
       .then((responseJson) => {
         console.log(responseJson)
         let surficial_data = []
+        let to_local_data = []
+        let counter = 0
         for (const [index, value] of responseJson.entries()) {
           let data = {
             seriesName: value.series_name,
@@ -79,10 +81,16 @@ export default class Summary extends Component {
             color: line_colors[index]
           }
           surficial_data.push(data)
+
+          counter += 1
+          to_local_data.push({
+            local_storage_id: counter,
+            data: value
+          })
         }
-        Storage.removeItem("SurficialDataSummary")
-        Storage.setItem("SurficialDataSummary", responseJson)
-        let data_container = Storage.getItem('SurficialDataSummary')
+        Storage.removeItem("SurficialDataMeasurements")
+        Storage.setItem("SurficialDataMeasurements", to_local_data)
+        let data_container = Storage.getItem('SurficialDataMeasurements')
         data_container.then(response => {
           console.log(response)
         });
@@ -90,19 +98,20 @@ export default class Summary extends Component {
         this.setState({ surficial_data: surficial_data })
       })
       .catch((error) => {
-        let data_container = Storage.getItem('SurficialDataSummary')
+        let data_container = Storage.getItem('SurficialDataMeasurements')
         let surficial_data = [];
         data_container.then(response => {
-          for (const [index, value] of response.entries()) {
-            let data = {
-              seriesName: value.series_name,
-              data: value.data,
-              color: line_colors[index]
-            }
-            surficial_data.push(data)
-          }
-          this.analyzeSurficialSummary(surficial_data)
-          this.setState({ surficial_data: surficial_data })
+          console.log(response.length)
+          // for (const [index, value] of response.data.entries()) {
+          //   let data = {
+          //     seriesName: value.series_name,
+          //     data: value.data,
+          //     color: line_colors[index]
+          //   }
+          //   surficial_data.push(data)
+          // }
+          // this.analyzeSurficialSummary(surficial_data)
+          // this.setState({ surficial_data: surficial_data })
 
         });
       });
