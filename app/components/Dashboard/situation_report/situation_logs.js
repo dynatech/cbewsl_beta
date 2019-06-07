@@ -14,7 +14,8 @@ export default class SituationLogs extends Component {
     this.state = {
       marked_dates: new_days,
       date_selected: "",
-      selected_date_situations: []
+      selected_date_situations: [],
+      add_report_text: "Add Report"
     };
   }
 
@@ -33,6 +34,7 @@ export default class SituationLogs extends Component {
     let timestamp = date
     let current_timestamp = ""
     let text_format_timestamp = ""
+    let text_date_format = ""
     let date_format = ""
     let time_format = ""
     if (timestamp == null) {
@@ -40,11 +42,13 @@ export default class SituationLogs extends Component {
       date_format = moment(new Date()).format("YYYY-MM-DD")
       time_format = moment(new Date()).format("h:mm:ss A")
       text_format_timestamp = moment(new Date()).format("MMMM D, YYYY h:mm:ss A")
+      text_date_format = moment(new Date()).format("MMMM D, YYYY")
     } else {
       current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS")
       date_format = moment(date).format("YYYY-MM-DD")
       time_format = moment(date).format("h:mm:ss A")
       text_format_timestamp = moment(date).format("MMMM D, YYYY h:mm:ss A")
+      text_date_format = moment(date).format("MMMM D, YYYY")
     }
 
 
@@ -52,7 +56,8 @@ export default class SituationLogs extends Component {
       current_timestamp: current_timestamp,
       date: date_format,
       time: time_format,
-      text_format_timestamp: text_format_timestamp
+      text_format_timestamp: text_format_timestamp,
+      text_date_format: text_date_format
     }
   }
 
@@ -132,6 +137,8 @@ export default class SituationLogs extends Component {
   selectDateToAddReport(date) {
     this.setState({ date_selected: date })
     let selected_date = this.formatDateTime(date = date)
+    button_text = "Add Report for " + selected_date["text_date_format"]
+    this.setState({ add_report_text: button_text })
     fetch('http://192.168.150.191:5000/api/situation_report/get_report_by_date', {
       method: 'POST',
       headers: {
@@ -162,10 +169,10 @@ export default class SituationLogs extends Component {
         this.setState({ selected_date_situations: situation_reports })
       })
       .catch((error) => {
-        let get_all_marked_dates = this.state.marked_dates
 
         let situation_reports = []
         try {
+          let get_all_marked_dates = this.state.marked_dates
           let selected_date = get_all_marked_dates[date].day
           let data_container = Storage.getItem("SituationReportLogs")
           data_container.then(response => {
@@ -235,8 +242,8 @@ export default class SituationLogs extends Component {
 
         <View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-            <TouchableOpacity style={defaults.button} onPress={() => this.navigateSaveSituationReport()}>
-              <Text style={defaults.buttonText}>Add Report</Text>
+            <TouchableOpacity style={situation_report_styles.button} onPress={() => this.navigateSaveSituationReport()}>
+              <Text style={defaults.buttonText}>{this.state.add_report_text}</Text>
             </TouchableOpacity>
           </View>
         </View>
