@@ -102,7 +102,7 @@ export default class SaveMaintenanceLogs extends Component {
                 data = {
                     sensor_maintenance_id: sensor_maintenance_id,
                     local_storage_id: local_storage_id,
-                    sync_status: 3,
+                    sync_status: 1,
                     working_nodes: working_nodes,
                     anamolous_nodes: anamolous_nodes,
                     rain_gauge_status: rain_gauge_status,
