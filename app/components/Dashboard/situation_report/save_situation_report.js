@@ -24,7 +24,6 @@ export default class SaveSituationReport extends Component {
         const { navigation } = this.props;
         const selected_date = navigation.getParam("data", "none");
         this.setState({ timestamp: selected_date })
-        console.log(this.state.timestamp)
     }
 
     saveSituationReport() {

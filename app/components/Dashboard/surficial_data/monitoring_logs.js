@@ -97,6 +97,8 @@ export default class MonitoringLogs extends Component {
     fetch('http://192.168.150.191:5000/api/surficial_data/get_monitoring_logs').then((response) => response.json())
       .then((responseJson) => {
         let monitoring_logs_data = []
+        let to_local_data = []
+        let counter = 0
         console.log(responseJson)
         for (const [index, value] of responseJson.entries()) {
           let formatted_timestamp = this.formatDateTime(date = value.date)
@@ -122,14 +124,13 @@ export default class MonitoringLogs extends Component {
               <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value)}></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
-          // monitoring_logs_data.push({
-          //   date: formatted_timestamp["text_format_timestamp"],
-          //   crack_a: crack_a,
-          //   crack_b: crack_b,
-          //   crack_c: crack_c,
-          //   moms_data: moms_data
-          // })
+          counter += 1
+          to_local_data.push({
+            local_storage_id: counter,
+            data: value
+          })
         }
+        console.log(to_local_data)
         this.setState({ monitoring_logs_data: monitoring_logs_data })
         this.tablePaginate(monitoring_logs_data)
         // console.log(monitoring_logs_data)

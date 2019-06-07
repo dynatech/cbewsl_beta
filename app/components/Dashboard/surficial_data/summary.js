@@ -67,18 +67,23 @@ export default class Summary extends Component {
     let line_colors = ['#7cb5ec', '#000000', '#8ce77d']
     fetch('http://192.168.150.191:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
       .then((responseJson) => {
+        console.log(responseJson)
+        let surficial_data = []
+        let to_local_data = []
+        let counter = 0
+
         Storage.removeItem("SurficialDataSummary")
         Storage.setItem("SurficialDataSummary", responseJson)
 
         let label_data = []
         let series_container = []
-
         for (const [index, value] of responseJson.entries()) {
           let marker = {
             name: value.crack_name,
             data: value.measurements,
             color: line_colors[index]
           }
+
           series_container.push(marker)
           label_data = value.ts
         }
@@ -101,6 +106,7 @@ export default class Summary extends Component {
           }
           this.analyzeSurficialSummary(label_data)
           this.renderSurficialGraph(label_data ,series_data)
+
         });
       });
   }
