@@ -37,7 +37,7 @@ export default class SaveMaintenanceLogs extends Component {
             timestamp } = this.state
 
 
-        fetch('http://192.168.150.191:5000/api/sensor_maintenance/save_sensor_maintenance_logs', {
+        fetch('http://192.168.150.191:5000/api/surficial_data/save_monitoring_log', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -102,7 +102,7 @@ export default class SaveMaintenanceLogs extends Component {
                 data = {
                     sensor_maintenance_id: sensor_maintenance_id,
                     local_storage_id: local_storage_id,
-                    sync_status: 3,
+                    sync_status: 1,
                     working_nodes: working_nodes,
                     anamolous_nodes: anamolous_nodes,
                     rain_gauge_status: rain_gauge_status,
