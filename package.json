@@ -15,7 +15,7 @@
     "moment": "^2.24.0",
     "native-base": "^2.12.1",
     "react": "16.8.3",
-    "react-native": "0.59.8",
+    "react-native": "^0.59.9",
     "react-native-android-sms-listener": "^0.7.0",
     "react-native-background-job": "^2.2.0",
     "react-native-calendar-select": "^0.1.2",
@@ -36,7 +36,8 @@
     "react-native-sms-android": "^0.4.1",
     "react-native-sms-linking": "^1.0.2",
     "react-native-vector-icons": "^6.4.2",
-    "react-navigation": "^3.6.1"
+    "react-navigation": "^3.6.1",
+    "rn-fetch-blob": "^0.10.15"
   },
   "devDependencies": {
     "@babel/core": "7.4.3",

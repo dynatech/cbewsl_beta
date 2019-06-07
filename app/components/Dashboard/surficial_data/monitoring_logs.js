@@ -13,7 +13,10 @@ export default class MonitoringLogs extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      monitoring_logs_data: []
+      monitoring_logs_data: [],
+      monitoring_logs_data_paginate: [],
+      page: 0,
+      number_of_pages: 0
     };
   }
 
@@ -57,6 +60,39 @@ export default class MonitoringLogs extends Component {
     }
   }
 
+  tablePaginate(monitoring_logs_data) {
+    let temp = []
+    let counter = 0
+    let number_of_pages = monitoring_logs_data.length / 6
+    this.setState({number_of_pages: Math.ceil(number_of_pages)})
+    monitoring_logs_data.forEach(element => {
+      if (counter < 6) {
+        temp.push(element)
+      }
+      counter++
+    });
+    this.setState({monitoring_logs_data_paginate: temp})
+  }
+
+  changePage(page) {
+    let start = (page * 6)
+    let end = start + 7
+    let temp = []
+
+    if (end == 0) {
+      end = 6
+    }
+    
+    console.log(start)
+    console.log(end)
+    
+    for (let counter = start; counter < end; counter ++) {
+      temp.push(this.state.monitoring_logs_data[counter])
+    }
+    this.setState({monitoring_logs_data_paginate: temp})
+    this.setState({page: page})
+  }
+
   getMonitoringLogs() {
     fetch('http://192.168.150.191:5000/api/surficial_data/get_monitoring_logs').then((response) => response.json())
       .then((responseJson) => {
@@ -95,6 +131,7 @@ export default class MonitoringLogs extends Component {
           // })
         }
         this.setState({ monitoring_logs_data: monitoring_logs_data })
+        this.tablePaginate(monitoring_logs_data)
         // console.log(monitoring_logs_data)
       })
       .catch((error) => {
@@ -130,7 +167,13 @@ export default class MonitoringLogs extends Component {
                 <DataTable.Title>MOMs</DataTable.Title>
                 <DataTable.Title>Actions</DataTable.Title>
               </DataTable.Header>
-              {this.state.monitoring_logs_data}
+              {this.state.monitoring_logs_data_paginate}
+              <DataTable.Pagination
+                  page={this.state.page}
+                  numberOfPages={this.state.number_of_pages}
+                  onPageChange={(page) => { this.changePage(page) }}
+                  label={`Page ${this.state.page} of ${this.state.number_of_pages - 1}`}
+                />
             </DataTable>
           </ScrollView>
         </View>
