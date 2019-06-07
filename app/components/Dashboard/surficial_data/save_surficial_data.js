@@ -171,31 +171,32 @@ export default class SaveSurficialData extends Component {
     render() {
         return (
             <ScrollView style={surficial_data_styles.container}>
-                {/* <View style={surficial_data_styles.contentContainer}>
+                <View style={surficial_data_styles.contentContainer}>
                     <View style={{ paddingTop: 5, paddingBottom: 5 }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Measurements</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Measurements {<Text style={{fontSize: 15, color: 'red'}}>(No available markers)</Text>}</Text>
                     </View>
                 </View>
                 <View style={surficial_data_styles.contentContainer}>
                     <DatePicker
-                        style={[defaults.inputs, { width: '95%' }]}
-                        format="YYYY-MM-DD HH:mm"
-                        date={this.state.datetime}
-                        value={this.state.datetime}
+                        customStyles={{dateInput: {borderWidth: 0,}}}
+                        disabled={true}
+                        style={[defaults.inputs, { width: '95%' , borderWidth: 0}]}
+                        date={this.state.time}
                         mode="datetime"
-                        duration={400}
+                        placeholder="Pick date and time (Not available)"
+                        showIcon={false}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         showIcon={false}
                         onDateChange={(date) => { this.setState({ datetime: date }) }}
                     />
-                    <TextInput style={defaults.inputs} placeholder="Crack A" value={this.state.crack_a} onChangeText={text => this.setState({ crack_a: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Crack B" value={this.state.crack_b} onChangeText={text => this.setState({ crack_b: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Crack C" value={this.state.crack_c} onChangeText={text => this.setState({ crack_c: text })} />
-                </View> */}
+                    <TextInput editable={false}  style={defaults.inputs} placeholder="Crack A (Not available)" value={this.state.crack_a} onChangeText={text => this.setState({ crack_a: text })} />
+                    <TextInput editable={false}  style={defaults.inputs} placeholder="Crack B (Not available)" value={this.state.crack_b} onChangeText={text => this.setState({ crack_b: text })} />
+                    <TextInput editable={false}  style={defaults.inputs} placeholder="Crack C (Not available)" value={this.state.crack_c} onChangeText={text => this.setState({ crack_c: text })} />
+                </View>
                 <View style={surficial_data_styles.contentContainer}>
                     <View style={{ paddingTop: 5, paddingBottom: 5 }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Manifestation of Movement</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Manifestation of Movement</Text>
                     </View>
                     {/* <DatePicker
                         style={[defaults.inputs, { width: '95%' }]}
