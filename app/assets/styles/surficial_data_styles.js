@@ -59,7 +59,7 @@ const surficial_data_styles = StyleSheet.create({
         fontSize: width*0.035
     },
     contentContainer: {
-        padding: 20
+        padding: '5%'
     },
     subContainer: {
         padding: 10
