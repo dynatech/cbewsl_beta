@@ -4,7 +4,7 @@ import { Dimensions } from 'react-native';
 let { width } = Dimensions.get('window');
 let { height } = Dimensions.get('window');
 
-const sensor_maintenance_styles = StyleSheet.create({ 
+const sensor_maintenance_styles = StyleSheet.create({
     container: {
         flex: 1
     },
@@ -33,7 +33,7 @@ const sensor_maintenance_styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         justifyContent: 'center',
-        width: (width/3)-10,
+        width: (width / 3) - 10,
     },
     activeButton: {
         padding: 10,
@@ -44,24 +44,24 @@ const sensor_maintenance_styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         justifyContent: 'center',
-        width: (width/3)-10,
+        width: (width / 3) - 10,
     },
     buttonText: {
         textAlign: 'center',
         alignContent: 'center',
         color: 'white',
-        fontSize: width*0.035
+        fontSize: width * 0.035
     },
     buttonActiveText: {
         textAlign: 'center',
         alignContent: 'center',
         color: '#083451',
-        fontSize: width*0.035
+        fontSize: width * 0.035
     },
     contentContainer: {
         padding: 20
     },
-    graphContainer:{
+    graphContainer: {
         padding: 20
     },
     subContainer: {
@@ -71,7 +71,7 @@ const sensor_maintenance_styles = StyleSheet.create({
         borderTopWidth: 1,
         borderColor: '#083451',
         margin: 10,
-        paddingTop: 10 
+        paddingTop: 10
     },
     datetimeContainer: {
         flexDirection: 'row',
@@ -82,8 +82,18 @@ const sensor_maintenance_styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingTop: 5,
         marginRight: 10
+    },
+    button: {
+        backgroundColor: '#083451',
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#083451',
+        marginTop: 10,
+        marginBottom: 10,
+        marginRight: 5,
+        marginLeft: 5,
+        width: 250
     }
 })
 
-export { sensor_maintenance_styles }         
- 
+export { sensor_maintenance_styles }

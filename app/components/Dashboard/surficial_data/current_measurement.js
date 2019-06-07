@@ -60,21 +60,28 @@ export default class CurrentMeasurement extends Component {
       .then((responseJson) => {
         let formmated_timestamp = this.formatDateTime(date = responseJson.current_measurement_date)
         let crack_sets = []
-        let to_local_data = []
-        console.log(responseJson)
         this.setState({ date: formmated_timestamp["date"] })
         this.setState({ time: formmated_timestamp["time"] })
 
         for (const [index, value] of responseJson.cracks.entries()) {
           crack_sets.push(<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Crack {value.crack}: {value.measurement} cm</Text>)
-          // to_local_data.push({
-
-          // })
         }
+        Storage.removeItem("SurficialDataCurrentMeasurement")
+        Storage.setItem("SurficialDataCurrentMeasurement", responseJson)
         this.setState({ crack_sets: crack_sets })
       })
       .catch((error) => {
-        console.error(error);
+        let data_container = Storage.getItem('SurficialDataCurrentMeasurement')
+        let crack_sets = []
+        data_container.then(response => {
+          let formmated_timestamp = this.formatDateTime(date = response.current_measurement_date)
+          this.setState({ date: formmated_timestamp["date"] })
+          this.setState({ time: formmated_timestamp["time"] })
+          for (const [index, value] of response.cracks.entries()) {
+            crack_sets.push(<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Crack {value.crack}: {value.measurement} cm</Text>)
+          }
+          this.setState({ crack_sets: crack_sets })
+        });
       });
   }
 

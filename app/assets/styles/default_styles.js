@@ -1,9 +1,9 @@
-import { StyleSheet , Dimensions} from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
 
 let { width } = Dimensions.get('window');
 let { height } = Dimensions.get('window');
 
-const defaults = StyleSheet.create({ 
+const defaults = StyleSheet.create({
   inputs: {
     borderBottomWidth: 3,
     borderBottomColor: '#083451',
@@ -22,7 +22,7 @@ const defaults = StyleSheet.create({
   },
   touchableTexts: {
     color: 'white',
-    textAlign:'center',
+    textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 20,
     padding: 10
@@ -40,8 +40,8 @@ const defaults = StyleSheet.create({
     color: '#083451'
   },
   accounts: {
-    marginRight: width*0.3,
-    marginLeft: width*0.3
+    marginRight: width * 0.3,
+    marginLeft: width * 0.3
   },
   accountsText: {
     textAlign: 'center',
@@ -60,11 +60,10 @@ const defaults = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    textAlign:'center',
+    textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 15,
     padding: 5
   }
 })
-export { defaults }         
- 
+export { defaults }

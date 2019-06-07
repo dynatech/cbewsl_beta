@@ -196,7 +196,6 @@ export default class SituationLogs extends Component {
     let date_selected = this.state.date_selected
     console.log(date_selected)
     if (date_selected == "") {
-      // ToastAndroid.show("Please pick a date to add report.", ToastAndroid.SHORT);
       Alert.alert(
         'Alert!',
         'Please pick a date to add report.',
