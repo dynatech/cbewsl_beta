@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid, Alert } from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
@@ -53,139 +53,154 @@ export default class SaveHazardData extends Component {
             speed_of_onset,
             early_warning,
             impact } = this.state
+        if (hazard != "" && speed_of_onset != "" && early_warning != "" && impact != "") {
+            fetch('http://192.168.150.191:5000/api/hazard_data/save_hazard_data', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    hazard_data_id: hazard_data_id,
+                    local_storage_id: local_storage_id,
+                    sync_status: sync_status,
+                    hazard: hazard,
+                    speed_of_onset: speed_of_onset,
+                    early_warning: early_warning,
+                    impact: impact
+                }),
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    if (responseJson.status == true) {
+                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                        let data_container = Storage.getItem('RiskAssessmentHazardData')
+                        let updated_data = []
+                        data = {
+                            hazard_data_id: hazard_data_id,
+                            local_storage_id: 1,
+                            sync_status: 3,
+                            hazard: hazard,
+                            speed_of_onset: speed_of_onset,
+                            early_warning: early_warning,
+                            impact: impact
+                        }
+                        data_container.then(response => {
+                            if (response == null) {
+                                Storage.removeItem("RiskAssessmentHazardData")
+                                Storage.setItem("RiskAssessmentHazardData", [data])
+                            } else {
+                                let temp = response
+                                temp.push(data)
+                                let counter = 0
+                                temp.forEach((value) => {
+                                    counter += 1
+                                    updated_data.push({
+                                        hazard_data_id: value.hazard_data_id,
+                                        local_storage_id: counter,
+                                        sync_status: 3,
+                                        hazard: hazard,
+                                        speed_of_onset: value.speed_of_onset,
+                                        early_warning: value.early_warning,
+                                        impact: value.impact
+                                    })
+                                });
+                                Storage.removeItem("RiskAssessmentHazardData")
+                                Storage.setItem("RiskAssessmentHazardData", updated_data)
+                            }
 
-        fetch('http://192.168.150.191:5000/api/hazard_data/save_hazard_data', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                hazard_data_id: hazard_data_id,
-                local_storage_id: local_storage_id,
-                sync_status: sync_status,
-                hazard: hazard,
-                speed_of_onset: speed_of_onset,
-                early_warning: early_warning,
-                impact: impact
-            }),
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                if (responseJson.status == true) {
-                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-                    let data_container = Storage.getItem('RiskAssessmentHazardData')
-                    let updated_data = []
+                            this.props.navigation.navigate('modify_hazard_data');
+                        });
+
+                    } else {
+                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                    }
+                })
+                .catch((error) => {
                     data = {
                         hazard_data_id: hazard_data_id,
-                        local_storage_id: 1,
-                        sync_status: 3,
+                        local_storage_id: local_storage_id,
+                        sync_status: 1,
                         hazard: hazard,
                         speed_of_onset: speed_of_onset,
                         early_warning: early_warning,
                         impact: impact
                     }
-                    data_container.then(response => {
-                        if (response == null) {
-                            Storage.removeItem("RiskAssessmentHazardData")
-                            Storage.setItem("RiskAssessmentHazardData", [data])
+                    let offline_data = Storage.getItem("RiskAssessmentHazardData");
+                    offline_data.then(response => {
+                        data["local_storage_id"] = 1
+                        if (local_storage_id == 0) {
+                            if (response == null) {
+                                Storage.removeItem("RiskAssessmentHazardData")
+                                Storage.setItem("RiskAssessmentHazardData", [data])
+                            } else {
+                                let temp = response
+                                temp.push(data)
+                                let updated_data = []
+                                let counter = 0
+                                temp.forEach((value) => {
+                                    counter += 1
+                                    updated_data.push({
+                                        hazard_data_id: value.hazard_data_id,
+                                        local_storage_id: counter,
+                                        sync_status: value.sync_status,
+                                        hazard: value.hazard,
+                                        speed_of_onset: value.speed_of_onset,
+                                        early_warning: value.early_warning,
+                                        impact: value.impact
+                                    })
+                                });
+                                Storage.removeItem("RiskAssessmentHazardData")
+                                Storage.setItem("RiskAssessmentHazardData", updated_data)
+                            }
                         } else {
                             let temp = response
-                            temp.push(data)
-                            let counter = 0
-                            temp.forEach((value) => {
-                                counter += 1
-                                updated_data.push({
-                                    hazard_data_id: value.hazard_data_id,
-                                    local_storage_id: counter,
-                                    sync_status: 3,
-                                    hazard: hazard,
-                                    speed_of_onset: value.speed_of_onset,
-                                    early_warning: value.early_warning,
-                                    impact: value.impact
-                                })
-                            });
-                            Storage.removeItem("RiskAssessmentHazardData")
-                            Storage.setItem("RiskAssessmentHazardData", updated_data)
-                        }
-
-                        this.props.navigation.navigate('modify_hazard_data');
-                    });
-
-                } else {
-                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-                }
-            })
-            .catch((error) => {
-                data = {
-                    hazard_data_id: hazard_data_id,
-                    local_storage_id: local_storage_id,
-                    sync_status: 1,
-                    hazard: hazard,
-                    speed_of_onset: speed_of_onset,
-                    early_warning: early_warning,
-                    impact: impact
-                }
-                let offline_data = Storage.getItem("RiskAssessmentHazardData");
-                offline_data.then(response => {
-                    data["local_storage_id"] = 1
-                    if (local_storage_id == 0) {
-                        if (response == null) {
-                            Storage.removeItem("RiskAssessmentHazardData")
-                            Storage.setItem("RiskAssessmentHazardData", [data])
-                        } else {
-                            let temp = response
-                            temp.push(data)
                             let updated_data = []
                             let counter = 0
                             temp.forEach((value) => {
                                 counter += 1
-                                updated_data.push({
-                                    hazard_data_id: value.hazard_data_id,
-                                    local_storage_id: counter,
-                                    sync_status: value.sync_status,
-                                    hazard: value.hazard,
-                                    speed_of_onset: value.speed_of_onset,
-                                    early_warning: value.early_warning,
-                                    impact: value.impact
-                                })
+                                if (local_storage_id == value.local_storage_id) {
+                                    updated_data.push({
+                                        hazard_data_id: hazard_data_id,
+                                        local_storage_id: counter,
+                                        sync_status: 2,
+                                        hazard: hazard,
+                                        speed_of_onset: speed_of_onset,
+                                        early_warning: early_warning,
+                                        impact: impact
+                                    })
+                                } else {
+                                    updated_data.push({
+                                        hazard_data_id: value.hazard_data_id,
+                                        local_storage_id: counter,
+                                        sync_status: value.sync_status,
+                                        hazard: value.hazard,
+                                        speed_of_onset: value.speed_of_onset,
+                                        early_warning: value.early_warning,
+                                        impact: value.impact
+                                    })
+                                }
                             });
                             Storage.removeItem("RiskAssessmentHazardData")
                             Storage.setItem("RiskAssessmentHazardData", updated_data)
                         }
-                    } else {
-                        let temp = response
-                        let updated_data = []
-                        let counter = 0
-                        temp.forEach((value) => {
-                            counter += 1
-                            if (local_storage_id == value.local_storage_id) {
-                                updated_data.push({
-                                    hazard_data_id: hazard_data_id,
-                                    local_storage_id: counter,
-                                    sync_status: 2,
-                                    hazard: hazard,
-                                    speed_of_onset: speed_of_onset,
-                                    early_warning: early_warning,
-                                    impact: impact
-                                })
-                            } else {
-                                updated_data.push({
-                                    hazard_data_id: value.hazard_data_id,
-                                    local_storage_id: counter,
-                                    sync_status: value.sync_status,
-                                    hazard: value.hazard,
-                                    speed_of_onset: value.speed_of_onset,
-                                    early_warning: value.early_warning,
-                                    impact: value.impact
-                                })
-                            }
-                        });
-                        Storage.removeItem("RiskAssessmentHazardData")
-                        Storage.setItem("RiskAssessmentHazardData", updated_data)
-                    }
-                    this.props.navigation.navigate('modify_hazard_data');
+                        this.props.navigation.navigate('modify_hazard_data');
+                    });
                 });
-            });
+        } else {
+            Alert.alert(
+                'Hazard Data',
+                'All fields are required.',
+                [
+                    {
+                        text: 'Close',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                    }
+                ],
+                { cancelable: false },
+            );
+        }
+
     }
 
     render() {

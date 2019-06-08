@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid, Alert } from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
@@ -48,131 +48,146 @@ export default class SaveResourcesAndCapacities extends Component {
             resource_and_capacity,
             status,
             owner } = this.state
-
-        fetch('http://192.168.150.191:5000/api/resources_and_capacities/save_resources_and_capacities', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                resources_and_capacities_id: resources_and_capacities_id,
-                local_storage_id: local_storage_id,
-                sync_status: sync_status,
-                resource_and_capacity: resource_and_capacity,
-                status: status,
-                owner: owner
-            }),
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson)
-                if (responseJson.status == true) {
-                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-                    let data_container = Storage.getItem('RiskAssessmentRNC')
-                    let updated_data = []
+        if (resource_and_capacity != "" && status != "" && owner != "") {
+            fetch('http://192.168.150.191:5000/api/resources_and_capacities/save_resources_and_capacities', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    resources_and_capacities_id: resources_and_capacities_id,
+                    local_storage_id: local_storage_id,
+                    sync_status: sync_status,
+                    resource_and_capacity: resource_and_capacity,
+                    status: status,
+                    owner: owner
+                }),
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    console.log(responseJson)
+                    if (responseJson.status == true) {
+                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                        let data_container = Storage.getItem('RiskAssessmentRNC')
+                        let updated_data = []
+                        data = {
+                            resources_and_capacities_id: resources_and_capacities_id,
+                            local_storage_id: 1,
+                            sync_status: 3,
+                            resource_and_capacity: resource_and_capacity,
+                            status: status,
+                            owner: owner
+                        }
+                        data_container.then(response => {
+                            if (response == null) {
+                                Storage.removeItem("RiskAssessmentRNC")
+                                Storage.setItem("RiskAssessmentRNC", [data])
+                            } else {
+                                let temp = response
+                                temp.push(data)
+                                let counter = 0
+                                temp.forEach((value) => {
+                                    counter += 1
+                                    updated_data.push({
+                                        resources_and_capacities_id: value.resources_and_capacities_id,
+                                        local_storage_id: counter,
+                                        sync_status: 3,
+                                        resource_and_capacity: value.resource_and_capacity,
+                                        status: value.status,
+                                        owner: value.owner
+                                    })
+                                });
+                                Storage.removeItem("RiskAssessmentRNC")
+                                Storage.setItem("RiskAssessmentRNC", updated_data)
+                            }
+                            this.props.navigation.navigate('modify_rnc');
+                        });
+                    } else {
+                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                    }
+                })
+                .catch((error) => {
                     data = {
                         resources_and_capacities_id: resources_and_capacities_id,
-                        local_storage_id: 1,
-                        sync_status: 3,
+                        local_storage_id: local_storage_id,
+                        sync_status: 1,
                         resource_and_capacity: resource_and_capacity,
                         status: status,
                         owner: owner
                     }
-                    data_container.then(response => {
-                        if (response == null) {
-                            Storage.removeItem("RiskAssessmentRNC")
-                            Storage.setItem("RiskAssessmentRNC", [data])
+                    let offline_data = Storage.getItem("RiskAssessmentRNC");
+                    offline_data.then(response => {
+                        if (local_storage_id == 0) {
+                            data["local_storage_id"] = 1
+                            if (response == null) {
+                                Storage.removeItem("RiskAssessmentRNC")
+                                Storage.setItem("RiskAssessmentRNC", [data])
+                            } else {
+                                let temp = response
+                                temp.push(data)
+                                let updated_data = []
+                                let counter = 0
+                                temp.forEach((value) => {
+                                    counter += 1
+                                    updated_data.push({
+                                        resources_and_capacities_id: value.resources_and_capacities_id,
+                                        local_storage_id: counter,
+                                        sync_status: value.sync_status,
+                                        resource_and_capacity: value.resource_and_capacity,
+                                        status: value.status,
+                                        owner: value.owner
+                                    })
+                                });
+                                Storage.removeItem("RiskAssessmentRNC")
+                                Storage.setItem("RiskAssessmentRNC", updated_data)
+                            }
                         } else {
                             let temp = response
-                            temp.push(data)
+                            let updated_data = []
                             let counter = 0
                             temp.forEach((value) => {
                                 counter += 1
-                                updated_data.push({
-                                    resources_and_capacities_id: value.resources_and_capacities_id,
-                                    local_storage_id: counter,
-                                    sync_status: 3,
-                                    resource_and_capacity: value.resource_and_capacity,
-                                    status: value.status,
-                                    owner: value.owner
-                                })
+                                if (local_storage_id == value.local_storage_id) {
+                                    updated_data.push({
+                                        resources_and_capacities_id: resources_and_capacities_id,
+                                        local_storage_id: counter,
+                                        sync_status: 2,
+                                        resource_and_capacity: resource_and_capacity,
+                                        status: status,
+                                        owner: owner
+                                    })
+                                } else {
+                                    updated_data.push({
+                                        resources_and_capacities_id: value.resources_and_capacities_id,
+                                        local_storage_id: counter,
+                                        sync_status: value.sync_status,
+                                        resource_and_capacity: value.resource_and_capacity,
+                                        status: value.status,
+                                        owner: value.owner
+                                    })
+                                }
                             });
                             Storage.removeItem("RiskAssessmentRNC")
                             Storage.setItem("RiskAssessmentRNC", updated_data)
                         }
                         this.props.navigation.navigate('modify_rnc');
                     });
-                } else {
-                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-                }
-            })
-            .catch((error) => {
-                data = {
-                    resources_and_capacities_id: resources_and_capacities_id,
-                    local_storage_id: local_storage_id,
-                    sync_status: 1,
-                    resource_and_capacity: resource_and_capacity,
-                    status: status,
-                    owner: owner
-                }
-                let offline_data = Storage.getItem("RiskAssessmentRNC");
-                offline_data.then(response => {
-                    if (local_storage_id == 0) {
-                        data["local_storage_id"] = 1
-                        if (response == null) {
-                            Storage.removeItem("RiskAssessmentRNC")
-                            Storage.setItem("RiskAssessmentRNC", [data])
-                        } else {
-                            let temp = response
-                            temp.push(data)
-                            let updated_data = []
-                            let counter = 0
-                            temp.forEach((value) => {
-                                counter += 1
-                                updated_data.push({
-                                    resources_and_capacities_id: value.resources_and_capacities_id,
-                                    local_storage_id: counter,
-                                    sync_status: value.sync_status,
-                                    resource_and_capacity: value.resource_and_capacity,
-                                    status: value.status,
-                                    owner: value.owner
-                                })
-                            });
-                            Storage.removeItem("RiskAssessmentRNC")
-                            Storage.setItem("RiskAssessmentRNC", updated_data)
-                        }
-                    } else {
-                        let temp = response
-                        let updated_data = []
-                        let counter = 0
-                        temp.forEach((value) => {
-                            counter += 1
-                            if (local_storage_id == value.local_storage_id) {
-                                updated_data.push({
-                                    resources_and_capacities_id: resources_and_capacities_id,
-                                    local_storage_id: counter,
-                                    sync_status: 2,
-                                    resource_and_capacity: resource_and_capacity,
-                                    status: status,
-                                    owner: owner
-                                })
-                            } else {
-                                updated_data.push({
-                                    resources_and_capacities_id: value.resources_and_capacities_id,
-                                    local_storage_id: counter,
-                                    sync_status: value.sync_status,
-                                    resource_and_capacity: value.resource_and_capacity,
-                                    status: value.status,
-                                    owner: value.owner
-                                })
-                            }
-                        });
-                        Storage.removeItem("RiskAssessmentRNC")
-                        Storage.setItem("RiskAssessmentRNC", updated_data)
-                    }
-                    this.props.navigation.navigate('modify_rnc');
                 });
-            });
+        } else {
+            Alert.alert(
+                'Resources and Capacities',
+                'All fields are required.',
+                [
+                    {
+                        text: 'Close',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                    }
+                ],
+                { cancelable: false },
+            );
+        }
+
     }
 
     render() {
