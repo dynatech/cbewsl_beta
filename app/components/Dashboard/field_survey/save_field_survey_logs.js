@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid, Alert } from 'react-native';
 import { field_survey_styles } from '../../../assets/styles/field_survey_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
@@ -80,165 +80,180 @@ export default class SaveFieldSurveyLogs extends Component {
             exposure,
             note,
             date } = this.state
-
-        fetch('http://192.168.150.191:5000/api/field_survey/save_field_survey', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                field_survey_id: field_survey_id,
-                local_storage_id: local_storage_id,
-                sync_status: sync_status,
-                features: features,
-                mat_characterization: mat_characterization,
-                mechanism: mechanism,
-                exposure: exposure,
-                note: note
-            }),
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson)
-                if (responseJson.status == true) {
-                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-                    let data_container = Storage.getItem('FieldSurveyLogs')
-                    let updated_data = []
-
-                    data = {
-                        field_survey_id: field_survey_id,
-                        local_storage_id: 1,
-                        sync_status: 3,
-                        features: features,
-                        mat_characterization: mat_characterization,
-                        mechanism: mechanism,
-                        exposure: exposure,
-                        note: note
-                    }
-
-                    data_container.then(response => {
-                        if (response == null) {
-                            Storage.removeItem("FieldSurveyLogs")
-                            Storage.setItem("FieldSurveyLogs", [data])
-                        } else {
-                            let temp = response
-                            temp.push(data)
-                            let counter = 0
-                            temp.forEach((value) => {
-                                counter += 1
-                                updated_data.push({
-                                    field_survey_id: value.field_survey_id,
-                                    local_storage_id: counter,
-                                    sync_status: 3,
-                                    features: value.features,
-                                    mat_characterization: value.mat_characterization,
-                                    mechanism: value.mechanism,
-                                    exposure: value.exposure,
-                                    note: value.note,
-                                    date: value.date
-                                })
-                            });
-                            Storage.removeItem("FieldSurveyLogs")
-                            Storage.setItem("FieldSurveyLogs", updated_data)
-                        }
-                        if (field_survey_id == 0) {
-                            Storage.removeItem("FieldSurveyLatestReportSummary")
-                            Storage.setItem("FieldSurveyLatestReportSummary", [data])
-                        }
-                        this.props.navigation.navigate('field_survery_logs');
-                    });
-                } else {
-                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-                }
-            })
-            .catch((error) => {
-                let current_date = this.formatDateTime();
-                data = {
+        if (features != "" && mat_characterization != "" && mechanism != "" && exposure != "" && note != "") {
+            fetch('http://192.168.150.191:5000/api/field_survey/save_field_survey', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
                     field_survey_id: field_survey_id,
                     local_storage_id: local_storage_id,
-                    sync_status: 1,
+                    sync_status: sync_status,
                     features: features,
                     mat_characterization: mat_characterization,
                     mechanism: mechanism,
                     exposure: exposure,
-                    note: note,
-                    date: current_date["text_format_timestamp"]
-                }
+                    note: note
+                }),
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    console.log(responseJson)
+                    if (responseJson.status == true) {
+                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                        let data_container = Storage.getItem('FieldSurveyLogs')
+                        let updated_data = []
 
-                let offline_data = Storage.getItem("FieldSurveyLogs");
-                offline_data.then(response => {
-                    if (local_storage_id == 0) {
-                        data["local_storage_id"] = 1
-                        if (response == null) {
-                            Storage.removeItem("FieldSurveyLogs")
-                            Storage.setItem("FieldSurveyLogs", [data])
+                        data = {
+                            field_survey_id: field_survey_id,
+                            local_storage_id: 1,
+                            sync_status: 3,
+                            features: features,
+                            mat_characterization: mat_characterization,
+                            mechanism: mechanism,
+                            exposure: exposure,
+                            note: note
+                        }
+
+                        data_container.then(response => {
+                            if (response == null) {
+                                Storage.removeItem("FieldSurveyLogs")
+                                Storage.setItem("FieldSurveyLogs", [data])
+                            } else {
+                                let temp = response
+                                temp.push(data)
+                                let counter = 0
+                                temp.forEach((value) => {
+                                    counter += 1
+                                    updated_data.push({
+                                        field_survey_id: value.field_survey_id,
+                                        local_storage_id: counter,
+                                        sync_status: 3,
+                                        features: value.features,
+                                        mat_characterization: value.mat_characterization,
+                                        mechanism: value.mechanism,
+                                        exposure: value.exposure,
+                                        note: value.note,
+                                        date: value.date
+                                    })
+                                });
+                                Storage.removeItem("FieldSurveyLogs")
+                                Storage.setItem("FieldSurveyLogs", updated_data)
+                            }
+                            if (field_survey_id == 0) {
+                                Storage.removeItem("FieldSurveyLatestReportSummary")
+                                Storage.setItem("FieldSurveyLatestReportSummary", [data])
+                            }
+                            this.props.navigation.navigate('field_survery_logs');
+                        });
+                    } else {
+                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                    }
+                })
+                .catch((error) => {
+                    let current_date = this.formatDateTime();
+                    data = {
+                        field_survey_id: field_survey_id,
+                        local_storage_id: local_storage_id,
+                        sync_status: 1,
+                        features: features,
+                        mat_characterization: mat_characterization,
+                        mechanism: mechanism,
+                        exposure: exposure,
+                        note: note,
+                        date: current_date["text_format_timestamp"]
+                    }
+
+                    let offline_data = Storage.getItem("FieldSurveyLogs");
+                    offline_data.then(response => {
+                        if (local_storage_id == 0) {
+                            data["local_storage_id"] = 1
+                            if (response == null) {
+                                Storage.removeItem("FieldSurveyLogs")
+                                Storage.setItem("FieldSurveyLogs", [data])
+                            } else {
+                                let temp = response
+                                temp.push(data)
+                                let updated_data = []
+                                let counter = 0
+                                temp.forEach((value) => {
+                                    counter += 1
+                                    updated_data.push({
+                                        field_survey_id: value.field_survey_id,
+                                        local_storage_id: counter,
+                                        sync_status: value.sync_status,
+                                        features: value.features,
+                                        mat_characterization: value.mat_characterization,
+                                        mechanism: value.mechanism,
+                                        exposure: value.exposure,
+                                        note: value.note,
+                                        date: value.date
+                                    })
+                                });
+                                Storage.removeItem("FieldSurveyLogs")
+                                Storage.setItem("FieldSurveyLogs", updated_data)
+                            }
+
+                            Storage.removeItem("FieldSurveyLatestReportSummary")
+                            Storage.setItem("FieldSurveyLatestReportSummary", [data])
                         } else {
                             let temp = response
-                            temp.push(data)
                             let updated_data = []
                             let counter = 0
                             temp.forEach((value) => {
                                 counter += 1
-                                updated_data.push({
-                                    field_survey_id: value.field_survey_id,
-                                    local_storage_id: counter,
-                                    sync_status: value.sync_status,
-                                    features: value.features,
-                                    mat_characterization: value.mat_characterization,
-                                    mechanism: value.mechanism,
-                                    exposure: value.exposure,
-                                    note: value.note,
-                                    date: value.date
-                                })
+                                if (local_storage_id == value.local_storage_id) {
+                                    updated_data.push({
+                                        field_survey_id: field_survey_id,
+                                        local_storage_id: counter,
+                                        sync_status: 2,
+                                        features: features,
+                                        mat_characterization: mat_characterization,
+                                        mechanism: mechanism,
+                                        exposure: exposure,
+                                        note: note,
+                                        date: date
+                                    })
+                                    // data["date"] = date
+                                    // Storage.removeItem("FieldSurveyLatestReportSummary")
+                                    // Storage.setItem("FieldSurveyLatestReportSummary", [data])
+
+                                } else {
+                                    updated_data.push({
+                                        field_survey_id: value.field_survey_id,
+                                        local_storage_id: counter,
+                                        sync_status: value.sync_status,
+                                        features: value.features,
+                                        mat_characterization: value.mat_characterization,
+                                        mechanism: value.mechanism,
+                                        exposure: value.exposure,
+                                        note: value.note,
+                                        date: value.date
+                                    })
+                                }
                             });
                             Storage.removeItem("FieldSurveyLogs")
                             Storage.setItem("FieldSurveyLogs", updated_data)
                         }
-
-                        Storage.removeItem("FieldSurveyLatestReportSummary")
-                        Storage.setItem("FieldSurveyLatestReportSummary", [data])
-                    } else {
-                        let temp = response
-                        let updated_data = []
-                        let counter = 0
-                        temp.forEach((value) => {
-                            counter += 1
-                            if (local_storage_id == value.local_storage_id) {
-                                updated_data.push({
-                                    field_survey_id: field_survey_id,
-                                    local_storage_id: counter,
-                                    sync_status: 2,
-                                    features: features,
-                                    mat_characterization: mat_characterization,
-                                    mechanism: mechanism,
-                                    exposure: exposure,
-                                    note: note,
-                                    date: date
-                                })
-                                // data["date"] = date
-                                // Storage.removeItem("FieldSurveyLatestReportSummary")
-                                // Storage.setItem("FieldSurveyLatestReportSummary", [data])
-
-                            } else {
-                                updated_data.push({
-                                    field_survey_id: value.field_survey_id,
-                                    local_storage_id: counter,
-                                    sync_status: value.sync_status,
-                                    features: value.features,
-                                    mat_characterization: value.mat_characterization,
-                                    mechanism: value.mechanism,
-                                    exposure: value.exposure,
-                                    note: value.note,
-                                    date: value.date
-                                })
-                            }
-                        });
-                        Storage.removeItem("FieldSurveyLogs")
-                        Storage.setItem("FieldSurveyLogs", updated_data)
-                    }
-                    this.props.navigation.navigate('field_survery_logs');
+                        this.props.navigation.navigate('field_survery_logs');
+                    });
                 });
-            });
+        } else {
+            Alert.alert(
+                'Field Survey',
+                'All fields are required.',
+                [
+                    {
+                        text: 'Close',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                    }
+                ],
+                { cancelable: false },
+            );
+        }
+
     }
 
     render() {
