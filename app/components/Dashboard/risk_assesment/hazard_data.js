@@ -18,7 +18,10 @@ export default class HazardData extends Component {
       buttonTextMap: rassessment_styles.buttonActiveText,
       buttonFRP: rassessment_styles.subMenuButton,
       buttonTextFRP: rassessment_styles.buttonText,
-      hazard_data: []
+      hazard_data: [],
+      hazard_data_paginate: [],
+      page: 0,
+      number_of_pages: 0
     };
   }
 
@@ -86,6 +89,7 @@ export default class HazardData extends Component {
           console.log(response)
         });
         this.setState({ hazard_data: hazard_data })
+        this.tablePaginate(hazard_data)
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentHazardData')
@@ -107,9 +111,40 @@ export default class HazardData extends Component {
             </DataTable.Row>)
           }
           this.setState({ hazard_data: hazard_data })
+          this.tablePaginate(hazard_data)
         })
       });
 
+  }
+
+  tablePaginate(hazard_data) {
+    let temp = []
+    let counter = 0
+    let number_of_pages = hazard_data.length / 6
+    this.setState({ number_of_pages: Math.ceil(number_of_pages) })
+    hazard_data.forEach(element => {
+      if (counter < 6) {
+        temp.push(element)
+      }
+      counter++
+    });
+    this.setState({ hazard_data_paginate: temp })
+  }
+
+  changePage(page) {
+    let start = (page * 6)
+    let end = start * 2
+    let temp = []
+
+    if (end == 0) {
+      end = 6
+    }
+
+    for (let counter = start; counter < end; counter++) {
+      temp.push(this.state.hazard_data[counter])
+    }
+    this.setState({ hazard_data_paginate: temp })
+    this.setState({ page: page })
   }
 
   render() {
@@ -137,7 +172,13 @@ export default class HazardData extends Component {
                   <DataTable.Title>Early Warning</DataTable.Title>
                   <DataTable.Title>Impact</DataTable.Title>
                 </DataTable.Header>
-                {this.state.hazard_data}
+                {this.state.hazard_data_paginate}
+                <DataTable.Pagination
+                  page={this.state.page}
+                  numberOfPages={this.state.number_of_pages}
+                  onPageChange={(page) => { this.changePage(page) }}
+                  label={`Page ${this.state.page} of ${this.state.number_of_pages - 1}`}
+                />
               </DataTable>
             </ScrollView>
             <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_hazard_data')}>

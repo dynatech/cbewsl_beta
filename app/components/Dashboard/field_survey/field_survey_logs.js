@@ -12,7 +12,10 @@ export default class FieldSurveyLogs extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      field_logs: []
+      field_logs: [],
+      field_logs_data_paginate: [],
+      page: 0,
+      number_of_pages: 0
     };
   }
 
@@ -156,6 +159,7 @@ export default class FieldSurveyLogs extends Component {
           console.log(response)
         });
         this.setState({ field_logs: field_logs })
+        this.tablePaginate(field_logs)
       })
       .catch((error) => {
         let data_container = Storage.getItem('FieldSurveyLogs')
@@ -180,10 +184,40 @@ export default class FieldSurveyLogs extends Component {
             </DataTable.Row>)
           }
           this.setState({ field_logs: field_logs })
+          this.tablePaginate(field_logs)
         });
       });
   }
 
+  tablePaginate(field_logs) {
+    let temp = []
+    let counter = 0
+    let number_of_pages = field_logs.length / 6
+    this.setState({ number_of_pages: Math.ceil(number_of_pages) })
+    field_logs.forEach(element => {
+      if (counter < 6) {
+        temp.push(element)
+      }
+      counter++
+    });
+    this.setState({ field_logs_data_paginate: temp })
+  }
+
+  changePage(page) {
+    let start = (page * 6)
+    let end = start * 2
+    let temp = []
+
+    if (end == 0) {
+      end = 6
+    }
+
+    for (let counter = start; counter < end; counter++) {
+      temp.push(this.state.field_logs[counter])
+    }
+    this.setState({ field_logs_data_paginate: temp })
+    this.setState({ page: page })
+  }
 
   render() {
     let { width } = Dimensions.get('window');
@@ -209,7 +243,13 @@ export default class FieldSurveyLogs extends Component {
                     <DataTable.Title>Official Report</DataTable.Title>
                     <DataTable.Title style={{ marginRight: -200 }}>Actions</DataTable.Title>
                   </DataTable.Header>
-                  {this.state.field_logs}
+                  {this.state.field_logs_data_paginate}
+                  <DataTable.Pagination
+                    page={this.state.page}
+                    numberOfPages={this.state.number_of_pages}
+                    onPageChange={(page) => { this.changePage(page) }}
+                    label={`Page ${this.state.page} of ${this.state.number_of_pages - 1}`}
+                  />
                 </DataTable>
               </ScrollView>
             </View>

@@ -58,7 +58,7 @@ export default class Summary extends Component {
   }
 
   analyzeSurficialSummary(surficial_summary) {
-    let data_timestamp = surficial_summary[surficial_summary.length-1]
+    let data_timestamp = surficial_summary[surficial_summary.length - 1]
     let formatted_timestamp = this.formatDateTime(data_timestamp)
     this.setState({ surficial_summary: "Last surficial data received is on " + formatted_timestamp["text_format_timestamp"] })
   }
@@ -94,6 +94,7 @@ export default class Summary extends Component {
         let data_container = Storage.getItem('SurficialDataSummary')
         let label_data = []
         let series_data = []
+        let series_container = []
         data_container.then(response => {
           for (const [index, value] of response.entries()) {
             let marker = {
@@ -105,18 +106,18 @@ export default class Summary extends Component {
             label_data = value.ts
           }
           this.analyzeSurficialSummary(label_data)
-          this.renderSurficialGraph(label_data ,series_data)
+          this.renderSurficialGraph(label_data, series_container)
 
         });
       });
   }
 
-  renderSurficialGraph(label_data,series_data) {
+  renderSurficialGraph(label_data, series_data) {
 
     let surficial_container = []
-    let Highcharts='Highcharts';
+    let Highcharts = 'Highcharts';
 
-    let conf={
+    let conf = {
       chart: {
         type: 'line',
         animation: Highcharts.svg, // don't animate in old IE
@@ -157,7 +158,7 @@ export default class Summary extends Component {
         },
         series: {
           marker: {
-              radius: 3
+            radius: 3
           },
           cursor: "pointer"
         }
@@ -165,13 +166,13 @@ export default class Summary extends Component {
       series: series_data
     };
 
-    surficial_container.push(<View style={{padding: 20}}>
-      <View style={{width: '100%'}}>
-        <ChartView style={{height: 200}} config={conf}></ChartView>
+    surficial_container.push(<View style={{ padding: 20 }}>
+      <View style={{ width: '100%' }}>
+        <ChartView style={{ height: 200 }} config={conf}></ChartView>
       </View>
     </View>)
 
-    this.setState({render_surficial_graph: surficial_container})
+    this.setState({ render_surficial_graph: surficial_container })
   }
 
   render() {
