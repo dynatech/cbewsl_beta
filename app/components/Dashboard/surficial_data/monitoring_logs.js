@@ -176,14 +176,15 @@ export default class MonitoringLogs extends Component {
         console.log(responseJson)
         for (const [index, value] of responseJson.entries()) {
           let formatted_timestamp = this.formatDateTime(date = value.date)
-          monitoring_logs_data.push(<DataTable.Row style={{ width: 500 }}>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.type_of_feature}</DataTable.Cell>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.description}</DataTable.Cell>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.name_of_feature}</DataTable.Cell>
-            <DataTable.Cell style={{ marginRight: 10 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
+          monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
+            <DataTable.Cell style={{ paddingRight: 10 }}>{value.type_of_feature}</DataTable.Cell>
+            <DataTable.Cell style={{ paddingRight: 10 }}>{value.description}</DataTable.Cell>
+            <DataTable.Cell style={{ paddingRight: 10 }}>{value.name_of_feature}</DataTable.Cell>
+            <DataTable.Cell style={{ paddingRight: 10 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
             <DataTable.Cell>
-              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
-              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.moms_id)}></Icon>
+              <Icon name="md-create" style={{ color: "blue"}} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+              <Icon name="ios-trash" style={{ color: "red"}} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
+              <Icon name="ios-share-alt" style={{ color: "#083451"}} onPress={() => console.log("Raise alert")}><Text style={{fontSize: 5}}>Raise</Text></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
 
@@ -211,11 +212,11 @@ export default class MonitoringLogs extends Component {
           if (response.length != 0) {
             for (const [index, value] of response.entries()) {
               let formatted_timestamp = this.formatDateTime(date = value.date)
-              monitoring_logs_data.push(<DataTable.Row style={{ width: 500 }}>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.type_of_feature}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.description}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.name_of_feature}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
+              monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
+                <DataTable.Cell style={{ marginRight: 20 }}>{value.type_of_feature}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 20 }}>{value.description}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 20 }}>{value.name_of_feature}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 20 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
                 <DataTable.Cell>
                   <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
                   <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon>
@@ -223,7 +224,7 @@ export default class MonitoringLogs extends Component {
               </DataTable.Row>)
             }
           } else {
-            monitoring_logs_data.push(<DataTable.Row style={{ width: 500 }}>
+            monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
@@ -254,7 +255,7 @@ export default class MonitoringLogs extends Component {
         <View>
           <ScrollView horizontal={true}>
             <DataTable>
-              <DataTable.Header style={{ width: 500 }}>
+              <DataTable.Header style={{ width: 600 }}>
                 <DataTable.Title>Type of Feature</DataTable.Title>
                 <DataTable.Title>Description</DataTable.Title>
                 <DataTable.Title>Name of Feature</DataTable.Title>

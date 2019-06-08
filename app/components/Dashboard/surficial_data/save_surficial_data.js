@@ -7,6 +7,7 @@ import { Icon } from 'native-base'
 import { Modal } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Storage from '../../utils/storage'
+import SendSMS from 'react-native-sms'
 import { NavigationEvents } from 'react-navigation'
 import moment from "moment"
 
@@ -22,7 +23,8 @@ export default class SaveSurficialData extends Component {
             description: "",
             name_of_feature: "",
             guidelines: [],
-            isModelVisible: false
+            isModelVisible: false,
+            server_number: '09175392665'
         };
     }
 
@@ -198,140 +200,165 @@ export default class SaveSurficialData extends Component {
             type_of_feature,
             description,
             name_of_feature } = this.state
-        if (datetime != "" && type_of_feature != "" && description != "" && name_of_feature != "") {
-            fetch('http://192.168.150.191:5000/api/surficial_data/save_monitoring_log', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    moms_id: moms_id,
-                    local_storage_id: 1,
-                    sync_status: 3,
-                    timestamp: datetime,
-                    type_of_feature: type_of_feature,
-                    description: description,
-                    name_of_feature: name_of_feature
-                }),
-            }).then((response) => response.json())
-                .then((responseJson) => {
-                    console.log(responseJson)
-                    if (responseJson.status == true) {
-                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-                        let data_container = Storage.getItem('SurficialDataMomsSummary')
-                        let updated_data = []
-                        data = {
-                            moms_id: moms_id,
-                            local_storage_id: 1,
-                            sync_status: 3,
-                            type_of_feature: type_of_feature,
-                            description: description,
-                            name_of_feature: name_of_feature,
-                            date: datetime
-                        }
-                        data_container.then(response => {
-                            if (response == null) {
-                                Storage.removeItem("SurficialDataMomsSummary")
-                                Storage.setItem("SurficialDataMomsSummary", [data])
-                            } else {
-                                let temp = response
-                                temp.push(data)
-                                let counter = 0
-                                temp.forEach((value) => {
-                                    counter += 1
-                                    updated_data.push({
-                                        moms_id: value.moms_id,
-                                        local_storage_id: counter,
-                                        sync_status: 3,
-                                        type_of_feature: value.type_of_feature,
-                                        description: value.description,
-                                        name_of_feature: value.name_of_feature,
-                                        date: value.datetime
-                                    })
-                                });
-                                Storage.removeItem("SurficialDataMomsSummary")
-                                Storage.setItem("SurficialDataMomsSummary", updated_data)
-                            }
-                            this.props.navigation.navigate('monitoring_logs');
-                        });
 
-                    } else {
-                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-                    }
-                })
-                .catch((error) => {
-                    data = {
-                        moms_id: moms_id,
-                        local_storage_id: local_storage_id,
-                        sync_status: 1,
-                        type_of_feature: type_of_feature,
-                        description: description,
-                        name_of_feature: name_of_feature,
-                        date: datetime
-                    }
-                    let offline_data = Storage.getItem("SurficialDataMomsSummary");
-                    offline_data.then(response => {
-                        if (local_storage_id == 0) {
-                            data["local_storage_id"] = 1
-                            if (response == null) {
-                                Storage.removeItem("SurficialDataMomsSummary")
-                                Storage.setItem("SurficialDataMomsSummary", [data])
-                            } else {
-                                let temp = response
-                                temp.push(data)
-                                let updated_data = []
-                                let counter = 0
-                                temp.forEach((value) => {
-                                    counter += 1
-                                    updated_data.push({
-                                        moms_id: value.moms_id,
-                                        local_storage_id: counter,
-                                        sync_status: value.sync_status,
-                                        type_of_feature: value.type_of_feature,
-                                        description: value.description,
-                                        name_of_feature: value.name_of_feature,
-                                        date: value.datetime
-                                    })
-                                });
-                                Storage.removeItem("SurficialDataMomsSummary")
-                                Storage.setItem("SurficialDataMomsSummary", updated_data)
-                            }
-                        } else {
-                            let temp = response
-                            let updated_data = []
-                            let counter = 0
-                            temp.forEach((value) => {
-                                counter += 1
-                                if (local_storage_id == value.local_storage_id) {
-                                    updated_data.push({
+        if (datetime != "" && type_of_feature != "" && description != "") {
+            Alert.alert(
+                'Notice',
+                'Please ensure that your cellular network is available.',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {text: 'OK', onPress: () => SendSMS.send({
+                    body: `MoMs Report<*>FT:${type_of_feature}<*>Desc:${description}<*>NOF:${name_of_feature}`,
+                    recipients: [this.state.server_number],
+                    successTypes: ['sent', 'queued'],
+                    allowAndroidSendWithoutReadPermission: true
+                  }, (completed, cancelled, error) => {
+                      console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+                      if (completed == true) {
+                        fetch('http://192.168.150.191:5000/api/surficial_data/save_monitoring_log', {
+                            method: 'POST',
+                            headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                moms_id: moms_id,
+                                local_storage_id: 1,
+                                sync_status: 3,
+                                timestamp: datetime,
+                                type_of_feature: type_of_feature,
+                                description: description,
+                                name_of_feature: name_of_feature
+                            }),
+                        }).then((response) => response.json())
+                            .then((responseJson) => {
+                                console.log(responseJson)
+                                if (responseJson.status == true) {
+                                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                                    let data_container = Storage.getItem('SurficialDataMomsSummary')
+                                    let updated_data = []
+                                    data = {
                                         moms_id: moms_id,
-                                        local_storage_id: counter,
-                                        sync_status: 2,
+                                        local_storage_id: 1,
+                                        sync_status: 3,
                                         type_of_feature: type_of_feature,
                                         description: description,
                                         name_of_feature: name_of_feature,
                                         date: datetime
-                                    })
+                                    }
+                                    data_container.then(response => {
+                                        if (response == null) {
+                                            Storage.removeItem("SurficialDataMomsSummary")
+                                            Storage.setItem("SurficialDataMomsSummary", [data])
+                                        } else {
+                                            let temp = response
+                                            temp.push(data)
+                                            let counter = 0
+                                            temp.forEach((value) => {
+                                                counter += 1
+                                                updated_data.push({
+                                                    moms_id: value.moms_id,
+                                                    local_storage_id: counter,
+                                                    sync_status: 3,
+                                                    type_of_feature: value.type_of_feature,
+                                                    description: value.description,
+                                                    name_of_feature: value.name_of_feature,
+                                                    date: value.datetime
+                                                })
+                                            });
+                                            Storage.removeItem("SurficialDataMomsSummary")
+                                            Storage.setItem("SurficialDataMomsSummary", updated_data)
+                                        }
+                                        this.props.navigation.navigate('monitoring_logs');
+                                    });
+    
                                 } else {
-                                    updated_data.push({
-                                        moms_id: value.moms_id,
-                                        local_storage_id: counter,
-                                        sync_status: value.sync_status,
-                                        type_of_feature: value.type_of_feature,
-                                        description: value.description,
-                                        name_of_feature: value.name_of_feature,
-                                        date: value.datetime
-                                    })
+                                    ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                                 }
+                            })
+                            .catch((error) => {
+                                data = {
+                                    moms_id: moms_id,
+                                    local_storage_id: local_storage_id,
+                                    sync_status: 1,
+                                    type_of_feature: type_of_feature,
+                                    description: description,
+                                    name_of_feature: name_of_feature,
+                                    date: datetime
+                                }
+                                let offline_data = Storage.getItem("SurficialDataMomsSummary");
+                                offline_data.then(response => {
+                                    if (local_storage_id == 0) {
+                                        data["local_storage_id"] = 1
+                                        if (response == null) {
+                                            Storage.removeItem("SurficialDataMomsSummary")
+                                            Storage.setItem("SurficialDataMomsSummary", [data])
+                                        } else {
+                                            let temp = response
+                                            temp.push(data)
+                                            let updated_data = []
+                                            let counter = 0
+                                            temp.forEach((value) => {
+                                                counter += 1
+                                                updated_data.push({
+                                                    moms_id: value.moms_id,
+                                                    local_storage_id: counter,
+                                                    sync_status: value.sync_status,
+                                                    type_of_feature: value.type_of_feature,
+                                                    description: value.description,
+                                                    name_of_feature: value.name_of_feature,
+                                                    date: value.datetime
+                                                })
+                                            });
+                                            Storage.removeItem("SurficialDataMomsSummary")
+                                            Storage.setItem("SurficialDataMomsSummary", updated_data)
+                                        }
+                                    } else {
+                                        let temp = response
+                                        let updated_data = []
+                                        let counter = 0
+                                        temp.forEach((value) => {
+                                            counter += 1
+                                            if (local_storage_id == value.local_storage_id) {
+                                                updated_data.push({
+                                                    moms_id: moms_id,
+                                                    local_storage_id: counter,
+                                                    sync_status: 2,
+                                                    type_of_feature: type_of_feature,
+                                                    description: description,
+                                                    name_of_feature: name_of_feature,
+                                                    date: datetime
+                                                })
+                                            } else {
+                                                updated_data.push({
+                                                    moms_id: value.moms_id,
+                                                    local_storage_id: counter,
+                                                    sync_status: value.sync_status,
+                                                    type_of_feature: value.type_of_feature,
+                                                    description: value.description,
+                                                    name_of_feature: value.name_of_feature,
+                                                    date: value.datetime
+                                                })
+                                            }
+                                        });
+                                        Storage.removeItem("SurficialDataMomsSummary")
+                                        Storage.setItem("SurficialDataMomsSummary", updated_data)
+                                    }
+                                    this.props.navigation.navigate('monitoring_logs');
+                                });
+                                // 1 - adding |2 - modified |3 - old_data
                             });
-                            Storage.removeItem("SurficialDataMomsSummary")
-                            Storage.setItem("SurficialDataMomsSummary", updated_data)
-                        }
-                        this.props.navigation.navigate('monitoring_logs');
-                    });
-                    // 1 - adding |2 - modified |3 - old_data
-                });
+                      }
+                  })},
+                ],
+                {cancelable: false},
+              );
+
+            
         } else {
             Alert.alert(
                 'Manifestation of Movement',
@@ -369,7 +396,7 @@ export default class SaveSurficialData extends Component {
                     <DatePicker
                         customStyles={{ dateInput: { borderWidth: 0, } }}
                         disabled={true}
-                        style={[defaults.inputs, { width: '95%', borderWidth: 0 }]}
+                        style={[defaults.datetimepicker, { width: '95%', borderWidth: 0 }]}
                         date={this.state.time}
                         mode="datetime"
                         placeholder="Pick date and time (Not available)"
@@ -388,19 +415,23 @@ export default class SaveSurficialData extends Component {
                         <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Manifestation of Movement</Text>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
-                        <DatePicker
+                        <View style={{ width: '50%' }}>
+                            <Text style={{ width: '100%', paddingLeft: '27%' }}>Date and Time</Text>
+                            <DatePicker
                             customStyles={{ dateInput: { borderWidth: 0 } }}
-                            style={[defaults.inputs, { width: '50%' }]}
+                            style={[{ width: '100%', paddingTop: '2%' }]}
                             format="YYYY-MM-DD HH:mm"
                             date={this.state.datetime}
-                            value={this.state.datetime}
                             mode="datetime"
+                            placeholder="Pick date and time"
                             duration={400}
                             confirmBtnText="Confirm"
                             cancelBtnText="Cancel"
                             showIcon={false}
                             onDateChange={(date) => { this.setState({ datetime: date }) }}
                         />
+                        </View>
+
                         <View style={{ width: '50%' }}>
                             <Text style={{ width: '100%', paddingLeft: '20%' }}>Feature Type</Text>
                             <Picker
