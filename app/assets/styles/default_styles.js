@@ -11,6 +11,12 @@ const defaults = StyleSheet.create({
     marginRight: 10,
     color: '#000'
   },
+  datetimepicker: {
+    borderBottomWidth: 3,
+    borderBottomColor: '#083451',
+    marginLeft: 10,
+    marginRight: 10,
+  },
   touchableButtons: {
     backgroundColor: '#083451',
     borderRadius: 50,
