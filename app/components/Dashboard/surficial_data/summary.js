@@ -14,7 +14,7 @@ export default class Summary extends Component {
     this.state = {
       surficial_data: null,
       surficial_summary: "",
-      moms_summary: "",
+      moms_summary: [],
       render_surficial_graph: []
     };
   }
@@ -67,17 +67,12 @@ export default class Summary extends Component {
     let line_colors = ['#7cb5ec', '#000000', '#8ce77d']
     fetch('http://192.168.150.191:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson)
-        let surficial_data = []
-        let to_local_data = []
-        let counter = 0
-
         Storage.removeItem("SurficialDataSummary")
-        Storage.setItem("SurficialDataSummary", responseJson)
+        Storage.setItem("SurficialDataSummary", responseJson[0].surficial_data)
 
         let label_data = []
         let series_container = []
-        for (const [index, value] of responseJson.entries()) {
+        for (const [index, value] of responseJson[0].surficial_data.entries()) {
           let marker = {
             name: value.crack_name,
             data: value.measurements,
@@ -87,15 +82,24 @@ export default class Summary extends Component {
           series_container.push(marker)
           label_data = value.ts
         }
+        let moms_data = []
+        for (const [index, value] of responseJson[0].moms_data.entries()) {
+          moms_data.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+            <Text style={{ fontSize: 15 }}>Type of feature: {value.type_of_feature}</Text>
+            <Text style={{ fontSize: 15 }}>Description: {value.description}</Text>
+            <Text style={{ fontSize: 15 }}>Name of feature: {value.name_of_feature}</Text>
+          </View>)
+        }
+        this.setState({ moms_summary: moms_data })
         this.analyzeSurficialSummary(label_data)
         this.renderSurficialGraph(label_data, series_container)
       })
       .catch((error) => {
-        let data_container = Storage.getItem('SurficialDataSummary')
+        let summary_container = Storage.getItem('SurficialDataSummary')
+        let moms_summary_container = Storage.getItem('SurficialDataMomsSummary')
         let label_data = []
-        let series_data = []
         let series_container = []
-        data_container.then(response => {
+        summary_container.then(response => {
           for (const [index, value] of response.entries()) {
             let marker = {
               name: value.crack_name,
@@ -109,6 +113,32 @@ export default class Summary extends Component {
           this.renderSurficialGraph(label_data, series_container)
 
         });
+        let moms_data = []
+        moms_summary_container.then(response => {
+          if (response.length != 0) {
+            let value = response[0]
+            moms_data.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+              <Text style={{ fontSize: 15 }}>Type of feature: {value.type_of_feature}</Text>
+              <Text style={{ fontSize: 15 }}>Description: {value.description}</Text>
+              <Text style={{ fontSize: 15 }}>Name of feature: {value.name_of_feature}</Text>
+            </View>)
+          } else {
+            moms_data.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+              <Text style={{ fontSize: 15 }}>No MOMs data.</Text>
+            </View>)
+          }
+          this.setState({ moms_summary: moms_data })
+        });
+
+        // let moms_data = []
+        //   for (const [index, value] of response[0].moms_data.entries()) {
+        //     moms_data.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+        //       <Text style={{ fontSize: 15 }}>Type of feature: {value.type_of_feature}</Text>
+        //       <Text style={{ fontSize: 15 }}>Description: {value.description}</Text>
+        //       <Text style={{ fontSize: 15 }}>Name of feature: {value.name_of_feature}</Text>
+        //     </View>)
+        //   }
+        //   this.setState({ moms_summary: moms_data })
       });
   }
 
@@ -199,7 +229,7 @@ export default class Summary extends Component {
           </View>
           <Text style={{ fontSize: 20, fontWeight: 'bold' }}>MANIFESTATIONS OF MOVEMENT</Text>
           <View style={surficial_data_styles.subContainer}>
-            <Text> SAMPLE DATA</Text>
+            {this.state.moms_summary}
           </View>
           <View style={{ padding: 10, marginTop: 20, marginBottom: 20 }}>
             <Text style={{ fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Surficial Measurement Graph</Text>
