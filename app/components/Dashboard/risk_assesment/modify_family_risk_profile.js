@@ -11,6 +11,10 @@ export default class ModifyFamilyRisk extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      family_profile_data: [],
+      family_profile_data_paginate: [],
+      page: 0,
+      number_of_pages: 0
     };
   }
 
@@ -118,6 +122,7 @@ export default class ModifyFamilyRisk extends Component {
           console.log(response)
         });
         this.setState({ family_profile_data: family_profile_data })
+        this.tablePaginate(family_profile_data)
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentFamilyRiskProfile')
@@ -141,8 +146,39 @@ export default class ModifyFamilyRisk extends Component {
             </DataTable.Row>)
           }
           this.setState({ family_profile_data: family_profile_data })
+          this.tablePaginate(family_profile_data)
         })
       });
+  }
+
+  tablePaginate(family_profile_data) {
+    let temp = []
+    let counter = 0
+    let number_of_pages = family_profile_data.length / 6
+    this.setState({ number_of_pages: Math.ceil(number_of_pages) })
+    family_profile_data.forEach(element => {
+      if (counter < 6) {
+        temp.push(element)
+      }
+      counter++
+    });
+    this.setState({ family_profile_data_paginate: temp })
+  }
+
+  changePage(page) {
+    let start = (page * 6)
+    let end = start * 2
+    let temp = []
+
+    if (end == 0) {
+      end = 6
+    }
+
+    for (let counter = start; counter < end; counter++) {
+      temp.push(this.state.family_profile_data[counter])
+    }
+    this.setState({ family_profile_data_paginate: temp })
+    this.setState({ page: page })
   }
 
   render() {
@@ -157,7 +193,13 @@ export default class ModifyFamilyRisk extends Component {
               <DataTable.Title>Nature of vulnerability</DataTable.Title>
               <DataTable.Title>Actions</DataTable.Title>
             </DataTable.Header>
-            {this.state.family_profile_data}
+            {this.state.family_profile_data_paginate}
+            <DataTable.Pagination
+              page={this.state.page}
+              numberOfPages={this.state.number_of_pages}
+              onPageChange={(page) => { this.changePage(page) }}
+              label={`Page ${this.state.page} of ${this.state.number_of_pages - 1}`}
+            />
           </DataTable>
         </ScrollView>
         <View style={{ textAlign: 'center', flex: 1 }}>

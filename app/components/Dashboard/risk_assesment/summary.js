@@ -95,7 +95,7 @@ export default class Summary extends Component {
         let data_container = Storage.getItem('RiskAssessmentSummary')
         let summary_data = [];
         data_container.then(response => {
-          if (response != null) {
+          if (response.length != 0) {
             for (const [index, value] of response.entries()) {
               summary_data.push(<DataTable.Row style={{ width: 500 }}>
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
@@ -120,30 +120,30 @@ export default class Summary extends Component {
     let temp = []
     let counter = 0
     let number_of_pages = summary_data.length / 6
-    this.setState({number_of_pages: Math.ceil(number_of_pages)})
+    this.setState({ number_of_pages: Math.ceil(number_of_pages) })
     summary_data.forEach(element => {
       if (counter < 6) {
         temp.push(element)
       }
       counter++
     });
-    this.setState({summary_data_paginate: temp})
+    this.setState({ summary_data_paginate: temp })
   }
 
   changePage(page) {
-    let start = (page*6)
+    let start = (page * 6)
     let end = start * 2
     let temp = []
 
     if (end == 0) {
       end = 6
     }
-    
-    for (let counter = start; counter < end; counter ++) {
+
+    for (let counter = start; counter < end; counter++) {
       temp.push(this.state.summary_data[counter])
     }
-    this.setState({summary_data_paginate: temp})
-    this.setState({page: page})
+    this.setState({ summary_data_paginate: temp })
+    this.setState({ page: page })
   }
 
   render() {

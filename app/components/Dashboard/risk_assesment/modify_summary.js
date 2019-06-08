@@ -11,7 +11,10 @@ export default class ModifySummary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      summary_data: []
+      summary_data: [],
+      summary_data_paginate: [],
+      page: 0,
+      number_of_pages: 0
     };
   }
 
@@ -122,6 +125,7 @@ export default class ModifySummary extends Component {
           console.log(response)
         });
         this.setState({ summary_data: summary_data })
+        this.tablePaginate(summary_data)
 
       })
       .catch((error) => {
@@ -149,8 +153,39 @@ export default class ModifySummary extends Component {
           }
 
           this.setState({ summary_data: summary_data })
+          this.tablePaginate(summary_data)
         });
       });
+  }
+
+  tablePaginate(summary_data) {
+    let temp = []
+    let counter = 0
+    let number_of_pages = summary_data.length / 6
+    this.setState({ number_of_pages: Math.ceil(number_of_pages) })
+    summary_data.forEach(element => {
+      if (counter < 6) {
+        temp.push(element)
+      }
+      counter++
+    });
+    this.setState({ summary_data_paginate: temp })
+  }
+
+  changePage(page) {
+    let start = (page * 6)
+    let end = start * 2
+    let temp = []
+
+    if (end == 0) {
+      end = 6
+    }
+
+    for (let counter = start; counter < end; counter++) {
+      temp.push(this.state.summary_data[counter])
+    }
+    this.setState({ summary_data_paginate: temp })
+    this.setState({ page: page })
   }
 
   render() {
@@ -166,7 +201,13 @@ export default class ModifySummary extends Component {
               <DataTable.Title>Vulnerability</DataTable.Title>
               <DataTable.Title>Actions</DataTable.Title>
             </DataTable.Header>
-            {this.state.summary_data}
+            {this.state.summary_data_paginate}
+            <DataTable.Pagination
+              page={this.state.page}
+              numberOfPages={this.state.number_of_pages}
+              onPageChange={(page) => { this.changePage(page) }}
+              label={`Page ${this.state.page} of ${this.state.number_of_pages - 1}`}
+            />
           </DataTable>
         </ScrollView>
         <View style={{ textAlign: 'center', flex: 0.5 }}>

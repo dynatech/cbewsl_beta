@@ -305,13 +305,13 @@ export default class SaveSurficialData extends Component {
                             counter += 1
                             if (local_storage_id == value.local_storage_id) {
                                 updated_data.push({
-                                    moms_id: value.moms_id,
+                                    moms_id: moms_id,
                                     local_storage_id: counter,
                                     sync_status: 2,
-                                    type_of_feature: value.type_of_feature,
-                                    description: value.description,
-                                    name_of_feature: value.name_of_feature,
-                                    date: value.datetime
+                                    type_of_feature: type_of_feature,
+                                    description: description,
+                                    name_of_feature: name_of_feature,
+                                    date: datetime
                                 })
                             } else {
                                 updated_data.push({
