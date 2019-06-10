@@ -99,7 +99,7 @@ export default class ModifyResourceAndCapacities extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
             <DataTable.Cell>
-              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
               <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.resources_and_capacities_id)}></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
@@ -133,7 +133,7 @@ export default class ModifyResourceAndCapacities extends Component {
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
                 <DataTable.Cell>
-                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
                   <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon>
                 </DataTable.Cell>
               </DataTable.Row>)

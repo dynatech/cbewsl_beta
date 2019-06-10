@@ -104,7 +104,7 @@ export default class ModifyHazardData extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
             <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
             <DataTable.Cell>
-              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
               <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.hazard_data_id)}></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
@@ -141,7 +141,7 @@ export default class ModifyHazardData extends Component {
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
                 <DataTable.Cell>
-                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
                   <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon>
                 </DataTable.Cell>
               </DataTable.Row>)
