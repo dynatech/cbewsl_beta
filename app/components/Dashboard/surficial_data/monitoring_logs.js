@@ -172,28 +172,41 @@ export default class MonitoringLogs extends Component {
       'Are you sure you want raise to this alert?',
       [
         {
-          text: 'No',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
+          text: 'Cancel',
+          style: 'cancel'
         },
-        { text: 'Yes', onPress: () => 
-          this.setAlertForMoms(data)
-      },
+        {
+          text: 'Alert 2',
+          onPress: () => this.setAlertForMoms(data,"A2"),
+        },
+        { 
+          text: 'Alert 3', 
+          onPress: () =>  this.setAlertForMoms(data,"A3"),
+        },
       ],
       { cancelable: false },
     );
   }
 
-  setAlertForMoms(data) {
-    let temp = {
-      interal_alert: "",
-      alert_evel: "",
-      last_alert_release: "",
-      event_start: "",
-      last_retrigger: "",
-      validity: "",
-
+  setAlertForMoms(data, alert_level) {
+    let current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+    let alert_validity = ""
+    if (alert_level == "A2") {
+        alert_validity = moment(data.date).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
+    } else if (alert_level == "A3") {
+        alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
     }
+    let temp = {
+      interal_alert: "m",
+      release_timestamp: current_timestamp,
+      alert_level: alert_level,
+      last_alert_release: data.date,
+      event_start: data.date,
+      last_retrigger: data.date,
+      triggers: data,
+      validity: alert_validity
+    }
+    let raised_alerts = Storage.setItem("alertGeneration", temp);
   }
 
   getMonitoringLogs() {
