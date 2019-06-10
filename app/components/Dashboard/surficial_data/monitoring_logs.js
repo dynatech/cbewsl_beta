@@ -164,7 +164,36 @@ export default class MonitoringLogs extends Component {
 
         this.getMonitoringLogs();
       });
+  }
 
+  raiseAlert(data) {
+    Alert.alert(
+      'Raise Alert',
+      'Are you sure you want raise to this alert?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: () => 
+          this.setAlertForMoms(data)
+      },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  setAlertForMoms(data) {
+    let temp = {
+      interal_alert: "",
+      alert_evel: "",
+      last_alert_release: "",
+      event_start: "",
+      last_retrigger: "",
+      validity: "",
+
+    }
   }
 
   getMonitoringLogs() {
@@ -184,7 +213,7 @@ export default class MonitoringLogs extends Component {
             <DataTable.Cell>
               <Icon name="md-create" style={{ color: "blue"}} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
               <Icon name="ios-trash" style={{ color: "red"}} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
-              <Icon name="ios-share-alt" style={{ color: "#083451"}} onPress={() => console.log("Raise alert")}><Text style={{fontSize: 5}}>Raise</Text></Icon>
+              <Icon name="ios-share-alt" style={{ color: "#083451"}} onPress={() => this.raiseAlert(value)}><Text style={{fontSize: 5}}>Raise</Text></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
 
@@ -218,7 +247,7 @@ export default class MonitoringLogs extends Component {
                 <DataTable.Cell style={{ marginRight: 20 }}>{value.name_of_feature}</DataTable.Cell>
                 <DataTable.Cell style={{ marginRight: 20 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
                 <DataTable.Cell>
-                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
                   <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon>
                 </DataTable.Cell>
               </DataTable.Row>)
