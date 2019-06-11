@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text , TouchableOpacity, Image, Linking} from 'react-native';
 import { dashboard } from '../../assets/styles/dashboard_styles'
 import { defaults } from '../../assets/styles/default_styles'
+import Storage from '../utils/storage'
 import { Header, Left, Right, Icon} from 'native-base'
 import { Avatar, Badge, withBadge } from 'react-native-elements'
 
@@ -9,6 +10,7 @@ export default class MainDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+        alert_badge: []
     };
   }
 
@@ -20,7 +22,6 @@ export default class MainDashboard extends Component {
   };
 
   navigateMenu(menu) {
-    console.info(menu)
     switch (menu) {
         case 'risk_assessment':
             this.props.navigation.navigate('riskAssessment')
@@ -53,6 +54,22 @@ export default class MainDashboard extends Component {
             console.info("Invalid menu... skipping...")
             break;
     }
+  }
+
+  componentDidMount() {
+    let offline_data = Storage.getItem("RaisedAlerts");
+    offline_data.then(response => {
+        console.log(response)
+        if (response == null) {
+            this.setState({alert_badge: [<Badge
+                status="success"
+                containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+                value={<Text style={{color: 'white', padding: 20}}>Alert 0</Text>}
+            />]})
+        } else {
+            // Add logic for alerts
+        }
+    })
   }
 
   render() {
@@ -96,11 +113,7 @@ export default class MainDashboard extends Component {
                     <TouchableOpacity style={dashboard.menuButtons} onPress={() => this.navigateMenu("ewi")}>
                         <Image style={dashboard.menuIcons} source={require('../../assets/images/ewi.png')} />
                         <Text style={dashboard.menuTexts}>EWI</Text>
-                        <Badge
-                            status="error"
-                            containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-                            value={<Text style={{color: 'white', padding: 20}}>Alert 2</Text>}
-                        />
+                        {this.state.alert_badge}
                     </TouchableOpacity>
                 </View>
                 <View style={dashboard.rowMenu}>
