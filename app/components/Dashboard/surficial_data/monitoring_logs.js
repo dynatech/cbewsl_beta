@@ -204,17 +204,17 @@ export default class MonitoringLogs extends Component {
 
         let hour = moment(alert_validity).hours()
         if (hour >= 0 && hour < 4) {
-          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 04:00:00")
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 04:00:00")
         } else if (hour >= 4 && hour < 8) {
-          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 08:00:00")
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 08:00:00")
         } else if (hour >= 8 && hour < 12) {
-          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 12:00:00")
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 12:00:00")
         } else if (hour >= 12 && hour < 16) {
-          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 16:00:00")
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 16:00:00")
         } else if (hour >= 16 && hour < 20) {
-          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 20:00:00")
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 20:00:00")
         } else if (hour >= 20) {
-          alert_validity = moment(data.date).add(72, 'hours').format("YYYY-MM-DD 00:00:00")
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
         }
         
         let temp = {
