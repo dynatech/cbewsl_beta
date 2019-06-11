@@ -3,9 +3,10 @@ import { View, Text , TouchableOpacity, Image, Linking} from 'react-native';
 import { dashboard } from '../../assets/styles/dashboard_styles'
 import { defaults } from '../../assets/styles/default_styles'
 import Storage from '../utils/storage'
-import { Header, Left, Right, Icon} from 'native-base'
-import { Avatar, Badge, withBadge } from 'react-native-elements'
+import {Icon} from 'native-base'
+import {  Badge } from 'react-native-elements'
 import { NavigationEvents } from 'react-navigation'
+import Notification from '../utils/alert_notification'
 
 export default class MainDashboard extends Component {
   constructor(props) {
@@ -15,6 +16,9 @@ export default class MainDashboard extends Component {
     };
   }
 
+  componentDidMount() {
+    Notification.endOfValidity()
+  }
 
   static navigationOptions = {
       drawerIcon: ({tintColor}) => (
@@ -57,11 +61,9 @@ export default class MainDashboard extends Component {
     }
   }
 
-
   setBadge() {
     let offline_data = Storage.getItem("alertGeneration");
     offline_data.then(response => {
-        console.log(response)
         if (response == null) {
             this.setState({alert_badge: [<Badge
                 status="success"

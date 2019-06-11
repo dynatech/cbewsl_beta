@@ -3,6 +3,7 @@ package com.cbewslprototype;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.tkporter.sendsms.SendSMSPackage;
 import com.pilloxa.backgroundjob.BackgroundJobPackage;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNFetchBlobPackage(),
+            new BackgroundTaskPackage(),
             SendSMSPackage.getInstance(),
             new BackgroundJobPackage(),
             new SmsListenerPackage(),
@@ -57,5 +59,6 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    BackgroundTaskPackage.useContext(this);
   }
 }
