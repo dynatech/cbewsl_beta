@@ -64,6 +64,7 @@ export default class MainDashboard extends Component {
   setBadge() {
     let offline_data = Storage.getItem("alertGeneration");
     offline_data.then(response => {
+        console.log(response)
         if (response == null) {
             this.setState({alert_badge: [<Badge
                 status="success"
