@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation';
+import Notification from '../../utils/alert_notification'
 
 export default class HazardData extends Component {
   constructor(props) {
@@ -58,7 +59,9 @@ export default class HazardData extends Component {
     }
   }
 
+
   getAllHazardData() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
       .then((responseJson) => {
         let to_local_data = [];

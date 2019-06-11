@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Linking} from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import { defaults } from '../../../assets/styles/default_styles';
 import { Icon } from 'native-base';
 import Storage from '../../utils/storage'
@@ -7,6 +7,7 @@ import SmsListener from 'react-native-android-sms-listener'
 import { NavigationEvents } from 'react-navigation';
 import SendSMS from 'react-native-sms'
 import Sync from '../../utils/syncer'
+import Notification from '../../utils/alert_notification'
 
 export default class DataSyncer extends Component {
   constructor(props) {
@@ -18,11 +19,15 @@ export default class DataSyncer extends Component {
   }
 
   static navigationOptions = {
-    drawerIcon: ({tintColor}) => (
-        <Icon name="ios-sync" style={{fontSize: 24, color: tintColor}}></Icon>
+    drawerIcon: ({ tintColor }) => (
+      <Icon name="ios-sync" style={{ fontSize: 24, color: tintColor }}></Icon>
     )
   };
-  
+
+  componentDidMount() {
+    Notification.endOfValidity();
+  }
+
   loadSMSListener() {
     SmsListener.addListener(message => {
       if (message.body.indexOf('CBEWS-L Sync Ack') > -1 && message.body.indexOf('CBEWS-L Sync Ack') > -1) {
@@ -47,22 +52,22 @@ export default class DataSyncer extends Component {
   syncToServer(storage_key) {
     let data = Storage.getItem(storage_key)
     let empty_status = false
-    this.setState({storage_key: storage_key})
+    this.setState({ storage_key: storage_key })
     data.then(response => {
-      let container = storage_key+":"
-      response.forEach(function(value) {
+      let container = storage_key + ":"
+      response.forEach(function (value) {
         if (value.sync_status != 3) {
           let inner_value = Object.values(value)
           let counter = 0
-          inner_value.forEach(function(iv) {
+          inner_value.forEach(function (iv) {
             if (counter == 0) {
-              container = container+iv
+              container = container + iv
             } else {
-              container = container+"<*>"+iv
+              container = container + "<*>" + iv
             }
             counter++
           })
-          container = container+"||"
+          container = container + "||"
         }
       })
 
@@ -73,7 +78,7 @@ export default class DataSyncer extends Component {
           successTypes: ['sent', 'queued'],
           allowAndroidSendWithoutReadPermission: true
         }, (completed, cancelled, error) => {
-            // console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error); 
+          // console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error); 
         });
       } else {
         alert("Data is updated.");
@@ -84,35 +89,35 @@ export default class DataSyncer extends Component {
   render() {
     return (
       <View style={defaults.container}>
-      <NavigationEvents onDidFocus={() => this.loadSMSListener()} />
-        <View style={{ flex: 1, padding: 10}}>
-          <View style={{flexDirection: 'row'}}>
-            <Icon name="home" style={{color: '#083451', flex: 1}}onPress={() => this.props.navigation.openDrawer()}/>
-            <Text style={{fontSize: 20, flex: 3, fontWeight: 'bold', color: '#083451'}}>Data Synchronization</Text>
+        <NavigationEvents onDidFocus={() => this.loadSMSListener()} />
+        <View style={{ flex: 1, padding: 10 }}>
+          <View style={{ flexDirection: 'row' }}>
+            <Icon name="home" style={{ color: '#083451', flex: 1 }} onPress={() => this.props.navigation.openDrawer()} />
+            <Text style={{ fontSize: 20, flex: 3, fontWeight: 'bold', color: '#083451' }}>Data Synchronization</Text>
           </View>
         </View>
-        <View style={{flex: 20}}>
+        <View style={{ flex: 20 }}>
           <ScrollView>
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('RiskAssessmentSummary')}>
-                <Text style={defaults.touchableTexts}>Risk Assessment | Summary</Text>
+              <Text style={defaults.touchableTexts}>Risk Assessment | Summary</Text>
             </TouchableOpacity>
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('RiskAssessmentFamilyRiskProfile')}>
-                <Text style={defaults.touchableTexts}>Risk Assessment | Family Risk Profile</Text>
+              <Text style={defaults.touchableTexts}>Risk Assessment | Family Risk Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('RiskAssessmentHazardData')}>
-                <Text style={defaults.touchableTexts}>Risk Assessment | Hazard Data</Text>
+              <Text style={defaults.touchableTexts}>Risk Assessment | Hazard Data</Text>
             </TouchableOpacity>
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('RiskAssessmentRNC')}>
-                <Text style={defaults.touchableTexts}>Risk Assessment | Resources and Capacities</Text>
+              <Text style={defaults.touchableTexts}>Risk Assessment | Resources and Capacities</Text>
             </TouchableOpacity>
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('FieldSurveyLogs')}>
-                <Text style={defaults.touchableTexts}>Field Survey | Logs</Text>
+              <Text style={defaults.touchableTexts}>Field Survey | Logs</Text>
             </TouchableOpacity>
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SurficialDataMeasurements')}>
-                <Text style={defaults.touchableTexts}>Surficial Data | Measurements</Text>
+              <Text style={defaults.touchableTexts}>Surficial Data | Measurements</Text>
             </TouchableOpacity>
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SensorMaintenanceMaintenanceLogs')}>
-                <Text style={defaults.touchableTexts}>Sensor Maintenance | Maintenance Logs</Text>
+              <Text style={defaults.touchableTexts}>Sensor Maintenance | Maintenance Logs</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

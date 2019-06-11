@@ -5,6 +5,7 @@ import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation'
 import moment from "moment"
+import Notification from '../../utils/alert_notification'
 
 export default class SaveMaintenanceLogs extends Component {
     constructor(props) {
@@ -21,6 +22,7 @@ export default class SaveMaintenanceLogs extends Component {
     }
 
     componentWillMount() {
+        Notification.endOfValidity();
         const { navigation } = this.props;
         const selected_date = navigation.getParam("data", "none");
         console.log(selected_date)
@@ -28,6 +30,7 @@ export default class SaveMaintenanceLogs extends Component {
     }
 
     saveSensorMaintenanceLogs() {
+        Notification.endOfValidity();
         const { sensor_maintenance_id,
             local_storage_id,
             sync_status,

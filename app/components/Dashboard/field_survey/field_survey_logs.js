@@ -7,6 +7,7 @@ import { Icon } from 'native-base'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation'
 import moment from "moment"
+import Notification from '../../utils/alert_notification'
 
 export default class FieldSurveyLogs extends Component {
   constructor(props) {
@@ -54,6 +55,7 @@ export default class FieldSurveyLogs extends Component {
   }
 
   removeLog(id) {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/field_survey/delete_field_survey', {
       method: 'POST',
       headers: {
@@ -124,6 +126,7 @@ export default class FieldSurveyLogs extends Component {
 
 
   getAllFieldSurveyLogs() {
+    Notification.endOfValidity();
     // Storage.removeItem("FieldSurveyLogs");
     fetch('http://192.168.150.191:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
       .then((responseJson) => {

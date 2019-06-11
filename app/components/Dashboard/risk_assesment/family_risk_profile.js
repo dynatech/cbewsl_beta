@@ -5,6 +5,7 @@ import { defaults } from '../../../assets/styles/default_styles'
 import { withNavigation } from 'react-navigation';
 import { NavigationEvents } from 'react-navigation';
 import Storage from '../../utils/storage'
+import Notification from '../../utils/alert_notification'
 
 class FamilyRiskProfile extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class FamilyRiskProfile extends Component {
   }
 
   componentDidMount() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
       .then((responseJson) => {
         let family_profile_data = [];

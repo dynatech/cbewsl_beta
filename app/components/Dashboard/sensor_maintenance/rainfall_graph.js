@@ -1,31 +1,32 @@
 import React, { Component } from 'react';
-import {Modal, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, Alert } from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
 import ChartView from 'react-native-highcharts';
 import moment from 'moment'
+import Notification from '../../utils/alert_notification'
 
 export default class RainfallGraph extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        date: null,
-        time: null,
-        modalVisible: false,
-        render_rainfall_graphs: [],
-        data_availablity_graph: {},
-        data_ts: [],
-        hr24: [],
-        hr72: []
+      date: null,
+      time: null,
+      modalVisible: false,
+      render_rainfall_graphs: [],
+      data_availablity_graph: {},
+      data_ts: [],
+      hr24: [],
+      hr72: []
 
     };
   }
 
   setModalVisible(visible) {
     if (this.state.date != null || this.state.time != null) {
-      this.setState({modalVisible: visible});
+      this.setState({ modalVisible: visible });
     } else {
       Alert.alert(
         'Rainfall Graph',
@@ -47,9 +48,9 @@ export default class RainfallGraph extends Component {
         last_data = element.rain
       }
       if (element.rain == null) {
-        data_availability.push({seriesName: element.ts, data: [peak], color: 'blue'})
+        data_availability.push({ seriesName: element.ts, data: [peak], color: 'blue' })
       } else {
-        data_availability.push({seriesName: element.ts, data: [element.rain], color: 'black'})
+        data_availability.push({ seriesName: element.ts, data: [element.rain], color: 'black' })
       }
     });
 
@@ -91,8 +92,8 @@ export default class RainfallGraph extends Component {
       data_ts: ts_container
     })
 
-    var Highcharts='Highcharts';
-    var conf={
+    var Highcharts = 'Highcharts';
+    var conf = {
       chart: {
         type: 'line',
         animation: Highcharts.svg, // don't animate in old IE
@@ -113,23 +114,23 @@ export default class RainfallGraph extends Component {
         max: Math.max(0, three_day) + parseFloat(Math.max(three_day)),
         min: 0,
         plotBands: [{
-            value: Math.round(parseFloat(one_day)),
-            color: '#5c77fc',
-            dashStyle: "shortdash",
-            width: 2,
-            zIndex: 0,
-            label: {
-              text: `24-hr threshold (${one_day})`
-            }
+          value: Math.round(parseFloat(one_day)),
+          color: '#5c77fc',
+          dashStyle: "shortdash",
+          width: 2,
+          zIndex: 0,
+          label: {
+            text: `24-hr threshold (${one_day})`
+          }
         }, {
-            value: Math.round(parseFloat(three_day)),
-            color: '#f0594a',
-            dashStyle: "shortdash",
-            width: 2,
-            zIndex: 0,
-            label: {
-              text: `72-hr threshold (${three_day})`
-            }
+          value: Math.round(parseFloat(three_day)),
+          color: '#f0594a',
+          dashStyle: "shortdash",
+          width: 2,
+          zIndex: 0,
+          label: {
+            text: `72-hr threshold (${three_day})`
+          }
         }]
       },
       legend: {
@@ -140,10 +141,10 @@ export default class RainfallGraph extends Component {
       },
       plotOptions: {
         series: {
-            marker: {
-                radius: 3
-            },
-            cursor: "pointer"
+          marker: {
+            radius: 3
+          },
+          cursor: "pointer"
         }
       },
       series: [{
@@ -156,7 +157,7 @@ export default class RainfallGraph extends Component {
         color: '#f0594a'
       }]
     };
-    
+
     return conf
   }
 
@@ -174,6 +175,7 @@ export default class RainfallGraph extends Component {
   }
 
   componentDidMount() {
+    Notification.endOfValidity();
     let offline_data = Storage.getItem("RainfallSummary");
     offline_data.then(response => {
       let offline = response[0]
@@ -183,21 +185,21 @@ export default class RainfallGraph extends Component {
 
       offline.plot.forEach(element => {
         rainfall_container.push(<View style={sensor_maintenance_styles.graphContainer}>
-          <Text style={{fontSize: 15, fontWeight: 'bold'}}> Gauge name: {element.gauge_name.toUpperCase()} ({element.distance} KM away)</Text>
-          <Text style={{fontSize: 15, fontWeight: 'bold'}}> Date: {offline.date} </Text>
-          <Text style={{fontSize: 15, fontWeight: 'bold'}}> Data window: 7 days</Text>
-          <View style={{width: '100%'}}>
-            <ChartView style={{height: 200}} config={this.renderTrendGraph(element.data, offline['half of 2yr max'], offline['2yr max'])}></ChartView>
+          <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Gauge name: {element.gauge_name.toUpperCase()} ({element.distance} KM away)</Text>
+          <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {offline.date} </Text>
+          <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
+          <View style={{ width: '100%' }}>
+            <ChartView style={{ height: 200 }} config={this.renderTrendGraph(element.data, offline['half of 2yr max'], offline['2yr max'])}></ChartView>
           </View>
         </View>)
       });
-      this.setState({render_rainfall_graphs: rainfall_container})
+      this.setState({ render_rainfall_graphs: rainfall_container })
     });
   }
   render() {
     return (
       <View style={sensor_maintenance_styles.rainfallGraphContainer}>
-        <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Rainfall Graph</Text>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Rainfall Graph</Text>
         {this.state.render_rainfall_graphs}
       </View>
     );

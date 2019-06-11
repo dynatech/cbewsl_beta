@@ -6,6 +6,7 @@ import { DataTable } from 'react-native-paper'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation'
 import moment from "moment"
+import Notification from '../../utils/alert_notification'
 
 export default class LatestReportSummary extends Component {
   constructor(props) {
@@ -47,6 +48,7 @@ export default class LatestReportSummary extends Component {
   }
 
   getLatestReportSummary() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/field_survey/get_latest_field_survey_data').then((response) => response.json())
       .then((responseJson) => {
         let latest_report = [];

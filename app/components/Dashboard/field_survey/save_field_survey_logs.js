@@ -4,6 +4,7 @@ import { field_survey_styles } from '../../../assets/styles/field_survey_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
 import moment from "moment"
+import Notification from '../../utils/alert_notification'
 
 export default class SaveFieldSurveyLogs extends Component {
     constructor(props) {
@@ -22,6 +23,7 @@ export default class SaveFieldSurveyLogs extends Component {
     }
 
     componentWillMount() {
+        Notification.endOfValidity();
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
         if (data != "none") {
@@ -71,6 +73,7 @@ export default class SaveFieldSurveyLogs extends Component {
     }
 
     saveFieldSurveyLog() {
+        Notification.endOfValidity();
         const { field_survey_id,
             local_storage_id,
             sync_status,

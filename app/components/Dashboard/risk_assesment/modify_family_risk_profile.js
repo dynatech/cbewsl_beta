@@ -6,6 +6,7 @@ import { rassessment_styles } from '../../../assets/styles/risk_assessment_style
 import { Icon } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
 import Storage from '../../utils/storage'
+import Notification from '../../utils/alert_notification'
 
 export default class ModifyFamilyRisk extends Component {
   constructor(props) {
@@ -41,6 +42,7 @@ export default class ModifyFamilyRisk extends Component {
   }
 
   removeLog(id) {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/family_profile/delete_family_profile', {
       method: 'POST',
       headers: {
@@ -90,6 +92,7 @@ export default class ModifyFamilyRisk extends Component {
 
 
   getAllFamilyProfile() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
       .then((responseJson) => {
         let family_profile_data = [];

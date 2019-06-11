@@ -6,6 +6,7 @@ import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation'
 import moment from "moment"
+import Notification from '../../utils/alert_notification'
 
 export default class SituationLogs extends Component {
   constructor(props) {
@@ -62,6 +63,7 @@ export default class SituationLogs extends Component {
   }
 
   displaySituationReportPerDay() {
+    Notification.endOfValidity();
     this.setState({ date_selected: "" })
     let next_days = []
     let new_days = {};

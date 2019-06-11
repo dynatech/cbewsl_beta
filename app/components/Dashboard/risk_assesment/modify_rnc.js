@@ -6,6 +6,7 @@ import { defaults } from '../../../assets/styles/default_styles'
 import { Icon } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
 import Storage from '../../utils/storage'
+import Notification from '../../utils/alert_notification'
 
 export default class ModifyResourceAndCapacities extends Component {
   constructor(props) {
@@ -41,6 +42,7 @@ export default class ModifyResourceAndCapacities extends Component {
   }
 
   removeLog(id) {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/resources_and_capacities/delete_resources_and_capacities', {
       method: 'POST',
       headers: {
@@ -88,6 +90,7 @@ export default class ModifyResourceAndCapacities extends Component {
   }
 
   getAllResourcesAndCapacities() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
       .then((responseJson) => {
         let rnc_data = [];

@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import RainfallGraph from './rainfall_graph'
 import moment from 'moment'
 import Storage from '../../utils/storage'
+import Notification from '../../utils/alert_notification'
 
 export default class Summary extends Component {
   constructor(props) {
@@ -16,23 +17,24 @@ export default class Summary extends Component {
       date: moment(new Date()).format("YYYY-MM-DD HH:MM:00")
     };
   }
-  
+
   // Refactor this
   navigateSensorMaintenace(tab) {
-    switch(tab) {
-        case "sensor_status":
-            this.props.navigation.navigate('sensor_status')
-            break;
-        case "maintenance_logs":
-            this.props.navigation.navigate('maintenance_logs')
-            break;
-        default:
-            console.log("Same page...")
-            break;
+    switch (tab) {
+      case "sensor_status":
+        this.props.navigation.navigate('sensor_status')
+        break;
+      case "maintenance_logs":
+        this.props.navigation.navigate('maintenance_logs')
+        break;
+      default:
+        console.log("Same page...")
+        break;
     }
   }
 
   componentDidMount() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/rainfall/get_rainfall_data', {
       method: 'POST',
       headers: {
@@ -48,15 +50,15 @@ export default class Summary extends Component {
         responseJson[0].date = this.state.date
         Storage.setItem("RainfallSummary", responseJson)
         let online = responseJson[0]
-        this.setState({one_day_rain: Math.round((online["1D cml"]/online["half of 2yr max"])*100)})
-        this.setState({three_day_rain: Math.round((online["3D cml"]/online["2yr max"])*100)})
+        this.setState({ one_day_rain: Math.round((online["1D cml"] / online["half of 2yr max"]) * 100) })
+        this.setState({ three_day_rain: Math.round((online["3D cml"] / online["2yr max"]) * 100) })
       })
       .catch((error) => {
         let offline_data = Storage.getItem("RainfallSummary");
         offline_data.then(response => {
           let offline = response[0]
-          this.setState({one_day_rain: Math.round((offline["1D cml"]/offline["half of 2yr max"])*100)})
-          this.setState({three_day_rain: Math.round((offline["3D cml"]/offline["2yr max"])*100)})
+          this.setState({ one_day_rain: Math.round((offline["1D cml"] / offline["half of 2yr max"]) * 100) })
+          this.setState({ three_day_rain: Math.round((offline["3D cml"] / offline["2yr max"]) * 100) })
         });
       });
   }
@@ -65,34 +67,34 @@ export default class Summary extends Component {
     return (
       <ScrollView style={sensor_maintenance_styles.container}>
         <View style={sensor_maintenance_styles.menuSection}>
-            <View style={sensor_maintenance_styles.buttonSection}>
-                <TouchableOpacity style={sensor_maintenance_styles.activeButton} >
-                    <Text style={sensor_maintenance_styles.buttonActiveText}>Summary</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={sensor_maintenance_styles.menuButton} onPress={() => this.navigateSensorMaintenace("sensor_status")}>
-                    <Text style={sensor_maintenance_styles.buttonText}>Sensor Status</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={sensor_maintenance_styles.menuButton} onPress={() => this.navigateSensorMaintenace("maintenance_logs")}>
-                    <Text style={sensor_maintenance_styles.buttonText}>Maintenance Logs</Text>
-                </TouchableOpacity>
-            </View>
+          <View style={sensor_maintenance_styles.buttonSection}>
+            <TouchableOpacity style={sensor_maintenance_styles.activeButton} >
+              <Text style={sensor_maintenance_styles.buttonActiveText}>Summary</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={sensor_maintenance_styles.menuButton} onPress={() => this.navigateSensorMaintenace("sensor_status")}>
+              <Text style={sensor_maintenance_styles.buttonText}>Sensor Status</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={sensor_maintenance_styles.menuButton} onPress={() => this.navigateSensorMaintenace("maintenance_logs")}>
+              <Text style={sensor_maintenance_styles.buttonText}>Maintenance Logs</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={sensor_maintenance_styles.contentContainer}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Rainfall</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Rainfall</Text>
           <View style={sensor_maintenance_styles.subContainer}>
             <Text>1-day threshold: {this.state.one_day_rain}%</Text>
             <Text>3-day threshold: {this.state.three_day_rain}%</Text>
           </View>
         </View>
         <View style={sensor_maintenance_styles.graphContainer}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Subsurface</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Subsurface</Text>
           <View style={sensor_maintenance_styles.subContainer}>
             <Text>No available data.</Text>
           </View>
         </View>
-        <RainfallGraph/>
+        <RainfallGraph />
       </ScrollView>
-      
+
     );
   }
 }

@@ -5,6 +5,7 @@ import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation'
 import moment from "moment"
+import Notification from '../../utils/alert_notification'
 
 export default class SaveSituationReport extends Component {
     constructor(props) {
@@ -21,12 +22,14 @@ export default class SaveSituationReport extends Component {
     }
 
     componentWillMount() {
+        Notification.endOfValidity();
         const { navigation } = this.props;
         const selected_date = navigation.getParam("data", "none");
         this.setState({ timestamp: selected_date })
     }
 
     saveSituationReport() {
+        Notification.endOfValidity();
         console.log(this.state.timestamp)
         const { situation_report_id,
             local_storage_id,

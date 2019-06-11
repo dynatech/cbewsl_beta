@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation';
+import Notification from '../../utils/alert_notification'
 
 export default class Summary extends Component {
   constructor(props) {
@@ -60,6 +61,7 @@ export default class Summary extends Component {
   }
 
   getAllRiskAssessmentSummary() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
         let summary_data = [];
