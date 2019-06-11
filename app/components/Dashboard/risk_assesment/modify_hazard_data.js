@@ -6,6 +6,7 @@ import { DataTable } from 'react-native-paper'
 import { Icon } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
 import Storage from '../../utils/storage'
+import Notification from '../../utils/alert_notification'
 
 export default class ModifyHazardData extends Component {
   constructor(props) {
@@ -42,6 +43,7 @@ export default class ModifyHazardData extends Component {
   }
 
   removeLog(id) {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/hazard_data/delete_hazard_data', {
       method: 'POST',
       headers: {
@@ -92,6 +94,7 @@ export default class ModifyHazardData extends Component {
   }
 
   getAllHazardData() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
       .then((responseJson) => {
         let to_local_data = [];

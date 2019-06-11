@@ -4,6 +4,7 @@ import { situation_report_styles } from '../../../assets/styles/situation_report
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation'
 import moment from "moment"
+import Notification from '../../utils/alert_notification'
 
 export default class CurrentSituationReport extends Component {
   constructor(props) {
@@ -52,6 +53,7 @@ export default class CurrentSituationReport extends Component {
   }
 
   getLatestSituationReport() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/situation_report/get_latest_situation_report_data').then((response) => response.json())
       .then((responseJson) => {
         let to_local_data = [];

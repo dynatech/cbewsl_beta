@@ -8,6 +8,7 @@ import RainfallGraph from './rainfall_graph'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation'
 import moment from "moment"
+import Notification from '../../utils/alert_notification'
 
 export default class MaintenanceLogs extends Component {
   constructor(props) {
@@ -64,6 +65,7 @@ export default class MaintenanceLogs extends Component {
   }
 
   displayMaintenanceLogsPerDay() {
+    Notification.endOfValidity();
     this.setState({ date_selected: "" })
     let next_days = []
     let new_days = {};
@@ -125,6 +127,7 @@ export default class MaintenanceLogs extends Component {
   }
 
   selectDateToAddLogs(date) {
+    Notification.endOfValidity();
     this.setState({ date_selected: date })
     let selected_date = this.formatDateTime(date = date)
     button_text = "Add Report for " + selected_date["text_format_timestamp"]

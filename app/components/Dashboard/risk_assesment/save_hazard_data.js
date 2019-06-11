@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid, Aler
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
+import Notification from '../../utils/alert_notification'
 
 export default class SaveHazardData extends Component {
     constructor(props) {
@@ -19,6 +20,7 @@ export default class SaveHazardData extends Component {
     }
 
     componentWillMount() {
+        Notification.endOfValidity();
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
         console.log(data)
@@ -46,6 +48,7 @@ export default class SaveHazardData extends Component {
     }
 
     saveHazardData() {
+        Notification.endOfValidity();
         const { hazard_data_id,
             local_storage_id,
             sync_status,

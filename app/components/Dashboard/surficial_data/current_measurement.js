@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation';
 import moment from "moment"
+import Notification from '../../utils/alert_notification'
 
 export default class CurrentMeasurement extends Component {
   constructor(props) {
@@ -56,6 +57,7 @@ export default class CurrentMeasurement extends Component {
   }
 
   getSurficialCurrentMeasurement() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
       .then((responseJson) => {
         let formmated_timestamp = this.formatDateTime(date = responseJson.current_measurement_date)

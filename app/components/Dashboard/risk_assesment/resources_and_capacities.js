@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper'
 import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation';
+import Notification from '../../utils/alert_notification'
 
 export default class ResourcesAndCapacities extends Component {
   constructor(props) {
@@ -60,6 +61,7 @@ export default class ResourcesAndCapacities extends Component {
   }
 
   getAllResourcesAndCapacities() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
       .then((responseJson) => {
         let rnc_data = [];

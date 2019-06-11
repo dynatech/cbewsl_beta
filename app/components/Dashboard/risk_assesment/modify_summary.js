@@ -6,6 +6,7 @@ import { defaults } from '../../../assets/styles/default_styles'
 import { Icon } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
 import Storage from '../../utils/storage'
+import Notification from '../../utils/alert_notification'
 
 export default class ModifySummary extends Component {
   constructor(props) {
@@ -41,6 +42,7 @@ export default class ModifySummary extends Component {
   }
 
   removeLog(id) {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/risk_assesment_summary/delete_risk_assessment_summary', {
       method: 'POST',
       headers: {
@@ -91,6 +93,7 @@ export default class ModifySummary extends Component {
   }
 
   getAllRiskAssessmentSummary() {
+    Notification.endOfValidity();
     fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
         let summary_data = [];

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid, Aler
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { defaults } from '../../../assets/styles/default_styles'
 import Storage from '../../utils/storage'
+import Notification from '../../utils/alert_notification'
 
 export default class SaveFamilyRiskProfile extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ export default class SaveFamilyRiskProfile extends Component {
     }
 
     componentWillMount() {
+        Notification.endOfValidity();
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
         if (data != "none") {
@@ -44,6 +46,7 @@ export default class SaveFamilyRiskProfile extends Component {
     }
 
     saveFamilyRiskProfile() {
+        Notification.endOfValidity();
         const { family_profile_id,
             local_storage_id,
             sync_status,
