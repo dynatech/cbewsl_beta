@@ -191,14 +191,32 @@ export default class MonitoringLogs extends Component {
   setAlertForMoms(data, alert_level) {
     let current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
     let alert_validity = ""
+    Storage.removeItem("alertGeneration");
     let offline_data = Storage.getItem("alertGeneration");
     offline_data.then(response => {
       if (response == null || response == undefined) {
+        console.log("HERE")
         if (alert_level == "A2") {
           alert_validity = moment(data.date).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
         } else if (alert_level == "A3") {
           alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
         }
+
+        let hour = moment(alert_validity).hours()
+        if (hour >= 0 && hour < 4) {
+          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 04:00:00")
+        } else if (hour >= 4 && hour < 8) {
+          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 08:00:00")
+        } else if (hour >= 8 && hour < 12) {
+          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 12:00:00")
+        } else if (hour >= 12 && hour < 16) {
+          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 16:00:00")
+        } else if (hour >= 16 && hour < 20) {
+          alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD 20:00:00")
+        } else if (hour >= 20) {
+          alert_validity = moment(data.date).add(72, 'hours').format("YYYY-MM-DD 00:00:00")
+        }
+        
         let temp = {
           interal_alert: "m",
           release_timestamp: current_timestamp,
