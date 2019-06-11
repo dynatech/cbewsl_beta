@@ -418,18 +418,18 @@ export default class SaveSurficialData extends Component {
                         <View style={{ width: '50%' }}>
                             <Text style={{ width: '100%', paddingLeft: '27%' }}>Date and Time</Text>
                             <DatePicker
-                            customStyles={{ dateInput: { borderWidth: 0 } }}
-                            style={[{ width: '100%', paddingTop: '2%' }]}
-                            format="YYYY-MM-DD HH:mm"
-                            date={this.state.datetime}
-                            mode="datetime"
-                            placeholder="Pick date and time"
-                            duration={400}
-                            confirmBtnText="Confirm"
-                            cancelBtnText="Cancel"
-                            showIcon={false}
-                            onDateChange={(date) => { this.setState({ datetime: date }) }}
-                        />
+                                customStyles={{ dateInput: { borderWidth: 0 } }}
+                                style={[{ width: '100%', paddingTop: '2%' }]}
+                                format="YYYY-MM-DD HH:mm"
+                                date={this.state.datetime}
+                                mode="datetime"
+                                placeholder="Pick date and time"
+                                duration={400}
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                showIcon={false}
+                                onDateChange={(date) => { this.setState({ datetime: date }) }}
+                            />
                         </View>
 
                         <View style={{ width: '50%' }}>
