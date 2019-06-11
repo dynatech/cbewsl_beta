@@ -30,6 +30,7 @@
     "react-native-hr": "^1.1.4",
     "react-native-image-pan-zoom": "^2.1.11",
     "react-native-image-zoom-viewer": "^2.2.25",
+    "react-native-modal-datetime-picker": "^7.4.2",
     "react-native-paper": "^2.15.2",
     "react-native-pure-chart": "0.0.24",
     "react-native-sha512": "^1.0.2",
@@ -37,8 +38,7 @@
     "react-native-sms-android": "^0.4.1",
     "react-native-sms-linking": "^1.0.2",
     "react-native-vector-icons": "^6.4.2",
-    "react-navigation": "^3.6.1",
-    "rn-fetch-blob": "^0.10.15"
+    "react-navigation": "^3.6.1"
   },
   "devDependencies": {
     "@babel/core": "7.4.3",
