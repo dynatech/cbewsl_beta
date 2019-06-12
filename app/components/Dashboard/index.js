@@ -33,12 +33,12 @@ const AppDrawerNavigator = createDrawerNavigator({
       drawerLabel: "Data Synchronization"
     }
   },
-  icon_index: {
-    screen: SearchIcon,
-    navigationOptions: {
-      drawerLabel: "Icon referrence"
-    }
-  },
+  // icon_index: {
+  //   screen: SearchIcon,
+  //   navigationOptions: {
+  //     drawerLabel: "Icon referrence"
+  //   }
+  // },
   logout: {
     screen: Logout,
     navigationOptions: {

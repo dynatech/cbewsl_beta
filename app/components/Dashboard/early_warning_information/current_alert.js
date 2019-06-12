@@ -33,6 +33,7 @@ export default class CurrentAlert extends Component {
   componentDidMount() {
     let offline_data = Storage.getItem("alertGeneration")
     offline_data.then(response => {
+      console.log(response)
       let alert_details = []
       let alert_level = []
       let moms_header = []

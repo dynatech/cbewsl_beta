@@ -240,7 +240,6 @@ export default class MonitoringLogs extends Component {
         let monitoring_logs_data = []
         let to_local_data = []
         let counter = 0
-        console.log(responseJson)
         for (const [index, value] of responseJson.entries()) {
           let formatted_timestamp = this.formatDateTime(date = value.date)
           monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
@@ -270,12 +269,17 @@ export default class MonitoringLogs extends Component {
         Storage.setItem("SurficialDataMomsSummary", to_local_data)
         this.setState({ monitoring_logs_data: monitoring_logs_data })
         this.tablePaginate(monitoring_logs_data)
-        // console.log(monitoring_logs_data)
+        let offline = Storage.getItem("SurficialDataMomsSummary")
+        offline.then(response => {
+          console.log(response)
+        })
       })
       .catch((error) => {
         let data_container = Storage.getItem('SurficialDataMomsSummary')
         let monitoring_logs_data = [];
         data_container.then(response => {
+          console.log(response)
+          let counter = 0
           if (response.length != 0) {
             for (const [index, value] of response.entries()) {
               let formatted_timestamp = this.formatDateTime(date = value.date)

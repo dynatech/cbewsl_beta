@@ -216,7 +216,7 @@ export default class SaveSurficialData extends Component {
                     },
                     {
                         text: 'OK', onPress: () => SendSMS.send({
-                            body: `MoMs Report<*>FT:${type_of_feature}<*>Desc:${description}<*>NOF:${name_of_feature}`,
+                            body: `MoMsReport:${type_of_feature}<*>${description}<*>${name_of_feature}<*>${datetime.replace(":","_")}`,
                             recipients: [this.state.server_number],
                             successTypes: ['sent', 'queued'],
                             allowAndroidSendWithoutReadPermission: true
@@ -271,7 +271,7 @@ export default class SaveSurficialData extends Component {
                                                             type_of_feature: value.type_of_feature,
                                                             description: value.description,
                                                             name_of_feature: value.name_of_feature,
-                                                            date: value.datetime
+                                                            date: value.date
                                                         })
                                                     });
                                                     Storage.removeItem("SurficialDataMomsSummary")
@@ -315,11 +315,12 @@ export default class SaveSurficialData extends Component {
                                                             type_of_feature: value.type_of_feature,
                                                             description: value.description,
                                                             name_of_feature: value.name_of_feature,
-                                                            date: value.datetime
+                                                            date: value.date
                                                         })
                                                     });
                                                     Storage.removeItem("SurficialDataMomsSummary")
                                                     Storage.setItem("SurficialDataMomsSummary", updated_data)
+                                                    console.log(updated_data)
                                                 }
                                             } else {
                                                 let temp = response
@@ -345,7 +346,7 @@ export default class SaveSurficialData extends Component {
                                                             type_of_feature: value.type_of_feature,
                                                             description: value.description,
                                                             name_of_feature: value.name_of_feature,
-                                                            date: value.datetime
+                                                            date: value.date
                                                         })
                                                     }
                                                 });

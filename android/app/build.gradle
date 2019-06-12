@@ -149,7 +149,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-background-task')
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-sms')
     implementation project(':react-native-sha512')

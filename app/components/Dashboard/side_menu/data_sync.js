@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Linking, Alert } from 'react-native';
 import { defaults } from '../../../assets/styles/default_styles';
 import { Icon } from 'native-base';
 import Storage from '../../utils/storage'
@@ -8,6 +8,7 @@ import { NavigationEvents } from 'react-navigation';
 import SendSMS from 'react-native-sms'
 import Sync from '../../utils/syncer'
 import Notification from '../../utils/alert_notification'
+import moment from 'moment'
 
 export default class DataSyncer extends Component {
   constructor(props) {
@@ -50,40 +51,61 @@ export default class DataSyncer extends Component {
   }
 
   syncToServer(storage_key) {
-    let data = Storage.getItem(storage_key)
-    let empty_status = false
-    this.setState({ storage_key: storage_key })
-    data.then(response => {
-      let container = storage_key + ":"
-      response.forEach(function (value) {
-        if (value.sync_status != 3) {
-          let inner_value = Object.values(value)
-          let counter = 0
-          inner_value.forEach(function (iv) {
-            if (counter == 0) {
-              container = container + iv
-            } else {
-              container = container + "<*>" + iv
-            }
-            counter++
-          })
-          container = container + "||"
-        }
-      })
+    Alert.alert(
+      'Notice',
+      'Please ensure that your cellular network is available.',
+      [
+        {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+        },
+        {
+          text: 'OK', onPress: () => {
+            let data = Storage.getItem(storage_key)
+            let empty_status = false
+            this.setState({ storage_key: storage_key })
+            data.then(response => {
 
-      if (container.indexOf("<*>") > -1) {
-        SendSMS.send({
-          body: container.slice(0, -2),
-          recipients: [this.state.server_number],
-          successTypes: ['sent', 'queued'],
-          allowAndroidSendWithoutReadPermission: true
-        }, (completed, cancelled, error) => {
-          // console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error); 
-        });
-      } else {
-        alert("Data is updated.");
-      }
-    })
+              let container = storage_key + ":"
+              response.forEach(function (value) {
+                if (value.sync_status != 3) {
+                  let inner_value = Object.values(value)
+                  let counter = 0
+                  inner_value.forEach(function (iv) {
+
+                    if (moment(iv)._isValid == true && iv.length > 10) {
+                      iv = iv.replace(":","~")
+                    }
+
+                    if (counter == 0) {
+                      container = container + iv
+                    } else {
+                      container = container + "<*>" + iv
+                    }
+                    counter++
+                  })
+                  container = container + "||"
+                }
+              })
+        
+              if (container.indexOf("<*>") > -1) {
+                SendSMS.send({
+                  body: container.slice(0, -2),
+                  recipients: [this.state.server_number],
+                  successTypes: ['sent', 'queued'],
+                  allowAndroidSendWithoutReadPermission: true
+                }, (completed, cancelled, error) => {
+                  // console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error); 
+                });
+              } else {
+                alert("Data is updated.");
+              }
+            })
+          }
+        }
+      ]
+    )
   }
 
   render() {
@@ -116,8 +138,14 @@ export default class DataSyncer extends Component {
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SurficialDataMeasurements')}>
               <Text style={defaults.touchableTexts}>Surficial Data | Measurements</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SurficialDataMomsSummary')}>
+              <Text style={defaults.touchableTexts}>Surficial Data | Manifestation of Movements</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SensorMaintenanceMaintenanceLogs')}>
               <Text style={defaults.touchableTexts}>Sensor Maintenance | Maintenance Logs</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('AlertGeneration')}>
+              <Text style={defaults.touchableTexts}>Alerts | Generated Alerts</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
