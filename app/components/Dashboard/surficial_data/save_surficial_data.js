@@ -271,7 +271,7 @@ export default class SaveSurficialData extends Component {
                                                             type_of_feature: value.type_of_feature,
                                                             description: value.description,
                                                             name_of_feature: value.name_of_feature,
-                                                            date: value.datetime
+                                                            date: value.date
                                                         })
                                                     });
                                                     Storage.removeItem("SurficialDataMomsSummary")
@@ -315,7 +315,7 @@ export default class SaveSurficialData extends Component {
                                                             type_of_feature: value.type_of_feature,
                                                             description: value.description,
                                                             name_of_feature: value.name_of_feature,
-                                                            date: value.datetime
+                                                            date: value.date
                                                         })
                                                     });
                                                     Storage.removeItem("SurficialDataMomsSummary")
@@ -345,7 +345,7 @@ export default class SaveSurficialData extends Component {
                                                             type_of_feature: value.type_of_feature,
                                                             description: value.description,
                                                             name_of_feature: value.name_of_feature,
-                                                            date: value.datetime
+                                                            date: value.date
                                                         })
                                                     }
                                                 });
