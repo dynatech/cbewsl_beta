@@ -177,11 +177,11 @@ export default class MonitoringLogs extends Component {
         },
         {
           text: 'Alert 2',
-          onPress: () => this.setAlertForMoms(data,"A2"),
+          onPress: () => this.setAlertForMoms(data, "A2"),
         },
-        { 
-          text: 'Alert 3', 
-          onPress: () =>  this.setAlertForMoms(data,"A3"),
+        {
+          text: 'Alert 3',
+          onPress: () => this.setAlertForMoms(data, "A3"),
         },
       ],
       { cancelable: false },
@@ -216,7 +216,7 @@ export default class MonitoringLogs extends Component {
         } else if (hour >= 20) {
           alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
         }
-        
+
         let temp = {
           interal_alert: "m",
           release_timestamp: current_timestamp,
@@ -229,7 +229,7 @@ export default class MonitoringLogs extends Component {
         }
         let raised_alerts = Storage.setItem("alertGeneration", temp);
       } else {
-        
+
       }
     })
   }
@@ -249,9 +249,9 @@ export default class MonitoringLogs extends Component {
             <DataTable.Cell style={{ paddingRight: 10 }}>{value.name_of_feature}</DataTable.Cell>
             <DataTable.Cell style={{ paddingRight: 10 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
             <DataTable.Cell>
-              <Icon name="md-create" style={{ color: "blue"}} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-              <Icon name="ios-trash" style={{ color: "red"}} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
-              <Icon name="ios-share-alt" style={{ color: "#083451"}} onPress={() => this.raiseAlert(value)}><Text style={{fontSize: 5}}>Raise</Text></Icon>
+              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
+              <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
 
@@ -286,7 +286,8 @@ export default class MonitoringLogs extends Component {
                 <DataTable.Cell style={{ marginRight: 20 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
                 <DataTable.Cell>
                   <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon>
+                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon><Text>   </Text>
+                  <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
                 </DataTable.Cell>
               </DataTable.Row>)
             }

@@ -1,20 +1,21 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Dimensions} from 'react-native';
+import React, { Component } from 'react';
+import { Platform, StyleSheet, Text, View, Dimensions } from 'react-native';
 import Login from './app/components/Login/login';
 import Landing from './app/components/Dashboard/';
 import RiskAssessment from './app/components/Dashboard/risk_assesment';
 import SensorMaintenance from './app/components/Dashboard/sensor_maintenance';
 import SituationReport from './app/components/Dashboard/situation_report';
-import FieldSurvey  from './app/components/Dashboard/field_survey';
+import FieldSurvey from './app/components/Dashboard/field_survey';
 import Reports from './app/components/Dashboard/reports';
 import Ewi from './app/components/Dashboard/early_warning_information'
 import SurficialData from './app/components/Dashboard/surficial_data';
 import Register from './app/components/Login/register';
 import ForgotPassword from './app/components/Login/forgot_password'
-import {createStackNavigator, createAppContainer} from 'react-navigation';
-import { Header, Left, Right, Icon} from 'native-base'
+import ViewReport from './app/components/Dashboard/reports/view_report'
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { Header, Left, Right, Icon } from 'native-base'
 
-var {width} = Dimensions.get('window');
+var { width } = Dimensions.get('window');
 
 
 const RootStack = createStackNavigator({
@@ -106,6 +107,15 @@ const RootStack = createStackNavigator({
     screen: ForgotPassword,
     navigationOptions: {
       headerTitle: "Forgot Password",
+      headerTitleStyle: {
+        paddingLeft: width * 0.15,
+      }
+    }
+  },
+  view_report: {
+    screen: ViewReport,
+    navigationOptions: {
+      headerTitle: "Report",
       headerTitleStyle: {
         paddingLeft: width * 0.15,
       }
