@@ -297,9 +297,9 @@ export default class MonitoringLogs extends Component {
             <DataTable.Cell style={{ paddingRight: 10 }}>{value.name_of_feature}</DataTable.Cell>
             <DataTable.Cell style={{ paddingRight: 10 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
             <DataTable.Cell>
-              <Icon name="md-create" style={{ color: "blue"}} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-              <Icon name="ios-trash" style={{ color: "red"}} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
-              <Icon name="ios-share-alt" style={{ color: "#083451"}} onPress={() => this.raiseAlert(value)}><Text style={{fontSize: 5}}>Raise</Text></Icon>
+              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
+              <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
             </DataTable.Cell>
           </DataTable.Row>)
 
@@ -339,7 +339,8 @@ export default class MonitoringLogs extends Component {
                 <DataTable.Cell style={{ marginRight: 20 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
                 <DataTable.Cell>
                   <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon>
+                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon><Text>   </Text>
+                  <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
                 </DataTable.Cell>
               </DataTable.Row>)
             }
