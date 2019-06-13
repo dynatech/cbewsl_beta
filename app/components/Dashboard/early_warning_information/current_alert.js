@@ -3,14 +3,15 @@ import { View, Text , ScrollView, TouchableOpacity} from 'react-native';
 import {field_survey_styles} from '../../../assets/styles/field_survey_styles'
 import Storage from '../../utils/storage'
 import moment from 'moment'
+import { NavigationEvents } from 'react-navigation'
 
 export default class CurrentAlert extends Component {
   constructor(props) {
     super(props);
     this.state = {
       alert_details: [],
-      alert_level: "A3",
-      alert_trigger: "",
+      alert_level: "",
+      alert_trigger: [],
       rain_alert_trigger: [],
       alert_validity: "",
       moms_header: [],
@@ -30,60 +31,56 @@ export default class CurrentAlert extends Component {
     }
   }
 
-  componentDidMount() {
-    let offline_data = Storage.getItem("alertGeneration")
+  getCurrentAlert() {
+    let offline_data = Storage.getItem("AlertGeneration")
     offline_data.then(response => {
       let alert_details = []
       let alert_level = []
-      let moms_header = []
-      let rain_header = []
-      let temp = ""
-
+      let moms_header_container = []
+      let rain_header_container = []
+      let rain_temp = ""
+      let moms_temp = ""
       if (response != null || response != undefined) {
-        if ('moms_id' in response.triggers) {
-          temp = "Feature type: "+ response.triggers.type_of_feature+"("+response.triggers.name_of_feature+")\n"+
-                    "Description: "+ response.triggers.description+"\n"
-          this.setState({alert_trigger: temp})
-          moms_header.push(<Text style={{fontWeight: 'bold', fontSize: 20}}>Manifestation of Movements</Text>)
-          this.setState({moms_header: moms_header})
-          if ('rain_id' in response.triggers) {
-           rain_header.push(<Text style={{fontWeight: 'bold', fontSize: 20}}>Rainfall Alert</Text>)
-           this.setState({rain_header: rain_header})
-           temp = "Rainfall data exceeded threshold level."
-            this.setState({rain_alert_trigger: temp})
-          }
-        } else if ('rain_id' in response.triggers) {
-          rain_header.push(<Text style={{fontWeight: 'bold', fontSize: 20}}>Rainfall Alert</Text>)
-          this.setState({rain_header: rain_header})
-          temp = "Rainfall data exceeded threshold level."
-          this.setState({rain_alert_trigger: temp})
-        }
-
-        if (response.alert_level == "A0") {
+        if (response.alert_level == "0") {
           alert_level.push(<Text style={{fontSize: 50, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 0</Text>)
-        } else if (response.alert_level == "A1") {
+        } else if (response.alert_level == "1") {
           alert_level.push(<Text style={{fontSize: 50, color: "#f09e01", fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 1</Text>)
-        } else if (response.alert_level == "A2") {
+        } else if (response.alert_level == "2") {
           alert_level.push(<Text style={{fontSize: 50, color: "#f27e10", fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 2</Text>)
-        } else if (response.alert_level == "A3") {
+        } else if (response.alert_level == "3") {
           alert_level.push(<Text style={{fontSize: 50, color: "#ef7b7e", fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 3</Text>)
         } else {
           alert_level.push(<Text style={{fontSize: 50, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 0</Text>)
         }
+
+        response.trig_list.forEach(function(element) {
+          if (element.int_sym == "M") {
+            if (moms_header_container.length == 0) {
+              moms_header_container.push(<Text style={{fontWeight: 'bold', fontSize: 20}}>Manifestation of Movements</Text>)
+            }
+            moms_temp = "Feature type: "+ element.f_type+"("+element.f_name+")\n"+
+                  "Description: "+ element.remarks+"\n"
+          } else {
+            if (rain_header_container.length == 0) {
+              rain_header_container.push(<Text style={{fontWeight: 'bold', fontSize: 20}}>Rainfall Alert</Text>)
+            }
+            rain_temp = "Rainfall data exceeded threshold level."
+          }
+        });
   
         alert_details.push(
           <View style={{padding: 20}}>
             {alert_level}
             <Text style={{fontSize: 20, fontWeight: 'bold'}}>Triggers</Text>
             <View style={{padding: 20}}>
-              {this.state.moms_header}
-              <Text style={{fontSize: 20}}>{this.state.alert_trigger}</Text>
-              {this.state.rain_header}
-              <Text style={{fontSize: 20}}>{this.state.rain_alert_trigger}</Text>
+              {moms_header_container}
+              <Text style={{fontSize: 20}}>{moms_temp}</Text>
+              {rain_header_container}
+              <Text style={{fontSize: 20}}>{rain_temp}</Text>
             </View>
             <Text style={{fontSize: 20, fontWeight: 'bold'}}>Validity</Text>
             <View style={{padding: 20}}>
-              <Text style={{fontSize: 20}}>{this.formatDateTime(response.validity)}</Text>
+              <Text style={{fontSize: 20}}>{this.formatDateTime(response.alert_validity)}</Text>
             </View>
           </View>
         )
@@ -118,6 +115,7 @@ export default class CurrentAlert extends Component {
   render() {
     return (
         <ScrollView style={field_survey_styles.container}>
+        <NavigationEvents onDidFocus={() => this.getCurrentAlert()} />
         <View style={field_survey_styles.menuSection}>
             <View style={field_survey_styles.buttonSection}>
                 <TouchableOpacity style={field_survey_styles.activeButton} >

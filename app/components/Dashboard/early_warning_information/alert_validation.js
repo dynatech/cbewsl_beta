@@ -58,34 +58,52 @@ export default class AlertValidation extends Component {
         {
           text: 'Release Alert',
           onPress: () => {
-            let offline_data = Storage.getItem("alertGeneration")
+            let offline_data = Storage.getItem("AlertGeneration")
             offline_data.then(response => {
-              let current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
               if (response != null || response != undefined) {
-                response.triggers.rain_id = 0
                 let temp = {
-                  interal_alert: "mR",
-                  release_timestamp: current_timestamp,
-                  alert_level: response.alert_level,
-                  last_alert_release: current_timestamp,
-                  event_start: response.event_start,
-                  last_retrigger: current_timestamp,
-                  triggers: response.triggers,
-                  validity: moment(response.validity).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
+                  int_sym: "R",
+                  info: "Rainfall data exceeded threshold level."
                 }
-                Storage.setItem("alertGeneration", temp)
+                response.trig_list.push(temp)
+                response.alert_validity = moment(response.alert_validity).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
+                Storage.setItem("AlertGeneration", response)
               } else {
-                let temp = {
-                  interal_alert: "R",
-                  release_timestamp: this.state.datetime,
-                  alert_level: "A1",
-                  last_alert_release: this.state.datetime,
-                  event_start: this.state.datetime,
-                  last_retrigger: this.state.datetime,
-                  triggers: {rain_id:0},
-                  validity: moment(this.state.datetime).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
-                }
-                Storage.setItem("alertGeneration", temp)
+                let cred = Storage.getItem("loginCredentials");
+                cred.then(response => {
+                  let alert_validity = ""
+                  let hour = moment(this.state.datetime).hours()
+                  if (hour >= 0 && hour < 4) {
+                    alert_validity = moment(this.state.datetime).add(24, 'hours').format("YYYY-MM-DD 04:00:00")
+                  } else if (hour >= 4 && hour < 8) {
+                    alert_validity = moment(this.state.datetime).add(24, 'hours').format("YYYY-MM-DD 08:00:00")
+                  } else if (hour >= 8 && hour < 12) {
+                    alert_validity = moment(this.state.datetime).add(24, 'hours').format("YYYY-MM-DD 12:00:00")
+                  } else if (hour >= 12 && hour < 16) {
+                    alert_validity = moment(this.state.datetime).add(24, 'hours').format("YYYY-MM-DD 16:00:00")
+                  } else if (hour >= 16 && hour < 20) {
+                    alert_validity = moment(this.state.datetime).add(24, 'hours').format("YYYY-MM-DD 20:00:00")
+                  } else if (hour >= 20) {
+                    alert_validity = moment(this.state.datetime).add(48, 'hours').format("YYYY-MM-DD 00:00:00")
+                  }
+
+
+                  let temp = {
+                    alert_level: "1",
+                    data_ts: this.state.datetime,
+                    user_id: response.user_data.user.user_id,
+                    alert_validity: alert_validity,
+                    trig_list: []
+                  }
+        
+                  let trig_list = {
+                    int_sym: "R",
+                    info: "Rainfall data exceeded threshold level."
+                  }
+        
+                  temp.trig_list.push(trig_list)
+                  let raised_alerts = Storage.setItem("AlertGeneration", temp);
+                })
               }
             })
           },

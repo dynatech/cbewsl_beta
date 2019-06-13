@@ -62,45 +62,37 @@ export default class MainDashboard extends Component {
         }
     }
 
-    setBadge() {
-        let offline_data = Storage.getItem("alertGeneration");
-        offline_data.then(response => {
-            console.log(response)
-            if (response == null) {
-                this.setState({
-                    alert_badge: [<Badge
-                        status="success"
-                        containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-                        value={<Text style={{ color: 'white', padding: 20 }}>Alert 0</Text>}
-                    />]
-                })
-            } else if (response.alert_level == "A1") {
-                this.setState({
-                    alert_badge: [<Badge
-                        status="error"
-                        containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-                        value={<Text style={{ color: 'white', padding: 20 }}>Alert 1</Text>}
-                    />]
-                })
-            } else if (response.alert_level == "A2") {
-                this.setState({
-                    alert_badge: [<Badge
-                        status="error"
-                        containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-                        value={<Text style={{ color: 'white', padding: 20 }}>Alert 2</Text>}
-                    />]
-                })
-            } else if (response.alert_level == "A3") {
-                this.setState({
-                    alert_badge: [<Badge
-                        status="error"
-                        containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-                        value={<Text style={{ color: 'white', padding: 20 }}>Alert 3</Text>}
-                    />]
-                })
-            }
-        })
-    }
+  setBadge() {
+    let offline_data = Storage.getItem("AlertGeneration");
+    offline_data.then(response => {
+        console.log(response)
+        if (response == null) {
+            this.setState({alert_badge: [<Badge
+                status="success"
+                containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+                value={<Text style={{color: 'white', padding: 20}}>Alert 0</Text>}
+            />]})
+        } else if (response.alert_level == "1") {
+            this.setState({alert_badge: [<Badge
+                status="error"
+                containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+                value={<Text style={{color: 'white', padding: 20}}>Alert 1</Text>}
+            />]})
+        } else if (response.alert_level == "2") {
+            this.setState({alert_badge: [<Badge
+                status="error"
+                containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+                value={<Text style={{color: 'white', padding: 20}}>Alert 2</Text>}
+            />]})
+        } else if (response.alert_level == "3") {
+            this.setState({alert_badge: [<Badge
+                status="error"
+                containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+                value={<Text style={{color: 'white', padding: 20}}>Alert 3</Text>}
+            />]})
+        }
+    })
+  }
 
     render() {
         return (
