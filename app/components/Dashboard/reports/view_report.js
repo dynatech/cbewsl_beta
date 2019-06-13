@@ -3,14 +3,22 @@ import { View, Text, ScrollView } from 'react-native';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
 import { field_survey_styles } from '../../../assets/styles/field_survey_styles'
 import Storage from '../../utils/storage'
+import { DataTable } from 'react-native-paper'
 import Notification from '../../utils/alert_notification'
 import moment from "moment"
+import RainfallGraph from '../sensor_maintenance/rainfall_graph'
 
 export default class ViewReport extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            reports: []
+            reports: [],
+            table_reports: [],
+            data: [],
+            data_paginate: [],
+            page: 0,
+            number_of_pages: 0,
+            report_name: ""
         };
     }
 
@@ -56,6 +64,36 @@ export default class ViewReport extends Component {
             default:
             // code block
         }
+    }
+
+    tablePaginate(data) {
+        let temp = []
+        let counter = 0
+        let number_of_pages = data.length / 6
+        this.setState({ number_of_pages: Math.ceil(number_of_pages) })
+        data.forEach(element => {
+            if (counter < 6) {
+                temp.push(element)
+            }
+            counter++
+        });
+        this.setState({ data_paginate: temp })
+    }
+
+    changePage(page) {
+        let start = (page * 6)
+        let end = start * 2
+        let temp = []
+
+        if (end == 0) {
+            end = 6
+        }
+
+        for (let counter = start; counter < end; counter++) {
+            temp.push(this.state.data[counter])
+        }
+        this.setState({ data_paginate: temp })
+        this.setState({ page: page })
     }
 
     formatDateTime(date = null) {
@@ -123,56 +161,269 @@ export default class ViewReport extends Component {
                 </View>
             </View>
         )
+        this.setState({ report_name: data.report_name })
         this.setState({ reports: alert_details })
     }
 
     renderSummaryReport(data) {
-        console.log(data)
+        let response = data.data
+        let report_datas = []
+
+        report_datas.push(<DataTable.Row style={{ flex: 1, width: 500 }}>
+            <DataTable.Cell >Location</DataTable.Cell>
+            <DataTable.Cell>Impact</DataTable.Cell>
+            <DataTable.Cell>Adaptive Capacity</DataTable.Cell>
+            <DataTable.Cell>Vulnerability</DataTable.Cell>
+        </DataTable.Row>)
+
+        for (const [index, value] of response.entries()) {
+            report_datas.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
+            </DataTable.Row>)
+        }
+
+        this.setState({ report_name: data.report_name })
+        this.setState({ table_reports: report_datas })
     }
 
     renderHazardDataReport(data) {
-        console.log(data)
+        let response = data.data
+        let report_datas = []
+
+        report_datas.push(<DataTable.Row style={{ flex: 1, width: 500 }}>
+            <DataTable.Cell>Hazard</DataTable.Cell>
+            <DataTable.Cell>Speed of Onset</DataTable.Cell>
+            <DataTable.Cell>Early Warning</DataTable.Cell>
+            <DataTable.Cell>Impact</DataTable.Cell>
+        </DataTable.Row>)
+
+        for (const [index, value] of response.entries()) {
+            report_datas.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.hazard}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.speed_of_onset}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+            </DataTable.Row>)
+        }
+
+        this.setState({ report_name: data.report_name })
+        this.setState({ table_reports: report_datas })
     }
 
     renderResourceCapacityReport(data) {
-        console.log(data)
+        let response = data.data
+        let report_datas = []
+
+        report_datas.push(<DataTable.Row style={{ flex: 1, width: 500 }}>
+            <DataTable.Cell>Resource/Capacity</DataTable.Cell>
+            <DataTable.Cell>Status</DataTable.Cell>
+            <DataTable.Cell>Owner</DataTable.Cell>
+        </DataTable.Row>)
+
+        for (const [index, value] of response.entries()) {
+            report_datas.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
+            </DataTable.Row>)
+        }
+
+        this.setState({ report_name: data.report_name })
+        this.setState({ table_reports: report_datas })
+
     }
 
     renderFamilyRiskReport(data) {
-        console.log(data)
+        let response = data.data
+        let report_datas = []
+
+        report_datas.push(<DataTable.Row style={{ flex: 1, width: 500 }}>
+            <DataTable.Cell>Number of members</DataTable.Cell>
+            <DataTable.Cell>Vulnerable groups</DataTable.Cell>
+            <DataTable.Cell>Nature of vulnerability</DataTable.Cell>
+        </DataTable.Row>)
+
+        for (const [index, value] of response.entries()) {
+            // console.log(value)
+            report_datas.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.members_count}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerable_members_count}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability_nature}</DataTable.Cell>
+            </DataTable.Row>)
+        }
+
+        this.setState({ report_name: data.report_name })
+        this.setState({ table_reports: report_datas })
     }
 
     renderFieldSurveyReport(data) {
-        console.log(data)
+        let response = data.data
+        let latest_report = []
+
+        let note = response.note
+        let note_label = ""
+        if (note == "") {
+            note = ""
+            note_label = ""
+        } else {
+            note_label = "Note"
+        }
+        latest_report.push(<View style={{ padding: 10 }}>
+            <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Date of Survey: {data.date}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                    <Text>Features</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                    <Text> {response.features}</Text>
+                </View>
+            </View>
+            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                    <Text>Materials characterization</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                    <Text>{response.mat_characterization}</Text>
+                </View>
+            </View>
+            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                    <Text>Mechanism</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                    <Text>{response.mechanism}</Text>
+                </View>
+            </View>
+            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                    <Text>Exposure</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                    <Text>{response.exposure}</Text>
+                </View>
+            </View>
+            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                    <Text style={{ color: 'red' }} >{note_label}</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                    <Text style={{ color: 'red' }} >{note}</Text>
+                </View>
+            </View>
+        </View>)
+        console.log(data.report_name)
+        this.setState({ report_name: data.report_name })
+        this.setState({ reports: latest_report })
     }
 
     renderSituationReport(data) {
         console.log(data)
+        let response = data.data
+        let report = []
+
+
+        report.push(
+            <View style={rassessment_styles.contentContainer}>
+                <View style={{ paddingTop: 10, paddingBottom: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, textAlign: 'center' }}>Date: {data.date}</Text>
+                </View>
+                <View style={{ paddingTop: 10, paddingBottom: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, textAlign: 'center' }}>Summary: {response.summary}</Text>
+                </View>
+                <View style={{ paddingTop: 10, paddingBottom: 10 }}>
+                    <Text style={{ fontSize: 10, color: 'blue', textAlign: 'center' }}>Full situation report is available in the web app</Text>
+                </View>
+            </View>
+        )
+
+        this.setState({ report_name: data.report_name })
+        this.setState({ reports: report })
     }
 
     renderRainfallSummaryReport(data) {
         console.log(data)
+        let response = data.data
+        let report = []
+        let one_day_rain = Math.round((response["1D cml"] / response["half of 2yr max"]) * 100)
+        let three_day_rain = Math.round((response["3D cml"] / response["2yr max"]) * 100)
+
+        report.push(
+            <View style={rassessment_styles.contentContainer}>
+                <Text style={{ fontSize: 15, fontWeight: 'bold', textAlign: 'center' }}>Rainfall</Text>
+                <View style={rassessment_styles.subContainer}>
+                    <Text style={{ textAlign: 'center' }}>1-day threshold: {String(one_day_rain)}%</Text>
+                    <Text style={{ textAlign: 'center' }}>3-day threshold: {String(three_day_rain)}%</Text>
+                </View>
+            </View>
+        )
+        report.push(<RainfallGraph></RainfallGraph>)
+
+        this.setState({ report_name: data.report_name })
+        this.setState({ reports: report })
     }
 
     renderSensorMaintenanceReport(data) {
-        console.log(data)
+        let response = data.data
+        let report = []
+
+        report.push(<View style={{ paddingBottom: 10 }}>
+            <Text style={{ fontSize: 15, fontWeight: 'bold', textAlign: 'center' }}>as of {data.date}</Text>
+            <Text style={{ fontSize: 15, textAlign: 'center' }}>Working Nodes: {response.working_nodes}</Text>
+            <Text style={{ fontSize: 15, textAlign: 'center' }}>Anomalous Nodes: {response.anomalous_nodes}</Text>
+            <Text style={{ fontSize: 15, textAlign: 'center' }}>Rain Guage Status: {response.rain_gauge_status}</Text>
+        </View>)
+
+        this.setState({ report_name: data.report_name })
+        this.setState({ reports: report })
     }
 
     renderSurficialMeasurementReport(data) {
-        console.log(data)
+        let response = data.data
+        let report = []
+
+        report.push(<View style={{ paddingBottom: 10 }}>
+            <Text style={{ fontSize: 15, fontWeight: 'bold', textAlign: 'center' }}>{String(response)}</Text>
+        </View>)
+
+        this.setState({ report_name: data.report_name })
+        this.setState({ reports: report })
     }
 
     renderMomsReport(data) {
-        console.log(data)
+        let response = data.data
+        let report = []
+
+        report.push(<View style={{ paddingBottom: 10 }}>
+            <Text style={{ fontSize: 15, fontWeight: 'bold', textAlign: 'center' }}>as of {data.date}</Text>
+            <Text style={{ fontSize: 15, textAlign: 'center' }}>Type of feature: {response.type_of_feature}</Text>
+            <Text style={{ fontSize: 15, textAlign: 'center' }}>Description: {response.description}</Text>
+            <Text style={{ fontSize: 15, textAlign: 'center' }}>Name of feature: {response.name_of_feature}</Text>
+        </View>)
+
+        this.setState({ report_name: data.report_name })
+        this.setState({ reports: report })
     }
 
 
     render() {
         return (
             <ScrollView style={rassessment_styles.container}>
+                <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center' }}>{this.state.report_name}</Text>
+                </View>
                 <View>
                     {this.state.reports}
                 </View>
+                <ScrollView horizontal={true}>
+                    <DataTable>
+                        {this.state.table_reports}
+                    </DataTable>
+                </ScrollView>
             </ScrollView>
         );
     }

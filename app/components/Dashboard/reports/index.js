@@ -67,7 +67,7 @@ export default class Reports extends Component {
       if (response.length != 0) {
         all_reports.push({
           "date": "N/A",
-          "data": response[0],
+          "data": response,
           "report_name": "Risk Assessment Summary Report",
           "key": "summary"
         });
@@ -78,7 +78,7 @@ export default class Reports extends Component {
       if (response.length != 0) {
         all_reports.push({
           "date": "N/A",
-          "data": response[0],
+          "data": response,
           "report_name": "Risk Assessment Hazard Data",
           "key": "hazard_data"
         });
@@ -89,7 +89,7 @@ export default class Reports extends Component {
       if (response.length != 0) {
         all_reports.push({
           "date": "N/A",
-          "data": response[0],
+          "data": response,
           "report_name": "Risk Assessment Resources and Capacities",
           "key": "resource_capacity"
         });
@@ -100,7 +100,7 @@ export default class Reports extends Component {
       if (response.length != 0) {
         all_reports.push({
           "date": "N/A",
-          "data": response[0],
+          "data": response,
           "report_name": "Risk Assessment Family Risk Profile",
           "key": "family_risk"
         });
@@ -159,7 +159,7 @@ export default class Reports extends Component {
         let date = this.formatDateTime(date = response.current_measurement_date)
         all_reports.push({
           "date": date["text_format_timestamp"],
-          "data": response,
+          "data": "No data available",
           "report_name": "Surficial Current Measurement Report",
           "key": "surficial_measurement"
         });
@@ -209,8 +209,8 @@ export default class Reports extends Component {
         <View style={rassessment_styles.menuSection}>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title>Type</DataTable.Title>
               <DataTable.Title>Date</DataTable.Title>
+              <DataTable.Title>Type</DataTable.Title>
               <DataTable.Title>Action</DataTable.Title>
             </DataTable.Header>
             {this.state.reports}
