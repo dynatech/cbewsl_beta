@@ -177,11 +177,11 @@ export default class MonitoringLogs extends Component {
         },
         {
           text: 'Alert 2',
-          onPress: () => this.setAlertForMoms(data,"A2"),
+          onPress: () => this.setAlertForMoms(data,"2"),
         },
         { 
           text: 'Alert 3', 
-          onPress: () =>  this.setAlertForMoms(data,"A3"),
+          onPress: () =>  this.setAlertForMoms(data,"3"),
         },
       ],
       { cancelable: false },
@@ -191,14 +191,15 @@ export default class MonitoringLogs extends Component {
   setAlertForMoms(data, alert_level) {
     let current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
     let alert_validity = ""
-    Storage.removeItem("alertGeneration");
-    let offline_data = Storage.getItem("alertGeneration");
+    let int_sym = ""
+    let offline_data = Storage.getItem("AlertGeneration");
     offline_data.then(response => {
       if (response == null || response == undefined) {
-        console.log("HERE")
-        if (alert_level == "A2") {
+        if (alert_level == "2") {
+          int_sym = "m"
           alert_validity = moment(data.date).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
-        } else if (alert_level == "A3") {
+        } else if (alert_level == "3") {
+          int_sym = "M"
           alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
         }
 
@@ -217,19 +218,67 @@ export default class MonitoringLogs extends Component {
           alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
         }
         
-        let temp = {
-          interal_alert: "m",
-          release_timestamp: current_timestamp,
-          alert_level: alert_level,
-          last_alert_release: data.date,
-          event_start: data.date,
-          last_retrigger: data.date,
-          triggers: data,
-          validity: alert_validity
-        }
-        let raised_alerts = Storage.setItem("alertGeneration", temp);
+        let cred = Storage.getItem("loginCredentials");
+        cred.then(response => {
+          let temp = {
+            alert_level: alert_level,
+            data_ts: current_timestamp,
+            user_id: response.user_data.user.user_id,
+            alert_validity: alert_validity,
+            trig_list: []
+          }
+
+          let trig_list = {
+            int_sym: int_sym,
+            remarks: data.description,
+            f_name: data.name_of_feature,
+            f_type: data.type_of_feature
+          }
+
+          temp.trig_list.push(trig_list)
+          let raised_alerts = Storage.setItem("AlertGeneration", temp);
+        })
       } else {
-        
+        console.log(response)
+        let hour_validity = 0
+        if (alert_level == "2") {
+          int_sym = "m"
+          hour_validity = 24
+          alert_validity = moment(data.date).add(hour_validity, 'hours').format("YYYY-MM-DD HH:mm:00")
+        } else if (alert_level == "3") {
+          int_sym = "M"
+          hour_validity = 48
+          alert_validity = moment(data.date).add(hour_validity, 'hours').format("YYYY-MM-DD HH:mm:00")
+        }
+
+        let hour = moment(alert_validity).hours()
+        if (hour >= 0 && hour < 4) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 04:00:00")
+        } else if (hour >= 4 && hour < 8) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 08:00:00")
+        } else if (hour >= 8 && hour < 12) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 12:00:00")
+        } else if (hour >= 12 && hour < 16) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 16:00:00")
+        } else if (hour >= 16 && hour < 20) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 20:00:00")
+        } else if (hour >= 20) {
+          alert_validity = moment(alert_validity).add(24, 'hours').format("YYYY-MM-DD 00:00:00")
+        }
+
+        if (moment(moment(alert_validity) > response.validity)) {
+          response.validty = alert_validity
+        }
+
+        let trig_list = {
+          int_sym: int_sym,
+          remarks: data.description,
+          f_name: data.name_of_feature,
+          f_type: data.type_of_feature
+        }
+        response.alert_level = alert_level
+        response.trig_list.push(trig_list)
+        let raised_alerts = Storage.setItem("AlertGeneration", response);
       }
     })
   }

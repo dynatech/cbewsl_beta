@@ -66,7 +66,9 @@ export default class DataSyncer extends Component {
             let empty_status = false
             this.setState({ storage_key: storage_key })
             data.then(response => {
-
+              console.log(response)
+              Storage.removeItem(storage_key)
+              return
               let container = storage_key + ":"
               response.forEach(function (value) {
                 if (value.sync_status != 3) {
