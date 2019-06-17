@@ -299,28 +299,3 @@
         </div>
     </div>
 </div>
-
-<script>
-
-    let data = [
-        {"datetime": "name",
-        "entry": "position",
-        "actions": "action here"},
-        {"datetime": "name",
-        "entry": "position",
-        "actions": "action here"},
-        {"datetime": "name",
-        "entry": "position",
-        "actions": "action here"}
-    ]
-    $(document).ready(function() {
-        $('#riks_profile_table').DataTable( {
-            "data": data,
-            "columns": [
-                { "data": "datetime" },
-                { "data": "entry" },
-                { "data": "actions" }
-            ]
-        } );
-    } );
-</script>
