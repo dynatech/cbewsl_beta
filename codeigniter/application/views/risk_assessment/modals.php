@@ -10,12 +10,14 @@
         </div>
         <div class="modal-body">
             <form>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="datetime">Date and Time</label>
                     <input type="datetime" class="form-control" id="datetime">
-                </div>
+                </div> -->
                 <div class="form-group">
+                    <label for="entry">Entry</label>
                     <textarea class="form-control" id="entry" style="height : 200px"></textarea>
+                    <input type="hidden" class="form-control" id="risk_profile_id">
                 </div>
                 <button type="button" class="btn btn-primary btn-sm float-right">Add</button>
                 <br>
@@ -107,6 +109,7 @@
         </div>
         <div class="modal-body">
             <form>
+                <input type="hidden" class="form-control" id="hazard_data_id">
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
@@ -180,6 +183,7 @@
         </div>
         <div class="modal-body">
             <form>
+                <input type="hidden" class="form-control" id="resources_and_capacities_id">
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
@@ -245,6 +249,7 @@
         </div>
         <div class="modal-body">
             <form>
+                <input type="hidden" class="form-control" id="family_profile_id">
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
