@@ -51,9 +51,17 @@ export default class DataSyncer extends Component {
   }
 
   syncToServer(storage_key) {
+    let notice = ""
+
+    if (storage_key == "AlertGeneration") {
+      notice = "Please ensure that you are connected to the Landslide monitoring network."
+    } else {
+      notice = "Please ensure that your cellular network is available."
+    }
+
     Alert.alert(
       'Notice',
-      'Please ensure that your cellular network is available.',
+       notice,
       [
         {
             text: 'Cancel',
@@ -62,52 +70,76 @@ export default class DataSyncer extends Component {
         },
         {
           text: 'OK', onPress: () => {
-            let data = Storage.getItem(storage_key)
-            let empty_status = false
-            this.setState({ storage_key: storage_key })
-            data.then(response => {
-              console.log(response)
-              Storage.removeItem(storage_key)
-              return
-              let container = storage_key + ":"
-              response.forEach(function (value) {
-                if (value.sync_status != 3) {
-                  let inner_value = Object.values(value)
-                  let counter = 0
-                  inner_value.forEach(function (iv) {
-
-                    if (moment(iv)._isValid == true && iv.length > 10) {
-                      iv = iv.replace(":","~")
-                    }
-
-                    if (counter == 0) {
-                      container = container + iv
-                    } else {
-                      container = container + "<*>" + iv
-                    }
-                    counter++
-                  })
-                  container = container + "||"
-                }
-              })
-        
-              if (container.indexOf("<*>") > -1) {
-                SendSMS.send({
-                  body: container.slice(0, -2),
-                  recipients: [this.state.server_number],
-                  successTypes: ['sent', 'queued'],
-                  allowAndroidSendWithoutReadPermission: true
-                }, (completed, cancelled, error) => {
-                  // console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error); 
-                });
-              } else {
-                alert("Data is updated.");
-              }
-            })
+            if (storage_key == "AlertGeneration") {
+              this.networkSync(storage_key)
+            } else {
+              this.smsSync(storage_key)
+            }
           }
         }
       ]
     )
+  }
+
+  smsSync(storage_key) {
+    let data = Storage.getItem(storage_key)
+    this.setState({ storage_key: storage_key })
+    data.then(response => {
+      let container = storage_key + ":"
+      response.forEach(function (value) {
+        if (value.sync_status != 3) {
+          let inner_value = Object.values(value)
+          let counter = 0
+          inner_value.forEach(function (iv) {
+
+            if (moment(iv)._isValid == true && iv.length > 10) {
+              iv = iv.replace(":","~")
+            }
+
+            if (counter == 0) {
+              container = container + iv
+            } else {
+              container = container + "<*>" + iv
+            }
+            counter++
+          })
+          container = container + "||"
+        }
+      })
+
+      if (container.indexOf("<*>") > -1) {
+        SendSMS.send({
+          body: container.slice(0, -2),
+          recipients: [this.state.server_number],
+          successTypes: ['sent', 'queued'],
+          allowAndroidSendWithoutReadPermission: true
+        }, (completed, cancelled, error) => {
+          // console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error); 
+        });
+      } else {
+        alert("Data is updated.");
+      }
+    })
+  }
+
+  networkSync(storage_key) {
+    let data = Storage.getItem(storage_key)
+    this.setState({ storage_key: storage_key })
+    data.then(response => {
+      console.log(response)
+      fetch('http://192.168.150.191:5000/api/monitoring/insert_cbewsl_ewi', {
+          method: 'POST',
+          headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(response),
+      }).then((response) => {
+        console.log(response)
+      }).catch((error) => {
+        console.log(error)
+      })
+    })
   }
 
   render() {

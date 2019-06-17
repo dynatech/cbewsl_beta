@@ -87,7 +87,6 @@ export default class AlertValidation extends Component {
                     alert_validity = moment(this.state.datetime).add(48, 'hours').format("YYYY-MM-DD 00:00:00")
                   }
 
-
                   let temp = {
                     alert_level: "1",
                     data_ts: this.state.datetime,
@@ -142,7 +141,7 @@ export default class AlertValidation extends Component {
             <DatePicker
               customStyles={{ dateInput: { borderWidth: 0, borderBottomWidth: 5, borderColor: "#083451", } }}
               style={[{ width: '70%'}]}
-              format="YYYY-MM-DD HH:mm"
+              format="YYYY-MM-DD HH:mm:00"
               date={this.state.datetime}
               mode="datetime"
               placeholder="Pick date and time"
