@@ -177,11 +177,11 @@ export default class MonitoringLogs extends Component {
         },
         {
           text: 'Alert 2',
-          onPress: () => this.setAlertForMoms(data,"2"),
+          onPress: () => this.setAlertForMoms(data, "2"),
         },
-        { 
-          text: 'Alert 3', 
-          onPress: () =>  this.setAlertForMoms(data,"3"),
+        {
+          text: 'Alert 3',
+          onPress: () => this.setAlertForMoms(data, "3"),
         },
       ],
       { cancelable: false },
@@ -217,7 +217,7 @@ export default class MonitoringLogs extends Component {
         } else if (hour >= 20) {
           alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
         }
-        
+
         let cred = Storage.getItem("loginCredentials");
         cred.then(response => {
           let temp = {
