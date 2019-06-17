@@ -7,7 +7,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<title>Welcome to CodeIgniter</title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables.min.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables/js/jquery.dataTables.min.js">
+    <link href="<?php echo base_url(); ?>assets/font_awesome/css/all.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables/js/jquery.dataTables.min.js"> -->
     <script src="<?php echo base_url(); ?>assets/jquery/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/datatables/datatables.min.js"></script>
