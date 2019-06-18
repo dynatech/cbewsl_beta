@@ -11,10 +11,7 @@
 <div class="card m-3" id="risk_profile">
     <div class="card-body">
         <label><b>Risk Profile <a href="" data-toggle="modal" data-target="#riskProfileModal">[edit]</a></b></label>
-        <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sapien orci, convallis sed dignissim at, ullamcorper in mi. Phasellus ut condimentum ante, a sodales nulla. Fusce hendrerit lectus cursus, efficitur sem eu, sodales mauris. Praesent ultricies malesuada tristique. Fusce facilisis magna vitae ipsum facilisis, id scelerisque nisl rutrum. Nam sit amet lacus et elit sodales imperdiet. Donec fringilla lacus risus, vitae venenatis quam consequat sit amet. Donec venenatis ante in elementum tincidunt. Pellentesque ac sodales nisi. Suspendisse pulvinar lacus non nibh egestas blandit. Suspendisse potenti. Ut ullamcorper massa sapien, vitae molestie dolor pulvinar vel. Nunc augue nulla, semper a dui id, porttitor pulvinar lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
-
-        Sed eget euismod quam, vitae lacinia orci. Nulla ornare magna sapien, quis mattis ligula molestie quis. Vestibulum eget magna felis. In purus nisi, viverra quis libero sit amet, sodales tristique mi. Duis efficitur commodo urna, eget ultrices nibh facilisis et. In id dolor erat. Nulla facilisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
+        <p id="current_risk_profile">
         </p>
     </div>
 </div>
