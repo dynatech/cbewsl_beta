@@ -67,7 +67,7 @@ export default class SituationLogs extends Component {
     this.setState({ date_selected: "" })
     let next_days = []
     let new_days = {};
-    fetch('http://192.168.150.191:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
+    fetch('http://192.168.150.10:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
       .then((responseJson) => {
         let to_local_data = [];
         for (const [index, value] of responseJson.entries()) {
@@ -141,7 +141,7 @@ export default class SituationLogs extends Component {
     let selected_date = this.formatDateTime(date = date)
     button_text = "Add Report for " + selected_date["text_date_format"]
     this.setState({ add_report_text: button_text })
-    fetch('http://192.168.150.191:5000/api/situation_report/get_report_by_date', {
+    fetch('http://192.168.150.10:5000/api/situation_report/get_report_by_date', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

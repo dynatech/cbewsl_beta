@@ -4,10 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Welcome to CodeIgniter</title>
+	<title>COMMUNITY-BASED EARLY WARNING SYSTEM FOR DEEP-SEATED LANDSLIDES</title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables.min.css">
     <link href="<?php echo base_url(); ?>assets/font_awesome/css/all.min.css" rel="stylesheet">
+    <script src="<?php echo base_url(); ?>assets/moment/moment.js"></script>
     <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables/js/jquery.dataTables.min.js"> -->
     <script src="<?php echo base_url(); ?>assets/jquery/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/bootstrap/js/bootstrap.min.js"></script>
