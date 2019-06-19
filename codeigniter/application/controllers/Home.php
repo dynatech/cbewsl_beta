@@ -18,12 +18,32 @@ class Home extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
+
+	public function __construct() {
+		parent::__construct();
+		$this->load->helper(array('url','session_helper'));
+		$this->load->library('session');
+	}
+
 	public function index()
 	{	
 		header('Access-Control-Allow-Origin: *');
 		$this->load->view('templates/header');
 		$this->load->view('home');
 		$this->load->view('templates/footer');
+		if (isset($_SESSION) == true) {
+			header("Location: /dashboard");
+		}
+	}
 
+	public function registerSession() {
+		try {
+			$data = $_POST;
+			$this->session->set_userdata($data);
+			$status = true;
+		} catch (Exception $e) {
+			$status = false;
+		}
+		print($status);
 	}
 }

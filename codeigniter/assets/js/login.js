@@ -16,7 +16,7 @@ function initializeLogin() {
 
 function validateCredentials(username, password){
     $.ajax({
-        url: "http://192.168.150.191:5000/api/login/validate_credentials",
+        url: "http://192.168.150.10:5000/api/login/validate_credentials",
         type: "POST",
         data: {
             "username": username,
@@ -28,15 +28,28 @@ function validateCredentials(username, password){
     }).done(function (data) {
         let credentials = JSON.parse(data)
         if (credentials.status == true) {
-            storeSession(credentials)
-            window.location.href = 'http://cbewsl/dashboard';
+            let session = {
+                role: credentials.role,
+                user_id: credentials.user_data.account_id,
+                first_name: credentials.user_data.user.first_name,
+                last_name: credentials.user_data.user.last_name,
+            }
+            $.ajax({
+                url: "http://cbewsl.com/api/register_session",
+                type: "POST",
+                data: session,
+                beforeSend: function (xhr) {
+                    xhr.overrideMimeType("text/plain; charset=x-user-defined");
+                }
+            }).done(function (data) {
+                if (data == 1) {
+                    window.location.href = "http://cbewsl.com/dashboard";
+                } else {
+                    alert("Failed to login.")
+                }
+            });
         } else {
-            alert("Invalid Username/Password.")
+            alert(data.message);
         }
-        
     });
-}
-
-function storeSession(credentials) {
-
 }
