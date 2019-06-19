@@ -2,7 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller {
-
 	/**
 	 * Index Page for this controller.
 	 *
@@ -18,11 +17,18 @@ class Dashboard extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function index()
-	{
+
+	public function __construct() {
+		parent::__construct();
+		$this->load->helper(array('url','session_helper'));
+		$this->load->library('session');
+	}
+
+	public function index() {
         $this->load->view('templates/header');
         $this->load->view('templates/nav');
 		$this->load->view('dashboard');
 		$this->load->view('templates/footer');
+		is_logged_in($this->session->userdata('is_logged_in'));
 	}
 }
