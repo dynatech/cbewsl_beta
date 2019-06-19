@@ -52,7 +52,7 @@ export default class SaveResourcesAndCapacities extends Component {
             status,
             owner } = this.state
         if (resource_and_capacity != "" && status != "" && owner != "") {
-            fetch('http://192.168.150.191:5000/api/resources_and_capacities/save_resources_and_capacities', {
+            fetch('http://192.168.150.10:5000/api/resources_and_capacities/save_resources_and_capacities', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

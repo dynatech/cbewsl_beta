@@ -62,7 +62,7 @@ export default class Summary extends Component {
 
   getAllRiskAssessmentSummary() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.191:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
+    fetch('http://192.168.150.10:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
         let summary_data = [];
         let to_local_data = [];
