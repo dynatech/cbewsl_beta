@@ -19,9 +19,11 @@ class Home extends CI_Controller {
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
 	public function index()
-	{
+	{	
+		header('Access-Control-Allow-Origin: *');
 		$this->load->view('templates/header');
 		$this->load->view('home');
 		$this->load->view('templates/footer');
+
 	}
 }
