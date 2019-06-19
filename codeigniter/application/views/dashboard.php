@@ -1,3 +1,4 @@
+<!-- <script src="../assets/js/session.js"></script> -->
 <img src="<?php echo base_url(); ?>assets/images/banner.png" class="img-fluid" alt="Responsive image" style="width:100%">
 <!-- Nav tabs -->
 

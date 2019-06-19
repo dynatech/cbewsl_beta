@@ -1,5 +1,6 @@
 <script src="../assets/js/login.js"></script>
 <script src="../assets/jquery/form-validator.js"></script>
+<!-- <script src="../assets/js/session.js"></script> -->
 <img src="<?php echo base_url(); ?>assets/images/alimodian.png" class="img-fluid" alt="Responsive image" style="width:100%">
 <!-- <div class="jumbotron">
   <div class="container">
