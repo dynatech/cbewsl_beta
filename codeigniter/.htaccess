@@ -6,3 +6,11 @@
 	<IfModule mod_headers.c>
         Header set Access-Control-Allow-Origin "http://192.168.150.191:5000/"
 	</IfModule>
+        RewriteEngine on
+        RewriteCond $1 !^(index\.php|assets|images|temp|css|fonts|js|ajax|d3graph|phpmyadmin|robots\.txt)
+        #RewriteCond %{REQUEST_FILENAME} !-f
+        #RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^(.*)$ /index.php/$1 [L,QSA]
+        <IfModule mod_headers.c>
+        	Header set Access-Control-Allow-Origin "http://192.168.150.10:5000/"
+        </IfModule>
