@@ -127,7 +127,7 @@ export default class DataSyncer extends Component {
     this.setState({ storage_key: storage_key })
     data.then(response => {
       console.log(response)
-      fetch('http://192.168.150.191:5000/api/monitoring/insert_cbewsl_ewi', {
+      fetch('http://192.168.150.10:5000/api/monitoring/insert_cbewsl_ewi', {
           method: 'POST',
           headers: {
               Accept: 'application/json',

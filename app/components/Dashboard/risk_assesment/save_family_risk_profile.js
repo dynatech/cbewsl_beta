@@ -54,7 +54,7 @@ export default class SaveFamilyRiskProfile extends Component {
             vulnerable_members_count,
             vulnerability_nature } = this.state
         if (members_count != "" && vulnerable_members_count != "" && vulnerability_nature != "") {
-            fetch('http://192.168.150.191:5000/api/family_profile/save_family_profile', {
+            fetch('http://192.168.150.10:5000/api/family_profile/save_family_profile', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

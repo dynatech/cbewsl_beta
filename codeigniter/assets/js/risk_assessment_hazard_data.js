@@ -5,7 +5,7 @@ $(document).ready(function () {
 
 function getAllHazardData() {
     $.ajax({
-        url: "http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data",
+        url: "http://192.168.150.10:5000/api/hazard_data/get_all_hazard_data",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -62,7 +62,7 @@ function setHazardDataForm(data) {
 
 function saveHazardData() {
     $("#add_hazard_data").click(function () {
-        let url = "http://192.168.150.191:5000/api/hazard_data/save_hazard_data";
+        let url = "http://192.168.150.10:5000/api/hazard_data/save_hazard_data";
         let data = {
             hazard_data_id: $("#hazard_data_id").val(),
             hazard: $("#hazard").val(),
@@ -96,7 +96,7 @@ function deleteHazardDataConfirmation(data) {
 }
 
 function deleteHazardData(hazard_data_id) {
-    let url = "http://192.168.150.191:5000/api/hazard_data/delete_hazard_data";
+    let url = "http://192.168.150.10:5000/api/hazard_data/delete_hazard_data";
     let data = {
         "hazard_data_id": hazard_data_id
     }

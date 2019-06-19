@@ -62,7 +62,7 @@ export default class ResourcesAndCapacities extends Component {
 
   getAllResourcesAndCapacities() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.191:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
+    fetch('http://192.168.150.10:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
       .then((responseJson) => {
         let rnc_data = [];
         let to_local_data = [];

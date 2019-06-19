@@ -44,7 +44,7 @@ export default class ModifyHazardData extends Component {
 
   removeLog(id) {
     Notification.endOfValidity();
-    fetch('http://192.168.150.191:5000/api/hazard_data/delete_hazard_data', {
+    fetch('http://192.168.150.10:5000/api/hazard_data/delete_hazard_data', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -95,7 +95,7 @@ export default class ModifyHazardData extends Component {
 
   getAllHazardData() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.191:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
+    fetch('http://192.168.150.10:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
       .then((responseJson) => {
         let to_local_data = [];
         let counter = 0
