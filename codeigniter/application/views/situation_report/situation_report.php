@@ -15,7 +15,10 @@
     <div class="tab-pane fade" id="situation_logs" role="tabpanel" aria-labelledby="situation_logs_tab">
         <div class="card">
             <div class="card-body">
-                Logs here
+                <div class="row">
+                    <div class="col"><div id="calendar"></div></div>
+                    <div class="col"></div>
+                </div>
             </div>
         </div>
     </div>
