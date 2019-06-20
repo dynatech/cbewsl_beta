@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput,TouchableOpacity, ToastAndroid} from 'react-native';
-import {forgot_password_styles} from '../../assets/styles/forgot_password_styles'
-import {defaults} from '../../assets/styles/default_styles'
+import { Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { defaults } from '../../assets/styles/default_styles';
+import { forgot_password_styles } from '../../assets/styles/forgot_password_styles';
 
 export default class ForgotPassword extends Component {
   constructor(props) {

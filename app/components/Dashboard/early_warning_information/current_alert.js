@@ -1,9 +1,9 @@
+import moment from 'moment';
 import React, { Component } from 'react';
-import { View, Text , ScrollView, TouchableOpacity} from 'react-native';
-import {field_survey_styles} from '../../../assets/styles/field_survey_styles'
-import Storage from '../../utils/storage'
-import moment from 'moment'
-import { NavigationEvents } from 'react-navigation'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
+import { field_survey_styles } from '../../../assets/styles/field_survey_styles';
+import Storage from '../../utils/storage';
 
 export default class CurrentAlert extends Component {
   constructor(props) {

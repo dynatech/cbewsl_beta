@@ -1,16 +1,13 @@
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Picker, Alert } from 'react-native';
-import DatePicker from 'react-native-datepicker'
-import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles'
-import { defaults } from '../../../assets/styles/default_styles'
-import { Icon } from 'native-base'
-import { Modal } from 'react-native';
+import { Alert, Modal, Picker, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import DatePicker from 'react-native-datepicker';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import Storage from '../../utils/storage'
-import SendSMS from 'react-native-sms'
-import { NavigationEvents } from 'react-navigation'
-import moment from "moment"
-import Notification from '../../utils/alert_notification'
+import SendSMS from 'react-native-sms';
+import { defaults } from '../../../assets/styles/default_styles';
+import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class SaveSurficialData extends Component {
     constructor(props) {

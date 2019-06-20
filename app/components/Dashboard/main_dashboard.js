@@ -1,12 +1,11 @@
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, Linking } from 'react-native';
-import { dashboard } from '../../assets/styles/dashboard_styles'
-import { defaults } from '../../assets/styles/default_styles'
-import Storage from '../utils/storage'
-import { Icon } from 'native-base'
-import { Badge } from 'react-native-elements'
-import { NavigationEvents } from 'react-navigation'
-import Notification from '../utils/alert_notification'
+import { Image, Linking, Text, TouchableOpacity, View } from 'react-native';
+import { Badge } from 'react-native-elements';
+import { NavigationEvents } from 'react-navigation';
+import { dashboard } from '../../assets/styles/dashboard_styles';
+import { defaults } from '../../assets/styles/default_styles';
+import Storage from '../utils/storage';
 
 export default class MainDashboard extends Component {
     constructor(props) {

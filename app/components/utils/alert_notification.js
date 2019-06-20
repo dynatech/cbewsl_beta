@@ -1,15 +1,12 @@
-import { AsyncStorage, Alert } from 'react-native';
-import Storage from './storage'
-import moment from 'moment'
+import moment from 'moment';
+import { Alert } from 'react-native';
+import Storage from './storage';
 
 const Notification = {
     endOfValidity: async function () {
         let current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
         let offline_data = Storage.getItem("alertGeneration");
         offline_data.then(response => {
-            console.log("GO HEREEEEE")
-            console.log(response.validity)
-            console.log(current_timestamp)
             if (moment(current_timestamp) >= moment(response.validity)) {
                 let alert_title = ""
                 switch (response.alert_level) {

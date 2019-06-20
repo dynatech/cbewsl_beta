@@ -1,5 +1,4 @@
-import { AsyncStorage } from 'react-native';
-import Storage from './storage'
+import Storage from './storage';
 
 const Sync = {
     serverToClient: async function (keys) {

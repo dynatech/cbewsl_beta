@@ -1,14 +1,14 @@
+import moment from "moment";
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles'
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { Calendar } from 'react-native-calendars';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-import { defaults } from '../../../assets/styles/default_styles'
-import RainfallGraph from './rainfall_graph'
-import Storage from '../../utils/storage'
-import { NavigationEvents } from 'react-navigation'
-import moment from "moment"
-import Notification from '../../utils/alert_notification'
+import { NavigationEvents } from 'react-navigation';
+import { defaults } from '../../../assets/styles/default_styles';
+import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
+import RainfallGraph from './rainfall_graph';
 
 export default class MaintenanceLogs extends Component {
   constructor(props) {

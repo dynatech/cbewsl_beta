@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, ToastAndroid, Image} from 'react-native';
-import { defaults } from '../../assets/styles/default_styles'
-import { login_styles } from '../../assets/styles/login_styles'
+import { Image, ImageBackground, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { defaults } from '../../assets/styles/default_styles';
+import { login_styles } from '../../assets/styles/login_styles';
 import Storage from "../utils/storage";
 
 export default class Login extends Component {

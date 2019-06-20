@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity
-} from 'react-native';
-import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
-import { defaults } from '../../../assets/styles/default_styles'
-import { Modal } from 'react-native';
+import { Dimensions, Image, Modal, TouchableOpacity, View } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import { Dimensions } from 'react-native';
 
 export default class MapSection extends Component {
   constructor(props) {

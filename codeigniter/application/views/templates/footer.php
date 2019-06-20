@@ -7,6 +7,7 @@
 <script src="<?php echo base_url(); ?>assets/js/risk_assessment_summary.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/sensor_maintenance.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/situation_report.js"></script>
+<script src="<?php echo base_url(); ?>assets/jquery/highcharts.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/surficial_data.js"></script>
 </body>
 </html>

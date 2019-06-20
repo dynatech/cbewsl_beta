@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import CurrentAlert from './current_alert'
-import AlertValidation from './alert_validation'
-import {createStackNavigator, createAppContainer} from 'react-navigation';
+import { createAppContainer, createStackNavigator } from 'react-navigation';
+import AlertValidation from './alert_validation';
+import CurrentAlert from './current_alert';
 
 const Ewi = createStackNavigator({
   current_alert: {
