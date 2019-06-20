@@ -1,12 +1,10 @@
+import moment from "moment";
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { field_survey_styles } from '../../../assets/styles/field_survey_styles'
-import { defaults } from '../../../assets/styles/default_styles'
-import { DataTable } from 'react-native-paper'
-import Storage from '../../utils/storage'
-import { NavigationEvents } from 'react-navigation'
-import moment from "moment"
-import Notification from '../../utils/alert_notification'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
+import { field_survey_styles } from '../../../assets/styles/field_survey_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class LatestReportSummary extends Component {
   constructor(props) {

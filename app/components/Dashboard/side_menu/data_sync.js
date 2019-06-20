@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Linking, Alert } from 'react-native';
-import { defaults } from '../../../assets/styles/default_styles';
+import moment from 'moment';
 import { Icon } from 'native-base';
-import Storage from '../../utils/storage'
-import SmsListener from 'react-native-android-sms-listener'
+import React, { Component } from 'react';
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import SmsListener from 'react-native-android-sms-listener';
+import SendSMS from 'react-native-sms';
 import { NavigationEvents } from 'react-navigation';
-import SendSMS from 'react-native-sms'
-import Sync from '../../utils/syncer'
-import Notification from '../../utils/alert_notification'
-import moment from 'moment'
+import { defaults } from '../../../assets/styles/default_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
+import Sync from '../../utils/syncer';
 
 export default class DataSyncer extends Component {
   constructor(props) {

@@ -1,12 +1,12 @@
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ToastAndroid, Alert } from 'react-native';
-import { DataTable } from 'react-native-paper'
-import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
-import { defaults } from '../../../assets/styles/default_styles'
-import { Icon } from 'native-base'
+import { Alert, ScrollView, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { DataTable } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
-import Storage from '../../utils/storage'
-import Notification from '../../utils/alert_notification'
+import { defaults } from '../../../assets/styles/default_styles';
+import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class ModifySummary extends Component {
   constructor(props) {
@@ -99,37 +99,38 @@ export default class ModifySummary extends Component {
         let summary_data = [];
         let to_local_data = [];
         let counter = 0
-        for (const [index, value] of responseJson.entries()) {
+        if (responseJson.length != 0) {
+          for (const [index, value] of responseJson.entries()) {
+            summary_data.push(<DataTable.Row style={{ width: 500 }}>
+              <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
+              <DataTable.Cell>
+                <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+                <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.summary_id)}></Icon>
+              </DataTable.Cell>
+            </DataTable.Row>)
+            counter += 1
+            to_local_data.push({
+              summary_id: value.summary_id,
+              local_storage_id: counter,
+              sync_status: 3,
+              location: value.location,
+              impact: value.impact,
+              adaptive_capacity: value.adaptive_capacity,
+              vulnerability: value.vulnerability
+            });
+          }
+          Storage.removeItem("RiskAssessmentSummary")
+          Storage.setItem("RiskAssessmentSummary", to_local_data)
+        } else {
           summary_data.push(<DataTable.Row style={{ width: 500 }}>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
-            <DataTable.Cell>
-              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.summary_id)}></Icon>
-            </DataTable.Cell>
+            <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
           </DataTable.Row>)
-          counter += 1
-          to_local_data.push({
-            summary_id: value.summary_id,
-            local_storage_id: counter,
-            sync_status: 3,
-            location: value.location,
-            impact: value.impact,
-            adaptive_capacity: value.adaptive_capacity,
-            vulnerability: value.vulnerability
-          });
         }
-        Storage.removeItem("RiskAssessmentSummary")
-        Storage.setItem("RiskAssessmentSummary", to_local_data)
-        let data_container = Storage.getItem('RiskAssessmentSummary')
-        data_container.then(response => {
-          console.log(response)
-        });
         this.setState({ summary_data: summary_data })
         this.tablePaginate(summary_data)
-
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentSummary')

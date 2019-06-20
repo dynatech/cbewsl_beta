@@ -1,13 +1,13 @@
+import moment from "moment";
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles'
-import { defaults } from '../../../assets/styles/default_styles'
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { DataTable } from 'react-native-paper'
-import moment from "moment"
-import { Icon } from 'native-base'
-import Storage from '../../utils/storage'
+import { DataTable } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
+import { defaults } from '../../../assets/styles/default_styles';
+import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles';
+import Storage from '../../utils/storage';
 
 export default class MonitoringLogs extends Component {
   constructor(props) {

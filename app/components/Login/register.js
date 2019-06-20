@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {register_styles} from '../../assets/styles/register_styles'
-import {defaults} from '../../assets/styles/default_styles'
-import { View, Text, TextInput, TouchableOpacity, ToastAndroid} from 'react-native';
+import { Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { defaults } from '../../assets/styles/default_styles';
+import { register_styles } from '../../assets/styles/register_styles';
 
 export default class Register extends Component {
   constructor(props) {

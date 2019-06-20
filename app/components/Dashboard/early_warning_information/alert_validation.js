@@ -1,10 +1,10 @@
+import moment from 'moment';
 import React, { Component } from 'react';
-import { View, Text , ScrollView, TouchableOpacity, Alert} from 'react-native';
-import {ewi_styles} from '../../../assets/styles/ewi_styles'
-import {defaults} from '../../../assets/styles/default_styles'
-import Storage from '../../utils/storage'
-import DatePicker from 'react-native-datepicker'
-import moment from 'moment'
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import DatePicker from 'react-native-datepicker';
+import { defaults } from '../../../assets/styles/default_styles';
+import { ewi_styles } from '../../../assets/styles/ewi_styles';
+import Storage from '../../utils/storage';
 
 export default class AlertValidation extends Component {
   constructor(props) {

@@ -1,6 +1,5 @@
-import { AsyncStorage } from 'react-native';
-import Storage from './storage'
-import moment from 'moment'
+import moment from 'moment';
+import Storage from './storage';
 
 const SurficialComputation = {
     displacement: async function () {

@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
-import { Text, View, SafeAreaView, ScrollView, Dimensions } from 'react-native';
-import { dashboard } from '../../assets/styles/dashboard_styles'
-import { createDrawerNavigator, createAppContainer, DrawerItems } from 'react-navigation'
-import Contacts from '../Dashboard/side_menu/contacts'
-import AboutTheApp from '../Dashboard/side_menu/about_the_app'
-import Logout from '../Dashboard/side_menu/logout'
-import MainDashboard from './main_dashboard'
-import DataSyncer from '../Dashboard/side_menu/data_sync'
-import SearchIcon from '../Dashboard/side_menu/search_icon'
+import React from 'react';
+import { SafeAreaView, ScrollView } from 'react-native';
+import { createAppContainer, createDrawerNavigator, DrawerItems } from 'react-navigation';
+import AboutTheApp from '../Dashboard/side_menu/about_the_app';
+import Contacts from '../Dashboard/side_menu/contacts';
+import DataSyncer from '../Dashboard/side_menu/data_sync';
+import Logout from '../Dashboard/side_menu/logout';
+import MainDashboard from './main_dashboard';
 
 const CustomDrawerComponent = (props) => (
   <SafeAreaView>
@@ -33,12 +31,6 @@ const AppDrawerNavigator = createDrawerNavigator({
       drawerLabel: "Data Synchronization"
     }
   },
-  // icon_index: {
-  //   screen: SearchIcon,
-  //   navigationOptions: {
-  //     drawerLabel: "Icon referrence"
-  //   }
-  // },
   logout: {
     screen: Logout,
     navigationOptions: {

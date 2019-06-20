@@ -1,12 +1,12 @@
+import moment from "moment";
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { situation_report_styles } from '../../../assets/styles/situation_report_styles'
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-import { defaults } from '../../../assets/styles/default_styles'
-import Storage from '../../utils/storage'
-import { NavigationEvents } from 'react-navigation'
-import moment from "moment"
-import Notification from '../../utils/alert_notification'
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Calendar } from 'react-native-calendars';
+import { NavigationEvents } from 'react-navigation';
+import { defaults } from '../../../assets/styles/default_styles';
+import { situation_report_styles } from '../../../assets/styles/situation_report_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class SituationLogs extends Component {
   constructor(props) {

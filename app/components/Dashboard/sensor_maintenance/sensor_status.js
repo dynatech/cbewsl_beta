@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles'
+import { Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import RainfallGraph from './rainfall_graph'
+import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles';
+import RainfallGraph from './rainfall_graph';
 
 export default class SensorStatus extends Component {
   constructor(props) {

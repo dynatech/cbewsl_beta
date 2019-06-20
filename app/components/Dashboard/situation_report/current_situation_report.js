@@ -1,10 +1,10 @@
+import moment from "moment";
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { situation_report_styles } from '../../../assets/styles/situation_report_styles'
-import Storage from '../../utils/storage'
-import { NavigationEvents } from 'react-navigation'
-import moment from "moment"
-import Notification from '../../utils/alert_notification'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
+import { situation_report_styles } from '../../../assets/styles/situation_report_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class CurrentSituationReport extends Component {
   constructor(props) {

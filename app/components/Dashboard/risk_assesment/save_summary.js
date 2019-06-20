@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid, Alert } from 'react-native';
-import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
-import { defaults } from '../../../assets/styles/default_styles'
-import Storage from '../../utils/storage'
-import Notification from '../../utils/alert_notification'
+import { Alert, ScrollView, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { defaults } from '../../../assets/styles/default_styles';
+import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class SaveSummary extends Component {
     constructor(props) {

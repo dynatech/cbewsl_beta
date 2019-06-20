@@ -9,7 +9,19 @@
     <div class="tab-pane fade show active" id="surficial_summary" role="tabpanel" aria-labelledby="surficial_summary_tab">
         <div class="card">
             <div class="card-body">
-                summary here
+                <div class="surficial-measuremnt-container">
+                    <h4 style="color: #717171">
+                        Surficial Measurement
+                    </h4>
+                    <h5 style="padding: 10px; color: #717171">Sample text here</h5>
+                </div>
+                <div class="moms-container">
+                    <h4 style="color: #717171; padding-bottom: 10px;">
+                        Manifestation of Movements
+                    </h4>
+                </div>
+                <div class="surficial-graph-container">
+                </div>
             </div>
         </div>
     </div>

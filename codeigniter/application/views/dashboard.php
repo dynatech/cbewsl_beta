@@ -15,7 +15,7 @@
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" href="#sensor_maintenance">Sensor Maintenance</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" id="surficial-data-tab">
       <a class="nav-link" data-toggle="tab" href="#surficial_data">Surficial Data</a>
     </li>
     <li class="nav-item">

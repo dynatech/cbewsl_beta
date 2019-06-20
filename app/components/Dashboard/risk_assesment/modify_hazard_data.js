@@ -1,12 +1,12 @@
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ToastAndroid, Alert } from 'react-native';
-import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
-import { defaults } from '../../../assets/styles/default_styles'
-import { DataTable } from 'react-native-paper'
-import { Icon } from 'native-base'
+import { Alert, ScrollView, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { DataTable } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
-import Storage from '../../utils/storage'
-import Notification from '../../utils/alert_notification'
+import { defaults } from '../../../assets/styles/default_styles';
+import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class ModifyHazardData extends Component {
   constructor(props) {
@@ -100,34 +100,36 @@ export default class ModifyHazardData extends Component {
         let to_local_data = [];
         let counter = 0
         let hazard_data = [];
-        for (const [index, value] of responseJson.entries()) {
+        if (responseJson != 0) {
+          for (const [index, value] of responseJson.entries()) {
+            hazard_data.push(<DataTable.Row style={{ width: 500 }}>
+              <DataTable.Cell style={{ marginRight: 10 }}>{value.hazard}</DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: 10 }}>{value.speed_of_onset}</DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+              <DataTable.Cell>
+                <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+                <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.hazard_data_id)}></Icon>
+              </DataTable.Cell>
+            </DataTable.Row>)
+            counter += 1
+            to_local_data.push({
+              hazard_data_id: value.hazard_data_id,
+              local_storage_id: counter,
+              sync_status: 3,
+              hazard: value.hazard,
+              speed_of_onset: value.speed_of_onset,
+              early_warning: value.early_warning,
+              impact: value.impact
+            });
+          }
+          Storage.removeItem("RiskAssessmentHazardData")
+          Storage.setItem("RiskAssessmentHazardData", to_local_data)
+        } else {
           hazard_data.push(<DataTable.Row style={{ width: 500 }}>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.hazard}</DataTable.Cell>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.speed_of_onset}</DataTable.Cell>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
-            <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
-            <DataTable.Cell>
-              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.hazard_data_id)}></Icon>
-            </DataTable.Cell>
+            <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
           </DataTable.Row>)
-          counter += 1
-          to_local_data.push({
-            hazard_data_id: value.hazard_data_id,
-            local_storage_id: counter,
-            sync_status: 3,
-            hazard: value.hazard,
-            speed_of_onset: value.speed_of_onset,
-            early_warning: value.early_warning,
-            impact: value.impact
-          });
         }
-        Storage.removeItem("RiskAssessmentHazardData")
-        Storage.setItem("RiskAssessmentHazardData", to_local_data)
-        let data_container = Storage.getItem('RiskAssessmentHazardData')
-        data_container.then(response => {
-          console.log(response)
-        });
         this.setState({ hazard_data: hazard_data })
         this.tablePaginate(hazard_data)
       })

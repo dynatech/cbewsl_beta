@@ -1,11 +1,11 @@
+import moment from "moment";
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles'
+import { Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Storage from '../../utils/storage'
 import { NavigationEvents } from 'react-navigation';
-import moment from "moment"
-import Notification from '../../utils/alert_notification'
+import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class CurrentMeasurement extends Component {
   constructor(props) {

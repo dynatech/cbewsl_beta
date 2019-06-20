@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import Summary from './summary'
-import SensorStatus from './sensor_status'
-import MaintenanceLogs from './maintenance_logs'
-import SaveMaintenanceLogs from './save_maintenance_logs'
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createAppContainer, createStackNavigator } from 'react-navigation';
+import MaintenanceLogs from './maintenance_logs';
+import SaveMaintenanceLogs from './save_maintenance_logs';
+import SensorStatus from './sensor_status';
+import Summary from './summary';
 
 const SensorMaintenance = createStackNavigator({
   summary: {
