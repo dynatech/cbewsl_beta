@@ -14,7 +14,7 @@ export default class DataSyncer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      server_number: '09175392665',
+      server_number: '09175394337',
       storage_key: ""
     };
   }
@@ -33,7 +33,6 @@ export default class DataSyncer extends Component {
     SmsListener.addListener(message => {
       if (message.body.indexOf('CBEWS-L Sync Ack') > -1 && message.body.indexOf('CBEWS-L Sync Ack') > -1) {
         if (message.body.indexOf('Status: Synced')) {
-          console.log(message.body)
           let raw_separator = message.body.split("Synced by:")
           let name = raw_separator[1].split("(ID: ")[0]
           let id = raw_separator[1].split("(ID: ")[1]
