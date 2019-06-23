@@ -1,12 +1,12 @@
+import moment from "moment";
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles'
+import { Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Storage from '../../utils/storage'
-import { NavigationEvents } from 'react-navigation';
-import moment from "moment"
 import ChartView from 'react-native-highcharts';
-import Notification from '../../utils/alert_notification'
+import { NavigationEvents } from 'react-navigation';
+import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 // import SurficialComputation from '../../utils/surficial_computation'
 
 export default class Summary extends Component {
