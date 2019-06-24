@@ -27,7 +27,14 @@
     <div class="tab-pane fade" id="maintenance_logs" role="tabpanel" aria-labelledby="maintenance_logs_tab">
         <div class="card">
             <div class="card-body">
-                maintenance logs here
+                <div clas="row">
+                    <div class="col" id="monitoring_logs_calendar"></div>
+                    <div class="col" id="monitoring_logs_data">
+                        <div class="row">
+                        
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

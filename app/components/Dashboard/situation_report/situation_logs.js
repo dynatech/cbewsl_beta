@@ -148,7 +148,7 @@ export default class SituationLogs extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        date_selected: selected_date["date"]
+        date_selected: selected_date["current_timestamp"]
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
