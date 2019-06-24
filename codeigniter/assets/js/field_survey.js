@@ -3,32 +3,6 @@ $(document).ready(function () {
     fieldSurveyButtonAction();
 });
 
-function formatDateTime(date = null) {
-    let timestamp = date
-    let current_timestamp = ""
-    let text_format_timestamp = ""
-    let date_format = ""
-    let time_format = ""
-    if (timestamp == null) {
-        current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
-        date_format = moment(new Date()).format("YYYY-MM-DD")
-        time_format = moment(new Date()).format("h:mm:ss A")
-        text_format_timestamp = moment(new Date()).format("MMMM D, YYYY hh:MM a")
-    } else {
-        current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS")
-        date_format = moment(date).format("YYYY-MM-DD")
-        time_format = moment(date).format("h:mm:ss A")
-        text_format_timestamp = moment(date).format("MMMM D, YYYY hh:MM a")
-    }
-
-    return {
-        current_timestamp: current_timestamp,
-        date: date_format,
-        time: time_format,
-        text_format_timestamp: text_format_timestamp
-    }
-}
-
 function getAllFieldSurvey() {
     $.ajax({
         url: "http://192.168.150.10:5000/api/field_survey/get_all_field_survey",
@@ -107,7 +81,6 @@ function setLatestFieldSurvey(formatted_data) {
 }
 
 function setFieldSurveyDataForm(data) {
-    console.log(data)
     $("#field_survey_id").val(data.field_survey_id);
     $("#features").val(data.features);
     $("#mat_characterization").val(data.mat_characterization);
