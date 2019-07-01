@@ -11,7 +11,6 @@ const Notification = {
             if (response == null || response == undefined) {
                 fetch('http://192.168.150.10:5000/api/monitoring/get_latest_cbewls_release/50').then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     let set_offline_data =  Storage.setItem("AlertGeneration", responseJson)
                     if (moment(current_timestamp) >= moment(responseJson.alert_validity)) {
                         let alert_title = ""
