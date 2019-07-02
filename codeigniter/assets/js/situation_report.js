@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    initializeFullCalendarData();
+    initializeSituationReportCalendar();
     saveSituationReport();
     situationReportSummaryAction();
 });
 
 let situation_date_selected = "none";
-function initializeFullCalendarData() {
+function initializeSituationReportCalendar() {
     $("#situation_report_calendar").empty();
     let situation_reports = [];
     $.ajax({
@@ -92,9 +92,8 @@ function initializeFullCalendarData() {
 
 function saveSituationReport() {
     $("#add_situation_report").click(function () {
-        console.log("clicked");
         let url = "http://192.168.150.10:5000/api/situation_report/save_situation_report";
-        let summary = $("#summary").val()
+        let summary = $("#summary").val();
         let data = {
             situation_report_id: $("#situation_report_id").val(),
             timestamp: situation_date_selected,
@@ -115,7 +114,7 @@ function saveSituationReport() {
                         $("#situation_report_label").text("Please select a date.");
                         $("#add_situation_report").text("Add");
                         situation_date_selected = "none"
-                        initializeFullCalendarData();
+                        initializeSituationReportCalendar();
                     }
                 });
             } else {
@@ -154,7 +153,7 @@ function situationReportSummaryAction() {
                     $("#situation_report_label").text("Please select a date.");
                     $("#add_situation_report").text("Add");
                     situation_date_selected = "none"
-                    initializeFullCalendarData();
+                    initializeSituationReportCalendar();
                 }
             });
         }
