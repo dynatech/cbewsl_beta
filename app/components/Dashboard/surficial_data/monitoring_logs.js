@@ -303,7 +303,7 @@ export default class MonitoringLogs extends Component {
                 <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
               </DataTable.Cell>
             </DataTable.Row>)
-  
+
             counter += 1
             to_local_data.push({
               moms_id: value.moms_id,

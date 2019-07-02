@@ -38,7 +38,6 @@
                             <div class="col" id="situation_report_form">
                                 <input type="hidden" class="form-control" id="situation_report_id" value="0">
                                 <div class="row">
-                                    
                                     <div class="col">
                                         <form>
                                             <div class="form-group">
