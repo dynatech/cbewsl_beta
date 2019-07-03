@@ -59,3 +59,5 @@
 </button> -->
 
 <?php $this->load->view('risk_assessment/modals');?>
+<?php $this->load->view('field_survey/modals');?>
+<?php $this->load->view('surficial_data/modals');?>

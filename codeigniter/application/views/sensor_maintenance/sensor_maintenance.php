@@ -3,7 +3,6 @@
         <a class="nav-item nav-link active" id="summary_tab" data-toggle="tab" href="#summary" role="tab" aria-controls="summary" aria-selected="true">Summary</a>
         <a class="nav-item nav-link" id="sensor_status_tab" data-toggle="tab" href="#sensor_status" role="tab" aria-controls="sensor_status" aria-selected="false">Sensor Status</a>
         <a class="nav-item nav-link" id="maintenance_logs_tab" data-toggle="tab" href="#maintenance_logs" role="tab" aria-controls="maintenance_logs" aria-selected="true">Maintenance Logs</a>
-        <a class="nav-item nav-link" id="subsurface_graph_tab" data-toggle="tab" href="#subsurface_graph" role="tab" aria-controls="subsurface_graph" aria-selected="true">Subsurface Graph</a>
         <a class="nav-item nav-link" id="rainfall_graph_tab" data-toggle="tab" href="#rainfall_graph" role="tab" aria-controls="rainfall_graph" aria-selected="true">Rainfall Graph</a>
     </div>
 </nav>
@@ -11,7 +10,21 @@
     <div class="tab-pane fade show active" id="summary" role="tabpanel" aria-labelledby="summary_tab">
         <div class="card">
             <div class="card-body">
-                summary here
+                <div class="surficial-measuremnt-container">
+                    <h4 style="color: #717171">
+                        RAINFALL STATUS
+                    </h4>
+                    <h5 style="padding: 10px; color: #717171">1-day threshold: n%</h5>
+                    <h5 style="padding: 10px; color: #717171">3-day threshold: n%</h5>
+                </div>
+                <div class="moms-container">
+                    <h4 style="color: #717171; padding-bottom: 10px; padding-top: 10px;">
+                        SUBSURFACE STATUS
+                    </h4>
+                    <h5 style="padding: 10px; color: #717171">Sample Text</h5>
+                </div>
+                <div class="surficial-graph-container">
+                </div>
             </div>
         </div>
     </div>
