@@ -11,44 +11,44 @@ export default class Login extends Component {
   }
 
 
-  componentWillMount(){
+  componentWillMount() {
     let credentials = Storage.getItem("loginCredentials")
-      credentials.then(response => {
-        if (response != null) {
-          this.props.navigation.navigate('dashboard');
-          ToastAndroid.show('Session restored.', ToastAndroid.SHORT);
-        }
-      })
+    credentials.then(response => {
+      if (response != null) {
+        this.props.navigation.navigate('dashboard');
+        ToastAndroid.show('Session restored.', ToastAndroid.SHORT);
+      }
+    })
   }
 
   validateCredentials() {
-    const {username, password} = this.state
+    const { username, password } = this.state
     fetch('http://192.168.150.10:5000/api/login/validate_credentials', {
       method: 'POST',
       headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-      username: username,
-      password: password,
+        username: username,
+        password: password,
       }),
     }).then((response) => response.json())
-    .then((responseJson) => {
-      if (responseJson.status == true){
-        this.props.navigation.navigate('dashboard');
-        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-        Storage.setItem("loginCredentials", responseJson);
-        console.log(responseJson)
-        console.log(Storage.getItem("loginCredentials"))
+      .then((responseJson) => {
+        if (responseJson.status == true) {
+          this.props.navigation.navigate('dashboard');
+          ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+          Storage.setItem("loginCredentials", responseJson);
+          console.log(responseJson)
+          console.log(Storage.getItem("loginCredentials"))
 
-      } else {
-        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+        } else {
+          ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
 
@@ -62,32 +62,32 @@ export default class Login extends Component {
 
   render() {
     return (
-       <ImageBackground style={login_styles.background} source={require('../../assets/images/login_backdrop.png')}>
-            <View style={login_styles.container}>
-                <View style={login_styles.heading}>
-                  <View style={login_styles.menulogo}>
-                      <Image style={login_styles.logo} source={require('../../assets/images/mdrrmo_logo.png')}></Image>
-                      <Image style={login_styles.logo} source={require('../../assets/images/dost-phivolcs-logo.png')}></Image>
-                      <Image style={login_styles.logo} source={require('../../assets/images/dews-l-logo.png')}></Image>
-                  </View>
-                  <Text style={login_styles.headingText}> Early Warning Information for Deep-seated Landslides </Text>
-                </View>
-                <View style={login_styles.inputContainer}>
-                  <View style={login_styles.inputBackDrop}></View>
-                  <TextInput style={[defaults.inputs, login_styles.inputs]} placeholder="Username" onChangeText={text => this.setState({username: text})}/>
-                  <TextInput style={[defaults.inputs, login_styles.inputs]} secureTextEntry={true} placeholder="Password" onChangeText={text => this.setState({password: text})}/>
-                  <TouchableOpacity onPress={() => this.validateCredentials()} style={defaults.touchableButtons}>
-                      <Text style={defaults.touchableTexts}>Login</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={defaults.accounts} onPress={() => this.register()}>
-                    <Text style={defaults.accountsText}>Register</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={defaults.accounts} onPress={() => this.forgotPassword()}>
-                    <Text style={defaults.accountsText}>Forgot password?</Text>
-                  </TouchableOpacity>
-                </View>
+      <ImageBackground style={login_styles.background} source={require('../../assets/images/login_backdrop.png')}>
+        <View style={login_styles.container}>
+          <View style={login_styles.heading}>
+            <View style={login_styles.menulogo}>
+              <Image style={login_styles.logo} source={require('../../assets/images/mdrrmo_logo.png')}></Image>
+              <Image style={login_styles.logo} source={require('../../assets/images/dost-phivolcs-logo.png')}></Image>
+              <Image style={login_styles.logo} source={require('../../assets/images/dews-l-logo.png')}></Image>
             </View>
-       </ImageBackground>
+            <Text style={login_styles.headingText}> Early Warning Information for Deep-seated Landslides </Text>
+          </View>
+          <View style={login_styles.inputContainer}>
+            <View style={login_styles.inputBackDrop}></View>
+            <TextInput style={[defaults.inputs, login_styles.inputs]} placeholder="Username" onChangeText={text => this.setState({ username: text })} />
+            <TextInput style={[defaults.inputs, login_styles.inputs]} secureTextEntry={true} placeholder="Password" onChangeText={text => this.setState({ password: text })} />
+            <TouchableOpacity onPress={() => this.validateCredentials()} style={defaults.touchableButtons}>
+              <Text style={defaults.touchableTexts}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={defaults.accounts} onPress={() => this.register()}>
+              <Text style={defaults.accountsText}>Register</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={defaults.accounts} onPress={() => this.forgotPassword()}>
+              <Text style={defaults.accountsText}>Forgot password?</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ImageBackground>
     );
   }
 }
