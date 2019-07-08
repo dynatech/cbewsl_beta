@@ -2,7 +2,10 @@ $(document).ready(function () {
     initializeSurficialData();
     initializeCurrentMeasurement();
     initializeMonitoringLogs();
-    // initializeCRUDLogs();
+    initializeAddMonitoringLogs();
+    initializeCRUDMonitoringLogs();
+
+    $('#cancel_add_field_survey').modal('hide');
 });
 
 function initializeSurficialData() {
@@ -32,6 +35,7 @@ function initializeSurficialData() {
                 let formatted_date = formatDateTime(end_date);
                 let last_data = "Last surficial data received is on " + formatted_date.text_format_timestamp;
                 $(".surficial-measuremnt-container h5").text(last_data);
+                $(".moms-container").empty();
                 $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Type of Feature: " + surficial_summary[0].moms_data[0].type_of_feature + "</p>");
                 $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Description: " + surficial_summary[0].moms_data[0].description + "</p>");
                 $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Name of Feature: " + surficial_summary[0].moms_data[0].name_of_feature + "</p>");
@@ -166,9 +170,40 @@ function initializeMonitoringLogs() {
 function initializeCRUDLogs(datatable) {
     $('#moms_table tbody').on('click', '#edit_monitoring_logs', function () {
         let data = datatable.row($(this).parents('tr')).data();
-        console.log(data);
-        // setFieldSurveyDataForm(data);
-        // $("#add_field_survey").text("Update");
-        // $("#field_survey_form_container").show(300);
+        monitoringLogsMod(data);
+        $("#add_monitoring_logs").text("Update");
+        $("#surficial_data_modal").modal("show");
     });
 }
+
+function monitoringLogsMod(data) {
+    console.log(data)
+    $('#moms_id').val(data.moms_id);
+    $('#moms_dt').val(data.date);
+    $('#moms_t_feature').val(data.feature_name);
+    $('#moms_n_feature').val(data.feature_type);
+    $('#moms_description').val(data.description);
+}
+
+function initializeAddMonitoringLogs() {
+    $("#add_moms_form").on("click", function() {
+        console.log($('#moms_id').val(0));
+        console.log($('#moms_dt').val(""));
+        console.log($('#moms_t_feature').val("data.feature_name"));
+        console.log($('#moms_n_feature').val("data.feature_type"));
+        console.log($('#moms_description').val(""));
+        $("#add_monitoring_logs").text("Add");
+        $("#surficial_data_modal").modal("show");
+    })
+}
+
+function initializeCRUDMonitoringLogs() {
+    $('#add_monitoring_logs').on('click', function () {
+        console.log($('#moms_id').val(data.moms_id));
+        console.log($('#moms_dt').val(data.date));
+        console.log($('#moms_t_feature').val(data.feature_name));
+        console.log($('#moms_n_feature').val(data.feature_type));
+        console.log($('#moms_description').val(data.description));
+    });
+}
+

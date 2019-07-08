@@ -87,6 +87,7 @@ function setFieldSurveyDataForm(data) {
     $("#mechanism").val(data.mechanism);
     $("#exposure").val(data.exposure);
     $("#note").val(data.note);
+    $("#field_survey_modal").modal("show");
 }
 
 function fieldSurveyButtonAction() {
@@ -132,5 +133,6 @@ function fieldSurveyButtonAction() {
     $("#add_field_survey_form").click(function () {
         $("#field_survey_form_container").show(300);
         $("#add_field_survey").text("Add");
+        $("#field_survey_modal").modal("show");
     });
 }

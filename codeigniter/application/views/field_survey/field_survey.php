@@ -52,53 +52,6 @@
         <div class="card">
             <div class="card-body">
                 <div class="container">
-                    <div id="field_survey_form_container" style="display:none;">
-                        <form>
-                            <input type="hidden" class="form-control" id="field_survey_id" value="0">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="number_of_members">Features</label>
-                                        <textarea class="form-control" id="features" style="height : 200px"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="number_of_members">Material Characterization</label>
-                                        <input type="text" class="form-control" id="mat_characterization">
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="number_of_vulnerable">Mechanism</label>
-                                        <input type="text" class="form-control" id="mechanism">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="number_of_members">Exposure</label>
-                                        <input type="text" class="form-control" id="exposure">
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="number_of_vulnerable">Note</label>
-                                        <input type="text" class="form-control" id="note">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="float-right">
-                                <button type="button" class="btn btn-primary btn-sm" id="add_field_survey">Add</button>
-                                <button type="button" class="btn btn-danger btn-sm" id="cancel_add_field_survey">Cancel</button>
-                            </div>
-                            <br>
-                            <br>
-                        </form>
-                    </div>
                     <table id="field_survey_logs_table" class="display table table-striped" style="width:100%">
                         <thead>
                             <tr>
