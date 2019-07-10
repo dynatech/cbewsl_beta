@@ -50,7 +50,7 @@
         <?php $this->load->view('reports/reports');?>
     </div>
 </div>
-
+<div id="editor"></div>
 
 
 <!-- Button trigger modal -->

@@ -3,8 +3,8 @@ $(document).ready(function () {
 });
 
 function initializeLogin() {
-    $('#login-form #submit').on('click',function(){
-        if ($('#username').val() != ""|| $('#password').val() != "") {
+    $('#login-form #submit').on('click', function () {
+        if ($('#username').val() != "" || $('#password').val() != "") {
             let username = $('#username').val();
             let password = $('#password').val();
             validateCredentials(username, password);
@@ -14,14 +14,14 @@ function initializeLogin() {
     });
 }
 
-function validateCredentials(username, password){
+function validateCredentials(username, password) {
     $.ajax({
         url: "http://192.168.150.10:5000/api/login/validate_credentials",
         type: "POST",
         data: {
             "username": username,
             "password": password,
-            },
+        },
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
