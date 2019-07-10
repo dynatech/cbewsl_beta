@@ -14,6 +14,15 @@ function getAllFamilyRiskProfile() {
     }).done(function (data) {
         let family_profile_data = JSON.parse(data)
         let table = $('#family_risk_profile_table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'My button',
+                    action: function (e, dt, node, config) {
+                        alert('Button activated');
+                    }
+                }
+            ],
             "data": family_profile_data,
             "bDestroy": true,
             "columns": [
@@ -77,7 +86,6 @@ function getRiskProfile() {
                 }
             ]
         });
-
         $('#risk_profile_table tbody').on('click', '#edit_risk_profile', function () {
             let data = table.row($(this).parents('tr')).data();
             setRiskProfileDataForm(data);
@@ -90,6 +98,7 @@ function getRiskProfile() {
         });
     });
 }
+
 
 function setRiskProfileDataForm(data) {
     $("#risk_profile_id").val(data.risk_profile_id);

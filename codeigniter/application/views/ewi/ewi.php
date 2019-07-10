@@ -28,7 +28,7 @@
                         <input class="btn btn-primary" type="button" value="e-Mail" style="background-color: #195770;">
                     </div>
                     <div class="col-1">
-                        <input class="btn btn-primary" type="button" value="f | SHARE" style="background-color: #195770;">
+                        <input class="btn btn-primary" type="button" value="f | SHARE" style="background-color: #195770;" onClick="LaunchFeedDialog()"/>
                     </div>
                     <div class="col-1">
                         <input class="btn btn-primary" type="button" value="PRINT" style="background-color: #195770;">
