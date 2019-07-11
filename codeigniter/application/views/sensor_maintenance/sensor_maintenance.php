@@ -10,7 +10,7 @@
     <div class="tab-pane fade show active" id="sensor_summary" role="tabpanel" aria-labelledby="summary_tab">
         <div class="card">
             <div class="card-body">
-                <div class="surficial-measuremnt-container">
+                <div>
                     <h4 style="color: #717171">
                         RAINFALL STATUS
                     </h4>
