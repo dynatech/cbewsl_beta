@@ -51,82 +51,86 @@ export default class LatestReportSummary extends Component {
       .then((responseJson) => {
         let latest_report = [];
         let to_local_data = [];
-        for (const [index, value] of responseJson.entries()) {
-          let format_date_time = this.formatDateTime(date = value.date);
-          let note = value.note
-          let note_label = ""
-          if (note == "") {
-            note = ""
-            note_label = ""
-          } else {
-            note_label = "Note"
-          }
-          latest_report.push(<View style={{ padding: 10 }}>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Date of Survey: {format_date_time["text_format_timestamp"]}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
-              <View style={{ flex: 1 }}>
-                <Text>Features</Text>
-              </View>
-              <View style={{ flex: 1.5 }}>
-                <Text> {value.features}</Text>
-              </View>
-            </View>
-            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
-              <View style={{ flex: 1 }}>
-                <Text>Materials characterization</Text>
-              </View>
-              <View style={{ flex: 1.5 }}>
-                <Text>{value.mat_characterization}</Text>
-              </View>
-            </View>
-            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
-              <View style={{ flex: 1 }}>
-                <Text>Mechanism</Text>
-              </View>
-              <View style={{ flex: 1.5 }}>
-                <Text>{value.mechanism}</Text>
-              </View>
-            </View>
-            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
-              <View style={{ flex: 1 }}>
-                <Text>Exposure</Text>
-              </View>
-              <View style={{ flex: 1.5 }}>
-                <Text>{value.exposure}</Text>
-              </View>
-            </View>
-            <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: 'red' }} >{note_label}</Text>
-              </View>
-              <View style={{ flex: 1.5 }}>
-                <Text style={{ color: 'red' }} >{note}</Text>
-              </View>
-            </View>
+
+        if (Object.entries(responseJson[0]).length === 0 && responseJson[0].constructor === Object) {
+          latest_report.push(<View style={{padding: 10}}>
+            <Text style={{width: '100%', textAlign:'center'}}>No Data Available</Text>
           </View>)
-
-          to_local_data.push({
-            field_survey_id: value.field_survey_id,
-            local_storage_id: 1,
-            sync_status: 3,
-            features: value.features,
-            mat_characterization: value.mat_characterization,
-            mechanism: value.mechanism,
-            exposure: value.exposure,
-            note: value.note,
-            date: format_date_time["text_format_timestamp"]
-          });
+          this.setState({ latest_report: latest_report })
+        } else {
+          for (const [index, value] of responseJson.entries()) {
+            let format_date_time = this.formatDateTime(date = value.date);
+            let note = value.note
+            let note_label = ""
+            if (note == "") {
+              note = ""
+              note_label = ""
+            } else {
+              note_label = "Note"
+            }
+            latest_report.push(<View style={{ padding: 10 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Date of Survey: {format_date_time["text_format_timestamp"]}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text>Features</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                  <Text> {value.features}</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text>Materials characterization</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                  <Text>{value.mat_characterization}</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text>Mechanism</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                  <Text>{value.mechanism}</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text>Exposure</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                  <Text>{value.exposure}</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', flex: 1, paddingTop: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: 'red' }} >{note_label}</Text>
+                </View>
+                <View style={{ flex: 1.5 }}>
+                  <Text style={{ color: 'red' }} >{note}</Text>
+                </View>
+              </View>
+            </View>)
+  
+            to_local_data.push({
+              field_survey_id: value.field_survey_id,
+              local_storage_id: 1,
+              sync_status: 3,
+              features: value.features,
+              mat_characterization: value.mat_characterization,
+              mechanism: value.mechanism,
+              exposure: value.exposure,
+              note: value.note,
+              date: format_date_time["text_format_timestamp"]
+            });
+          }
+          Storage.removeItem("FieldSurveyLatestReportSummary")
+          Storage.setItem("FieldSurveyLatestReportSummary", to_local_data)
+          let data_container = Storage.getItem("FieldSurveyLatestReportSummary")
+          this.setState({ latest_report: latest_report })
         }
-        Storage.removeItem("FieldSurveyLatestReportSummary")
-        Storage.setItem("FieldSurveyLatestReportSummary", to_local_data)
-        let data_container = Storage.getItem("FieldSurveyLatestReportSummary")
-        data_container.then(response => {
-          console.log(response)
-        });
-        this.setState({ latest_report: latest_report })
-
       })
       .catch((error) => {
         let data_container = Storage.getItem("FieldSurveyLatestReportSummary")

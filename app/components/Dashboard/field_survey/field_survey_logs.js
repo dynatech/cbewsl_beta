@@ -23,7 +23,6 @@ export default class FieldSurveyLogs extends Component {
   navigateFieldSurvey(tab) {
     switch (tab) {
       case "lrs":
-        console.log(tab);
         this.props.navigation.navigate('latest_report_summary')
         break;
       default:
@@ -127,7 +126,6 @@ export default class FieldSurveyLogs extends Component {
 
   getAllFieldSurveyLogs() {
     Notification.endOfValidity();
-    // Storage.removeItem("FieldSurveyLogs");
     fetch('http://192.168.150.10:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
       .then((responseJson) => {
         let field_logs = [];
@@ -137,7 +135,7 @@ export default class FieldSurveyLogs extends Component {
           for (const [index, value] of responseJson.entries()) {
             let format_date_time = this.formatDateTime(date = value.date);
             field_logs.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: -90 }}>{format_date_time["text_format_timestamp"]}</DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: -90 }}><Text style={{fontSize: 10}}>{format_date_time["text_format_timestamp"]}</Text></DataTable.Cell>
               <DataTable.Cell style={{ marginRight: 10 }}>Field Survey Report {value.date.split(' ')[0]}</DataTable.Cell>
               <DataTable.Cell style={{ marginRight: -190 }}>
                 <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
