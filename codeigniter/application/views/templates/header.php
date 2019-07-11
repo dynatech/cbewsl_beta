@@ -7,6 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<title>COMMUNITY-BASED EARLY WARNING SYSTEM FOR DEEP-SEATED LANDSLIDES</title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables.min.css">
+    <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/printjs/print.min.css"> -->
     <link href="<?php echo base_url(); ?>assets/font_awesome/css/all.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/full_calendar/core/main.css" rel="stylesheet" />
     <link href="<?php echo base_url(); ?>assets/full_calendar/daygrid/main.css" rel="stylesheet" />
@@ -18,10 +19,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <script src="<?php echo base_url(); ?>assets/moment/moment.js"></script>
     <script src="<?php echo base_url(); ?>assets/tooltip/popper.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/tooltip/tooltip.js"></script>
-    <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables/js/jquery.dataTables.min.js"> -->
     <script src="<?php echo base_url(); ?>assets/jquery/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/datatables/datatables.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/highcharts/highcharts.js"></script>
+    <!-- <script src="<?php echo base_url(); ?>assets/highcharts/highstock.js"></script> -->
+    <!-- <script src="<?php echo base_url(); ?>assets/printjs/jspdf.min.js"></script> -->
+    <!-- <script src="<?php echo base_url(); ?>assets/printjs/print.min.js"></script> -->
   
     <style>
         html {

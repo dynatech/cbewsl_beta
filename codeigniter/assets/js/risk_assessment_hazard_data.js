@@ -27,7 +27,7 @@ function getAllHazardData() {
                 }
             ]
         });
-
+        HAZARD_DATA = hazard_data;
         $('#hazard_data_table tbody').on('click', '#edit_hazard_data', function () {
             let data = table.row($(this).parents('tr')).data();
             setHazardDataForm(data);

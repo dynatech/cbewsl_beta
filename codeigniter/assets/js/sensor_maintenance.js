@@ -1,9 +1,15 @@
+
 $(document).ready(function () {
     initializeMaintenanceLogsCalendar();
+    initalizeSensorMaintenanceData();
     saveMaintenanceLogs();
     maintenanceLogsDataAction();
 });
-
+const rainfall_colors = {
+    "24h": "rgba(73, 105, 252, 0.9)",
+    "72h": "rgba(239, 69, 50, 0.9)",
+    rain: "rgba(0, 0, 0, 0.9)"
+};
 let maintenance_log_date_selected = "";
 
 function initializeMaintenanceLogsCalendar() {
@@ -172,7 +178,6 @@ function maintenanceLogsDataAction() {
 }
 
 function latestSensorMaintenanceData(latest_data) {
-    console.log(latest_data)
     if (latest_data != null || latest_data != undefined) {
         if (latest_data.length != 0) {
             let formatted_date = formatDateTime(latest_data.start);
@@ -187,3 +192,208 @@ function latestSensorMaintenanceData(latest_data) {
         $("#latest_sensor_status").empty().append("<b>No latest sensor status data. </b>");
     }
 }
+
+function initalizeSensorMaintenanceData() {
+    $.ajax({
+        url: "http://192.168.150.10:5000/api/rainfall/get_rainfall_plot_data",
+        beforeSend: function (xhr) {
+            xhr.overrideMimeType("text/plain; charset=x-user-defined");
+            $("#one_day_rain").text("Loading. . . ");
+            $("#three_day_rain").text("Loading. . . ");
+        }
+    }).done(function (data) {
+        let rainfall_data = JSON.parse(data);
+        console.log(rainfall_data);
+        let rain_percentage = displaySensorMaintenanceSummary(rainfall_data);
+        renderRainfallChart(rainfall_data[0], rain_percentage);
+    });
+}
+
+function displaySensorMaintenanceSummary(rainfall_data) {
+    let one_day_rain = "";
+    let three_day_rain = "";
+
+    let data = rainfall_data[0]
+
+    one_day_rain = Math.round((data["1D cml"] / data["half of 2yr max"]) * 100);
+    three_day_rain = Math.round((data["3D cml"] / data["2yr max"]) * 100);
+
+    $("#one_day_rain").text(one_day_rain + "%");
+    $("#three_day_rain").text(three_day_rain + "%");
+
+    return {
+        "one_day_rain": one_day_rain,
+        "three_day_rain": three_day_rain
+    }
+}
+
+function renderRainfallChart(rainfall_data, rain_percentage) {
+    let one_day_threshold = rainfall_data["half of 2yr max"]
+    let three_day_threshold = rainfall_data["2yr max"]
+    console.log("1 day " + one_day_threshold);
+    console.log("3 day " + three_day_threshold);
+    createPlotContainer(rainfall_data.plot, one_day_threshold, three_day_threshold);
+
+}
+
+function createPlotContainer(data, one_day_threshold, three_day_threshold) {
+    $("#rainfall_graphs_container").empty();
+    $.each(data, function (key, value) {
+        instantaneous_container = value.gauge_name + "_instantaneous";
+        cumulative_container = value.gauge_name + "_cumulative";
+        $("#rainfall_graphs_container").append("<div class='row'><div class='col' id=" + instantaneous_container + "></div><div class='col' id=" + cumulative_container + "></div></div>");
+
+        renderCumulativeRainfallGraph(value, cumulative_container, three_day_threshold);
+    });
+
+}
+
+function renderCumulativeRainfallGraph(data, container, three_day_threshold) {
+    let length = data.data.length - 1;
+    let temp_a = []
+    let temp_b = []
+    let return_values = []
+    let previous_one_day = 0
+    let previous_three_day = 0
+    let ts_container = []
+
+    const div = `#${container}`;
+    let rain_data = data.data;
+    rain_data.forEach(element => {
+        if (element['24hr cumulative rainfall'] == null) {
+            element['24hr cumulative rainfall'] = previous_one_day
+        } else {
+            previous_one_day = element['24hr cumulative rainfall']
+        }
+
+        if (element['72hr cumulative rainfall'] == null) {
+            element['72hr cumulative rainfall'] = previous_three_day
+        } else {
+            previous_three_day = element['72hr cumulative rainfall']
+        }
+
+        temp_a.push([element['24hr cumulative rainfall']])
+        temp_b.push([element['72hr cumulative rainfall']])
+        ts_container.push(element.ts)
+    });
+
+    $(div).highcharts({
+        series: [{
+            name: '24hr',
+            data: temp_a,
+            color: '#5c77fc'
+        }, {
+            name: '72hr',
+            data: temp_b,
+            color: '#f0594a'
+        }],
+        chart: {
+            type: "line",
+            zoomType: "x",
+            panning: true,
+            panKey: "shift",
+            height: 400,
+            resetZoomButton: {
+                position: {
+                    x: 0,
+                    y: -30
+                }
+            }
+        },
+        title: {
+            text: `<b>Cumulative Rainfall Chart of UMI</b>`,
+            style: { fontSize: "13px" },
+            margin: 20,
+            y: 16
+        },
+        subtitle: {
+            text: `Source: <b>${createRainPlotSubtitle(data.distance, data.gauge_name)}</b></b>`,
+            style: { fontSize: "11px" }
+        },
+        xAxis: {
+            categories: ts_container,
+            visible: false,
+        },
+        yAxis: {
+            title: {
+                text: "<b>Value (mm)</b>"
+            },
+            max: Math.max(0, (three_day_threshold - parseFloat(three_day_threshold))) + parseFloat(three_day_threshold),
+            min: 0,
+            plotBands: [{
+                value: Math.round(parseFloat(three_day_threshold / 2) * 10) / 10,
+                color: rainfall_colors["24h"],
+                dashStyle: "shortdash",
+                width: 2,
+                zIndex: 0,
+                label: {
+                    text: `24-hr threshold (${three_day_threshold / 2})`
+
+                }
+            }, {
+                value: three_day_threshold,
+                color: rainfall_colors["72h"],
+                dashStyle: "shortdash",
+                width: 2,
+                zIndex: 0,
+                label: {
+                    text: `72-hr threshold (${three_day_threshold})`
+                }
+            }]
+        },
+        tooltip: {
+            shared: true,
+            crosshairs: true
+        },
+        plotOptions: {
+            series: {
+                marker: {
+                    radius: 3
+                },
+                cursor: "pointer"
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        }
+    });
+}
+
+function renderInstantaneousRainfallGraph() {
+
+}
+
+function createRainPlotSubtitle(distance, gauge_name) {
+    let source = gauge_name.toUpperCase();
+    if (isFinite(gauge_name)) {
+        source = `NOAH ${gauge_name}`;
+    }
+    const subtitle = distance === null ? source : `${source} (${distance} KM)`;
+    return subtitle;
+}
+
+/**
+ * Synchronize zooming through the setExtremes event handler.
+ */
+function syncExtremes(e) {
+    const thisChart = this.chart;
+    const tag = "rainfall-chart";
+    const charts = Highcharts.charts.filter((x) => {
+        if (typeof x !== "undefined") return $(x.renderTo).hasClass(tag);
+        return false;
+    });
+
+    if (e.trigger !== "syncExtremes") { // Prevent feedback loop
+        Highcharts.each(charts, (chart) => {
+            if (chart !== thisChart) {
+                if (chart.xAxis[0].setExtremes) { // It is null while updating
+                    chart.xAxis[0].setExtremes(e.min, e.max, undefined, false, { trigger: "syncExtremes" });
+                }
+            }
+        });
+    }
+}
+

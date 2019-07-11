@@ -63,7 +63,7 @@ export default class FieldSurveyLogs extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        summary_id: id
+        field_survey_id: id
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
