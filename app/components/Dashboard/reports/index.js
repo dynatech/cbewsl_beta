@@ -1,12 +1,11 @@
+import moment from "moment";
 import React, { Component } from 'react';
-import { DataTable } from 'react-native-paper'
-import { View, Text, ScrollView } from 'react-native';
-import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
-import Storage from '../../utils/storage'
+import { ScrollView, Text, View } from 'react-native';
+import { DataTable } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
-import Notification from '../../utils/alert_notification'
-import moment from "moment"
-import { Icon } from 'native-base'
+import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class Reports extends Component {
   constructor(props) {

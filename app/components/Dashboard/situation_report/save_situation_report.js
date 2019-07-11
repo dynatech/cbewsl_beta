@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid, Alert } from 'react-native';
-import { situation_report_styles } from '../../../assets/styles/situation_report_styles'
-import { defaults } from '../../../assets/styles/default_styles'
-import Storage from '../../utils/storage'
-import { NavigationEvents } from 'react-navigation'
-import moment from "moment"
-import Notification from '../../utils/alert_notification'
+import { Alert, ScrollView, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { defaults } from '../../../assets/styles/default_styles';
+import { situation_report_styles } from '../../../assets/styles/situation_report_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class SaveSituationReport extends Component {
     constructor(props) {

@@ -1,13 +1,13 @@
+import moment from "moment";
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles'
-import { defaults } from '../../../assets/styles/default_styles'
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { DataTable } from 'react-native-paper'
-import moment from "moment"
-import { Icon } from 'native-base'
-import Storage from '../../utils/storage'
+import { DataTable } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
+import { defaults } from '../../../assets/styles/default_styles';
+import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles';
+import Storage from '../../utils/storage';
 
 export default class MonitoringLogs extends Component {
   constructor(props) {
@@ -289,39 +289,41 @@ export default class MonitoringLogs extends Component {
         let monitoring_logs_data = []
         let to_local_data = []
         let counter = 0
-        for (const [index, value] of responseJson.entries()) {
-          let formatted_timestamp = this.formatDateTime(date = value.date)
-          monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
-            <DataTable.Cell style={{ paddingRight: 10 }}>{value.type_of_feature}</DataTable.Cell>
-            <DataTable.Cell style={{ paddingRight: 10 }}>{value.description}</DataTable.Cell>
-            <DataTable.Cell style={{ paddingRight: 10 }}>{value.name_of_feature}</DataTable.Cell>
-            <DataTable.Cell style={{ paddingRight: 10 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
-            <DataTable.Cell>
-              <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-              <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
-              <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
-            </DataTable.Cell>
-          </DataTable.Row>)
+        if (responseJson.length != 0) {
+          for (const [index, value] of responseJson.entries()) {
+            let formatted_timestamp = this.formatDateTime(date = value.date)
+            monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
+              <DataTable.Cell style={{ paddingRight: 10 }}>{value.type_of_feature}</DataTable.Cell>
+              <DataTable.Cell style={{ paddingRight: 10 }}>{value.description}</DataTable.Cell>
+              <DataTable.Cell style={{ paddingRight: 10 }}>{value.name_of_feature}</DataTable.Cell>
+              <DataTable.Cell style={{ paddingRight: 10 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
+              <DataTable.Cell>
+                <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+                <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
+                <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
+              </DataTable.Cell>
+            </DataTable.Row>)
 
-          counter += 1
-          to_local_data.push({
-            moms_id: value.moms_id,
-            local_storage_id: counter,
-            sync_status: 3,
-            type_of_feature: value.type_of_feature,
-            description: value.description,
-            name_of_feature: value.name_of_feature,
-            date: value.date
-          })
+            counter += 1
+            to_local_data.push({
+              moms_id: value.moms_id,
+              local_storage_id: counter,
+              sync_status: 3,
+              type_of_feature: value.type_of_feature,
+              description: value.description,
+              name_of_feature: value.name_of_feature,
+              date: value.date
+            })
+          }
+          Storage.removeItem("SurficialDataMomsSummary")
+          Storage.setItem("SurficialDataMomsSummary", to_local_data)
+        } else {
+          monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
+            <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+          </DataTable.Row>)
         }
-        Storage.removeItem("SurficialDataMomsSummary")
-        Storage.setItem("SurficialDataMomsSummary", to_local_data)
         this.setState({ monitoring_logs_data: monitoring_logs_data })
         this.tablePaginate(monitoring_logs_data)
-        let offline = Storage.getItem("SurficialDataMomsSummary")
-        offline.then(response => {
-          console.log(response)
-        })
       })
       .catch((error) => {
         let data_container = Storage.getItem('SurficialDataMomsSummary')
@@ -349,7 +351,6 @@ export default class MonitoringLogs extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-
           this.setState({ monitoring_logs_data: monitoring_logs_data })
           this.tablePaginate(monitoring_logs_data)
         });

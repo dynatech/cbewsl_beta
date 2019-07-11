@@ -1,12 +1,12 @@
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, Linking } from 'react-native';
-import { dashboard } from '../../assets/styles/dashboard_styles'
-import { defaults } from '../../assets/styles/default_styles'
-import Storage from '../utils/storage'
-import { Icon } from 'native-base'
-import { Badge } from 'react-native-elements'
-import { NavigationEvents } from 'react-navigation'
-import Notification from '../utils/alert_notification'
+import { Image, Linking, Text, TouchableOpacity, View } from 'react-native';
+import { Badge } from 'react-native-elements';
+import { NavigationEvents } from 'react-navigation';
+import { dashboard } from '../../assets/styles/dashboard_styles';
+import { defaults } from '../../assets/styles/default_styles';
+import Storage from '../utils/storage';
+import Notification from '../utils/alert_notification';
 
 export default class MainDashboard extends Component {
     constructor(props) {
@@ -65,7 +65,6 @@ export default class MainDashboard extends Component {
   setBadge() {
     let offline_data = Storage.getItem("AlertGeneration");
     offline_data.then(response => {
-        console.log(response)
         if (response == null) {
             this.setState({alert_badge: [<Badge
                 status="success"
@@ -97,7 +96,10 @@ export default class MainDashboard extends Component {
     render() {
         return (
             <View style={[dashboard.menuContainer]}>
-                <NavigationEvents onDidFocus={() => this.setBadge()} />
+                <NavigationEvents onDidFocus={() => {
+                    Notification.endOfValidity()
+                    this.setBadge()
+                }} />
                 <View style={[defaults.heading, this.props.style]}>
                     <Icon name="menu" onPress={() => this.props.navigation.openDrawer()} />
                     <View style={dashboard.menulogo}>

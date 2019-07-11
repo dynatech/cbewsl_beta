@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import LatestReportSummary from './latest_report_summary'
-import FieldSurveyLogs from './field_survey_logs'
-import SaveFieldSurveyLogs from './save_field_survey_logs'
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createAppContainer, createStackNavigator } from 'react-navigation';
+import FieldSurveyLogs from './field_survey_logs';
+import LatestReportSummary from './latest_report_summary';
+import SaveFieldSurveyLogs from './save_field_survey_logs';
 
 const FieldSurveyStack = createStackNavigator({
   latest_report_summary: {

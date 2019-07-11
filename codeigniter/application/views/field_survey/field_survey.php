@@ -14,27 +14,27 @@
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
-                                    <td colspan="3" id="date_of_survey">Date: 00-00-00</td>
+                                    <td colspan="3" id="latest_date_of_survey">Date: 00-00-00</td>
                                 </tr>
                                 <tr>
                                     <td>Features</td>
-                                    <td id="features">[data here]</td>
+                                    <td id="latest_features">[data here]</td>
                                 </tr>
                                 <tr>
                                     <td>Materials characterization</td>
-                                    <td id="mat_characterization">[data here]</td>
+                                    <td id="latest_mat_characterization">[data here]</td>
                                 </tr>
                                 <tr>
                                     <td>Mechanism</td>
-                                    <td id="mechanism">[data here]</td>
+                                    <td id="latest_mechanism">[data here]</td>
                                 </tr>
                                 <tr>
                                     <td>Exposure</td>
-                                    <td id="exposure">[data here]</td>
+                                    <td id="latest_exposure">[data here]</td>
                                 </tr>
                                 <tr>
                                     <td>Note</td>
-                                    <td id="note">[data here]</td>
+                                    <td id="latest_note">[data here]</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -68,6 +68,15 @@
                             </tr>
                         </tfoot>
                     </table>
+                    <div class="row">
+                        <div class="col">
+                        </div>
+                        <div class="col">
+                            <button type="button" class="btn btn-light btn-block" id="add_field_survey_form"><i class="fas fa-plus-circle text-center"></i> Add Row</button>
+                        </div>
+                        <div class="col">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

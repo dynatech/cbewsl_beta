@@ -1,12 +1,10 @@
+import moment from "moment";
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles'
-import { field_survey_styles } from '../../../assets/styles/field_survey_styles'
-import Storage from '../../utils/storage'
-import { DataTable } from 'react-native-paper'
-import Notification from '../../utils/alert_notification'
-import moment from "moment"
-import RainfallGraph from '../sensor_maintenance/rainfall_graph'
+import { ScrollView, Text, View } from 'react-native';
+import { DataTable } from 'react-native-paper';
+import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
+import Notification from '../../utils/alert_notification';
+import RainfallGraph from '../sensor_maintenance/rainfall_graph';
 
 export default class ViewReport extends Component {
     constructor(props) {

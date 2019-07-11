@@ -1,8 +1,8 @@
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image} from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { defaults } from '../../../assets/styles/default_styles';
-import { Header, Left, Icon } from 'native-base';
-import Notification from '../../utils/alert_notification'
+import Notification from '../../utils/alert_notification';
 
 export default class AboutTheApp extends Component {
   constructor(props) {

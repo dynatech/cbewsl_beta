@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { Modal, View, Text, TouchableOpacity, Alert } from 'react-native';
-import DatePicker from 'react-native-datepicker'
-import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles'
-import { defaults } from '../../../assets/styles/default_styles'
-import Storage from '../../utils/storage'
+import { Alert, Text, View } from 'react-native';
 import ChartView from 'react-native-highcharts';
-import moment from 'moment'
-import Notification from '../../utils/alert_notification'
+import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class RainfallGraph extends Component {
   constructor(props) {

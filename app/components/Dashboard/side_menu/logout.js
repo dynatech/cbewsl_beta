@@ -1,8 +1,8 @@
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import Storage from '../../utils/storage'
-import { View, ToastAndroid } from 'react-native';
+import { ToastAndroid, View } from 'react-native';
 import { defaults } from '../../../assets/styles/default_styles';
-import { Header, Left, Icon } from 'native-base';
+import Storage from '../../utils/storage';
 
 export default class Logout extends Component {
   constructor(props) {

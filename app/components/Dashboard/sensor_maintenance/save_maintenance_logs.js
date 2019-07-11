@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ToastAndroid, Alert } from 'react-native';
-import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles'
-import { defaults } from '../../../assets/styles/default_styles'
-import Storage from '../../utils/storage'
-import { NavigationEvents } from 'react-navigation'
-import moment from "moment"
-import Notification from '../../utils/alert_notification'
+import { Alert, ScrollView, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { defaults } from '../../../assets/styles/default_styles';
+import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles';
+import Notification from '../../utils/alert_notification';
+import Storage from '../../utils/storage';
 
 export default class SaveMaintenanceLogs extends Component {
     constructor(props) {
@@ -15,7 +13,7 @@ export default class SaveMaintenanceLogs extends Component {
             local_storage_id: 0,
             sync_status: 0,
             working_nodes: "",
-            anamolous_nodes: "",
+            anomalous_nodes: "",
             rain_gauge_status: "",
             timestamp: "",
         };
@@ -35,12 +33,12 @@ export default class SaveMaintenanceLogs extends Component {
             local_storage_id,
             sync_status,
             working_nodes,
-            anamolous_nodes,
+            anomalous_nodes,
             rain_gauge_status,
             timestamp } = this.state
 
-        if (working_nodes != "" && anamolous_nodes != "" && rain_gauge_status != "") {
-            fetch('http://192.168.150.10:5000/api/surficial_data/save_monitoring_log', {
+        if (working_nodes != "" && anomalous_nodes != "" && rain_gauge_status != "") {
+            fetch('http://192.168.150.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -51,7 +49,7 @@ export default class SaveMaintenanceLogs extends Component {
                     local_storage_id: 1,
                     sync_status: 3,
                     working_nodes: working_nodes,
-                    anamolous_nodes: anamolous_nodes,
+                    anomalous_nodes: anomalous_nodes,
                     rain_gauge_status: rain_gauge_status,
                     timestamp: timestamp
                 }),
@@ -67,7 +65,7 @@ export default class SaveMaintenanceLogs extends Component {
                             local_storage_id: 1,
                             sync_status: 3,
                             working_nodes: working_nodes,
-                            anamolous_nodes: anamolous_nodes,
+                            anomalous_nodes: anomalous_nodes,
                             rain_gauge_status: rain_gauge_status,
                             timestamp: timestamp
                         }
@@ -86,7 +84,7 @@ export default class SaveMaintenanceLogs extends Component {
                                         local_storage_id: counter,
                                         sync_status: 3,
                                         working_nodes: value.working_nodes,
-                                        anamolous_nodes: value.anamolous_nodes,
+                                        anomalous_nodes: value.anomalous_nodes,
                                         rain_gauge_status: value.rain_gauge_status,
                                         timestamp: value.timestamp
                                     })
@@ -107,7 +105,7 @@ export default class SaveMaintenanceLogs extends Component {
                         local_storage_id: local_storage_id,
                         sync_status: 1,
                         working_nodes: working_nodes,
-                        anamolous_nodes: anamolous_nodes,
+                        anomalous_nodes: anomalous_nodes,
                         rain_gauge_status: rain_gauge_status,
                         timestamp: timestamp
                     }
@@ -130,7 +128,7 @@ export default class SaveMaintenanceLogs extends Component {
                                         local_storage_id: counter,
                                         sync_status: value.sync_status,
                                         working_nodes: value.working_nodes,
-                                        anamolous_nodes: value.anamolous_nodes,
+                                        anomalous_nodes: value.anomalous_nodes,
                                         rain_gauge_status: value.rain_gauge_status,
                                         timestamp: value.timestamp
                                     })
@@ -150,7 +148,7 @@ export default class SaveMaintenanceLogs extends Component {
                                         local_storage_id: counter,
                                         sync_status: 2,
                                         working_nodes: working_nodes,
-                                        anamolous_nodes: anamolous_nodes,
+                                        anomalous_nodes: anomalous_nodes,
                                         rain_gauge_status: rain_gauge_status,
                                         timestamp: timestamp
                                     })
@@ -160,7 +158,7 @@ export default class SaveMaintenanceLogs extends Component {
                                         local_storage_id: counter,
                                         sync_status: value.sync_status,
                                         working_nodes: value.working_nodes,
-                                        anamolous_nodes: value.anamolous_nodes,
+                                        anomalous_nodes: value.anomalous_nodes,
                                         rain_gauge_status: value.rain_gauge_status,
                                         timestamp: value.timestamp
                                     })
@@ -196,7 +194,7 @@ export default class SaveMaintenanceLogs extends Component {
             <ScrollView style={sensor_maintenance_styles.container}>
                 <View style={sensor_maintenance_styles.contentContainer}>
                     <TextInput style={defaults.inputs} placeholder="Working Nodes" value={this.state.working_nodes} onChangeText={text => this.setState({ working_nodes: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Anamolous Nodes" value={this.state.anamolous_nodes} onChangeText={text => this.setState({ anamolous_nodes: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Anomalous Nodes" value={this.state.anomalous_nodes} onChangeText={text => this.setState({ anomalous_nodes: text })} />
                     <TextInput style={defaults.inputs} placeholder="Rain Guage Status" value={this.state.rain_gauge_status} onChangeText={text => this.setState({ rain_gauge_status: text })} />
                 </View>
                 <View>

@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import CurrentSituationReport from './current_situation_report'
-import SituationLogs from './situation_logs'
-import SaveSituationReport from './save_situation_report'
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createAppContainer, createStackNavigator } from 'react-navigation';
+import CurrentSituationReport from './current_situation_report';
+import SaveSituationReport from './save_situation_report';
+import SituationLogs from './situation_logs';
 
 const SituationReport = createStackNavigator({
   current_situation_report: {
