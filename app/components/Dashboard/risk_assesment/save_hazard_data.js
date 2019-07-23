@@ -4,6 +4,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SaveHazardData extends Component {
     constructor(props) {
@@ -15,7 +17,8 @@ export default class SaveHazardData extends Component {
             hazard: "",
             speed_of_onset: "",
             early_warning: "",
-            impact: ""
+            impact: "",
+            spinner: true
         };
     }
 
@@ -23,7 +26,6 @@ export default class SaveHazardData extends Component {
         Notification.endOfValidity();
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
-        console.log(data)
         if (data != "none") {
             this.setState({
                 hazard_data_id: data.hazard_data_id,
@@ -45,9 +47,11 @@ export default class SaveHazardData extends Component {
                 impact: ""
             });
         }
+        this.setState({spinner: false})
     }
 
     saveHazardData() {
+        this.setState({spinner: true})
         Notification.endOfValidity();
         const { hazard_data_id,
             local_storage_id,
@@ -209,6 +213,11 @@ export default class SaveHazardData extends Component {
     render() {
         return (
             <ScrollView style={rassessment_styles.container}>
+                <Spinner
+                    visible={this.state.spinner}
+                    textContent={'Fetching data...'}
+                    textStyle={spinner_styles.spinnerTextStyle}
+                />
                 <View style={rassessment_styles.menuSection}>
                     <TextInput style={defaults.inputs} placeholder="Hazard: E.g. Landslide" value={this.state.hazard} onChangeText={text => this.setState({ hazard: text })} />
                     <TextInput style={defaults.inputs} placeholder="Speed of onset: E.g. Slow" value={this.state.speed_of_onset} onChangeText={text => this.setState({ speed_of_onset: text })} />

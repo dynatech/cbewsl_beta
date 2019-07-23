@@ -5,6 +5,8 @@ import { NavigationEvents, withNavigation } from 'react-navigation';
 import { defaults } from '../../../assets/styles/default_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 class FamilyRiskProfile extends Component {
   constructor(props) {
@@ -13,7 +15,8 @@ class FamilyRiskProfile extends Component {
       family_profile_data: [],
       family_profile_data_paginate: [],
       page: 0,
-      number_of_pages: 0
+      number_of_pages: 0,
+      spinner: true
     };
   }
 
@@ -53,7 +56,7 @@ class FamilyRiskProfile extends Component {
           family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
             <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
           </DataTable.Row>)
-          this.setState({ family_profile_data: family_profile_data })
+          this.setState({ family_profile_data: family_profile_data, spinner: false })
           this.tablePaginate(family_profile_data)
         }
       })
@@ -74,7 +77,7 @@ class FamilyRiskProfile extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ family_profile_data: family_profile_data })
+          this.setState({ family_profile_data: family_profile_data, spinner: false })
           this.tablePaginate(family_profile_data)
         })
       });
@@ -113,6 +116,11 @@ class FamilyRiskProfile extends Component {
   render() {
     return (
       <View>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <ScrollView horizontal={true}>
           <NavigationEvents onDidFocus={() => this.getAllFamilyProfile()} />
           <DataTable>

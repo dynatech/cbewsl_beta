@@ -22,13 +22,24 @@ export default class SaveSituationReport extends Component {
     componentWillMount() {
         Notification.endOfValidity();
         const { navigation } = this.props;
-        const selected_date = navigation.getParam("data", "none");
-        this.setState({ timestamp: selected_date })
+        const data = navigation.getParam("report_data", "none");
+        if (data != "none") {
+            this.setState({
+                situation_report_id: data.situation_report_id,
+                local_storage_id: 0,
+                sync_status: 0,
+                timestamp: data.timestamp,
+                summary: data.summary,
+                pdf_path: "",
+                image_path: ""
+            })
+        } else {
+            this.setState({ timestamp: selected_date })
+        }
     }
 
     saveSituationReport() {
         Notification.endOfValidity();
-        console.log(this.state.timestamp)
         const { situation_report_id,
             local_storage_id,
             sync_status,

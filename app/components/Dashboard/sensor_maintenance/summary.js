@@ -35,8 +35,8 @@ export default class Summary extends Component {
 
   componentDidMount() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.10:5000/api/rainfall/get_rainfall_data', {
-      method: 'POST',
+    method: 'POST',
+      fetch('http://192.168.150.10:5000/api/rainfall/get_rainfall_data', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -47,6 +47,7 @@ export default class Summary extends Component {
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
+        console.log(responseJson)
         responseJson[0].date = this.state.date
         Storage.setItem("RainfallSummary", responseJson)
         let online = responseJson[0]

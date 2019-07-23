@@ -4,6 +4,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SaveFamilyRiskProfile extends Component {
     constructor(props) {
@@ -15,7 +17,8 @@ export default class SaveFamilyRiskProfile extends Component {
             sync_status: 0,
             members_count: "",
             vulnerable_members_count: "",
-            vulnerability_nature: ""
+            vulnerability_nature: "",
+            spinner: true
         };
 
     }
@@ -43,9 +46,11 @@ export default class SaveFamilyRiskProfile extends Component {
                 vulnerability_nature: ""
             });
         }
+        this.setState({spinner: false})
     }
 
     saveFamilyRiskProfile() {
+        this.setState({spinner: true})
         Notification.endOfValidity();
         const { family_profile_id,
             local_storage_id,
@@ -200,6 +205,11 @@ export default class SaveFamilyRiskProfile extends Component {
     render() {
         return (
             <ScrollView style={rassessment_styles.container}>
+                <Spinner
+                visible={this.state.spinner}
+                textContent={'Fetching data...'}
+                textStyle={spinner_styles.spinnerTextStyle}
+                />
                 <View style={rassessment_styles.menuSection}>
                     <TextInput style={defaults.inputs} placeholder="Number of Members: E.g. 5" value={this.state.members_count} onChangeText={text => this.setState({ members_count: text })} />
                     <TextInput style={defaults.inputs} placeholder="Vulnerable groups: E.g. 2" value={this.state.vulnerable_members_count} onChangeText={text => this.setState({ vulnerable_members_count: text })} />

@@ -4,6 +4,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SaveSummary extends Component {
     constructor(props) {
@@ -15,7 +17,8 @@ export default class SaveSummary extends Component {
             location: "",
             impact: "",
             adaptive_capacity: "",
-            vulnerability: ""
+            vulnerability: "",
+            spinner: true
         };
     }
 
@@ -44,9 +47,11 @@ export default class SaveSummary extends Component {
                 vulnerability: ""
             });
         }
+        this.setState({spinner: false})
     }
 
     saveSummary() {
+        this.setState({spinner: true})
         Notification.endOfValidity();
         const { summary_id,
             local_storage_id,
@@ -209,6 +214,11 @@ export default class SaveSummary extends Component {
     render() {
         return (
             <ScrollView style={rassessment_styles.container}>
+                <Spinner
+                visible={this.state.spinner}
+                textContent={'Fetching data...'}
+                textStyle={spinner_styles.spinnerTextStyle}
+                />
                 <View style={rassessment_styles.menuSection}>
                     <TextInput style={defaults.inputs} placeholder="Location: E.g. Barangay Hall" value={this.state.location} onChangeText={text => this.setState({ location: text })} />
                     <TextInput style={defaults.inputs} placeholder="Impact: E.g. Low" value={this.state.impact} onChangeText={text => this.setState({ impact: text })} />

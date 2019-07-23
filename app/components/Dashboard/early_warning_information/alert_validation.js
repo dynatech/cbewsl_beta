@@ -39,11 +39,15 @@ export default class AlertValidation extends Component {
       // Add
     } else {
       temp.push(<View>
-                  <Text style={{paddingTop: '10%',textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%'}}>Rainfall Alert: No rainfal data available</Text>
-                  <Text style={{paddingTop: '10%',textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%'}}>Surficial Alert: No candidate alerts.</Text>
+                  <Text style={{paddingTop: '10%',textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%'}}>Rainfall Alert: No rainfall data available</Text>
+                  <Text style={{paddingTop: '10%', paddingBottom: '10%',textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%'}}>Surficial Alert: No candidate alerts.</Text>
                 </View>)
     }
     this.setState({local_data_candidate_container: temp})
+  }
+
+  requestDataToPhivolcs() {
+    Alert.alert('Feature comming soon.')
   }
 
   raiseAlert() {
@@ -58,7 +62,7 @@ export default class AlertValidation extends Component {
         {
           text: 'Release Alert',
           onPress: () => {
-            let offline_data = Storage.getItem("AlertGeneration")
+            let offline_data = Storage.getItem("Pub&CandidAlert")
             offline_data.then(response => {
               if (response != null || response != undefined) {
                 let temp = {
@@ -67,7 +71,7 @@ export default class AlertValidation extends Component {
                 }
                 response.trig_list.push(temp)
                 response.alert_validity = moment(response.alert_validity).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
-                Storage.setItem("AlertGeneration", response)
+                Storage.setItem("Pub&CandidAlert", response)
               } else {
                 let cred = Storage.getItem("loginCredentials");
                 cred.then(response => {
@@ -101,7 +105,7 @@ export default class AlertValidation extends Component {
                   }
         
                   temp.trig_list.push(trig_list)
-                  let raised_alerts = Storage.setItem("AlertGeneration", temp);
+                  let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
                 })
               }
             })
@@ -115,69 +119,73 @@ export default class AlertValidation extends Component {
   render() {
     return (
         <ScrollView style={ewi_styles.container}>
-        <View style={ewi_styles.menuSection}>
-            <View style={ewi_styles.buttonSection}>
-                <TouchableOpacity style={ewi_styles.menuButton} onPress={() => this.navigateEwi("current_alert")}>
-                    <Text style={ewi_styles.buttonText}>Current Alert</Text>
+          <View style={ewi_styles.menuSection}>
+              <View style={ewi_styles.buttonSection}>
+                  <TouchableOpacity style={ewi_styles.menuButton} onPress={() => this.navigateEwi("current_alert")}>
+                      <Text style={ewi_styles.buttonText}>Current Alert</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={ewi_styles.activeButton} >
+                      <Text style={ewi_styles.buttonActiveText}>Alert Validation</Text>
+                  </TouchableOpacity>
+              </View>
+          </View>
+          <View style={ewi_styles.menuContainer}>
+            <Text style={{paddingTop: '20%', fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Validate Alert from PHIVOLCS</Text>
+            <View style={{ textAlign: 'center', flex: 0.5 , paddingTop: '10%'}}>
+              <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+                {this.state.candidate_alerts}
+                <TouchableOpacity style={defaults.button} onPress={() => {this.requestDataToPhivolcs()}}>
+                  <Text style={defaults.buttonText}>Request data from server via SMS</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={ewi_styles.activeButton} >
-                    <Text style={ewi_styles.buttonActiveText}>Alert Validation</Text>
+              </View>
+            </View>
+            <Text style={{paddingTop: '20%', fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Validate Alert from Local Data</Text>
+            {this.state.local_data_candidate_container}
+            <View style={{paddingTop: '5%', borderTopWidth: 2, borderColor: "#083451",}}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Manual EWI Release</Text>
+            </View>
+            <View style={{flexDirection: 'row',paddingTop: '5%'}}>
+              <Text style={{paddingTop: '1%',textAlign: 'center', alignSelf: 'center', fontSize: 15, fontWeight: 'bold', width: '30%'}}>Rainfall Alert: </Text>
+              <DatePicker
+                customStyles={{ dateInput: { borderWidth: 0, borderBottomWidth: 5, borderColor: "#083451", } }}
+                style={[{ width: '70%'}]}
+                format="YYYY-MM-DD HH:mm:00"
+                date={this.state.datetime}
+                mode="datetime"
+                placeholder="Pick date and time"
+                duration={400}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                showIcon={false}
+                onDateChange={(date) => { this.setState({ datetime: date }) }}
+              />
+            </View>
+            <View style={{flexDirection: 'row',paddingTop: '5%'}}>
+              <Text style={{height: 50,textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '30%'}}>Surficial Alert (Not Available): </Text>
+              <DatePicker
+                customStyles={{ dateInput: { borderWidth: 0, borderBottomWidth: 5, borderColor: "#083451", } }}
+                disabled={true}
+                style={[{ width: '70%'}]}
+                format="YYYY-MM-DD HH:mm"
+                date=""
+                mode="datetime"
+                placeholder="Pick date and time"
+                duration={400}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                showIcon={false}
+                onDateChange={(date) => { console.log(date) }}
+              />
+            </View>
+            <View style={{ textAlign: 'center', flex: 0.5 , paddingTop: '10%'}}>
+              <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+                <TouchableOpacity style={defaults.button} onPress={() => this.raiseAlert()}>
+                  <Text style={defaults.buttonText}>Raise Alert</Text>
                 </TouchableOpacity>
-            </View>
-        </View>
-        <View style={ewi_styles.menuContainer}>
-          <Text style={{paddingTop: '20%', fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Validate Alert from PHIVOLCS</Text>
-          <View style={{ textAlign: 'center', flex: 0.5 , paddingTop: '10%'}}>
-            <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-              <TouchableOpacity style={defaults.button}>
-                <Text style={defaults.buttonText}>Request data from server</Text>
-              </TouchableOpacity>
+              </View>
             </View>
           </View>
-          <Text style={{paddingTop: '20%', fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Validate Alert from Local Data</Text>
-          {/* {this.state.local_data_candidate_container} */}
-          <View style={{flexDirection: 'row',paddingTop: '5%'}}>
-            <Text style={{paddingTop: '1%',textAlign: 'center', alignSelf: 'center', fontSize: 15, fontWeight: 'bold', width: '30%'}}>Rainfall Alert: </Text>
-            <DatePicker
-              customStyles={{ dateInput: { borderWidth: 0, borderBottomWidth: 5, borderColor: "#083451", } }}
-              style={[{ width: '70%'}]}
-              format="YYYY-MM-DD HH:mm:00"
-              date={this.state.datetime}
-              mode="datetime"
-              placeholder="Pick date and time"
-              duration={400}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              showIcon={false}
-              onDateChange={(date) => { this.setState({ datetime: date }) }}
-            />
-          </View>
-          <View style={{flexDirection: 'row',paddingTop: '5%'}}>
-            <Text style={{textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '30%'}}>Surficial Alert (Not Available): </Text>
-            <DatePicker
-              customStyles={{ dateInput: { borderWidth: 0, borderBottomWidth: 5, borderColor: "#083451", } }}
-              disabled={true}
-              style={[{ width: '70%'}]}
-              format="YYYY-MM-DD HH:mm"
-              date=""
-              mode="datetime"
-              placeholder="Pick date and time"
-              duration={400}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              showIcon={false}
-              onDateChange={(date) => { console.log(date) }}
-            />
-          </View>
-          <View style={{ textAlign: 'center', flex: 0.5 , paddingTop: '10%'}}>
-            <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-              <TouchableOpacity style={defaults.button} onPress={() => this.raiseAlert()}>
-                <Text style={defaults.buttonText}>Raise Alert</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
     );
   }
 }

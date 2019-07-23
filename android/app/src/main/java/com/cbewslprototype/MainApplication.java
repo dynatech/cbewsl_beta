@@ -3,7 +3,7 @@ package com.cbewslprototype;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.RNFetchBlob.RNFetchBlobPackage;
+import com.reactlibrary.RNReactNativePingPackage;
 import com.tkporter.sendsms.SendSMSPackage;
 import com.pilloxa.backgroundjob.BackgroundJobPackage;
 import com.centaurwarchief.smslistener.SmsListenerPackage;
@@ -31,7 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFetchBlobPackage(),
+            new RNReactNativePingPackage(),
             SendSMSPackage.getInstance(),
             new BackgroundJobPackage(),
             new SmsListenerPackage(),

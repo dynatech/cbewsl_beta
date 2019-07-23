@@ -6,16 +6,20 @@ import SmsListener from 'react-native-android-sms-listener';
 import SendSMS from 'react-native-sms';
 import { NavigationEvents } from 'react-navigation';
 import { defaults } from '../../../assets/styles/default_styles';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
 import Sync from '../../utils/syncer';
+import Network from '../../utils/network_checker'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class DataSyncer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       server_number: '09175394337',
-      storage_key: ""
+      storage_key: "",
+      spinner: false
     };
   }
 
@@ -52,98 +56,168 @@ export default class DataSyncer extends Component {
   syncToServer(storage_key) {
     let notice = ""
 
-    if (storage_key == "AlertGeneration") {
-      notice = "Please ensure that you are connected to the Landslide monitoring network."
+    let temp = []
+    if (storage_key == "Pub&CandidAlert") {
+      temp.push({
+          text: 'Network Sync',
+          onPress: () => {
+            this.networkSyncForPub(storage_key)
+          },
+          style: 'cancel',
+      });
     } else {
-      notice = "Please ensure that your cellular network is available."
+      temp = [{
+          text: 'Network Sync',
+          onPress: () => {
+            this.networkSync(storage_key)
+          },
+          style: 'cancel',
+      },
+      {
+        text: 'SMS Sync', onPress: () => {
+          this.smsSync(storage_key)
+        }
+      }]
     }
 
-    Alert.alert(
-      'Notice',
-       notice,
-      [
-        {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-        },
-        {
-          text: 'OK', onPress: () => {
-            if (storage_key == "AlertGeneration") {
-              this.networkSync(storage_key)
-            } else {
-              this.smsSync(storage_key)
-            }
-          }
-        }
-      ]
+    Alert.alert('Syncing options',
+    'Choose between Network Sync if you are connected to the CBEWS-L Network or SMS Sync if you are not connected.',temp
     )
+
+
+    // Alert.alert(
+    //   'Notice',
+    //    notice,
+    //   [
+    //     {
+    //         text: 'Cancel',
+    //         onPress: () => console.log('Cancel Pressed'),
+    //         style: 'cancel',
+    //     },
+    //     {
+    //       text: 'OK', onPress: () => {
+    //         if (storage_key == "Pub&CandidAlert") {
+    //           this.networkSync(storage_key)
+    //         } else {
+    //           this.smsSync(storage_key)
+    //         }
+    //       }
+    //     }
+    //   ]
+    // )
   }
 
   smsSync(storage_key) {
     let data = Storage.getItem(storage_key)
     this.setState({ storage_key: storage_key })
     data.then(response => {
-      let container = storage_key + ":"
-      response.forEach(function (value) {
-        if (value.sync_status != 3) {
-          let inner_value = Object.values(value)
-          let counter = 0
-          inner_value.forEach(function (iv) {
-
-            if (moment(iv)._isValid == true && iv.length > 10) {
-              iv = iv.replace(":","~")
-            }
-
-            if (counter == 0) {
-              container = container + iv
-            } else {
-              container = container + "<*>" + iv
-            }
-            counter++
-          })
-          container = container + "||"
+      console.log(response)
+      if (response != null) {
+        let container = storage_key + ":"
+        response.forEach(function (value) {
+          if (value.sync_status != 3) {
+            let inner_value = Object.values(value)
+            let counter = 0
+            inner_value.forEach(function (iv) {
+  
+              if (moment(iv)._isValid == true && iv.length > 10) {
+                iv = iv.replace(":","~")
+              }
+  
+              if (counter == 0) {
+                container = container + iv
+              } else {
+                container = container + "<*>" + iv
+              }
+              counter++
+            })
+            container = container + "||"
+          }
+        })
+  
+        if (container.indexOf("<*>") > -1) {
+          SendSMS.send({
+            body: container.slice(0, -2),
+            recipients: [this.state.server_number],
+            successTypes: ['sent', 'queued'],
+            allowAndroidSendWithoutReadPermission: true
+          }, (completed, cancelled, error) => {
+            // console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error); 
+          });
+        } else {
+          Alert.alert("Data is updated.");
         }
-      })
-
-      if (container.indexOf("<*>") > -1) {
-        SendSMS.send({
-          body: container.slice(0, -2),
-          recipients: [this.state.server_number],
-          successTypes: ['sent', 'queued'],
-          allowAndroidSendWithoutReadPermission: true
-        }, (completed, cancelled, error) => {
-          // console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error); 
-        });
       } else {
-        alert("Data is updated.");
+        Alert.alert("No new data available for syncing.");
       }
     })
   }
 
-  networkSync(storage_key) {
-    let data = Storage.getItem(storage_key)
-    this.setState({ storage_key: storage_key })
-    data.then(response => {
-      console.log(response)
-      fetch('http://192.168.150.10:5000/api/monitoring/insert_cbewsl_ewi', {
-          method: 'POST',
-          headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(response),
-      }).then((response) => {
-        console.log(response)
-      }).catch((error) => {
-        console.log(error)
-      })
+  networkSyncForPub(storage_key) {
+
+    const ms = Network.getPing();
+    ms.then(response => {
+      if (response.status == "In-active") {
+        Alert.alert('Notice', response.msg)
+      } else {
+        // Sync to network
+      }
     })
+
+    // let data = Storage.getItem(storage_key)
+    // this.setState({ storage_key: storage_key })
+    // data.then(response => {
+    //   console.log(response)
+    //   fetch('http://192.168.150.10:5000/api/monitoring/insert_cbewsl_ewi', {
+    //       method: 'POST',
+    //       headers: {
+    //           Accept: 'application/json',
+    //           'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify(response),
+    //   }).then((response) => {
+    //     console.log(response)
+    //   }).catch((error) => {
+    //     console.log(error)
+    //   })
+    // })
+  }
+  
+  networkSync(storage_key) {
+    const API_LIST = {
+      "RiskAssessmentSummary": "1",
+      "RiskAssessmentFamilyRiskProfile": "2",
+      "RiskAssessmentHazardData": "3",
+      "RiskAssessmentRNC": "4",
+      "FieldSurveyLogs": "5",
+      "SurficialDataMeasurements": "6",
+      "SurficialDataMomsSummary": "7",
+      "SensorMaintenanceLogs": "8",
+      "Pub&CandidAlert": "9"
+    }
+
+    console.log(API_LIST[storage_key]);
+    this.setState({spinner: true});
+    let data = Storage.getItem(storage_key)
+    data.then(response => {
+      this.setState({spinner: false});
+      if (response != null || response != undefined) {
+
+      } else {
+        Alert.alert('Data Syncing','No new data to sync.')
+      }
+    });
+
   }
 
   render() {
     return (
       <View style={defaults.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Syncing...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.loadSMSListener()} />
         <View style={{ flex: 1, padding: 10 }}>
           <View style={{ flexDirection: 'row' }}>
@@ -177,7 +251,7 @@ export default class DataSyncer extends Component {
             <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('SensorMaintenanceMaintenanceLogs')}>
               <Text style={defaults.touchableTexts}>Sensor Maintenance | Maintenance Logs</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('AlertGeneration')}>
+            <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.syncToServer('Pub&CandidAlert')}>
               <Text style={defaults.touchableTexts}>Alerts | Generated Alerts</Text>
             </TouchableOpacity>
           </ScrollView>

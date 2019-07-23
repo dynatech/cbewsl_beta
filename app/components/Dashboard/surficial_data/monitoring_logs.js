@@ -192,7 +192,7 @@ export default class MonitoringLogs extends Component {
     let current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
     let alert_validity = ""
     let int_sym = ""
-    let offline_data = Storage.getItem("AlertGeneration");
+    let offline_data = Storage.getItem("Pub&CandidAlert");
     offline_data.then(response => {
       if (response == null || response == undefined) {
         if (alert_level == "2") {
@@ -219,11 +219,12 @@ export default class MonitoringLogs extends Component {
         }
 
         let cred = Storage.getItem("loginCredentials");
-        cred.then(response => {
+        console.log("HEY");
+        cred.then(cred_response => {
           let temp = {
             alert_level: alert_level,
             data_ts: current_timestamp,
-            user_id: response.user_data.user.user_id,
+            user_id: cred_response.user_data.user.user_id,
             alert_validity: alert_validity,
             trig_list: []
           }
@@ -236,10 +237,10 @@ export default class MonitoringLogs extends Component {
           }
 
           temp.trig_list.push(trig_list)
-          let raised_alerts = Storage.setItem("AlertGeneration", temp);
+          console.log(temp)
+          let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
         })
       } else {
-        console.log(response)
         let hour_validity = 0
         if (alert_level == "2") {
           int_sym = "m"
@@ -278,7 +279,7 @@ export default class MonitoringLogs extends Component {
         }
         response.alert_level = alert_level
         response.trig_list.push(trig_list)
-        let raised_alerts = Storage.setItem("AlertGeneration", response);
+        let raised_alerts = Storage.setItem("Pub&CandidAlert", response);
       }
     })
   }
