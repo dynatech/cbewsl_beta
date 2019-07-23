@@ -6,6 +6,7 @@ import Contacts from '../Dashboard/side_menu/contacts';
 import DataSyncer from '../Dashboard/side_menu/data_sync';
 import Logout from '../Dashboard/side_menu/logout';
 import MainDashboard from './main_dashboard';
+import SearchIcon from '../Dashboard/side_menu/search_icon'
 
 const CustomDrawerComponent = (props) => (
   <SafeAreaView>
@@ -35,6 +36,12 @@ const AppDrawerNavigator = createDrawerNavigator({
     screen: Logout,
     navigationOptions: {
       drawerLabel: "Logout"
+    }
+  },
+  icon: {
+    screen: SearchIcon,
+    navigationOptions: {
+      drawerLabel: "Icon"
     }
   }
 }, {

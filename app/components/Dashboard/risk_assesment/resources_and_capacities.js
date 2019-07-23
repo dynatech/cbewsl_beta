@@ -9,6 +9,8 @@ import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
 import FamilyRiskProfile from './family_risk_profile';
 import MapSection from './map_section';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class ResourcesAndCapacities extends Component {
   constructor(props) {
@@ -22,7 +24,8 @@ export default class ResourcesAndCapacities extends Component {
       rnc_data: [],
       rnc_data_paginate: [],
       page: 0,
-      number_of_pages: 0
+      number_of_pages: 0,
+      spinner: true
     };
   }
 
@@ -91,7 +94,7 @@ export default class ResourcesAndCapacities extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
           </DataTable.Row>)
         }
-        this.setState({ rnc_data: rnc_data })
+        this.setState({ rnc_data: rnc_data, spinner: false })
         this.tablePaginate(rnc_data)
       })
       .catch((error) => {
@@ -111,7 +114,7 @@ export default class ResourcesAndCapacities extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ rnc_data: rnc_data })
+          this.setState({ rnc_data: rnc_data, spinner: false })
           this.tablePaginate(rnc_data)
         })
       });
@@ -151,6 +154,11 @@ export default class ResourcesAndCapacities extends Component {
   render() {
     return (
       <ScrollView style={rassessment_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getAllResourcesAndCapacities()} />
         <View style={rassessment_styles.menuSection}>
           <View style={rassessment_styles.buttonSection}>

@@ -32,7 +32,7 @@ export default class CurrentAlert extends Component {
   }
 
   getCurrentAlert() {
-    let offline_data = Storage.getItem("AlertGeneration")
+    let offline_data = Storage.getItem("Pub&CandidAlert")
     offline_data.then(response => {
       let alert_details = []
       let alert_level = []

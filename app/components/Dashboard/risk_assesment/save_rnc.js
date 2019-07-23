@@ -4,6 +4,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SaveResourcesAndCapacities extends Component {
     constructor(props) {
@@ -14,7 +16,8 @@ export default class SaveResourcesAndCapacities extends Component {
             sync_status: 0,
             resource_and_capacity: "",
             status: "",
-            owner: ""
+            owner: "",
+            spinner: true
         };
     }
 
@@ -41,9 +44,11 @@ export default class SaveResourcesAndCapacities extends Component {
                 owner: ""
             });
         }
+        this.setState({spinner: false})
     }
 
     saveRnc() {
+        this.setState({spinner: true})
         Notification.endOfValidity();
         const { resources_and_capacities_id,
             local_storage_id,
@@ -196,6 +201,11 @@ export default class SaveResourcesAndCapacities extends Component {
     render() {
         return (
             <ScrollView style={rassessment_styles.container}>
+                <Spinner
+                visible={this.state.spinner}
+                textContent={'Fetching data...'}
+                textStyle={spinner_styles.spinnerTextStyle}
+                />
                 <View style={rassessment_styles.menuSection}>
                     <TextInput style={defaults.inputs} placeholder="Resources / Capacity: E.g. Evacuation center" value={this.state.resource_and_capacity} onChangeText={text => this.setState({ resource_and_capacity: text })} />
                     <TextInput style={defaults.inputs} placeholder="Status: E.g. Needs repair" value={this.state.status} onChangeText={text => this.setState({ status: text })} />

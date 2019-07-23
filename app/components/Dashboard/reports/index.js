@@ -38,7 +38,7 @@ export default class Reports extends Component {
     Notification.endOfValidity();
     let all_reports = []
 
-    let alertGeneration = Storage.getItem('alertGeneration')
+    let alertGeneration = Storage.getItem('Pub&CandidAlert')
     let FieldSurveyLatestReportSummary = Storage.getItem('FieldSurveyLatestReportSummary')
     let RiskAssessmentFamilyRiskProfile = Storage.getItem('RiskAssessmentFamilyRiskProfile')
     let RiskAssessmentHazardData = Storage.getItem('RiskAssessmentHazardData')

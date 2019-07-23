@@ -98,11 +98,6 @@ export default class SituationLogs extends Component {
         this.setState({ marked_dates: new_days })
         Storage.removeItem("SituationReportLogs")
         Storage.setItem("SituationReportLogs", to_local_data)
-        let data_container = Storage.getItem("SituationReportLogs")
-        data_container.then(response => {
-          console.log(response)
-        });
-
       })
       .catch((error) => {
 
@@ -131,12 +126,25 @@ export default class SituationLogs extends Component {
               summary: "No current situation report"
             });
           }
-
         });
       });
   }
 
+
+  modifySituationReport(data) {
+    this.props.navigation.navigate('save_situation_report', {
+      report_data: data
+    })
+  }
+
+  deleteSituationReport(data) {
+    console.log("Delete")
+    console.log(data)
+  }
+
+
   selectDateToAddReport(date) {
+    console.log(date)
     this.setState({ date_selected: date })
     let selected_date = this.formatDateTime(date = date)
     button_text = "Add Report for " + selected_date["text_date_format"]
@@ -153,12 +161,20 @@ export default class SituationLogs extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         let situation_reports = []
-        if (responseJson != null) {
+        if (responseJson != null && responseJson.length != 0) {
           for (const [index, value] of responseJson.entries()) {
             let format_date_time = this.formatDateTime(date = value.timestamp);
-            situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_format_timestamp"]}</Text>
-              <Text style={{ fontSize: 15 }}>{value.summary}</Text>
+            situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 , borderTopWidth: 1, borderColor: '#083451'}}>
+              <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_date_format"]}</Text>
+              <Text style={{ fontSize: 15 , marginLeft: 10}}>{value.summary}</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity style={[defaults.button, {width: '20%'}]} onPress={() => this.modifySituationReport(value)}>
+                  <Text style={defaults.buttonText}>Update</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[defaults.button, {width: '20%'}]} onPress={() => this.deleteSituationReport(value)}>
+                  <Text style={defaults.buttonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
             </View>)
           }
         } else {
@@ -166,8 +182,6 @@ export default class SituationLogs extends Component {
             <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
           </View>)
         }
-
-        console.log(situation_reports)
         this.setState({ selected_date_situations: situation_reports })
       })
       .catch((error) => {
@@ -203,7 +217,6 @@ export default class SituationLogs extends Component {
 
   navigateSaveSituationReport() {
     let date_selected = this.state.date_selected
-    console.log(date_selected)
     if (date_selected == "") {
       Alert.alert(
         'Alert!',

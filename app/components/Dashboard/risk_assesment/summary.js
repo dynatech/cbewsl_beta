@@ -9,6 +9,8 @@ import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
 import FamilyRiskProfile from './family_risk_profile';
 import MapSection from './map_section';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Summary extends Component {
   constructor(props) {
@@ -22,7 +24,8 @@ export default class Summary extends Component {
       summary_data: [],
       summary_data_paginate: [],
       page: 0,
-      number_of_pages: 0
+      number_of_pages: 0,
+      spinner: true
     };
   }
 
@@ -67,7 +70,9 @@ export default class Summary extends Component {
         let summary_data = [];
         let to_local_data = [];
         let counter = 0
-        if (responseJson.length != 0) {
+        console.log("1")
+        console.log(responseJson)
+        if ( responseJson != null || responseJson != undefined) {
           for (const [index, value] of responseJson.entries()) {
             summary_data.push(<DataTable.Row style={{ width: 500 }}>
               <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
@@ -95,12 +100,15 @@ export default class Summary extends Component {
         }
         this.setState({ summary_data: summary_data })
         this.tablePaginate(summary_data)
+        this.setState({spinner: false});
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentSummary')
         let summary_data = [];
         data_container.then(response => {
-          if (response.length != 0) {
+          console.log("2")
+          console.log(response)
+          if (response != null || response != undefined) {
             for (const [index, value] of response.entries()) {
               summary_data.push(<DataTable.Row style={{ width: 500 }}>
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
@@ -117,6 +125,7 @@ export default class Summary extends Component {
 
           this.setState({ summary_data: summary_data })
           this.tablePaginate(summary_data)
+          this.setState({spinner: false});
         });
       });
   }
@@ -154,6 +163,11 @@ export default class Summary extends Component {
   render() {
     return (
       <ScrollView style={rassessment_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getAllRiskAssessmentSummary()} />
         <View style={rassessment_styles.menuSection}>
           <View style={rassessment_styles.buttonSection}>

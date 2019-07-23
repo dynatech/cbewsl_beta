@@ -7,6 +7,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class ModifySummary extends Component {
   constructor(props) {
@@ -15,7 +17,8 @@ export default class ModifySummary extends Component {
       summary_data: [],
       summary_data_paginate: [],
       page: 0,
-      number_of_pages: 0
+      number_of_pages: 0,
+      spinner: true
     };
   }
 
@@ -129,8 +132,9 @@ export default class ModifySummary extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
           </DataTable.Row>)
         }
-        this.setState({ summary_data: summary_data })
+        this.setState({ summary_data: summary_data, spinner: false})
         this.tablePaginate(summary_data)
+
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentSummary')
@@ -155,8 +159,7 @@ export default class ModifySummary extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-
-          this.setState({ summary_data: summary_data })
+          this.setState({ summary_data: summary_data, spinner:false})
           this.tablePaginate(summary_data)
         });
       });
@@ -195,6 +198,11 @@ export default class ModifySummary extends Component {
   render() {
     return (
       <ScrollView style={rassessment_styles.container} >
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getAllRiskAssessmentSummary()} />
         <ScrollView horizontal={true}>
           <DataTable>

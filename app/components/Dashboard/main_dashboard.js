@@ -63,33 +63,67 @@ export default class MainDashboard extends Component {
     }
 
   setBadge() {
-    let offline_data = Storage.getItem("AlertGeneration");
+    let offline_data = Storage.getItem("Pub&CandidAlert");
     offline_data.then(response => {
-        if (response == null) {
-            this.setState({alert_badge: [<Badge
-                status="success"
-                containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-                value={<Text style={{color: 'white', padding: 20}}>Alert 0</Text>}
-            />]})
-        } else if (response.alert_level == "1") {
-            this.setState({alert_badge: [<Badge
-                status="error"
-                containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-                value={<Text style={{color: 'white', padding: 20}}>Alert 1</Text>}
-            />]})
-        } else if (response.alert_level == "2") {
-            this.setState({alert_badge: [<Badge
-                status="error"
-                containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-                value={<Text style={{color: 'white', padding: 20}}>Alert 2</Text>}
-            />]})
-        } else if (response.alert_level == "3") {
-            this.setState({alert_badge: [<Badge
-                status="error"
-                containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-                value={<Text style={{color: 'white', padding: 20}}>Alert 3</Text>}
-            />]})
+
+        let candidate_alerts = JSON.parse(response.candidate_alerts);
+        let current_alerts = response.current_alerts;
+        let top_position = -10;
+        let temp = []
+
+        if (candidate_alerts.length != 0) {
+            temp.push(<Badge
+                status="warning"
+                containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
+                value={
+                        <Text style={{color: 'white', padding: 10, fontSize: 10}}>
+                            <Icon name="ios-warning" style={{ fontSize: 15, color: 'white'}}></Icon> New trigger(s)
+                        </Text>
+                    }
+            />)
+            top_position = top_position-20;
         }
+
+        if (current_alerts.latest.length != 0) {
+            temp.push(<Badge
+                status="error"
+                containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
+                value={
+                        <Text style={{color: 'white', padding: 10, fontSize: 10}}>
+                            Alert 1
+                        </Text>
+                    }
+            />)
+        }
+        
+        this.setState({alert_badge: temp})
+
+
+        // if (response == null) {
+        //     this.setState({alert_badge: [<Badge
+        //         status="success"
+        //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+        //         value={<Text style={{color: 'white', padding: 20}}>Alert 0</Text>}
+        //     />]})
+        // } else if (response.alert_level == "1") {
+        //     this.setState({alert_badge: [<Badge
+        //         status="error"
+        //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+        //         value={<Text style={{color: 'white', padding: 20}}>Alert 1</Text>}
+        //     />]})
+        // } else if (response.alert_level == "2") {
+        //     this.setState({alert_badge: [<Badge
+        //         status="error"
+        //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+        //         value={<Text style={{color: 'white', padding: 20}}>Alert 2</Text>}
+        //     />]})
+        // } else if (response.alert_level == "3") {
+        //     this.setState({alert_badge: [<Badge
+        //         status="error"
+        //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+        //         value={<Text style={{color: 'white', padding: 20}}>Alert 3</Text>}
+        //     />]})
+        // }
     })
   }
 

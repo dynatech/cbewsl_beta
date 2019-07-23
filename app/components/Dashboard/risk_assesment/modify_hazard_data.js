@@ -7,6 +7,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class ModifyHazardData extends Component {
   constructor(props) {
@@ -15,7 +17,8 @@ export default class ModifyHazardData extends Component {
       hazard_data: [],
       hazard_data_paginate: [],
       page: 0,
-      number_of_pages: 0
+      number_of_pages: 0,
+      spinner: true
     };
   }
 
@@ -130,7 +133,7 @@ export default class ModifyHazardData extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
           </DataTable.Row>)
         }
-        this.setState({ hazard_data: hazard_data })
+        this.setState({ hazard_data: hazard_data, spinner: false })
         this.tablePaginate(hazard_data)
       })
       .catch((error) => {
@@ -156,7 +159,7 @@ export default class ModifyHazardData extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ hazard_data: hazard_data })
+          this.setState({ hazard_data: hazard_data, spinner: false })
           this.tablePaginate(hazard_data)
         })
       });
@@ -196,6 +199,11 @@ export default class ModifyHazardData extends Component {
   render() {
     return (
       <ScrollView>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getAllHazardData()} />
         <View style={rassessment_styles.container}>
           <ScrollView horizontal={true}>
