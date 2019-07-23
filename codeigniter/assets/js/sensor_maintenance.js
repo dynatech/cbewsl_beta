@@ -244,6 +244,7 @@ function createPlotContainer(data, one_day_threshold, three_day_threshold) {
         $("#rainfall_graphs_container").append("<div class='row'><div class='col' id=" + instantaneous_container + "></div><div class='col' id=" + cumulative_container + "></div></div>");
 
         renderCumulativeRainfallGraph(value, cumulative_container, three_day_threshold);
+        renderInstantaneousRainfallGraph(value, instantaneous_container);
     });
 
 }
@@ -362,8 +363,108 @@ function renderCumulativeRainfallGraph(data, container, three_day_threshold) {
     });
 }
 
-function renderInstantaneousRainfallGraph() {
+function renderInstantaneousRainfallGraph(data, container) {
+    // console.log(data.data)
+    let rain_data = data.data
+    let rain_values = [];
+    let null_ranges = [];
+    let max_rval = 0
+    let start_date = "";
+    let end_date = "";
+    $.each(rain_data, function (key, value) {
+        let ts = value.ts;
+        let converted_ts = Date.parse(ts);
+        rain_values.push([converted_ts, value.rain]);
+        if (value.rain > max_rval) {
+            max_rval = value.rain;
+        }
+        if (value.rain == null) {
+            null_ranges.push(converted_ts);
+        }
+    });
 
+
+    let rain_value_length = rain_values.length - 1;
+    start_date = rain_values[0][0];
+    end_date = rain_values[rain_value_length][0];
+    let final_data = [{
+        color: "rgba(0, 0, 0, 0.9)",
+        data: rain_values,
+        fillOpacity: 1,
+        id: "rain",
+        lineWidth: 1,
+        name: "rain",
+        step: true
+    }];
+
+
+
+    const div = `#${container}`;
+    $(div).highcharts({
+        series: final_data,
+        chart: {
+            type: "column",
+            zoomType: "x",
+            panning: true,
+            height: 400,
+            resetZoomButton: {
+                position: {
+                    x: 0,
+                    y: -30
+                }
+            }
+        },
+        title: {
+            text: `<b>Instantaneous Rainfall Chart of UMI}</b>`,
+            style: { fontSize: "13px" },
+            margin: 20,
+            y: 16
+        },
+        subtitle: {
+            text: `Source : <b>${createRainPlotSubtitle(data.distance, data.gauge_name)}</b><br/></b>`,
+            style: { fontSize: "11px" }
+        },
+        xAxis: {
+            min: start_date,
+            max: end_date,
+            type: "datetime",
+            dateTimeLabelFormats: {
+                month: "%e %b %Y",
+                year: "%Y"
+            },
+            title: {
+                text: "<b>Date</b>"
+            },
+            events: {
+                setExtremes: syncExtremes
+            }
+        },
+        yAxis: {
+            max: max_rval,
+            min: 0,
+            title: {
+                text: "<b>Value (mm)</b>"
+            }
+        },
+        tooltip: {
+            shared: true,
+            crosshairs: true
+        },
+        plotOptions: {
+            series: {
+                marker: {
+                    radius: 3
+                },
+                cursor: "pointer"
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        }
+    });
 }
 
 function createRainPlotSubtitle(distance, gauge_name) {
