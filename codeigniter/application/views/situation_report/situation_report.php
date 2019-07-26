@@ -12,6 +12,11 @@
                 </p>
                 <p id="latest_situation_report_summary">
                 </p>
+
+                <div class="float-left">
+                    <button type="button" class="btn btn-primary btn-sm" id="send_current_situation_report">SEND</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="print_current_situation_report">SAVE & PRINT</button>
+                </div>
             </div>
         </div>
     </div>
@@ -23,13 +28,15 @@
                     <div class="col" id="situation_report_data">
                         <div class="row">
                             <div class="col" id="situation_report_log">
-                                <p id="situation_report_date_time">
-                                    Date : June 21, 2019
-                                    Time : 3:30 pm
-                                </p>
-                                <p id="situation_report_summary">
-                                    [data here]
-                                </p>
+                                <div id="current_situation_report_container">
+                                    <p id="situation_report_date_time">
+                                        Date : June 21, 2019
+                                        Time : 3:30 pm
+                                    </p>
+                                    <p id="situation_report_summary">
+                                        [data here]
+                                    </p>
+                                </div>
                                 <div class="float-right">
                                     <button type="button" class="btn btn-primary btn-sm" id="edit_situation_report">Update</button>
                                     <button type="button" class="btn btn-danger btn-sm" id="delete_situation_report">Delete</button>

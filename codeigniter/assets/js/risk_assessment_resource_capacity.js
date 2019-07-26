@@ -27,6 +27,8 @@ function getAllResourcesAndCapacity() {
             ]
         });
 
+        RESOURCE_AND_CAPACITIES_DATA = rnc_data
+
         $('#resources_and_capacities_table tbody').on('click', '#edit_rnc', function () {
             let data = table.row($(this).parents('tr')).data();
             setRNCDataForm(data);
