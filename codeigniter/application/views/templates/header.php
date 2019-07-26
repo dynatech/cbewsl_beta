@@ -23,9 +23,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <script src="<?php echo base_url(); ?>assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/datatables/datatables.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/highcharts/highcharts.js"></script>
+    <script src="<?php echo base_url(); ?>assets/jspdf/jspdf.js"></script>
     <!-- <script src="<?php echo base_url(); ?>assets/highcharts/highstock.js"></script> -->
     <!-- <script src="<?php echo base_url(); ?>assets/printjs/jspdf.min.js"></script> -->
-    <!-- <script src="<?php echo base_url(); ?>assets/printjs/print.min.js"></script> -->
+    <script src="<?php echo base_url(); ?>assets/printjs/print.min.js"></script>
   
     <style>
         html {

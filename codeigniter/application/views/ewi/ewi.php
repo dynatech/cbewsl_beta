@@ -8,30 +8,41 @@
     <div class="tab-pane fade show active" id="current_alert" role="tabpanel" aria-labelledby="current_alert_tab">
         <div class="card">
             <div class="card-body">
-                <div class="row">
-                    <div class="col text-center" style="color: #ee9d01;">
-                        <h4><b>Alert 2</b></h4>
+                <div id="ewi_current_alert_container">
+                    <div class="row">
+                        <div class="col text-center" style="color: #ee9d01;">
+                            <h4><b id="ewi_alert_symbol">Alert 2</b></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h5>Triggers</h5>
+                            <div id="triggers"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <br>
+                            <h5>Validity</h5>
+                            <div id="validity"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-1">
+                            <input class="btn btn-primary" type="button" value="e-Mail" style="background-color: #195770;">
+                        </div>
+                        <div class="col-1">
+                            <input class="btn btn-primary" type="button" value="f | SHARE" style="background-color: #195770;" onClick="LaunchFeedDialog()"/>
+                        </div>
+                        <div class="col-1">
+                            <input class="btn btn-primary" type="button" value="PRINT" style="background-color: #195770;">
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <h2>Triggers</h2>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    <h2>Validity</h2>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-1">
-                        <input class="btn btn-primary" type="button" value="e-Mail" style="background-color: #195770;">
-                    </div>
-                    <div class="col-1">
-                        <input class="btn btn-primary" type="button" value="f | SHARE" style="background-color: #195770;" onClick="LaunchFeedDialog()"/>
-                    </div>
-                    <div class="col-1">
-                        <input class="btn btn-primary" type="button" value="PRINT" style="background-color: #195770;">
+
+                <div id="ewi_no_current_alert">
+                    <div class="col text-center">
+                        <h4><b>No current alert</b></h4>
                     </div>
                 </div>
             </div>
@@ -43,7 +54,8 @@
             <div class="row">
                     <div class="col text-center">
                         <h2 style="color: #717171;">Validated Alert from PHIVOLCS</h2>
-                        <h4>NULL</h4>
+                        <h4><b id="alert_symbol" style="color: #ee9d01;">Alert 2</b></h4>
+                        <h5 id="alert_information">NULL</h5>
                     </div>
                 </div>
                 <div class="row">

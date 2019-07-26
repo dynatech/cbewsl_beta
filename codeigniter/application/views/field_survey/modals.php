@@ -63,3 +63,32 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="sendEmailFieldSurveyModal" tabindex="-1" role="dialog" aria-labelledby="sendEmailFieldSurveyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="sendEmailFieldSurveyModalLabel">Send field survey via email</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="email_for_field_survey">Send this to:</label>
+                            <input type="text" class="form-control" id="email_for_field_survey" placeholder="example@email.com">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="confirm_send_field_survey">Confirm</button>
+        </div>
+        </div>
+    </div>
+</div>

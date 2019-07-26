@@ -35,6 +35,7 @@ function initializeMaintenanceLogsCalendar() {
             })
         });
 
+        MAINTENANCE_LOG_DATA = maintenance_logs
         latestSensorMaintenanceData(maintenance_logs[0]);
         let maintenance_logs_calendar = document.getElementById("maintenance_logs_calendar");
         $("#maintenance_logs_data").hide();
@@ -203,7 +204,7 @@ function initalizeSensorMaintenanceData() {
         }
     }).done(function (data) {
         let rainfall_data = JSON.parse(data);
-        console.log(rainfall_data);
+
         let rain_percentage = displaySensorMaintenanceSummary(rainfall_data);
         renderRainfallChart(rainfall_data[0], rain_percentage);
     });
@@ -230,8 +231,8 @@ function displaySensorMaintenanceSummary(rainfall_data) {
 function renderRainfallChart(rainfall_data, rain_percentage) {
     let one_day_threshold = rainfall_data["half of 2yr max"]
     let three_day_threshold = rainfall_data["2yr max"]
-    console.log("1 day " + one_day_threshold);
-    console.log("3 day " + three_day_threshold);
+
+
     createPlotContainer(rainfall_data.plot, one_day_threshold, three_day_threshold);
 
 }
@@ -364,7 +365,7 @@ function renderCumulativeRainfallGraph(data, container, three_day_threshold) {
 }
 
 function renderInstantaneousRainfallGraph(data, container) {
-    // console.log(data.data)
+    // 
     let rain_data = data.data
     let rain_values = [];
     let null_ranges = [];

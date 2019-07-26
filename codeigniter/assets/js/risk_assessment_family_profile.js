@@ -38,7 +38,7 @@ function getAllFamilyRiskProfile() {
                 }
             ]
         });
-
+        FAMILY_RISK_PROFILE_DATA = family_profile_data
         $('#family_risk_profile_table tbody').on('click', '#edit_family_risk', function () {
             let data = table.row($(this).parents('tr')).data();
             setFamilyRiskDataForm(data);
@@ -70,8 +70,13 @@ function getRiskProfile() {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
     }).done(function (data) {
-        let risk_profile_data = JSON.parse(data)
-        $("#current_risk_profile").text(risk_profile_data[0].entry)
+        let risk_profile_data = JSON.parse(data);
+        if (risk_profile_data.length != 0) {
+            $("#current_risk_profile").text(risk_profile_data[0].entry);
+        } else {
+            $("#current_risk_profile").text("No latest entry");
+        }
+
         let table = $('#risk_profile_table').DataTable({
             "data": risk_profile_data,
             "bDestroy": true,
@@ -86,6 +91,7 @@ function getRiskProfile() {
                 }
             ]
         });
+        RISK_PROFILE_DATA = risk_profile_data
         $('#risk_profile_table tbody').on('click', '#edit_risk_profile', function () {
             let data = table.row($(this).parents('tr')).data();
             setRiskProfileDataForm(data);

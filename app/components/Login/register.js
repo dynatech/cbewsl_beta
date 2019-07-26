@@ -68,20 +68,20 @@ export default class Register extends Component {
         <View style={register_styles.inputContainer}>
           <TextInput style={defaults.inputs} placeholder="First name: E.g. Juan" onChangeText={text => this.setState({ first_name: text })} />
           <TextInput style={defaults.inputs} placeholder="Last name: E.g. Dela Cruz" onChangeText={text => this.setState({ last_name: text })} />
-          <View style={[{flexDirection: 'row', paddingLeft: 10, paddingRight: 10, paddingTop: 10}]}>
-            <View style={{ width: '20%' , justifyContent: 'center'}}>
+          <View style={[{ flexDirection: 'row', paddingLeft: 10, paddingRight: 10, paddingTop: 10 }]}>
+            <View style={{ width: '20%', justifyContent: 'center' }}>
               <Text>Gender: </Text>
             </View>
             <View style={{ width: '40%' }}>
               <Picker
-                  selectedValue={this.state.sex}
-                  style={{ width: '100%' }}
-                  itemStyle={{ textAlign: 'center' }}
-                  onValueChange={(itemValue, itemIndex) =>
-                      this.setState({ sex: itemValue })
-                  }>
-                  <Picker.Item label="Male" value="M" />
-                  <Picker.Item label="Female" value="F" />
+                selectedValue={this.state.sex}
+                style={{ width: '100%' }}
+                itemStyle={{ textAlign: 'center' }}
+                onValueChange={(itemValue, itemIndex) =>
+                  this.setState({ sex: itemValue })
+                }>
+                <Picker.Item label="Male" value="M" />
+                <Picker.Item label="Female" value="F" />
               </Picker>
             </View>
           </View>
