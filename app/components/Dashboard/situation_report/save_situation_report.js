@@ -4,6 +4,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { situation_report_styles } from '../../../assets/styles/situation_report_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SaveSituationReport extends Component {
     constructor(props) {
@@ -15,7 +17,8 @@ export default class SaveSituationReport extends Component {
             timestamp: "",
             summary: "",
             pdf_path: "",
-            image_path: ""
+            image_path: "",
+            spinner: true
         };
     }
 
@@ -31,14 +34,17 @@ export default class SaveSituationReport extends Component {
                 timestamp: data.timestamp,
                 summary: data.summary,
                 pdf_path: "",
-                image_path: ""
+                image_path: "",
+                spinner: false
             })
         } else {
-            this.setState({ timestamp: selected_date })
+            this.setState({ timestamp: selected_date,
+            spinner: false })
         }
     }
 
     saveSituationReport() {
+        this.setState({spinner: true})
         Notification.endOfValidity();
         const { situation_report_id,
             local_storage_id,
@@ -205,6 +211,11 @@ export default class SaveSituationReport extends Component {
     render() {
         return (
             <ScrollView style={situation_report_styles.container}>
+                <Spinner
+                    visible={this.state.spinner}
+                    textContent={'Fetching data...'}
+                    textStyle={spinner_styles.spinnerTextStyle}
+                />
                 <View style={situation_report_styles.menuSection}>
                     <TextInput multiline={true}
                         numberOfLines={10} style={defaults.inputs} placeholder="Summary" value={this.state.summary} onChangeText={text => this.setState({ summary: text })} />

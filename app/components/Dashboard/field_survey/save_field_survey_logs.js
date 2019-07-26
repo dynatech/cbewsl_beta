@@ -5,6 +5,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { field_survey_styles } from '../../../assets/styles/field_survey_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SaveFieldSurveyLogs extends Component {
     constructor(props) {
@@ -18,7 +20,8 @@ export default class SaveFieldSurveyLogs extends Component {
             mechanism: "",
             exposure: "",
             note: "",
-            date: ""
+            date: "",
+            spinner: true
         };
     }
 
@@ -37,6 +40,7 @@ export default class SaveFieldSurveyLogs extends Component {
                 exposure: data.exposure,
                 note: data.note,
                 date: data.date,
+                spinner: false
             });
         } else {
             this.setState({
@@ -48,7 +52,8 @@ export default class SaveFieldSurveyLogs extends Component {
                 mechanism: "",
                 exposure: "",
                 note: "",
-                date: ""
+                date: "",
+                spinner: false
             });
         }
     }
@@ -73,6 +78,7 @@ export default class SaveFieldSurveyLogs extends Component {
     }
 
     saveFieldSurveyLog() {
+        this.setState({spinner: true})
         Notification.endOfValidity();
         const { field_survey_id,
             local_storage_id,
@@ -262,6 +268,11 @@ export default class SaveFieldSurveyLogs extends Component {
     render() {
         return (
             <ScrollView style={field_survey_styles.container}>
+                <Spinner
+                visible={this.state.spinner}
+                textContent={'Fetching data...'}
+                textStyle={spinner_styles.spinnerTextStyle}
+                />
                 <View style={field_survey_styles.menuSection}>
                     <TextInput multiline={true}
                         numberOfLines={4} style={defaults.inputs} placeholder="Features" value={this.state.features} onChangeText={text => this.setState({ features: text })} />

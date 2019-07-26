@@ -35,8 +35,8 @@ export default class Summary extends Component {
 
   componentDidMount() {
     Notification.endOfValidity();
-    method: 'POST',
       fetch('http://192.168.150.10:5000/api/rainfall/get_rainfall_data', {
+      method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

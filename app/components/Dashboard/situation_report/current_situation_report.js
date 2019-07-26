@@ -5,6 +5,8 @@ import { NavigationEvents } from 'react-navigation';
 import { situation_report_styles } from '../../../assets/styles/situation_report_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class CurrentSituationReport extends Component {
   constructor(props) {
@@ -12,7 +14,8 @@ export default class CurrentSituationReport extends Component {
     this.state = {
       latest_date: '2018/08/08',
       latest_time: '23:30:00',
-      summary: 'Sample Summary for Situation Report'
+      summary: 'Sample Summary for Situation Report',
+      spinner: true
     };
   }
 
@@ -77,11 +80,7 @@ export default class CurrentSituationReport extends Component {
         }
         Storage.removeItem("SituationReportLatest")
         Storage.setItem("SituationReportLatest", to_local_data)
-        let data_container = Storage.getItem("SituationReportLatest")
-        data_container.then(response => {
-          console.log(response)
-        });
-
+        this.setState({spinner:false})
       })
       .catch((error) => {
         let data_container = Storage.getItem("SituationReportLatest")
@@ -96,14 +95,15 @@ export default class CurrentSituationReport extends Component {
                 summary: value.summary
               });
             }
+            this.setState({spinner:false})
           } else {
             this.setState({
               latest_date: "N/A",
               latest_time: "N/A",
               summary: "No current situation report"
             });
+            this.setState({spinner:false})
           }
-
         });
       });
   }
@@ -111,6 +111,11 @@ export default class CurrentSituationReport extends Component {
   render() {
     return (
       <ScrollView style={situation_report_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getLatestSituationReport()} />
         <View style={situation_report_styles.menuSection}>
           <View style={situation_report_styles.buttonSection}>

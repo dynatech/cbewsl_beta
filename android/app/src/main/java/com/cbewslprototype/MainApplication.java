@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.reactlibrary.RNReactNativePingPackage;
+import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
+import com.reactlibrary.RNReactNativePingPackage;
 import com.tkporter.sendsms.SendSMSPackage;
 import com.pilloxa.backgroundjob.BackgroundJobPackage;
 import com.centaurwarchief.smslistener.SmsListenerPackage;
@@ -33,7 +35,6 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RNReactNativePingPackage(),
             SendSMSPackage.getInstance(),
-            new BackgroundJobPackage(),
             new SmsListenerPackage(),
             new Sha512Package(),
             new RNSmsAndroidPackage(),

@@ -8,6 +8,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { field_survey_styles } from '../../../assets/styles/field_survey_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class FieldSurveyLogs extends Component {
   constructor(props) {
@@ -16,7 +18,8 @@ export default class FieldSurveyLogs extends Component {
       field_logs: [],
       field_logs_data_paginate: [],
       page: 0,
-      number_of_pages: 0
+      number_of_pages: 0,
+      spinner: true
     };
   }
 
@@ -161,7 +164,7 @@ export default class FieldSurveyLogs extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
           </DataTable.Row>)
         }
-        this.setState({ field_logs: field_logs })
+        this.setState({ field_logs: field_logs, spinner: false})
         this.tablePaginate(field_logs)
       })
       .catch((error) => {
@@ -186,7 +189,7 @@ export default class FieldSurveyLogs extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ field_logs: field_logs })
+          this.setState({ field_logs: field_logs, spinner: false})
           this.tablePaginate(field_logs)
         });
       });
@@ -227,6 +230,11 @@ export default class FieldSurveyLogs extends Component {
     let { height } = Dimensions.get('window');
     return (
       <View style={field_survey_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getAllFieldSurveyLogs()} />
         <ScrollView style={field_survey_styles.table_container}>
           <View style={field_survey_styles.menuSection}>
