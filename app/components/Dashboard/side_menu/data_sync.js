@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
 import SmsListener from 'react-native-android-sms-listener';
 import SendSMS from 'react-native-sms';
 import { NavigationEvents } from 'react-navigation';
@@ -59,19 +59,19 @@ export default class DataSyncer extends Component {
     let temp = []
     if (storage_key == "Pub&CandidAlert") {
       temp.push({
-          text: 'Network Sync',
-          onPress: () => {
-            this.networkSyncForPub(storage_key)
-          },
-          style: 'cancel',
+        text: 'Network Sync',
+        onPress: () => {
+          this.networkSyncForPub(storage_key)
+        },
+        style: 'cancel',
       });
     } else {
       temp = [{
-          text: 'Network Sync',
-          onPress: () => {
-            this.networkSync(storage_key)
-          },
-          style: 'cancel',
+        text: 'Network Sync',
+        onPress: () => {
+          this.networkSync(storage_key)
+        },
+        style: 'cancel',
       },
       {
         text: 'SMS Sync', onPress: () => {
@@ -81,7 +81,7 @@ export default class DataSyncer extends Component {
     }
 
     Alert.alert('Syncing options',
-    'Choose between Network Sync if you are connected to the CBEWS-L Network or SMS Sync if you are not connected.',temp
+      'Choose between Network Sync if you are connected to the CBEWS-L Network or SMS Sync if you are not connected.', temp
     )
 
 
@@ -119,11 +119,11 @@ export default class DataSyncer extends Component {
             let inner_value = Object.values(value)
             let counter = 0
             inner_value.forEach(function (iv) {
-  
+
               if (moment(iv)._isValid == true && iv.length > 10) {
-                iv = iv.replace(":","~")
+                iv = iv.replace(":", "~")
               }
-  
+
               if (counter == 0) {
                 container = container + iv
               } else {
@@ -134,7 +134,7 @@ export default class DataSyncer extends Component {
             container = container + "||"
           }
         })
-  
+
         if (container.indexOf("<*>") > -1) {
           SendSMS.send({
             body: container.slice(0, -2),
@@ -162,7 +162,7 @@ export default class DataSyncer extends Component {
       } else {
         // Sync to network
       }
-    })
+    });
 
     // let data = Storage.getItem(storage_key)
     // this.setState({ storage_key: storage_key })
@@ -182,30 +182,56 @@ export default class DataSyncer extends Component {
     //   })
     // })
   }
-  
+
   networkSync(storage_key) {
+
     const API_LIST = {
-      "RiskAssessmentSummary": "1",
-      "RiskAssessmentFamilyRiskProfile": "2",
-      "RiskAssessmentHazardData": "3",
-      "RiskAssessmentRNC": "4",
-      "FieldSurveyLogs": "5",
+      "RiskAssessmentSummary": "http://192.168.150.10:5000/api/risk_assesment_summary/save_risk_assessment_summary",
+      "RiskAssessmentFamilyRiskProfile": "http://192.168.150.10:5000/api/family_profile/save_family_profile",
+      "RiskAssessmentHazardData": "http://192.168.150.10:5000/api/hazard_data/save_hazard_data",
+      "RiskAssessmentRNC": "http://192.168.150.10:5000/api/resources_and_capacities/save_resources_and_capacities",
+      "FieldSurveyLogs": "http://192.168.150.10:5000/api/field_survey/save_field_survey",
       "SurficialDataMeasurements": "6",
-      "SurficialDataMomsSummary": "7",
-      "SensorMaintenanceLogs": "8",
+      "SurficialDataMomsSummary": "http://192.168.150.10:5000/api/surficial_data/save_monitoring_log",
+      "SensorMaintenanceLogs": "http://192.168.150.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs",
       "Pub&CandidAlert": "9"
     }
+    console.log("hereee")
+    let url = API_LIST[storage_key];
+    this.setState({ spinner: true });
+    let data = Storage.getItem(storage_key);
+    const ms = Network.getPing();
 
-    console.log(API_LIST[storage_key]);
-    this.setState({spinner: true});
-    let data = Storage.getItem(storage_key)
-    data.then(response => {
-      this.setState({spinner: false});
-      if (response != null || response != undefined) {
-
+    ms.then(response => {
+      if (response.status == "In-active") {
+        Alert.alert('Notice', response.msg)
       } else {
-        Alert.alert('Data Syncing','No new data to sync.')
+        data.then(local_data => {
+          if (local_data != null || local_data != undefined) {
+            local_data.forEach((value) => {
+              if (value.sync_status == 1 || value.sync_status == 2) {
+                fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ value }),
+                }).then((response) => response.json())
+                  .then((responseJson) => {
+                    ToastAndroid.show("Successfully sync to main server.", ToastAndroid.SHORT);
+                  })
+                  .catch((error) => {
+                    ToastAndroid.show("No network detected, Unable to network sync..", ToastAndroid.SHORT);
+                  });
+              }
+            });
+          } else {
+            Alert.alert('Data Syncing', 'No new data to sync.')
+          }
+        });
       }
+      this.setState({ spinner: false });
     });
 
   }
