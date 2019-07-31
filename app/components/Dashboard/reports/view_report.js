@@ -5,6 +5,8 @@ import { DataTable } from 'react-native-paper';
 import { rassessment_styles } from '../../../assets/styles/risk_assessment_styles';
 import Notification from '../../utils/alert_notification';
 import RainfallGraph from '../sensor_maintenance/rainfall_graph';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class ViewReport extends Component {
     constructor(props) {
@@ -16,7 +18,8 @@ export default class ViewReport extends Component {
             data_paginate: [],
             page: 0,
             number_of_pages: 0,
-            report_name: ""
+            report_name: "",
+            spinner: true
         };
     }
 
@@ -62,6 +65,7 @@ export default class ViewReport extends Component {
             default:
             // code block
         }
+        this.setState({spinner: false})
     }
 
     tablePaginate(data) {
@@ -108,7 +112,6 @@ export default class ViewReport extends Component {
     }
 
     renderAlertGenReport(data) {
-        console.log(data)
         let response = data.data
         let alert_details = []
         let alert_level = []
@@ -116,7 +119,6 @@ export default class ViewReport extends Component {
         let rain_header = []
         let moms_temp = ""
         let rain_temp = ""
-        console.log(response.triggers.moms_id)
         if ('moms_id' in response.triggers) {
             console.log("may moms")
             moms_temp = "Feature type: " + response.triggers.type_of_feature + "(" + response.triggers.name_of_feature + ")\n" +
@@ -411,6 +413,11 @@ export default class ViewReport extends Component {
     render() {
         return (
             <ScrollView style={rassessment_styles.container}>
+                <Spinner
+                visible={this.state.spinner}
+                textContent={'Fetching data...'}
+                textStyle={spinner_styles.spinnerTextStyle}
+                />
                 <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center' }}>{this.state.report_name}</Text>
                 </View>

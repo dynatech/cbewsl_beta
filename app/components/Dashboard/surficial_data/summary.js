@@ -8,6 +8,8 @@ import { surficial_data_styles } from '../../../assets/styles/surficial_data_sty
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
 // import SurficialComputation from '../../utils/surficial_computation'
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Summary extends Component {
   constructor(props) {
@@ -16,7 +18,8 @@ export default class Summary extends Component {
       surficial_data: null,
       surficial_summary: "",
       moms_summary: [],
-      render_surficial_graph: []
+      render_surficial_graph: [],
+      spinner: true
     };
   }
 
@@ -92,7 +95,7 @@ export default class Summary extends Component {
             <Text style={{ fontSize: 15 }}>Name of feature: {value.name_of_feature}</Text>
           </View>)
         }
-        this.setState({ moms_summary: moms_data })
+        this.setState({ moms_summary: moms_data, spinner: false})
         this.analyzeSurficialSummary(label_data)
         this.renderSurficialGraph(label_data, series_container)
       })
@@ -129,7 +132,7 @@ export default class Summary extends Component {
               <Text style={{ fontSize: 15 }}>No MOMs data.</Text>
             </View>)
           }
-          this.setState({ moms_summary: moms_data })
+          this.setState({ moms_summary: moms_data, spinner: false})
         });
 
         // let moms_data = []
@@ -210,6 +213,11 @@ export default class Summary extends Component {
   render() {
     return (
       <ScrollView style={surficial_data_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getSurficialData()} />
         <View style={surficial_data_styles.menuSection}>
           <View style={surficial_data_styles.buttonSection}>

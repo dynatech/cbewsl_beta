@@ -8,6 +8,8 @@ import { NavigationEvents } from 'react-navigation';
 import { defaults } from '../../../assets/styles/default_styles';
 import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class MonitoringLogs extends Component {
   constructor(props) {
@@ -16,7 +18,8 @@ export default class MonitoringLogs extends Component {
       monitoring_logs_data: [],
       monitoring_logs_data_paginate: [],
       page: 0,
-      number_of_pages: 0
+      number_of_pages: 0,
+      spinner: true
     };
   }
 
@@ -219,7 +222,6 @@ export default class MonitoringLogs extends Component {
         }
 
         let cred = Storage.getItem("loginCredentials");
-        console.log("HEY");
         cred.then(cred_response => {
           let temp = {
             alert_level: alert_level,
@@ -237,7 +239,6 @@ export default class MonitoringLogs extends Component {
           }
 
           temp.trig_list.push(trig_list)
-          console.log(temp)
           let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
         })
       } else {
@@ -324,8 +325,16 @@ export default class MonitoringLogs extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ monitoring_logs_data: monitoring_logs_data })
-          this.tablePaginate(monitoring_logs_data)
+          Storage.removeItem("SurficialDataMomsSummary")
+          Storage.setItem("SurficialDataMomsSummary", to_local_data)
+        } else {
+          monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
+            <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+          </DataTable.Row>)
+        }
+        this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
+        this.tablePaginate(monitoring_logs_data)
+
         });
       })
       .catch((error) => {
@@ -354,7 +363,7 @@ export default class MonitoringLogs extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ monitoring_logs_data: monitoring_logs_data })
+          this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
           this.tablePaginate(monitoring_logs_data)
         });
       });
@@ -363,6 +372,11 @@ export default class MonitoringLogs extends Component {
   render() {
     return (
       <ScrollView style={surficial_data_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getMonitoringLogs()} />
         <View style={surficial_data_styles.menuSection}>
           <View style={surficial_data_styles.buttonSection}>

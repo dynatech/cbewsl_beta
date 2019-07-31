@@ -5,12 +5,15 @@ import { NavigationEvents } from 'react-navigation';
 import { field_survey_styles } from '../../../assets/styles/field_survey_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class LatestReportSummary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      latest_report: []
+      latest_report: [],
+      spinner: true
     };
   }
 
@@ -128,8 +131,7 @@ export default class LatestReportSummary extends Component {
           }
           Storage.removeItem("FieldSurveyLatestReportSummary")
           Storage.setItem("FieldSurveyLatestReportSummary", to_local_data)
-          let data_container = Storage.getItem("FieldSurveyLatestReportSummary")
-          this.setState({ latest_report: latest_report })
+          this.setState({ latest_report: latest_report, spinner: false})
         }
       })
       .catch((error) => {
@@ -201,7 +203,7 @@ export default class LatestReportSummary extends Component {
             </View>)
           }
 
-          this.setState({ latest_report: latest_report })
+          this.setState({ latest_report: latest_report, spinner: false})
         });
       });
   }
@@ -209,6 +211,11 @@ export default class LatestReportSummary extends Component {
   render() {
     return (
       <ScrollView style={field_survey_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getLatestReportSummary()} />
         <View style={field_survey_styles.menuSection}>
           <View style={field_survey_styles.buttonSection}>

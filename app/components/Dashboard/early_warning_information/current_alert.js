@@ -4,6 +4,8 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { field_survey_styles } from '../../../assets/styles/field_survey_styles';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class CurrentAlert extends Component {
   constructor(props) {
@@ -15,7 +17,8 @@ export default class CurrentAlert extends Component {
       rain_alert_trigger: [],
       alert_validity: "",
       moms_header: [],
-      rain_header: []
+      rain_header: [],
+      spinner: true
     };
   }
 
@@ -84,7 +87,7 @@ export default class CurrentAlert extends Component {
             </View>
           </View>
         )
-        this.setState({alert_details: alert_details})
+        this.setState({alert_details: alert_details, spinner: false})
       } else {
         alert_level.push(<Text style={{fontSize: 50, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 0</Text>)
         alert_details.push(
@@ -93,7 +96,7 @@ export default class CurrentAlert extends Component {
             <Text style={{fontSize: 25, fontWeight: 'bold', color: '#4a8e1c', width: '100%', textAlign: 'center'}}>No candidate alerts.</Text>
           </View>
         )
-        this.setState({alert_details: alert_details})
+        this.setState({alert_details: alert_details, spinner: false})
       }
     })
   }
@@ -114,7 +117,12 @@ export default class CurrentAlert extends Component {
 
   render() {
     return (
-        <ScrollView style={field_survey_styles.container}>
+      <ScrollView style={field_survey_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getCurrentAlert()} />
         <View style={field_survey_styles.menuSection}>
             <View style={field_survey_styles.buttonSection}>

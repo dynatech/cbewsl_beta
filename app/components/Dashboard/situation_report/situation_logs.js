@@ -7,6 +7,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { situation_report_styles } from '../../../assets/styles/situation_report_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SituationLogs extends Component {
   constructor(props) {
@@ -16,7 +18,8 @@ export default class SituationLogs extends Component {
       marked_dates: new_days,
       date_selected: "",
       selected_date_situations: [],
-      add_report_text: "Add Report"
+      add_report_text: "Add Report",
+      spinner: true
     };
   }
 
@@ -26,7 +29,6 @@ export default class SituationLogs extends Component {
         this.props.navigation.navigate('current_situation_report')
         break;
       default:
-
         break;
     }
   }
@@ -95,7 +97,7 @@ export default class SituationLogs extends Component {
             }
           };
         });
-        this.setState({ marked_dates: new_days })
+        this.setState({ marked_dates: new_days, spinner: false })
         Storage.removeItem("SituationReportLogs")
         Storage.setItem("SituationReportLogs", to_local_data)
       })
@@ -118,12 +120,13 @@ export default class SituationLogs extends Component {
                 }
               };
             });
-            this.setState({ marked_dates: new_days })
+            this.setState({ marked_dates: new_days, spinner: false })
           } else {
             this.setState({
               latest_date: "N/A",
               latest_time: "N/A",
-              summary: "No current situation report"
+              summary: "No current situation report",
+              spinner: false
             });
           }
         });
@@ -182,7 +185,7 @@ export default class SituationLogs extends Component {
             <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
           </View>)
         }
-        this.setState({ selected_date_situations: situation_reports })
+        this.setState({ selected_date_situations: situation_reports, spinner: false })
       })
       .catch((error) => {
 
@@ -202,16 +205,15 @@ export default class SituationLogs extends Component {
                 </View>)
               }
             }
-            this.setState({ selected_date_situations: situation_reports })
+            this.setState({ selected_date_situations: situation_reports, spinner: false })
           });
         }
         catch (err) {
           situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
             <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
           </View>)
-          this.setState({ selected_date_situations: situation_reports })
+          this.setState({ selected_date_situations: situation_reports, spinner: false })
         }
-
       });
   }
 
@@ -241,6 +243,11 @@ export default class SituationLogs extends Component {
   render() {
     return (
       <ScrollView style={situation_report_styles.container}>
+        <Spinner
+            visible={this.state.spinner}
+            textContent={'Fetching data...'}
+            textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.displaySituationReportPerDay()} />
         <View style={situation_report_styles.menuSection}>
           <View style={situation_report_styles.buttonSection}>

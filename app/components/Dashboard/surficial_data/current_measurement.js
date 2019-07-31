@@ -6,6 +6,8 @@ import { NavigationEvents } from 'react-navigation';
 import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class CurrentMeasurement extends Component {
   constructor(props) {
@@ -13,7 +15,8 @@ export default class CurrentMeasurement extends Component {
     this.state = {
       date: null,
       time: null,
-      crack_sets: null
+      crack_sets: null,
+      spinner: true
     };
   }
 
@@ -70,7 +73,7 @@ export default class CurrentMeasurement extends Component {
         }
         Storage.removeItem("SurficialDataCurrentMeasurement")
         Storage.setItem("SurficialDataCurrentMeasurement", responseJson)
-        this.setState({ crack_sets: crack_sets })
+        this.setState({ crack_sets: crack_sets, spinner: false})
       })
       .catch((error) => {
         let data_container = Storage.getItem('SurficialDataCurrentMeasurement')
@@ -82,7 +85,7 @@ export default class CurrentMeasurement extends Component {
           for (const [index, value] of response.cracks.entries()) {
             crack_sets.push(<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Crack {value.crack}: {value.measurement} cm</Text>)
           }
-          this.setState({ crack_sets: crack_sets })
+          this.setState({ crack_sets: crack_sets, spinner: false})
         });
       });
   }
@@ -90,6 +93,11 @@ export default class CurrentMeasurement extends Component {
   render() {
     return (
       <ScrollView style={surficial_data_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.getSurficialCurrentMeasurement()} />
         <View style={surficial_data_styles.menuSection}>
           <View style={surficial_data_styles.buttonSection}>

@@ -8,6 +8,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { surficial_data_styles } from '../../../assets/styles/surficial_data_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SaveSurficialData extends Component {
     constructor(props) {
@@ -22,7 +24,8 @@ export default class SaveSurficialData extends Component {
             name_of_feature: "",
             guidelines: [],
             isModelVisible: false,
-            server_number: '09175394337'
+            server_number: '09175394337',
+            spinner: true
         };
     }
 
@@ -39,7 +42,8 @@ export default class SaveSurficialData extends Component {
                 datetime: data.date,
                 type_of_feature: data.type_of_feature,
                 description: data.description,
-                name_of_feature: data.name_of_feature
+                name_of_feature: data.name_of_feature,
+                spinner: false
             });
         } else {
             this.setState({
@@ -49,7 +53,8 @@ export default class SaveSurficialData extends Component {
                 datetime: "",
                 type_of_feature: "",
                 description: "",
-                name_of_feature: ""
+                name_of_feature: "",
+                spinner: false
             });
         }
     }
@@ -317,7 +322,6 @@ export default class SaveSurficialData extends Component {
                                                     });
                                                     Storage.removeItem("SurficialDataMomsSummary")
                                                     Storage.setItem("SurficialDataMomsSummary", updated_data)
-                                                    console.log(updated_data)
                                                 }
                                             } else {
                                                 let temp = response
@@ -390,6 +394,11 @@ export default class SaveSurficialData extends Component {
     render() {
         return (
             <ScrollView style={surficial_data_styles.container}>
+                <Spinner
+                    visible={this.state.spinner}
+                    textContent={'Fetching data...'}
+                    textStyle={spinner_styles.spinnerTextStyle}
+                />
                 <View style={surficial_data_styles.contentContainer}>
                     <View style={{ paddingTop: 5, paddingBottom: 5 }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Measurements {<Text style={{ fontSize: 15, color: 'red' }}>(No available markers)</Text>}</Text>

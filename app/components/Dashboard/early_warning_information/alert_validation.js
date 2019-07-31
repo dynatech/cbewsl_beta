@@ -5,6 +5,8 @@ import DatePicker from 'react-native-datepicker';
 import { defaults } from '../../../assets/styles/default_styles';
 import { ewi_styles } from '../../../assets/styles/ewi_styles';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class AlertValidation extends Component {
   constructor(props) {
@@ -15,7 +17,8 @@ export default class AlertValidation extends Component {
       server_data_candidate_container: [],
       local_data: [],
       server_data: [],
-      datetime: ""
+      datetime: "",
+      spinner: true
     };
   }
 
@@ -43,7 +46,7 @@ export default class AlertValidation extends Component {
                   <Text style={{paddingTop: '10%', paddingBottom: '10%',textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%'}}>Surficial Alert: No candidate alerts.</Text>
                 </View>)
     }
-    this.setState({local_data_candidate_container: temp})
+    this.setState({local_data_candidate_container: temp, spinner: false})
   }
 
   requestDataToPhivolcs() {
@@ -119,6 +122,11 @@ export default class AlertValidation extends Component {
   render() {
     return (
         <ScrollView style={ewi_styles.container}>
+          <Spinner
+            visible={this.state.spinner}
+            textContent={'Fetching data...'}
+            textStyle={spinner_styles.spinnerTextStyle}
+          />
           <View style={ewi_styles.menuSection}>
               <View style={ewi_styles.buttonSection}>
                   <TouchableOpacity style={ewi_styles.menuButton} onPress={() => this.navigateEwi("current_alert")}>

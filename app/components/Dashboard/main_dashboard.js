@@ -6,13 +6,17 @@ import { NavigationEvents } from 'react-navigation';
 import { dashboard } from '../../assets/styles/dashboard_styles';
 import { defaults } from '../../assets/styles/default_styles';
 import Storage from '../utils/storage';
+import Sync from '../utils/syncer';
 import Notification from '../utils/alert_notification';
+import { spinner_styles } from '../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class MainDashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            alert_badge: []
+            alert_badge: [],
+            spinner: true
         };
     }
 
@@ -62,75 +66,96 @@ export default class MainDashboard extends Component {
         }
     }
 
-  setBadge() {
-    let offline_data = Storage.getItem("Pub&CandidAlert");
-    offline_data.then(response => {
-
-        let candidate_alerts = JSON.parse(response.candidate_alerts);
-        let current_alerts = response.current_alerts;
-        let top_position = -10;
-        let temp = []
-
-        if (candidate_alerts.length != 0) {
-            temp.push(<Badge
-                status="warning"
-                containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
-                value={
-                        <Text style={{color: 'white', padding: 10, fontSize: 10}}>
-                            <Icon name="ios-warning" style={{ fontSize: 15, color: 'white'}}></Icon> New trigger(s)
-                        </Text>
+    initializeApp() {
+        let offline_data = Storage.getItem("initializeApp");
+        offline_data.then(response => {
+            if (response == null || response == undefined) {
+                let init = Sync.serverToClient()
+                init.then(init_response => {
+                    if (init_response.status == true) {
+                        this.setState({spinner: false})
                     }
-            />)
-            top_position = top_position-20;
-        }
+                });
+            }
+        })
+    }
 
-        if (current_alerts.latest.length != 0) {
-            temp.push(<Badge
-                status="error"
-                containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
-                value={
-                        <Text style={{color: 'white', padding: 10, fontSize: 10}}>
-                            Alert 1
-                        </Text>
-                    }
-            />)
-        }
-        
-        this.setState({alert_badge: temp})
+    setBadge() {
+        let offline_data = Storage.getItem("Pub&CandidAlert");
+        offline_data.then(response => {
+
+            let candidate_alerts = JSON.parse(response.candidate_alerts);
+            let current_alerts = response.current_alerts;
+            let top_position = -10;
+            let temp = []
+
+            if (candidate_alerts.length != 0) {
+                temp.push(<Badge
+                    status="warning"
+                    containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
+                    value={
+                            <Text style={{color: 'white', padding: 10, fontSize: 10}}>
+                                <Icon name="ios-warning" style={{ fontSize: 15, color: 'white'}}></Icon> New trigger(s)
+                            </Text>
+                        }
+                />)
+                top_position = top_position-20;
+            }
+
+            if (current_alerts.latest.length != 0) {
+                temp.push(<Badge
+                    status="error"
+                    containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
+                    value={
+                            <Text style={{color: 'white', padding: 10, fontSize: 10}}>
+                                Alert 1
+                            </Text>
+                        }
+                />)
+            }
+            
+            this.setState({alert_badge: temp})
 
 
-        // if (response == null) {
-        //     this.setState({alert_badge: [<Badge
-        //         status="success"
-        //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-        //         value={<Text style={{color: 'white', padding: 20}}>Alert 0</Text>}
-        //     />]})
-        // } else if (response.alert_level == "1") {
-        //     this.setState({alert_badge: [<Badge
-        //         status="error"
-        //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-        //         value={<Text style={{color: 'white', padding: 20}}>Alert 1</Text>}
-        //     />]})
-        // } else if (response.alert_level == "2") {
-        //     this.setState({alert_badge: [<Badge
-        //         status="error"
-        //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-        //         value={<Text style={{color: 'white', padding: 20}}>Alert 2</Text>}
-        //     />]})
-        // } else if (response.alert_level == "3") {
-        //     this.setState({alert_badge: [<Badge
-        //         status="error"
-        //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-        //         value={<Text style={{color: 'white', padding: 20}}>Alert 3</Text>}
-        //     />]})
-        // }
-    })
-  }
+            // if (response == null) {
+            //     this.setState({alert_badge: [<Badge
+            //         status="success"
+            //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+            //         value={<Text style={{color: 'white', padding: 20}}>Alert 0</Text>}
+            //     />]})
+            // } else if (response.alert_level == "1") {
+            //     this.setState({alert_badge: [<Badge
+            //         status="error"
+            //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+            //         value={<Text style={{color: 'white', padding: 20}}>Alert 1</Text>}
+            //     />]})
+            // } else if (response.alert_level == "2") {
+            //     this.setState({alert_badge: [<Badge
+            //         status="error"
+            //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+            //         value={<Text style={{color: 'white', padding: 20}}>Alert 2</Text>}
+            //     />]})
+            // } else if (response.alert_level == "3") {
+            //     this.setState({alert_badge: [<Badge
+            //         status="error"
+            //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
+            //         value={<Text style={{color: 'white', padding: 20}}>Alert 3</Text>}
+            //     />]})
+            // }
+        })
+    }
 
     render() {
         return (
             <View style={[dashboard.menuContainer]}>
+                <Spinner
+                    visible={this.state.spinner}
+                    textContent={'Fetching initial data...'}
+                    textStyle={spinner_styles.spinnerTextStyle}
+                />
+
                 <NavigationEvents onDidFocus={() => {
+                    this.initializeApp()
                     Notification.endOfValidity()
                     this.setBadge()
                 }} />
