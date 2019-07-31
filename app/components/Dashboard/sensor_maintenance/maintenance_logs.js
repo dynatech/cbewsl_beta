@@ -9,6 +9,8 @@ import { sensor_maintenance_styles } from '../../../assets/styles/sensor_mainten
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
 import RainfallGraph from './rainfall_graph';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class MaintenanceLogs extends Component {
   constructor(props) {
@@ -18,7 +20,8 @@ export default class MaintenanceLogs extends Component {
       marked_dates: new_days,
       date_selected: "",
       selected_date_logs: [],
-      add_report_text: "Add Report"
+      add_report_text: "Add Report",
+      spinner: true
     };
   }
 
@@ -100,7 +103,7 @@ export default class MaintenanceLogs extends Component {
         });
         Storage.removeItem("SensorMaintenanceLogs")
         Storage.setItem("SensorMaintenanceLogs", to_local_data)
-        this.setState({ marked_dates: new_days })
+        this.setState({ marked_dates: new_days, spinner: false})
 
       })
       .catch((error) => {
@@ -120,13 +123,14 @@ export default class MaintenanceLogs extends Component {
                 }
               };
             });
-            this.setState({ marked_dates: new_days })
+            this.setState({ marked_dates: new_days, spinner: false})
           }
         })
       });
   }
 
   selectDateToAddLogs(date) {
+    this.setState({spinner: true})
     Notification.endOfValidity();
     this.setState({ date_selected: date })
     let selected_date = this.formatDateTime(date = date)
@@ -150,7 +154,7 @@ export default class MaintenanceLogs extends Component {
           logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
             <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
           </View>)
-          this.setState({ selected_date_logs: logs })
+          this.setState({ selected_date_logs: logs, spinner: false })
         } else {
           logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
             <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Logs for {selected_date["text_format_timestamp"]}</Text>
@@ -162,7 +166,7 @@ export default class MaintenanceLogs extends Component {
               <Text style={{ fontSize: 15 }}>Rain Guage Status: {value.rain_gauge_status}</Text>
             </View>)
           }
-          this.setState({ selected_date_logs: logs })
+          this.setState({ selected_date_logs: logs, spinner: false })
         }
 
       })
@@ -230,6 +234,11 @@ export default class MaintenanceLogs extends Component {
   render() {
     return (
       <ScrollView style={sensor_maintenance_styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
+        />
         <NavigationEvents onDidFocus={() => this.displayMaintenanceLogsPerDay()} />
         <View style={sensor_maintenance_styles.menuSection}>
           <View style={sensor_maintenance_styles.buttonSection}>

@@ -4,6 +4,8 @@ import { defaults } from '../../../assets/styles/default_styles';
 import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import { spinner_styles } from '../../../assets/styles/spinner_styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SaveMaintenanceLogs extends Component {
     constructor(props) {
@@ -16,6 +18,7 @@ export default class SaveMaintenanceLogs extends Component {
             anomalous_nodes: "",
             rain_gauge_status: "",
             timestamp: "",
+            spinner:true
         };
     }
 
@@ -23,11 +26,11 @@ export default class SaveMaintenanceLogs extends Component {
         Notification.endOfValidity();
         const { navigation } = this.props;
         const selected_date = navigation.getParam("data", "none");
-        console.log(selected_date)
-        this.setState({ timestamp: selected_date })
+        this.setState({ timestamp: selected_date, spinner: false })
     }
 
     saveSensorMaintenanceLogs() {
+        this.setState({spinner: true})
         Notification.endOfValidity();
         const { sensor_maintenance_id,
             local_storage_id,
@@ -192,6 +195,11 @@ export default class SaveMaintenanceLogs extends Component {
     render() {
         return (
             <ScrollView style={sensor_maintenance_styles.container}>
+                <Spinner
+                    visible={this.state.spinner}
+                    textContent={'Fetching data...'}
+                    textStyle={spinner_styles.spinnerTextStyle}
+                />
                 <View style={sensor_maintenance_styles.contentContainer}>
                     <TextInput style={defaults.inputs} placeholder="Working Nodes" value={this.state.working_nodes} onChangeText={text => this.setState({ working_nodes: text })} />
                     <TextInput style={defaults.inputs} placeholder="Anomalous Nodes" value={this.state.anomalous_nodes} onChangeText={text => this.setState({ anomalous_nodes: text })} />

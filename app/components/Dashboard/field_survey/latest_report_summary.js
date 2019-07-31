@@ -131,7 +131,6 @@ export default class LatestReportSummary extends Component {
           }
           Storage.removeItem("FieldSurveyLatestReportSummary")
           Storage.setItem("FieldSurveyLatestReportSummary", to_local_data)
-          let data_container = Storage.getItem("FieldSurveyLatestReportSummary")
           this.setState({ latest_report: latest_report, spinner: false})
         }
       })
