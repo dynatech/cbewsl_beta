@@ -188,8 +188,25 @@ function initializeCRUDLogs(datatable) {
 function uploadMomsImages() {
     $("#upload_moms_images").click(function () {
         let url = "http://192.168.150.10:5000/api/moms/upload";
-        var formDataRaw = $('#moms_upload_form')[0];
-        var form_data = new FormData(formDataRaw);
+        // var formDataRaw = $('#moms_upload_form')[0];
+        // var form_data = new FormData(formDataRaw);
+        // $.ajax({
+        //     type: 'POST',
+        //     url: url,
+        //     data: form_data,
+        //     dataType: 'jsonp',
+        //     contentType: false,
+        //     cache: false,
+        //     processData: false,
+        //     async: false,
+        //     success: function (data) {
+        //         console.log(data);
+        //     },
+        //     error: function (data) {
+        //         console.log(data);
+        //     }
+        // });
+        var form_data = new FormData($('#moms_upload_form')[0]);
         $.ajax({
             type: 'POST',
             url: url,
@@ -198,13 +215,9 @@ function uploadMomsImages() {
             contentType: false,
             cache: false,
             processData: false,
-            async: false,
             success: function (data) {
-                console.log(data);
+                alert('Success!');
             },
-            error: function (data) {
-                console.log(data);
-            }
         });
     });
 }

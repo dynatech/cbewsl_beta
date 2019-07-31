@@ -74,7 +74,7 @@
                     <div class="col">
                         <div class="form-group">
                             <label for="file">Upload image(s)</label>
-                            <!-- <input type="file" name="files" class="form-control-file" id="files" multiple> -->
+                            <input type="file" id="image_file" multiple="multiple">
                             <input id="file_to_upload" type="file" name="files[]" class="form-control-file" multiple="true" autocomplete="off" required>
                         </div>
                     </div>

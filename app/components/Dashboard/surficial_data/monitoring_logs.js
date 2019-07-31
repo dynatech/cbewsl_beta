@@ -287,7 +287,7 @@ export default class MonitoringLogs extends Component {
   getMonitoringLogs() {
     fetch('http://192.168.150.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
       .then((responseJson) => {
-        Sync.syncToNetwork("SurficialDataMomsSummary").then(() => {
+        Sync.clientToServer("SurficialDataMomsSummary").then(() => {
           let monitoring_logs_data = []
           let to_local_data = []
           let counter = 0

@@ -106,7 +106,7 @@ function generateSituationReportPDF(data) {
             fontSize = 20,
             ptsPerInch = 72,
             oneLineHeight = fontSize * lineHeight / ptsPerInch,
-            text = 'Sumarry: ' + '\n' + data.title + '\n',
+            text = 'Summary: ' + '\n' + data.title + '\n',
             doc = new jsPDF({
                 unit: 'in',
                 lineHeight: lineHeight
@@ -121,7 +121,7 @@ function generateSituationReportPDF(data) {
         let format_date_time = formatDateTime(data.start);
         let file_name = 'Current_Situation_Report_' + format_date_time.for_file_name
         doc.setFontStyle('bold')
-            .text('Latest Field Survey Date: ' + format_date_time.date_only_format + '', margin, margin + oneLineHeight);
+            .text('Current Situation Report Date: ' + format_date_time.date_only_format + '', margin, margin + oneLineHeight);
 
         doc.save(file_name + '.pdf');
         doc.output('dataurlnewwindow');
