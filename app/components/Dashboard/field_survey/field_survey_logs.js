@@ -166,15 +166,9 @@ export default class FieldSurveyLogs extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          Storage.removeItem("FieldSurveyLogs")
-          Storage.setItem("FieldSurveyLogs", to_local_data)
-        } else {
-          field_logs.push(<DataTable.Row style={{ width: 500 }}>
-            <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-          </DataTable.Row>)
-        }
-        this.setState({ field_logs: field_logs, spinner: false})
-        this.tablePaginate(field_logs)
+          this.setState({ field_logs: field_logs, spinner: false })
+          this.tablePaginate(field_logs)
+        });
       })
       .catch((error) => {
         let data_container = Storage.getItem('FieldSurveyLogs')
@@ -198,7 +192,7 @@ export default class FieldSurveyLogs extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ field_logs: field_logs, spinner: false})
+          this.setState({ field_logs: field_logs, spinner: false })
           this.tablePaginate(field_logs)
         });
       });

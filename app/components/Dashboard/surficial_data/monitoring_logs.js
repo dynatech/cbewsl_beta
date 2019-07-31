@@ -325,15 +325,8 @@ export default class MonitoringLogs extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          Storage.removeItem("SurficialDataMomsSummary")
-          Storage.setItem("SurficialDataMomsSummary", to_local_data)
-        } else {
-          monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
-            <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-          </DataTable.Row>)
-        }
-        this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
-        this.tablePaginate(monitoring_logs_data)
+          this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
+          this.tablePaginate(monitoring_logs_data)
 
         });
       })
