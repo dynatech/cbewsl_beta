@@ -1,10 +1,10 @@
 import Storage from './storage';
 
 const Sync = {
-    serverToClient: async function () {
+    serverToClient: async function (storage_key = "") {
         const DOCROOT = 'http://192.168.150.10:5000'
         let KEYS_N_API = [
-            // {'Pub&CandidAlert': DOCROOT+'/api/monitoring/get_candidate_and_current_alerts'},
+            {'Pub&CandidAlert': DOCROOT+'/api/monitoring/get_candidate_and_current_alerts'},
             {'FieldSurveyLogs': DOCROOT+'/api/field_survey/get_all_field_survey'},
             {'FieldSurveyLatestReportSummary': DOCROOT+'/api/field_survey/get_latest_field_survey_data'},
             {'RiskAssessmentFamilyRiskProfile': DOCROOT+'/api/family_profile/get_all_family_profile'},
@@ -22,20 +22,26 @@ const Sync = {
         let counter = 0;
         let ret_val = {}
         let to_local_data = []
-        let etc_counter = 0
+
+        if (storage_key != "") {
+            let temp = []
+            temp_key = {
+                storage_key: response[Object.keys(response)[0]]
+            }
+            temp.push(temp_key);
+            KEYS_N_API = temp;
+        }
+
         KEYS_N_API.forEach(response => {
             fetch(response[Object.keys(response)[0]]).then((response) => response.json())
             .then((responseJson) => {
               switch(Object.keys(response)[0]) {
                 case "FieldSurveyLogs":
-                    etc_counter = 0
                     to_local_data = []
                     for (const [index, value] of responseJson.entries()) {
-                        let format_date_time = this.formatDateTime(date = value.date);
-                        etc_counter += 1
                         to_local_data.push({
                         field_survey_id: value.field_survey_id,
-                        local_storage_id: etc_counter,
+                        local_storage_id: 3,
                         sync_status: 3,
                         mat_characterization: value.mat_characterization,
                         mechanism: value.mechanism,
@@ -49,29 +55,26 @@ const Sync = {
                 case "FieldSurveyLatestReportSummary":
                     to_local_data = []
                     for (const [index, value] of responseJson.entries()) {
-                        let format_date_time = this.formatDateTime(date = value.date);
                         to_local_data.push({
                             field_survey_id: value.field_survey_id,
-                            local_storage_id: 1,
+                            local_storage_id: 3,
                             sync_status: 3,
                             features: value.features,
                             mat_characterization: value.mat_characterization,
                             mechanism: value.mechanism,
                             exposure: value.exposure,
                             note: value.note,
-                            date: format_date_time["text_format_timestamp"]
+                            date: value.date
                         });
                     }
                     Storage.setItem("FieldSurveyLatestReportSummary", to_local_data)
                     break;
                 case "RiskAssessmentFamilyRiskProfile":
-                    etc_counter = 0
                     to_local_data = []
                     for (const [index, value] of responseJson.entries()) {
-                        etc_counter += 1
                         to_local_data.push({
                         family_profile_id: value.family_profile_id,
-                        local_storage_id: etc_counter,
+                        local_storage_id: 3,
                         sync_status: 3,
                         members_count: value.members_count,
                         vulnerable_members_count: value.vulnerable_members_count,
@@ -81,13 +84,11 @@ const Sync = {
                     Storage.setItem("RiskAssessmentFamilyRiskProfile", to_local_data)
                     break;
                 case "RiskAssessmentHazardData":
-                    etc_counter = 0;
                     to_local_data = [];
                     for (const [index, value] of responseJson.entries()) {
-                        etc_counter += 1
                         to_local_data.push({
                         hazard_data_id: value.hazard_data_id,
-                        local_storage_id: counter,
+                        local_storage_id: 3,
                         sync_status: 3,
                         hazard: value.hazard,
                         speed_of_onset: value.speed_of_onset,
@@ -98,13 +99,11 @@ const Sync = {
                     Storage.setItem("RiskAssessmentHazardData", to_local_data)
                     break;
                 case "RiskAssessmentRNC":
-                    etc_counter = 0;
                     to_local_data = [];
                     for (const [index, value] of responseJson.entries()) {
-                        etc_counter += 1
                         to_local_data.push({
                         resources_and_capacities_id: value.resources_and_capacities_id,
-                        local_storage_id: etc_counter,
+                        local_storage_id: 3,
                         sync_status: 3,
                         resource_and_capacity: value.resource_and_capacity,
                         status: value.status,
@@ -115,12 +114,10 @@ const Sync = {
                     break;
                 case "RiskAssessmentSummary":
                     to_local_data = [];
-                    etc_counter = 0;
                     for (const [index, value] of responseJson.entries()) {
-                        etc_counter += 1
                         to_local_data.push({
                         summary_id: value.summary_id,
-                        local_storage_id: etc_counter,
+                        local_storage_id: 3,
                         sync_status: 3,
                         location: value.location,
                         impact: value.impact,
@@ -132,21 +129,70 @@ const Sync = {
                     break;
                 case "SensorMaintenanceLogs":
                     to_local_data = [];
-                    etc_counter = 0;
                     for (const [index, value] of responseJson.entries()) {
-                        let format_date_time = this.formatDateTime(date = value.timestamp);
-                        etc_counter += 1;
                         to_local_data.push({
                             sensor_maintenance_id: value.sensor_maintenance_id,
-                            local_storage_id: etc_counter,
+                            local_storage_id: 3,
                             sync_status: 3,
                             working_nodes: value.working_nodes,
                             anomalous_nodes: value.anomalous_nodes,
                             rain_gauge_status: value.rain_gauge_status,
-                            timestamp: format_date_time["current_timestamp"],
+                            timestamp: value.timestamp,
                         });
                     }
                     Storage.setItem("SensorMaintenanceLogs", to_local_data)
+                    break;
+                case "SituationReportLatest":
+                    to_local_data = [];
+                    for (const [index, value] of responseJson.entries()) {
+                        to_local_data.push({
+                            situation_report_id: value.situation_report_id,
+                            local_storage_id: 3,
+                            sync_status: 3,
+                            timestamp: value.timestamp,
+                            summary: value.summary,
+                            pdf_path: value.pdf_path,
+                            image_path: value.image_path
+                        });
+                    }
+                    Storage.setItem("SituationReportLatest", to_local_data)
+                    break;
+                case "SituationReportLogs":
+                    to_local_data = [];
+                    for (const [index, value] of responseJson.entries()) {
+                        to_local_data.push({
+                            situation_report_id: value.situation_report_id,
+                            local_storage_id: 3,
+                            sync_status: 3,
+                            timestamp: value.timestamp,
+                            summary: value.summary,
+                            pdf_path: value.pdf_path,
+                            image_path: value.image_path
+                        });
+                    }
+                    Storage.setItem("SituationReportLogs", to_local_data)
+                    break;
+                case "SurficialDataMomsSummary":
+                    to_local_data = []
+                    for (const [index, value] of responseJson.entries()) {
+                        to_local_data.push({
+                        moms_id: value.moms_id,
+                        local_storage_id: 3,
+                        sync_status: 3,
+                        type_of_feature: value.type_of_feature,
+                        description: value.description,
+                        name_of_feature: value.name_of_feature,
+                        date: value.date
+                        })
+                    }
+                    Storage.setItem("SurficialDataMomsSummary", to_local_data)
+                    break;
+                case "SurficialDataSummary":
+                    Storage.setItem("SurficialDataMomsSummary", responseJson[0].surficial_data)
+                    break;
+                default:
+                    Storage.setItem(Object.keys(response)[0], responseJson)
+                    to_loca_data = responseJson
                     break;
               }
             });
@@ -154,7 +200,7 @@ const Sync = {
             if (counter < KEYS_N_API.length - 1) {
                 ret_val = {"status": false}
             } else {
-                ret_val = {"status": true}
+                ret_val = {"status": true, 'storage': to_local_data}
             }
             counter++;
         })
