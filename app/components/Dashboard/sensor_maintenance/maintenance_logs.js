@@ -72,7 +72,7 @@ export default class MaintenanceLogs extends Component {
 
     fetch('http://192.168.150.10:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
       .then((responseJson) => {
-        Sync.syncToNetwork("SensorMaintenanceLogs").then(() => {
+        Sync.clientToServer("SensorMaintenanceLogs").then(() => {
           let to_local_data = [];
           for (const [index, value] of responseJson.entries()) {
             let format_date_time = this.formatDateTime(date = value.timestamp);

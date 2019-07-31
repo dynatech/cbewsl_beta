@@ -53,8 +53,8 @@ export default class LatestReportSummary extends Component {
         let to_local_data = [];
 
         if (Object.entries(responseJson[0]).length === 0 && responseJson[0].constructor === Object) {
-          latest_report.push(<View style={{padding: 10}}>
-            <Text style={{width: '100%', textAlign:'center'}}>No Data Available</Text>
+          latest_report.push(<View style={{ padding: 10 }}>
+            <Text style={{ width: '100%', textAlign: 'center' }}>No Data Available</Text>
           </View>)
           this.setState({ latest_report: latest_report })
         } else {
@@ -113,7 +113,7 @@ export default class LatestReportSummary extends Component {
                 </View>
               </View>
             </View>)
-  
+
             to_local_data.push({
               field_survey_id: value.field_survey_id,
               local_storage_id: 1,

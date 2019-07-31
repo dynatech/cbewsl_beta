@@ -129,7 +129,7 @@ export default class FieldSurveyLogs extends Component {
     Notification.endOfValidity();
     fetch('http://192.168.150.10:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
       .then((responseJson) => {
-        Sync.syncToNetwork("FieldSurveyLogs").then(() => {
+        Sync.clientToServer("FieldSurveyLogs").then(() => {
           let field_logs = [];
           let to_local_data = [];
           let counter = 0

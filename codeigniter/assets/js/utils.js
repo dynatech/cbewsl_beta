@@ -57,7 +57,8 @@ function reportData() {
         { "type": "Hazard Data", "logs": "hazard_data" },
         { "type": "Resource and Capacities", "logs": "resource_and_capacities" },
         { "type": "Sensor Maintenance", "logs": "sensor_maintenance" },
-        { "type": "Situation Report", "logs": "situation_report" }];
+        { "type": "Situation Report", "logs": "situation_report" },
+        { "type": "Current Situation Report", "logs": "current_situation_report" }];
 
     let table = $('#reports_table').DataTable({
         "data": data,
@@ -74,7 +75,6 @@ function reportData() {
 
     $('#reports_table tbody').on('click', '#print_report', function () {
         let data = table.row($(this).parents('tr')).data();
-        console.log(data)
         printData(data);
     });
 }
@@ -213,7 +213,15 @@ function printData(data) {
     } else if (logs == "current_situation_report") {
         let data = [SITUATION_LOG_DATA[0]];
         if (data.length != 0) {
-            printJS('SELECTOR', 'html')
+            printJS({
+                printable: data,
+                type: 'json',
+                properties: [
+                    { field: 'title', displayName: 'Summary' },
+                    { field: 'start', displayName: 'Date' }
+                ],
+                header: '<h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/banner.png"></img>'
+            });
         } else {
             alert("No data.");
         }
