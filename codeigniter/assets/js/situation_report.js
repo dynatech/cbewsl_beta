@@ -23,15 +23,21 @@ function initializeSituationReportCalendar() {
                 id: value.situation_report_id
             })
         });
-
+        SITUATION_LOG_DATA = situation_reports
         if (situation_reports[0]) {
             let formatted_date = formatDateTime(situation_reports[0].start);
             let date = formatted_date.date_only_format;
             let time = formatted_date.time_format;
             $("#latest_situation_report_date_time").text("").append("<b>Date : " + date + "</b><br>");
             $("#latest_situation_report_summary").text("").append("<b>Summary :</b><br>" + situation_reports[0].title);
+            $("#send_current_situation_report").show();
+            $("#print_current_situation_report").show();
+            sendSituationReportViaEmail(date);
+            generateSituationReportPDF(situation_reports[0]);
         } else {
             $("#latest_situation_report_date_time").text("No latest report.");
+            $("#send_current_situation_report").hide();
+            $("#print_current_situation_report").hide();
         }
 
         let situation_report_calendar = document.getElementById("situation_report_calendar");
@@ -87,6 +93,62 @@ function initializeSituationReportCalendar() {
         calendar.destroy();
         calendar.render();
         calendar.render();
+    });
+}
+
+function generateSituationReportPDF(data) {
+    $("#print_current_situation_report").unbind();
+    $("#print_current_situation_report").click(function () {
+        let pageWidth = 8.5,
+            lineHeight = 1.2,
+            margin = 0.5,
+            maxLineWidth = pageWidth - margin * 2,
+            fontSize = 20,
+            ptsPerInch = 72,
+            oneLineHeight = fontSize * lineHeight / ptsPerInch,
+            text = 'Summary: ' + '\n' + data.title + '\n',
+            doc = new jsPDF({
+                unit: 'in',
+                lineHeight: lineHeight
+            }).setProperties({ title: 'Current Situation Report' });
+
+        let textLines = doc
+            .setFontSize(fontSize)
+            .splitTextToSize(text, maxLineWidth);
+
+        doc.text(textLines, margin, margin + 2 * oneLineHeight);
+
+        let format_date_time = formatDateTime(data.start);
+        let file_name = 'Current_Situation_Report_' + format_date_time.for_file_name
+        doc.setFontStyle('bold')
+            .text('Current Situation Report Date: ' + format_date_time.date_only_format + '', margin, margin + oneLineHeight);
+
+        doc.save(file_name + '.pdf');
+        doc.output('dataurlnewwindow');
+    });
+}
+
+function sendSituationReportViaEmail(date) {
+    $("#send_current_situation_report").unbind();
+    $("#send_current_situation_report").click(function () {
+        $("#sendEmailSituationReportModal").modal("show");
+    });
+
+    $("#confirm_send_situation_report").unbind();
+    $("#confirm_send_situation_report").click(function () {
+        let url = "http://192.168.150.10:5000/api/situation_report/send_email";
+        let data = {
+            date: date,
+            email: $("#email_for_situation_report").val()
+        }
+
+        $.post(url, data).done(function (response) {
+            alert(response.message);
+            if (response.status == true) {
+                $("#email_for_situation_report").val("");
+                $("#sendEmailSituationReportModal").modal("hide");
+            }
+        });
     });
 }
 

@@ -8,8 +8,8 @@
     <div class="tab-pane fade show active" id="latest_report_summary" role="tabpanel" aria-labelledby="latest_report_summary_tab">
         <div class="card">
             <div class="card-body">
-            
-                <div class="row">
+                <p id="field_survey_status"></p>
+                <div class="row" id="latest_report_summary_details">
                     <div class="col-6">
                         <table class="table table-borderless">
                             <tbody>
@@ -38,6 +38,10 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="float-left">
+                            <button type="button" class="btn btn-primary btn-sm" id="send_latest_field_survey">SEND</button>
+                            <button type="button" class="btn btn-primary btn-sm" id="print_latest_field_survey">SAVE & PRINT</button>
+                        </div>
                     </div>
                     <div class="col">
                         
@@ -48,6 +52,7 @@
             </div>
         </div>
     </div>
+    <div id="editor"></div>
     <div class="tab-pane fade" id="field_survey_logs" role="tabpanel" aria-labelledby="field_survey_logs_tab">
         <div class="card">
             <div class="card-body">

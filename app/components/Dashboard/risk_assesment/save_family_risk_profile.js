@@ -46,11 +46,11 @@ export default class SaveFamilyRiskProfile extends Component {
                 vulnerability_nature: ""
             });
         }
-        this.setState({spinner: false})
+        this.setState({ spinner: false })
     }
 
     saveFamilyRiskProfile() {
-        this.setState({spinner: true})
+        this.setState({ spinner: true })
         Notification.endOfValidity();
         const { family_profile_id,
             local_storage_id,
@@ -206,9 +206,9 @@ export default class SaveFamilyRiskProfile extends Component {
         return (
             <ScrollView style={rassessment_styles.container}>
                 <Spinner
-                visible={this.state.spinner}
-                textContent={'Fetching data...'}
-                textStyle={spinner_styles.spinnerTextStyle}
+                    visible={this.state.spinner}
+                    textContent={'Fetching data...'}
+                    textStyle={spinner_styles.spinnerTextStyle}
                 />
                 <View style={rassessment_styles.menuSection}>
                     <TextInput style={defaults.inputs} placeholder="Number of Members: E.g. 5" value={this.state.members_count} onChangeText={text => this.setState({ members_count: text })} />

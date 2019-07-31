@@ -58,3 +58,41 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="addMomsImagesModal" tabindex="-1" role="dialog" aria-labelledby="addMomsImagesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="addMomsImagesModalLabel">Upload MOMs Images</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="moms_upload_form" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="file">Upload image(s)</label>
+                            <input type="file" id="image_file" multiple="multiple">
+                            <input id="file_to_upload" type="file" name="files[]" class="form-control-file" multiple="true" autocomplete="off" required>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <div id="upload_spinner" style="visibility:hidden">
+                <button class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Uploading
+                </button>
+            </div>
+            <div id="upload_buttons">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="upload_moms_images">Upload</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

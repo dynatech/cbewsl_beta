@@ -11,6 +11,7 @@ import FamilyRiskProfile from './family_risk_profile';
 import MapSection from './map_section';
 import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Sync from '../../utils/syncer';
 
 export default class HazardData extends Component {
   constructor(props) {
@@ -65,8 +66,11 @@ export default class HazardData extends Component {
 
   getAllHazardData() {
     Notification.endOfValidity();
+    Sync.clientToServer("RiskAssessmentHazardData").then(() => {
+    });
     fetch('http://192.168.150.10:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
       .then((responseJson) => {
+        // Sync.clientToServer("RiskAssessmentHazardData").then(() => {
         let to_local_data = [];
         let counter = 0
         let hazard_data = [];
@@ -97,8 +101,9 @@ export default class HazardData extends Component {
           </DataTable.Row>)
 
         }
-          this.setState({ hazard_data: hazard_data, spinner: false })
-          this.tablePaginate(hazard_data)
+        this.setState({ hazard_data: hazard_data, spinner: false })
+        this.tablePaginate(hazard_data)
+        // });
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentHazardData')

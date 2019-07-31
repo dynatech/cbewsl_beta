@@ -10,6 +10,7 @@ import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
 import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Sync from '../../utils/syncer';
 
 export default class FieldSurveyLogs extends Component {
   constructor(props) {
@@ -131,31 +132,39 @@ export default class FieldSurveyLogs extends Component {
     Notification.endOfValidity();
     fetch('http://192.168.150.10:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
       .then((responseJson) => {
-        let field_logs = [];
-        let to_local_data = [];
-        let counter = 0
-        if (responseJson.length != 0) {
-          for (const [index, value] of responseJson.entries()) {
-            let format_date_time = this.formatDateTime(date = value.date);
+        Sync.clientToServer("FieldSurveyLogs").then(() => {
+          let field_logs = [];
+          let to_local_data = [];
+          let counter = 0
+          if (responseJson.length != 0) {
+            for (const [index, value] of responseJson.entries()) {
+              let format_date_time = this.formatDateTime(date = value.date);
+              field_logs.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: -90 }}><Text style={{ fontSize: 10 }}>{format_date_time["text_format_timestamp"]}</Text></DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>Field Survey Report {value.date.split(' ')[0]}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: -190 }}>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.field_survey_id)}></Icon>
+                </DataTable.Cell>
+              </DataTable.Row>)
+              counter += 1
+              to_local_data.push({
+                field_survey_id: value.field_survey_id,
+                local_storage_id: counter,
+                sync_status: 3,
+                mat_characterization: value.mat_characterization,
+                mechanism: value.mechanism,
+                exposure: value.exposure,
+                note: value.note,
+                date: value.date,
+              });
+            }
+            Storage.removeItem("FieldSurveyLogs")
+            Storage.setItem("FieldSurveyLogs", to_local_data)
+          } else {
             field_logs.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: -90 }}><Text style={{fontSize: 10}}>{format_date_time["text_format_timestamp"]}</Text></DataTable.Cell>
-              <DataTable.Cell style={{ marginRight: 10 }}>Field Survey Report {value.date.split(' ')[0]}</DataTable.Cell>
-              <DataTable.Cell style={{ marginRight: -190 }}>
-                <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.field_survey_id)}></Icon>
-              </DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
-            counter += 1
-            to_local_data.push({
-              field_survey_id: value.field_survey_id,
-              local_storage_id: counter,
-              sync_status: 3,
-              mat_characterization: value.mat_characterization,
-              mechanism: value.mechanism,
-              exposure: value.exposure,
-              note: value.note,
-              date: value.date,
-            });
           }
           Storage.removeItem("FieldSurveyLogs")
           Storage.setItem("FieldSurveyLogs", to_local_data)

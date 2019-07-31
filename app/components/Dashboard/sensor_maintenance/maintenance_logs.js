@@ -75,36 +75,40 @@ export default class MaintenanceLogs extends Component {
 
     fetch('http://192.168.150.10:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
       .then((responseJson) => {
-        let to_local_data = [];
-        for (const [index, value] of responseJson.entries()) {
-          let format_date_time = this.formatDateTime(date = value.timestamp);
-          next_days.push(format_date_time["date"])
-          let counter = 0;
-          counter += 1;
-          to_local_data.push({
-            sensor_maintenance_id: value.sensor_maintenance_id,
-            local_storage_id: counter,
-            sync_status: 3,
-            working_nodes: value.working_nodes,
-            anomalous_nodes: value.anomalous_nodes,
-            rain_gauge_status: value.rain_gauge_status,
-            timestamp: format_date_time["current_timestamp"],
-          });
-        }
+        Sync.clientToServer("SensorMaintenanceLogs").then(() => {
+          let to_local_data = [];
+          for (const [index, value] of responseJson.entries()) {
+            let format_date_time = this.formatDateTime(date = value.timestamp);
+            next_days.push(format_date_time["date"])
+            let counter = 0;
+            counter += 1;
+            to_local_data.push({
+              sensor_maintenance_id: value.sensor_maintenance_id,
+              local_storage_id: counter,
+              sync_status: 3,
+              working_nodes: value.working_nodes,
+              anomalous_nodes: value.anomalous_nodes,
+              rain_gauge_status: value.rain_gauge_status,
+              timestamp: format_date_time["current_timestamp"],
+            });
+          }
 
-        next_days.forEach((day) => {
-          new_days = {
-            ...new_days,
-            [day]: {
-              day,
-              marked: true
-            }
-          };
+          next_days.forEach((day) => {
+            new_days = {
+              ...new_days,
+              [day]: {
+                day,
+                marked: true
+              }
+            };
+          });
+          Storage.removeItem("SensorMaintenanceLogs")
+          Storage.setItem("SensorMaintenanceLogs", to_local_data)
+          this.setState({ marked_dates: new_days })
         });
         Storage.removeItem("SensorMaintenanceLogs")
         Storage.setItem("SensorMaintenanceLogs", to_local_data)
         this.setState({ marked_dates: new_days, spinner: false})
-
       })
       .catch((error) => {
         let data_container = Storage.getItem('SensorMaintenanceLogs')

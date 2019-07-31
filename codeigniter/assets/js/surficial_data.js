@@ -4,7 +4,7 @@ $(document).ready(function () {
     initializeMonitoringLogs();
     initializeAddMonitoringLogs();
     initializeCRUDMonitoringLogs();
-
+    uploadMomsImages();
     $('#cancel_add_field_survey').modal('hide');
 });
 
@@ -152,7 +152,7 @@ function initializeMonitoringLogs() {
                     {
                         render(data, type, full) {
                             // ${full.resources_and_capacities_id}
-                            return `<a href="#" id="edit_monitoring_logs"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="remove_monitoring_logs"><i class="fas fa-minus-circle text-center"></i></a>`;
+                            return `<a href="#" id="edit_monitoring_logs"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="remove_monitoring_logs"><i class="fas fa-minus-circle text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="add_moms_images"><i class="fas fa-upload text-center"></i></a>`;
                         }
                     }
                 ]
@@ -176,6 +176,49 @@ function initializeCRUDLogs(datatable) {
     $('#moms_table tbody').on('click', '#remove_monitoring_logs', function () {
         let data = datatable.row($(this).parents('tr')).data();
         deleteMonitoringLogsConfirmation(data);
+    });
+
+    $('#moms_table tbody').on('click', '#add_moms_images', function () {
+        let data = datatable.row($(this).parents('tr')).data();
+        console.log(data)
+        $("#addMomsImagesModal").modal({ backdrop: 'static', keyboard: false })
+    });
+}
+
+function uploadMomsImages() {
+    $("#upload_moms_images").click(function () {
+        let url = "http://192.168.150.10:5000/api/moms/upload";
+        // var formDataRaw = $('#moms_upload_form')[0];
+        // var form_data = new FormData(formDataRaw);
+        // $.ajax({
+        //     type: 'POST',
+        //     url: url,
+        //     data: form_data,
+        //     dataType: 'jsonp',
+        //     contentType: false,
+        //     cache: false,
+        //     processData: false,
+        //     async: false,
+        //     success: function (data) {
+        //         console.log(data);
+        //     },
+        //     error: function (data) {
+        //         console.log(data);
+        //     }
+        // });
+        var form_data = new FormData($('#moms_upload_form')[0]);
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: form_data,
+            dataType: 'jsonp',
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                alert('Success!');
+            },
+        });
     });
 }
 
