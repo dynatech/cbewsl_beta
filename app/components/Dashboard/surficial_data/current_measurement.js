@@ -73,7 +73,7 @@ export default class CurrentMeasurement extends Component {
         }
         Storage.removeItem("SurficialDataCurrentMeasurement")
         Storage.setItem("SurficialDataCurrentMeasurement", responseJson)
-        this.setState({ crack_sets: crack_sets, spinner: false})
+        this.setState({ crack_sets: crack_sets, spinner: false })
       })
       .catch((error) => {
         let data_container = Storage.getItem('SurficialDataCurrentMeasurement')
@@ -85,7 +85,7 @@ export default class CurrentMeasurement extends Component {
           for (const [index, value] of response.cracks.entries()) {
             crack_sets.push(<Text style={{ fontSize: 20, fontWeight: 'bold' }}>Crack {value.crack}: {value.measurement} cm</Text>)
           }
-          this.setState({ crack_sets: crack_sets, spinner: false})
+          this.setState({ crack_sets: crack_sets, spinner: false })
         });
       });
   }

@@ -66,8 +66,8 @@ export default class HazardData extends Component {
 
   getAllHazardData() {
     Notification.endOfValidity();
-    Sync.clientToServer("RiskAssessmentHazardData").then(() => {
-    });
+    // Sync.clientToServer("RiskAssessmentHazardData").then(() => {
+    // });
     fetch('http://192.168.150.10:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
       .then((responseJson) => {
         // Sync.clientToServer("RiskAssessmentHazardData").then(() => {

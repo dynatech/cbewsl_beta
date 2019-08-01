@@ -131,7 +131,7 @@ export default class LatestReportSummary extends Component {
           }
           Storage.removeItem("FieldSurveyLatestReportSummary")
           Storage.setItem("FieldSurveyLatestReportSummary", to_local_data)
-          this.setState({ latest_report: latest_report, spinner: false})
+          this.setState({ latest_report: latest_report, spinner: false })
         }
       })
       .catch((error) => {
@@ -203,7 +203,7 @@ export default class LatestReportSummary extends Component {
             </View>)
           }
 
-          this.setState({ latest_report: latest_report, spinner: false})
+          this.setState({ latest_report: latest_report, spinner: false })
         });
       });
   }

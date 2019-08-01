@@ -72,8 +72,9 @@ export default class MainDashboard extends Component {
             if (response == null || response == undefined) {
                 let init = Sync.serverToClient()
                 init.then(init_response => {
+                    console.log(init_response)
                     if (init_response.status == true) {
-                        this.setState({spinner: false})
+                        this.setState({ spinner: false })
                     }
                 });
             }
@@ -84,7 +85,8 @@ export default class MainDashboard extends Component {
         let offline_data = Storage.getItem("Pub&CandidAlert");
         offline_data.then(response => {
 
-            let candidate_alerts = JSON.parse(response.candidate_alerts);
+            let candidate_alerts = JSON.parse(response.candidate_alert);
+            console.log(candidate_alerts.leo);
             let current_alerts = response.current_alerts;
             let top_position = -10;
             let temp = []
@@ -94,27 +96,27 @@ export default class MainDashboard extends Component {
                     status="warning"
                     containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
                     value={
-                            <Text style={{color: 'white', padding: 10, fontSize: 10}}>
-                                <Icon name="ios-warning" style={{ fontSize: 15, color: 'white'}}></Icon> New trigger(s)
+                        <Text style={{ color: 'white', padding: 10, fontSize: 10 }}>
+                            <Icon name="ios-warning" style={{ fontSize: 15, color: 'white' }}></Icon> New trigger(s)
                             </Text>
-                        }
+                    }
                 />)
-                top_position = top_position-20;
+                top_position = top_position - 20;
             }
 
-            if (current_alerts.latest.length != 0) {
+            if (candidate_alerts.leo.latest.length != 0) {
                 temp.push(<Badge
                     status="error"
                     containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
                     value={
-                            <Text style={{color: 'white', padding: 10, fontSize: 10}}>
-                                Alert 1
+                        <Text style={{ color: 'white', padding: 10, fontSize: 10 }}>
+                            Alert 1
                             </Text>
-                        }
+                    }
                 />)
             }
-            
-            this.setState({alert_badge: temp})
+
+            this.setState({ alert_badge: temp })
 
 
             // if (response == null) {
