@@ -66,39 +66,6 @@ export default class Summary extends Component {
 
   getAllRiskAssessmentSummary() {
     Notification.endOfValidity();
-    Sync.clientToServer("RiskAssessmentSummary").then(() => {
-      console.log("hey")
-      let temp = Sync.serverToClient("RiskAssessmentSummary");
-      temp.then(sync_response => {
-        console.log(sync_response)
-      })
-    }).catch((error) => {
-      // let data_container = Storage.getItem('RiskAssessmentSummary')
-      // let summary_data = [];
-      // data_container.then(response => {
-      //   console.log("2")
-      //   console.log(response)
-      //   if (response != null || response != undefined) {
-      //     for (const [index, value] of response.entries()) {
-      //       summary_data.push(<DataTable.Row style={{ width: 500 }}>
-      //         <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
-      //         <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
-      //         <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
-      //         <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
-      //       </DataTable.Row>)
-      //     }
-      //   } else {
-      //     summary_data.push(<DataTable.Row style={{ width: 500 }}>
-      //       <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-      //     </DataTable.Row>)
-      //   }
-
-      //   this.setState({ summary_data: summary_data })
-      //   this.tablePaginate(summary_data)
-      //   this.setState({ spinner: false });
-      // });
-    });
-
     fetch('http://192.168.150.10:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
         Sync.clientToServer("RiskAssessmentSummary").then(() => {

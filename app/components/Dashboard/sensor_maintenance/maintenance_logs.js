@@ -104,11 +104,8 @@ export default class MaintenanceLogs extends Component {
           });
           Storage.removeItem("SensorMaintenanceLogs")
           Storage.setItem("SensorMaintenanceLogs", to_local_data)
-          this.setState({ marked_dates: new_days })
+          this.setState({ marked_dates: new_days, spinner: false })
         });
-        Storage.removeItem("SensorMaintenanceLogs")
-        Storage.setItem("SensorMaintenanceLogs", to_local_data)
-        this.setState({ marked_dates: new_days, spinner: false})
       })
       .catch((error) => {
         let data_container = Storage.getItem('SensorMaintenanceLogs')
@@ -127,14 +124,14 @@ export default class MaintenanceLogs extends Component {
                 }
               };
             });
-            this.setState({ marked_dates: new_days, spinner: false})
+            this.setState({ marked_dates: new_days, spinner: false })
           }
         })
       });
   }
 
   selectDateToAddLogs(date) {
-    this.setState({spinner: true})
+    this.setState({ spinner: true })
     Notification.endOfValidity();
     this.setState({ date_selected: date })
     let selected_date = this.formatDateTime(date = date)

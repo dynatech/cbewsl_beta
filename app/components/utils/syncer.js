@@ -153,10 +153,9 @@ const Sync = {
                             break;
                         case "SituationReportLatest":
                             for (const [index, value] of responseJson.entries()) {
-                                counter += 1;
                                 to_local_data.push({
                                     situation_report_id: value.situation_report_id,
-                                    local_storage_id: counter,
+                                    local_storage_id: 1,
                                     sync_status: 3,
                                     timestamp: value.timestamp,
                                     summary: value.summary,
@@ -225,7 +224,8 @@ const Sync = {
             "SurficialDataMeasurements": "6",
             "SurficialDataMomsSummary": "http://192.168.150.10:5000/api/surficial_data/save_monitoring_log",
             "SensorMaintenanceLogs": "http://192.168.150.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs",
-            "Pub&CandidAlert": "9"
+            "Pub&CandidAlert": "9",
+            "SituationReportLogs": "http://192.168.150.10:5000/api/situation_report/save_situation_report"
         }
         let url = API_LIST[storage_key];
         let data = Storage.getItem(storage_key);

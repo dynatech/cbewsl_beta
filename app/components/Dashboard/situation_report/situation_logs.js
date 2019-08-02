@@ -71,35 +71,37 @@ export default class SituationLogs extends Component {
     let new_days = {};
     fetch('http://192.168.150.10:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
       .then((responseJson) => {
-        let to_local_data = [];
-        for (const [index, value] of responseJson.entries()) {
-          let format_date_time = this.formatDateTime(date = value.timestamp);
-          next_days.push(format_date_time["date"])
-          let counter = 0;
-          counter += 1;
-          to_local_data.push({
-            situation_report_id: value.situation_report_id,
-            local_storage_id: counter,
-            sync_status: 3,
-            timestamp: format_date_time["current_timestamp"],
-            summary: value.summary,
-            pdf_path: value.pdf_path,
-            image_path: value.image_path
-          });
-        }
+        Sync.clientToServer("SituationReportLogs").then(() => {
+          let to_local_data = [];
+          for (const [index, value] of responseJson.entries()) {
+            let format_date_time = this.formatDateTime(date = value.timestamp);
+            next_days.push(format_date_time["date"])
+            let counter = 0;
+            counter += 1;
+            to_local_data.push({
+              situation_report_id: value.situation_report_id,
+              local_storage_id: counter,
+              sync_status: 3,
+              timestamp: format_date_time["current_timestamp"],
+              summary: value.summary,
+              pdf_path: value.pdf_path,
+              image_path: value.image_path
+            });
+          }
 
-        next_days.forEach((day) => {
-          new_days = {
-            ...new_days,
-            [day]: {
-              day,
-              marked: true
-            }
-          };
+          next_days.forEach((day) => {
+            new_days = {
+              ...new_days,
+              [day]: {
+                day,
+                marked: true
+              }
+            };
+          });
+          this.setState({ marked_dates: new_days, spinner: false })
+          Storage.removeItem("SituationReportLogs")
+          Storage.setItem("SituationReportLogs", to_local_data)
         });
-        this.setState({ marked_dates: new_days, spinner: false })
-        Storage.removeItem("SituationReportLogs")
-        Storage.setItem("SituationReportLogs", to_local_data)
       })
       .catch((error) => {
 
@@ -167,14 +169,14 @@ export default class SituationLogs extends Component {
         if (responseJson != null && responseJson.length != 0) {
           for (const [index, value] of responseJson.entries()) {
             let format_date_time = this.formatDateTime(date = value.timestamp);
-            situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 , borderTopWidth: 1, borderColor: '#083451'}}>
+            situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10, borderTopWidth: 1, borderColor: '#083451' }}>
               <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_date_format"]}</Text>
-              <Text style={{ fontSize: 15 , marginLeft: 10}}>{value.summary}</Text>
+              <Text style={{ fontSize: 15, marginLeft: 10 }}>{value.summary}</Text>
               <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity style={[defaults.button, {width: '20%'}]} onPress={() => this.modifySituationReport(value)}>
+                <TouchableOpacity style={[defaults.button, { width: '20%' }]} onPress={() => this.modifySituationReport(value)}>
                   <Text style={defaults.buttonText}>Update</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[defaults.button, {width: '20%'}]} onPress={() => this.deleteSituationReport(value)}>
+                <TouchableOpacity style={[defaults.button, { width: '20%' }]} onPress={() => this.deleteSituationReport(value)}>
                   <Text style={defaults.buttonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
@@ -244,9 +246,9 @@ export default class SituationLogs extends Component {
     return (
       <ScrollView style={situation_report_styles.container}>
         <Spinner
-            visible={this.state.spinner}
-            textContent={'Fetching data...'}
-            textStyle={spinner_styles.spinnerTextStyle}
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
         />
         <NavigationEvents onDidFocus={() => this.displaySituationReportPerDay()} />
         <View style={situation_report_styles.menuSection}>

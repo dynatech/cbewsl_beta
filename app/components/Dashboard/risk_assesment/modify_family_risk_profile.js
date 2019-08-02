@@ -98,39 +98,41 @@ export default class ModifyFamilyRisk extends Component {
     Notification.endOfValidity();
     fetch('http://192.168.150.10:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
       .then((responseJson) => {
-        let family_profile_data = [];
-        let to_local_data = [];
-        let counter = 0
-        if (responseJson.length != 0) {
-          for (const [index, value] of responseJson.entries()) {
+        Sync.clientToServer("RiskAssessmentFamilyRiskProfile").then(() => {
+          let family_profile_data = [];
+          let to_local_data = [];
+          let counter = 0
+          if (responseJson.length != 0) {
+            for (const [index, value] of responseJson.entries()) {
+              family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.members_count}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerable_members_count}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability_nature}</DataTable.Cell>
+                <DataTable.Cell>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.family_profile_id)}></Icon>
+                </DataTable.Cell>
+              </DataTable.Row>)
+              counter += 1
+              to_local_data.push({
+                family_profile_id: value.family_profile_id,
+                local_storage_id: counter,
+                sync_status: 3,
+                members_count: value.members_count,
+                vulnerable_members_count: value.vulnerable_members_count,
+                vulnerability_nature: value.vulnerability_nature
+              })
+            }
+            Storage.removeItem("RiskAssessmentFamilyRiskProfile")
+            Storage.setItem("RiskAssessmentFamilyRiskProfile", to_local_data)
+          } else {
             family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>{value.members_count}</DataTable.Cell>
-              <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerable_members_count}</DataTable.Cell>
-              <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability_nature}</DataTable.Cell>
-              <DataTable.Cell>
-                <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.family_profile_id)}></Icon>
-              </DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
-            counter += 1
-            to_local_data.push({
-              family_profile_id: value.family_profile_id,
-              local_storage_id: counter,
-              sync_status: 3,
-              members_count: value.members_count,
-              vulnerable_members_count: value.vulnerable_members_count,
-              vulnerability_nature: value.vulnerability_nature
-            })
           }
-          Storage.removeItem("RiskAssessmentFamilyRiskProfile")
-          Storage.setItem("RiskAssessmentFamilyRiskProfile", to_local_data)
-        } else {
-          family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
-            <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-          </DataTable.Row>)
-        }
-        this.setState({ family_profile_data: family_profile_data, spinner: false})
-        this.tablePaginate(family_profile_data)     
+          this.setState({ family_profile_data: family_profile_data, spinner: false })
+          this.tablePaginate(family_profile_data)
+        });
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentFamilyRiskProfile')
@@ -153,7 +155,7 @@ export default class ModifyFamilyRisk extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ family_profile_data: family_profile_data, spinner: false})
+          this.setState({ family_profile_data: family_profile_data, spinner: false })
           this.tablePaginate(family_profile_data)
         })
       });

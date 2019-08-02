@@ -99,41 +99,43 @@ export default class ModifySummary extends Component {
     Notification.endOfValidity();
     fetch('http://192.168.150.10:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
-        let summary_data = [];
-        let to_local_data = [];
-        let counter = 0
-        if (responseJson.length != 0) {
-          for (const [index, value] of responseJson.entries()) {
+        Sync.clientToServer("RiskAssessmentSummary").then(() => {
+          let summary_data = [];
+          let to_local_data = [];
+          let counter = 0
+          if (responseJson.length != 0) {
+            for (const [index, value] of responseJson.entries()) {
+              summary_data.push(<DataTable.Row style={{ width: 500 }}>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
+                <DataTable.Cell>
+                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.summary_id)}></Icon>
+                </DataTable.Cell>
+              </DataTable.Row>)
+              counter += 1
+              to_local_data.push({
+                summary_id: value.summary_id,
+                local_storage_id: counter,
+                sync_status: 3,
+                location: value.location,
+                impact: value.impact,
+                adaptive_capacity: value.adaptive_capacity,
+                vulnerability: value.vulnerability
+              });
+            }
+            Storage.removeItem("RiskAssessmentSummary")
+            Storage.setItem("RiskAssessmentSummary", to_local_data)
+          } else {
             summary_data.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
-              <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
-              <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
-              <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
-              <DataTable.Cell>
-                <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.summary_id)}></Icon>
-              </DataTable.Cell>
+              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
-            counter += 1
-            to_local_data.push({
-              summary_id: value.summary_id,
-              local_storage_id: counter,
-              sync_status: 3,
-              location: value.location,
-              impact: value.impact,
-              adaptive_capacity: value.adaptive_capacity,
-              vulnerability: value.vulnerability
-            });
           }
-          Storage.removeItem("RiskAssessmentSummary")
-          Storage.setItem("RiskAssessmentSummary", to_local_data)
-        } else {
-          summary_data.push(<DataTable.Row style={{ width: 500 }}>
-            <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-          </DataTable.Row>)
-        }
-        this.setState({ summary_data: summary_data, spinner: false})
-        this.tablePaginate(summary_data)
+          this.setState({ summary_data: summary_data, spinner: false })
+          this.tablePaginate(summary_data)
+        });
 
       })
       .catch((error) => {
@@ -159,7 +161,7 @@ export default class ModifySummary extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ summary_data: summary_data, spinner:false})
+          this.setState({ summary_data: summary_data, spinner: false })
           this.tablePaginate(summary_data)
         });
       });
