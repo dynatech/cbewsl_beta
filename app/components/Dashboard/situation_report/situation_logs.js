@@ -19,7 +19,8 @@ export default class SituationLogs extends Component {
       date_selected: "",
       selected_date_situations: [],
       add_report_text: "Add Report",
-      spinner: true
+      spinner: true,
+      role_id: 0
     };
   }
 
@@ -62,6 +63,14 @@ export default class SituationLogs extends Component {
       text_format_timestamp: text_format_timestamp,
       text_date_format: text_date_format
     }
+  }
+
+  componentWillMount() {
+    let credentials = Storage.getItem("loginCredentials");
+    credentials.then(response => {
+      let role_id = response.role_id;
+      this.setState({ role_id: role_id });
+    });
   }
 
   displaySituationReportPerDay() {
@@ -220,25 +229,31 @@ export default class SituationLogs extends Component {
   }
 
   navigateSaveSituationReport() {
-    let date_selected = this.state.date_selected
-    if (date_selected == "") {
-      Alert.alert(
-        'Alert!',
-        'Please pick a date to add report.',
-        [
-          {
-            text: 'Close',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          }
-        ],
-        { cancelable: false },
-      );
+    role_id = this.state.role_id;
+    if (role_id == 1 || role_id == 2) {
+      Alert.alert('Info', 'Unable to access this feature.');
     } else {
-      this.props.navigation.navigate('save_situation_report', {
-        data: date_selected
-      })
+      let date_selected = this.state.date_selected
+      if (date_selected == "") {
+        Alert.alert(
+          'Alert!',
+          'Please pick a date to add report.',
+          [
+            {
+              text: 'Close',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            }
+          ],
+          { cancelable: false },
+        );
+      } else {
+        this.props.navigation.navigate('save_situation_report', {
+          data: date_selected
+        })
+      }
     }
+
   }
 
 

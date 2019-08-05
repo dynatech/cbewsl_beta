@@ -11,6 +11,10 @@ export default class Login extends Component {
   }
 
 
+  //1 = public 
+  //2 = stake holders
+  //3 = admin 
+
   componentWillMount() {
     let credentials = Storage.getItem("loginCredentials")
     credentials.then(response => {

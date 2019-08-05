@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
@@ -26,8 +26,26 @@ export default class HazardData extends Component {
       hazard_data_paginate: [],
       page: 0,
       number_of_pages: 0,
-      spinner: true
+      spinner: true,
+      role_id: 0
     };
+  }
+
+  componentWillMount() {
+    let credentials = Storage.getItem("loginCredentials")
+    credentials.then(response => {
+      let role_id = response.role_id;
+      this.setState({ role_id: role_id });
+    });
+  }
+
+  navigateModifyHazardData() {
+    role_id = this.state.role_id;
+    if (role_id == 1 || role_id == 2) {
+      Alert.alert('Info', 'Unable to access this feature.');
+    } else {
+      this.props.navigation.navigate('modify_hazard_data');
+    }
   }
 
   // Refactor this
@@ -99,8 +117,8 @@ export default class HazardData extends Component {
             </DataTable.Row>)
 
           }
-          this.setState({ hazard_data: hazard_data, spinner: false })
-          this.tablePaginate(hazard_data)
+          this.setState({ hazard_data: hazard_data, spinner: false });
+          this.tablePaginate(hazard_data);
         });
       })
       .catch((error) => {
@@ -122,8 +140,8 @@ export default class HazardData extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ hazard_data: hazard_data, spinner: false })
-          this.tablePaginate(hazard_data)
+          this.setState({ hazard_data: hazard_data, spinner: false });
+          this.tablePaginate(hazard_data);
         })
       });
 
@@ -198,7 +216,7 @@ export default class HazardData extends Component {
                 />
               </DataTable>
             </ScrollView>
-            <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_hazard_data')}>
+            <TouchableOpacity style={defaults.button} onPress={() => this.navigateModifyHazardData()}>
               <Text style={defaults.buttonText}>EDIT</Text>
             </TouchableOpacity>
           </View>

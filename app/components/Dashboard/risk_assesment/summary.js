@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
@@ -26,7 +26,8 @@ export default class Summary extends Component {
       summary_data_paginate: [],
       page: 0,
       number_of_pages: 0,
-      spinner: true
+      spinner: true,
+      role_id: 0
     };
   }
 
@@ -64,6 +65,23 @@ export default class Summary extends Component {
     }
   }
 
+  componentWillMount() {
+    let credentials = Storage.getItem("loginCredentials");
+    credentials.then(response => {
+      let role_id = response.role_id;
+      this.setState({ role_id: role_id });
+    });
+  }
+
+  navigateModifySummary() {
+    role_id = this.state.role_id;
+    if (role_id == 1 || role_id == 2) {
+      Alert.alert('Info', 'Unable to access this feature.');
+    } else {
+      this.props.navigation.navigate('modify_summary');
+    }
+  }
+
   getAllRiskAssessmentSummary() {
     Notification.endOfValidity();
     fetch('http://192.168.150.10:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
@@ -72,8 +90,6 @@ export default class Summary extends Component {
           let summary_data = [];
           let to_local_data = [];
           let counter = 0
-          console.log("1")
-          console.log(responseJson)
           if (responseJson != null || responseJson != undefined) {
             for (const [index, value] of responseJson.entries()) {
               summary_data.push(<DataTable.Row style={{ width: 500 }}>
@@ -100,8 +116,8 @@ export default class Summary extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ summary_data: summary_data })
-          this.tablePaginate(summary_data)
+          this.setState({ summary_data: summary_data });
+          this.tablePaginate(summary_data);
           this.setState({ spinner: false });
         });
 
@@ -110,8 +126,6 @@ export default class Summary extends Component {
         let data_container = Storage.getItem('RiskAssessmentSummary')
         let summary_data = [];
         data_container.then(response => {
-          console.log("2")
-          console.log(response)
           if (response != null || response != undefined) {
             for (const [index, value] of response.entries()) {
               summary_data.push(<DataTable.Row style={{ width: 500 }}>
@@ -127,8 +141,8 @@ export default class Summary extends Component {
             </DataTable.Row>)
           }
 
-          this.setState({ summary_data: summary_data })
-          this.tablePaginate(summary_data)
+          this.setState({ summary_data: summary_data });
+          this.tablePaginate(summary_data);
           this.setState({ spinner: false });
         });
       });
@@ -203,7 +217,7 @@ export default class Summary extends Component {
                 />
               </DataTable>
             </ScrollView>
-            <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_summary')}>
+            <TouchableOpacity style={defaults.button} onPress={() => this.navigateModifySummary()}>
               <Text style={defaults.buttonText}>EDIT</Text>
             </TouchableOpacity>
           </View>

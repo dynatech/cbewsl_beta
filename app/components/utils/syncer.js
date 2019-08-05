@@ -232,7 +232,7 @@ const Sync = {
         const ms = Network.getPing();
 
         ms.then(response => {
-            console.log(response)
+
             if (response.status == "In-active") {
                 Alert.alert('Notice', response.msg);
             } else {

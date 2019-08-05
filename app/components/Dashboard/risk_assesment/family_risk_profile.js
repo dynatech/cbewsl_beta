@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import { NavigationEvents, withNavigation } from 'react-navigation';
 import { defaults } from '../../../assets/styles/default_styles';
@@ -17,11 +17,17 @@ class FamilyRiskProfile extends Component {
       family_profile_data_paginate: [],
       page: 0,
       number_of_pages: 0,
-      spinner: true
+      spinner: true,
+      role_id: 0
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    let credentials = Storage.getItem("loginCredentials");
+    credentials.then(response => {
+      let role_id = response.role_id;
+      this.setState({ role_id: role_id });
+    });
     Notification.endOfValidity();
     fetch('http://192.168.150.10:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
       .then((responseJson) => {
@@ -47,20 +53,17 @@ class FamilyRiskProfile extends Component {
               })
             }
             Storage.removeItem("RiskAssessmentFamilyRiskProfile")
-            Storage.setItem("RiskAssessmentFamilyRiskProfile", to_local_data)
-            let data_container = Storage.getItem('RiskAssessmentFamilyRiskProfile')
-            data_container.then(response => {
-              console.log(response)
-            });
-            this.setState({ family_profile_data: family_profile_data })
-            this.tablePaginate(family_profile_data)
+            Storage.setItem("RiskAssessmentFamilyRiskProfile", to_local_data);
+
           } else {
             family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
-            this.setState({ family_profile_data: family_profile_data, spinner: false })
-            this.tablePaginate(family_profile_data)
           }
+
+          this.setState({ family_profile_data: family_profile_data });
+          this.tablePaginate(family_profile_data);
+          this.setState({ spinner: false });
         });
 
       })
@@ -81,10 +84,21 @@ class FamilyRiskProfile extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ family_profile_data: family_profile_data, spinner: false })
-          this.tablePaginate(family_profile_data)
+          this.setState({ family_profile_data: family_profile_data });
+          this.tablePaginate(family_profile_data);
+          this.setState({ spinner: false });
         })
       });
+  }
+
+
+  navigateModifyFamilyRisk() {
+    role_id = this.state.role_id;
+    if (role_id == 1 || role_id == 2) {
+      Alert.alert('Info', 'Unable to access this feature.');
+    } else {
+      this.props.navigation.navigate('modify_family_risk');
+    }
   }
 
   tablePaginate(family_profile_data) {
@@ -126,7 +140,7 @@ class FamilyRiskProfile extends Component {
           textStyle={spinner_styles.spinnerTextStyle}
         />
         <ScrollView horizontal={true}>
-          <NavigationEvents onDidFocus={() => this.getAllFamilyProfile()} />
+          {/* <NavigationEvents onDidFocus={() => this.getAllFamilyProfile()} /> */}
           <DataTable>
             <DataTable.Header style={{ flex: 1, width: 500 }}>
               <DataTable.Title>Number of members</DataTable.Title>
@@ -142,7 +156,7 @@ class FamilyRiskProfile extends Component {
             />
           </DataTable>
         </ScrollView>
-        <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_family_risk')}>
+        <TouchableOpacity style={defaults.button} onPress={() => this.navigateModifyFamilyRisk()}>
           <Text style={defaults.buttonText}>EDIT</Text>
         </TouchableOpacity>
       </View>
