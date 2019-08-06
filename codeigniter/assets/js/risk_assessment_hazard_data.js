@@ -1,6 +1,7 @@
 $(document).ready(function () {
     getAllHazardData();
     saveHazardData();
+    onUploadHazardMapChange();
 });
 
 function getAllHazardData() {
@@ -116,3 +117,40 @@ function deleteHazardData(hazard_data_id) {
     });
 }
 
+
+function onUploadHazardMapChange() {
+    $("#image_file").change(function (e) {
+        if (this.disabled) {
+            return alert('File upload not supported!');
+        }
+        let FILES = this.files;
+        if (FILES && FILES[0]) {
+            for (var i = 0; i < FILES.length; i++) {
+                readImage(FILES[i]);
+            }
+        }
+    });
+}
+
+function readImage(file) {
+    var reader = new FileReader();
+    var image = new Image();
+
+    reader.readAsDataURL(file);
+    reader.onload = function (_file) {
+        image.src = _file.target.result; // url.createObjectURL(file);
+        image.onload = function () {
+            var w = this.width,
+                h = this.height,
+                t = file.type, // ext only: // file.type.split('/')[1],
+                n = file.name,
+                s = ~~(file.size / 1024) + 'KB';
+            $('#uploadPreview').append('<img height="100px" width="200px" src="' + this.src + '" class="thumb">');
+        };
+
+        image.onerror = function () {
+            alert('Invalid file type: ' + file.type);
+        };
+    };
+
+}

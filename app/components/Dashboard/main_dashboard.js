@@ -1,6 +1,6 @@
 import { Icon } from 'native-base';
 import React, { Component } from 'react';
-import { Image, Linking, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Linking, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { Badge } from 'react-native-elements';
 import { NavigationEvents } from 'react-navigation';
 import { dashboard } from '../../assets/styles/dashboard_styles';
@@ -16,13 +16,19 @@ export default class MainDashboard extends Component {
         super(props);
         this.state = {
             alert_badge: [],
-            spinner: true
+            spinner: true,
+            role_id: 0
         };
     }
 
-    // componentDidMount() {
-    //     Notification.endOfValidity()
-    // }
+    componentDidMount() {
+        let credentials = Storage.getItem("loginCredentials")
+        credentials.then(response => {
+            let role_id = response.role_id;
+            this.setState({ role_id: role_id })
+        });
+
+    }
 
     static navigationOptions = {
         drawerIcon: ({ tintColor }) => (
@@ -31,25 +37,45 @@ export default class MainDashboard extends Component {
     };
 
     navigateMenu(menu) {
-        // Notification.endOfValidity()
+        role_id = this.state.role_id;
         switch (menu) {
             case 'risk_assessment':
-                this.props.navigation.navigate('riskAssessment')
+                this.props.navigation.navigate('riskAssessment');
                 break;
             case 'field_survey':
-                this.props.navigation.navigate('fieldSurvey')
+                if (role_id == 1) {
+                    Alert.alert('Access denied', 'Unable to access this feature.');
+                } else {
+                    this.props.navigation.navigate('fieldSurvey');
+                }
                 break;
             case 'sensor_maintenance':
-                this.props.navigation.navigate('sensorMaintenance')
+                if (role_id == 1) {
+                    Alert.alert('Access denied', 'Unable to access this feature.');
+                } else {
+                    this.props.navigation.navigate('sensorMaintenance');
+                }
                 break;
             case 'surficial_data':
-                this.props.navigation.navigate('surficialData')
+                if (role_id == 1) {
+                    Alert.alert('Access denied', 'Unable to access this feature.');
+                } else {
+                    this.props.navigation.navigate('surficialData');
+                }
                 break;
             case 'ewi':
-                this.props.navigation.navigate('ewi')
+                if (role_id == 1) {
+                    Alert.alert('Access denied', 'Unable to access this feature.');
+                } else {
+                    this.props.navigation.navigate('ewi');
+                }
                 break;
             case 'reports':
-                this.props.navigation.navigate('reports')
+                if (role_id == 1) {
+                    Alert.alert('Access denied', 'Unable to access this feature.');
+                } else {
+                    this.props.navigation.navigate('reports');
+                }
                 break;
             case 'call':
                 Linking.openURL('tel:')
@@ -58,7 +84,11 @@ export default class MainDashboard extends Component {
                 Linking.openURL(`sms:?addresses=null&body=`);
                 break;
             case 'situation_report':
-                this.props.navigation.navigate('situationReport')
+                if (role_id == 1) {
+                    Alert.alert('Access denied', 'Unable to access this feature.');
+                } else {
+                    this.props.navigation.navigate('situationReport')
+                }
                 break;
             default:
                 console.info("Invalid menu... skipping...")
@@ -73,7 +103,7 @@ export default class MainDashboard extends Component {
                 let init = Sync.serverToClient()
                 init.then(init_response => {
                     if (init_response.status == true) {
-                        this.setState({spinner: false})
+                        this.setState({ spinner: false })
                     }
                 });
             }
@@ -94,27 +124,27 @@ export default class MainDashboard extends Component {
                     status="warning"
                     containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
                     value={
-                            <Text style={{color: 'white', padding: 10, fontSize: 10}}>
-                                <Icon name="ios-warning" style={{ fontSize: 15, color: 'white'}}></Icon> New trigger(s)
+                        <Text style={{ color: 'white', padding: 10, fontSize: 10 }}>
+                            <Icon name="ios-warning" style={{ fontSize: 15, color: 'white' }}></Icon> New trigger(s)
                             </Text>
-                        }
+                    }
                 />)
-                top_position = top_position-20;
+                top_position = top_position - 20;
             }
 
-            if (current_alerts.latest.length != 0) {
+            if (response.leo.latest.length != 0) {
                 temp.push(<Badge
                     status="error"
                     containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
                     value={
-                            <Text style={{color: 'white', padding: 10, fontSize: 10}}>
-                                Alert 1
+                        <Text style={{ color: 'white', padding: 10, fontSize: 10 }}>
+                            Alert 1
                             </Text>
-                        }
+                    }
                 />)
             }
-            
-            this.setState({alert_badge: temp})
+
+            this.setState({ alert_badge: temp })
 
 
             // if (response == null) {

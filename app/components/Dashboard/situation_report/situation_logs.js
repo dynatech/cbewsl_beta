@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { Component } from 'react';
-import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { NavigationEvents } from 'react-navigation';
 import { defaults } from '../../../assets/styles/default_styles';
@@ -19,7 +19,8 @@ export default class SituationLogs extends Component {
       date_selected: "",
       selected_date_situations: [],
       add_report_text: "Add Report",
-      spinner: true
+      spinner: true,
+      role_id: 0
     };
   }
 
@@ -62,6 +63,14 @@ export default class SituationLogs extends Component {
       text_format_timestamp: text_format_timestamp,
       text_date_format: text_date_format
     }
+  }
+
+  componentWillMount() {
+    let credentials = Storage.getItem("loginCredentials");
+    credentials.then(response => {
+      let role_id = response.role_id;
+      this.setState({ role_id: role_id });
+    });
   }
 
   displaySituationReportPerDay() {
@@ -167,14 +176,14 @@ export default class SituationLogs extends Component {
         if (responseJson != null && responseJson.length != 0) {
           for (const [index, value] of responseJson.entries()) {
             let format_date_time = this.formatDateTime(date = value.timestamp);
-            situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 , borderTopWidth: 1, borderColor: '#083451'}}>
+            situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10, borderTopWidth: 1, borderColor: '#083451' }}>
               <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_date_format"]}</Text>
-              <Text style={{ fontSize: 15 , marginLeft: 10}}>{value.summary}</Text>
+              <Text style={{ fontSize: 15, marginLeft: 10 }}>{value.summary}</Text>
               <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity style={[defaults.button, {width: '20%'}]} onPress={() => this.modifySituationReport(value)}>
+                <TouchableOpacity style={[defaults.button, { width: '20%' }]} onPress={() => this.modifySituationReport(value)}>
                   <Text style={defaults.buttonText}>Update</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[defaults.button, {width: '20%'}]} onPress={() => this.deleteSituationReport(value)}>
+                <TouchableOpacity style={[defaults.button, { width: '20%' }]} onPress={() => this.deleteSituationReport(value)}>
                   <Text style={defaults.buttonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
@@ -218,25 +227,31 @@ export default class SituationLogs extends Component {
   }
 
   navigateSaveSituationReport() {
-    let date_selected = this.state.date_selected
-    if (date_selected == "") {
-      Alert.alert(
-        'Alert!',
-        'Please pick a date to add report.',
-        [
-          {
-            text: 'Close',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          }
-        ],
-        { cancelable: false },
-      );
+    role_id = this.state.role_id;
+    if (role_id == 1 || role_id == 2) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
     } else {
-      this.props.navigation.navigate('save_situation_report', {
-        data: date_selected
-      })
+      let date_selected = this.state.date_selected
+      if (date_selected == "") {
+        Alert.alert(
+          'Alert!',
+          'Please pick a date to add report.',
+          [
+            {
+              text: 'Close',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            }
+          ],
+          { cancelable: false },
+        );
+      } else {
+        this.props.navigation.navigate('save_situation_report', {
+          data: date_selected
+        })
+      }
     }
+
   }
 
 
@@ -244,9 +259,9 @@ export default class SituationLogs extends Component {
     return (
       <ScrollView style={situation_report_styles.container}>
         <Spinner
-            visible={this.state.spinner}
-            textContent={'Fetching data...'}
-            textStyle={spinner_styles.spinnerTextStyle}
+          visible={this.state.spinner}
+          textContent={'Fetching data...'}
+          textStyle={spinner_styles.spinnerTextStyle}
         />
         <NavigationEvents onDidFocus={() => this.displaySituationReportPerDay()} />
         <View style={situation_report_styles.menuSection}>
