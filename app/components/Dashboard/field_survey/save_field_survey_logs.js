@@ -78,7 +78,7 @@ export default class SaveFieldSurveyLogs extends Component {
     }
 
     saveFieldSurveyLog() {
-        this.setState({spinner: true})
+        this.setState({ spinner: true })
         Notification.endOfValidity();
         const { field_survey_id,
             local_storage_id,
@@ -269,9 +269,9 @@ export default class SaveFieldSurveyLogs extends Component {
         return (
             <ScrollView style={field_survey_styles.container}>
                 <Spinner
-                visible={this.state.spinner}
-                textContent={'Fetching data...'}
-                textStyle={spinner_styles.spinnerTextStyle}
+                    visible={this.state.spinner}
+                    textContent={'Fetching data...'}
+                    textStyle={spinner_styles.spinnerTextStyle}
                 />
                 <View style={field_survey_styles.menuSection}>
                     <TextInput multiline={true}

@@ -129,8 +129,8 @@ export default class ModifyFamilyRisk extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
           </DataTable.Row>)
         }
-        this.setState({ family_profile_data: family_profile_data, spinner: false})
-        this.tablePaginate(family_profile_data)     
+        this.setState({ family_profile_data: family_profile_data, spinner: false })
+        this.tablePaginate(family_profile_data)
       })
       .catch((error) => {
         let data_container = Storage.getItem('RiskAssessmentFamilyRiskProfile')
@@ -153,7 +153,7 @@ export default class ModifyFamilyRisk extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ family_profile_data: family_profile_data, spinner: false})
+          this.setState({ family_profile_data: family_profile_data, spinner: false })
           this.tablePaginate(family_profile_data)
         })
       });

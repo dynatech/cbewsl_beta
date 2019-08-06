@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
@@ -25,8 +25,26 @@ export default class ResourcesAndCapacities extends Component {
       rnc_data_paginate: [],
       page: 0,
       number_of_pages: 0,
-      spinner: true
+      spinner: true,
+      role_id: 0
     };
+  }
+
+  componentWillMount() {
+    let credentials = Storage.getItem("loginCredentials");
+    credentials.then(response => {
+      let role_id = response.role_id;
+      this.setState({ role_id: role_id });
+    });
+  }
+
+  navigateModifyRNC() {
+    role_id = this.state.role_id;
+    if (role_id == 1 || role_id == 2) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
+    } else {
+      this.props.navigation.navigate('modify_rnc');
+    }
   }
 
   // Refactor this
@@ -192,7 +210,7 @@ export default class ResourcesAndCapacities extends Component {
                 />
               </DataTable>
             </ScrollView>
-            <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('modify_rnc')}>
+            <TouchableOpacity style={defaults.button} onPress={() => this.navigateModifyRNC()}>
               <Text style={defaults.buttonText}>EDIT</Text>
             </TouchableOpacity>
           </View>

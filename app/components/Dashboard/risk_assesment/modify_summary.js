@@ -132,7 +132,7 @@ export default class ModifySummary extends Component {
             <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
           </DataTable.Row>)
         }
-        this.setState({ summary_data: summary_data, spinner: false})
+        this.setState({ summary_data: summary_data, spinner: false })
         this.tablePaginate(summary_data)
 
       })
@@ -159,7 +159,7 @@ export default class ModifySummary extends Component {
               <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
             </DataTable.Row>)
           }
-          this.setState({ summary_data: summary_data, spinner:false})
+          this.setState({ summary_data: summary_data, spinner: false })
           this.tablePaginate(summary_data)
         });
       });

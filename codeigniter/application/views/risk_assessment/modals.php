@@ -57,18 +57,20 @@
             </button>
         </div>
         <div class="modal-body">
-            <form>
-                <div class="form-group">
-                    <label for="datetime">Date and Time</label>
-                    <input type="datetime" class="form-control" id="datetime">
+            <form method="post" id="upload_form" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col">
+                        <input type="file" id="image_file" multiple="multiple" />
+                        <button type="button" class="btn btn-primary">Add</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <textarea class="form-control" id="email" style="height : 200px"></textarea>
+                <div class="row">
+                    <div class="col">
+                        <div id="uploadPreview"></div>
+                    </div>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm float-right">Add</button>
-                <br>
-                <br>
             </form>
+            <br>
             <table id="hazard_map_table" class="display table table-striped" style="width:100%">
                 <thead>
                     <tr>
