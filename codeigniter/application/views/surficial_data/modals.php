@@ -69,14 +69,16 @@
             </button>
         </div>
         <div class="modal-body">
-            <form id="moms_upload_form" method="post" enctype="multipart/form-data">
+            <form method="post" id="upload_moms_form" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col">
-                        <div class="form-group">
-                            <label for="file">Upload image(s)</label>
-                            <input type="file" id="image_file" multiple="multiple">
-                            <input id="file_to_upload" type="file" name="files[]" class="form-control-file" multiple="true" autocomplete="off" required>
-                        </div>
+                        <input type="file" id="moms_image" multiple="multiple" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b id="moms_upload_status"></b>
+                        <div id="momsUploadPreview"></div>
                     </div>
                 </div>
             </form>
@@ -92,6 +94,42 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="upload_moms_images">Upload</button>
             </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="view_moms_modal" tabindex="-1" role="dialog" aria-labelledby="viewMomsModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="viewMomsModalLabel">MOMs Images</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="moms_details">
+
+            </div>
+            <hr>
+            <div id="moms_image_container">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
         </div>
     </div>

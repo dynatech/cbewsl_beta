@@ -4,7 +4,8 @@ $(document).ready(function () {
     initializeMonitoringLogs();
     initializeAddMonitoringLogs();
     initializeCRUDMonitoringLogs();
-    uploadMomsImages();
+    onUploadMOMSChange();
+    // uploadMomsData();
     $('#cancel_add_field_survey').modal('hide');
 });
 
@@ -152,7 +153,7 @@ function initializeMonitoringLogs() {
                     {
                         render(data, type, full) {
                             // ${full.resources_and_capacities_id}
-                            return `<a href="#" id="edit_monitoring_logs"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="remove_monitoring_logs"><i class="fas fa-minus-circle text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="add_moms_images"><i class="fas fa-upload text-center"></i></a>`;
+                            return `<a href="#" id="edit_monitoring_logs"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="remove_monitoring_logs"><i class="fas fa-minus-circle text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="add_moms_images"><i class="fas fa-upload text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="view_moms_images"><i class="fas fa-eye text-center"></i></a>`;
                         }
                     }
                 ]
@@ -180,47 +181,16 @@ function initializeCRUDLogs(datatable) {
 
     $('#moms_table tbody').on('click', '#add_moms_images', function () {
         let data = datatable.row($(this).parents('tr')).data();
-        console.log(data)
-        $("#addMomsImagesModal").modal({ backdrop: 'static', keyboard: false })
+        console.log(data);
+        uploadMomsData(data.moms_id);
+    });
+
+    $('#moms_table tbody').on('click', '#view_moms_images', function () {
+        let data = datatable.row($(this).parents('tr')).data();
+        displayMomsImages(data);
     });
 }
 
-function uploadMomsImages() {
-    $("#upload_moms_images").click(function () {
-        let url = "http://192.168.150.10:5000/api/moms/upload";
-        // var formDataRaw = $('#moms_upload_form')[0];
-        // var form_data = new FormData(formDataRaw);
-        // $.ajax({
-        //     type: 'POST',
-        //     url: url,
-        //     data: form_data,
-        //     dataType: 'jsonp',
-        //     contentType: false,
-        //     cache: false,
-        //     processData: false,
-        //     async: false,
-        //     success: function (data) {
-        //         console.log(data);
-        //     },
-        //     error: function (data) {
-        //         console.log(data);
-        //     }
-        // });
-        var form_data = new FormData($('#moms_upload_form')[0]);
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: form_data,
-            dataType: 'jsonp',
-            contentType: false,
-            cache: false,
-            processData: false,
-            success: function (data) {
-                alert('Success!');
-            },
-        });
-    });
-}
 
 function monitoringLogsMod(data) {
     $('#moms_id').val(data.moms_id);
@@ -295,3 +265,123 @@ function initializeCRUDMonitoringLogs() {
     });
 }
 
+
+function onUploadMOMSChange() {
+    $("#moms_image").change(function (e) {
+        if (this.disabled) {
+            return alert('File upload not supported!');
+        }
+        let FILES = this.files;
+        if (FILES && FILES[0]) {
+            for (let i = 0; i < FILES.length; i++) {
+                readMomsImages(FILES[i]);
+            }
+        }
+    });
+}
+
+function readMomsImages(file) {
+    let reader = new FileReader();
+    let image = new Image();
+    $('#momsUploadPreview').empty();
+    reader.readAsDataURL(file);
+    reader.onload = function (_file) {
+        image.src = _file.target.result; // url.createObjectURL(file);
+        image.onload = function () {
+            let w = this.width,
+                h = this.height,
+                t = file.type, // ext only: // file.type.split('/')[1],
+                n = file.name,
+                s = ~~(file.size / 1024) + 'KB';
+            $('#momsUploadPreview').append('<img height="100px" width="200px" src="' + this.src + '" class="thumb">');
+        };
+
+        image.onerror = function () {
+            alert('Invalid file type: ' + file.type);
+        };
+    };
+
+}
+
+function uploadMomsData(moms_id) {
+    $("#addMomsImagesModal").modal({ backdrop: 'static', keyboard: false })
+    $('#upload_moms_images').unbind();
+    $('#upload_moms_images').on('click', function (e) {
+        $("#moms_upload_status").hide();
+        $("#upload_spinner").show();
+        $("#upload_buttons").hide();
+        e.preventDefault();
+        if ($('#moms_image').val() == '') {
+            alert("Please Select the File");
+            $("#upload_spinner").hide();
+            $("#upload_buttons").show();
+        }
+        else {
+            let form_data = new FormData();
+            let ins = document.getElementById('moms_image').files.length;
+            for (let x = 0; x < ins; x++) {
+                form_data.append("files[]", document.getElementById('moms_image').files[x]);
+            }
+            console.log(form_data)
+            $.ajax({
+                url: "http://cbewsl.com/dashboard/uploadMomsImages/" + moms_id,
+                method: "POST",
+                data: form_data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+                    if (response.status == true) {
+                        $('#moms_image').val('');
+                        $('#momsUploadPreview').empty();
+                        $("#moms_upload_status").text(response.message);
+
+                        $("#upload_spinner").hide();
+                        $("#upload_buttons").show();
+                    }
+                    else if (response.status == false) {
+                        $("#moms_upload_status").text(response.message);
+
+                        $("#upload_spinner").hide();
+                        $("#upload_buttons").show();
+                    }
+                }
+            });
+        }
+    });
+}
+
+function displayMomsImages(data) {
+    let moms_id = data.moms_id;
+    $("#view_moms_modal").modal({ backdrop: 'static', keyboard: false });
+    $("#moms_details").empty();
+    $("#moms_image_container").empty();
+    $("#moms_details").append("<b>Type of Feature:</b>" + data.feature_type + "<br>");
+    $("#moms_details").append("<b>Name of Feature:</b>" + data.feature_name + "<br>");
+    $("#moms_details").append("<b>Description:</b>" + data.description + "<br>");
+
+    $.ajax({
+        url: "http://cbewsl.com/dashboard/get_moms_files/" + moms_id,
+        beforeSend: function (xhr) {
+            xhr.overrideMimeType("text/plain; charset=x-user-defined");
+            $("#moms_image_container").append("<b>Loading images. . . .  Please wait</b>");
+        }
+    }).done(function (response) {
+        let data = JSON.parse(response);
+        if (data.status == true) {
+            $("#moms_image_container").empty();
+            let files = data.files;
+            $.each(files, function (key, value) {
+                let file_name = value;
+                let file_source = "http://cbewsl.com/uploads/moms/" + moms_id + "/" + file_name;
+                $("#moms_image_container").append("<a href='" + file_source + "' target='_blank'><img src='" + file_source + "' alt='" + file_name + "' class='img-thumbnail' height='200px' width='200px'></a>");
+            });
+
+        } else {
+            $("#moms_image_container").empty();
+            $("#moms_image_container").append("<b>No uploaded images.</b>");
+        }
+    });
+}
