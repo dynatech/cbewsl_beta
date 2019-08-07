@@ -37,7 +37,7 @@ export default class MainDashboard extends Component {
     };
 
     navigateMenu(menu) {
-        role_id = 1//this.state.role_id;
+        role_id = this.state.role_id;
         switch (menu) {
             case 'risk_assessment':
                 this.props.navigation.navigate('riskAssessment');
