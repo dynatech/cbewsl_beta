@@ -46,7 +46,7 @@ const Notification = {
 
                 let candidate_alerts = JSON.parse(response.candidate_alerts);
                 let current_alerts = response.current_alerts;
-                
+
                 // if () {
 
                 // } else {
@@ -81,36 +81,36 @@ const Notification = {
             }
         })
     },
-    fetchCandidateAlert: async function() {
+    fetchCandidateAlert: async function () {
         console.log("Fetching candidate alert...")
         let offline_data = Storage.getItem("Pub&CandidAlert");
         offline_data.then(offline_response => {
             if (offline_response != null || offline_response != undefined) {
                 fetch('http://192.168.150.10:5000/api/monitoring/get_candidate_and_public_alert').then((response) => response.json())
-                .then((online_data) => {
-                    if (online_data != offline_data) {
-                        Alert.alert(
-                            'Landslide Alert',
-                            'New data generated for Public and Candidate Alerts.\nPlease refer to the EWI Menu.'
-                          );
-                        Storage.setItem("Pub&CandidAlert", online_data)
-                    }
-                }).catch((error) => {
-                    console.log("Network error. offline data will be used...")
-                    return
-                });
+                    .then((online_data) => {
+                        if (online_data != offline_data) {
+                            Alert.alert(
+                                'Landslide Alert',
+                                'New data generated for Public and Candidate Alerts.\nPlease refer to the EWI Menu.'
+                            );
+                            Storage.setItem("Pub&CandidAlert", online_data)
+                        }
+                    }).catch((error) => {
+                        console.log("Network error. offline data will be used...")
+                        return
+                    });
             } else {
                 fetch('http://192.168.150.10:5000/api/monitoring/get_candidate_and_public_alert').then((response) => response.json())
-                .then((online_data) => {
-                    Alert.alert(
-                        'Landslide Alert',
-                        'New data generated for Public and Candidate Alerts.\n\nPlease refer to the EWI Menu.'
+                    .then((online_data) => {
+                        Alert.alert(
+                            'Landslide Alert',
+                            'New data generated for Public and Candidate Alerts.\n\nPlease refer to the EWI Menu.'
                         );
-                    Storage.setItem("Pub&CandidAlert", online_data)
-                }).catch((error) => {
-                    console.log("Network error. offline data will be used...")
-                    return  
-                })
+                        Storage.setItem("Pub&CandidAlert", online_data)
+                    }).catch((error) => {
+                        console.log("Network error. offline data will be used...")
+                        return
+                    })
             }
         });
     }

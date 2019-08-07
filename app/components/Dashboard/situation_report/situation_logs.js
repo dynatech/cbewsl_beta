@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { Component } from 'react';
-import { Alert, ScrollView, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { NavigationEvents } from 'react-navigation';
 import { defaults } from '../../../assets/styles/default_styles';

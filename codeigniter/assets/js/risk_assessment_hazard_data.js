@@ -1,7 +1,9 @@
 $(document).ready(function () {
     getAllHazardData();
+    getAllHazardMapData();
     saveHazardData();
     onUploadHazardMapChange();
+    uploadHazardMap();
 });
 
 function getAllHazardData() {
@@ -50,6 +52,50 @@ function getAllHazardData() {
                 { "data": "impact" }
             ]
         });
+    });
+}
+
+function getAllHazardMapData() {
+    $.ajax({
+        url: "http://192.168.150.10:5000/api/hazard_data/get_all_hazard_map_data",
+        beforeSend: function (xhr) {
+            xhr.overrideMimeType("text/plain; charset=x-user-defined");
+        }
+    }).done(function (data) {
+        let response_data = JSON.parse(data);
+        hazard_map_data = []
+        $.each(response_data, function (key, value) {
+            let formmated_timestamp = formatDateTime(value.timestamp);
+            hazard_map_data.push({
+                "date_time": formmated_timestamp["text_format_timestamp"],
+                "file_name": "hazard_map_" + value.hazard_map_id
+            });
+        });
+        let table = $('#hazard_map_table').DataTable({
+            "data": hazard_map_data,
+            "bDestroy": true,
+            "columns": [
+                { "data": "date_time" },
+                { "data": "file_name" },
+                {
+                    render(data, type, full) {
+                        // ${full.resources_and_capacities_id}
+                        return `<a href="#hazard_data" id="edit_hazard_map"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#hazard_map" id="remove_hazard_map"><i class="fas fa-minus-circle text-center"></i></a>`;
+                    }
+                }
+            ]
+        });
+        $('#hazard_map_table tbody').on('click', '#edit_hazard_map', function () {
+            let data = table.row($(this).parents('tr')).data();
+            // setHazardDataForm(data);
+            // $("#add_hazard_data").text("Update");
+        });
+
+        $('#hazard_map_table tbody').on('click', '#remove_hazard_map', function () {
+            let data = table.row($(this).parents('tr')).data();
+            // deleteHazardDataConfirmation(data);
+        });
+
     });
 }
 
@@ -125,7 +171,7 @@ function onUploadHazardMapChange() {
         }
         let FILES = this.files;
         if (FILES && FILES[0]) {
-            for (var i = 0; i < FILES.length; i++) {
+            for (let i = 0; i < FILES.length; i++) {
                 readImage(FILES[i]);
             }
         }
@@ -133,14 +179,14 @@ function onUploadHazardMapChange() {
 }
 
 function readImage(file) {
-    var reader = new FileReader();
-    var image = new Image();
-
+    let reader = new FileReader();
+    let image = new Image();
+    $('#uploadPreview').empty();
     reader.readAsDataURL(file);
     reader.onload = function (_file) {
         image.src = _file.target.result; // url.createObjectURL(file);
         image.onload = function () {
-            var w = this.width,
+            let w = this.width,
                 h = this.height,
                 t = file.type, // ext only: // file.type.split('/')[1],
                 n = file.name,
@@ -153,4 +199,42 @@ function readImage(file) {
         };
     };
 
+}
+
+function uploadHazardMap() {
+    $('#save_hazard_map').on('click', function (e) {
+        $("#upload_status").text("Uploading. . . . . Please wait.");
+        e.preventDefault();
+        if ($('#image_file').val() == '') {
+            alert("Please Select the File");
+        }
+        else {
+            let form_data = new FormData();
+            let ins = document.getElementById('image_file').files.length;
+            for (let x = 0; x < ins; x++) {
+                form_data.append("files[]", document.getElementById('image_file').files[x]);
+            }
+            $.ajax({
+                url: "http://cbewsl.com/dashboard/uploadHazardMap",
+                method: "POST",
+                data: form_data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+                    if (response.status == true) {
+                        $('#image_file').val('');
+                        $('#uploadPreview').empty();
+                        $("#upload_status").text(response.message);
+                        getAllHazardMapData();
+                    }
+                    else if (response.status == false) {
+                        $("#upload_status").text(response.message);
+                    }
+                }
+            });
+        }
+    });
 }

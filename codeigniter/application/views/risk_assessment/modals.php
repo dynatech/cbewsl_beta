@@ -61,11 +61,12 @@
                 <div class="row">
                     <div class="col">
                         <input type="file" id="image_file" multiple="multiple" />
-                        <button type="button" class="btn btn-primary">Add</button>
+                        <button type="button" class="btn btn-primary" id="save_hazard_map">Add</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
+                        <b id="upload_status"></b>
                         <div id="uploadPreview"></div>
                     </div>
                 </div>
