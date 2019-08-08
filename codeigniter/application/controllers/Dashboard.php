@@ -20,7 +20,6 @@ class Dashboard extends CI_Controller {
 	
 	public function uploadHazardMap() {
       $data = array();
-
       if(!empty($_FILES['files']['name'])){
         $filesCount = count($_FILES['files']['name']);
             for($i = 0; $i < $filesCount; $i++){
@@ -32,6 +31,7 @@ class Dashboard extends CI_Controller {
                 // File upload configuration
                 $uploadPath = './uploads/hazard_map';
                 $config['upload_path'] = $uploadPath;
+                $config['max_size'] = '30000';
                 $config['allowed_types'] = 'jpg|jpeg|png|gif';
                 
                 // Load and initialize upload library

@@ -17,8 +17,8 @@
 </div>
 <div class="card m-3" id="hazard_map">
     <div class="card-body">
-        <label><b>Hazard Map <a href="" data-toggle="modal" data-target="#hazardMapModal">[edit]</a></b></label>
-        <img src="<?php echo base_url(); ?>assets/images/umi_map.jpg" class="img-fluid" alt="Responsive image" style="width:100%">
+        <label><b>Hazard Map <a href="" data-toggle="modal" data-target="#hazardMapModal" id="open_hazard_data_modal">[edit]</a></b></label>
+        <div id="latest_hazard_map_preview"></div>
     </div>
 </div>
 <div class="card m-3" id="hazard_data">
