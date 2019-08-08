@@ -63,12 +63,17 @@ function getAllHazardMapData() {
         }
     }).done(function (data) {
         let response_data = JSON.parse(data);
+        if (response_data[0].path) {
+            $("#latest_hazard_map_preview").empty();
+            $("#latest_hazard_map_preview").append('<img src="http://cbewsl.com' + response_data[0].path + '" class="img-fluid" alt="Latest hazard map" style="width: 100 % ">');
+        }
         hazard_map_data = []
         $.each(response_data, function (key, value) {
-            let formmated_timestamp = formatDateTime(value.timestamp);
+            let formatted_datetime = formatDateTime(value.timestamp);
             hazard_map_data.push({
-                "date_time": formmated_timestamp["text_format_timestamp"],
-                "file_name": "hazard_map_" + value.hazard_map_id
+                "date_time": formatted_datetime["text_format_timestamp"],
+                "file_name": "hazard_map_" + value.hazard_map_id,
+                "link": "http://cbewsl.com" + value.path
             });
         });
         let table = $('#hazard_map_table').DataTable({
@@ -80,7 +85,7 @@ function getAllHazardMapData() {
                 {
                     render(data, type, full) {
                         // ${full.resources_and_capacities_id}
-                        return `<a href="#hazard_data" id="edit_hazard_map"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#hazard_map" id="remove_hazard_map"><i class="fas fa-minus-circle text-center"></i></a>`;
+                        return `<a href="#hazard_data" id="edit_hazard_map"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#hazard_map" id="remove_hazard_map"><i class="fas fa-minus-circle text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="${full.link}"  target="_blank" id="view_hazard_map"><i class="fas fa-eye text-center"></i></a>`;
                     }
                 }
             ]
@@ -176,6 +181,11 @@ function onUploadHazardMapChange() {
             }
         }
     });
+
+    $("#open_hazard_data_modal").click(function (e) {
+        $("#image_file").val("");
+        $("#uploadPreview").empty();
+    });
 }
 
 function readImage(file) {
@@ -191,7 +201,7 @@ function readImage(file) {
                 t = file.type, // ext only: // file.type.split('/')[1],
                 n = file.name,
                 s = ~~(file.size / 1024) + 'KB';
-            $('#uploadPreview').append('<img height="100px" width="200px" src="' + this.src + '" class="thumb">');
+            $('#uploadPreview').append('<img src="' + this.src + '" class="img-thumbnail" height="200px" width="200px">');
         };
 
         image.onerror = function () {

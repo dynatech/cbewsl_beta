@@ -27,14 +27,14 @@ function formatDateTime(date = null) {
         date_format = moment(new Date()).format("YYYY-MM-DD");
         date_only_format = moment(new Date()).format("MMMM D, YYYY");
         time_format = moment(new Date()).format("hh:MM a");
-        text_format_timestamp = moment(new Date()).format("MMMM D, YYYY hh:MM a");
+        text_format_timestamp = moment(new Date()).format("LLL");
         for_file_name = moment(new Date()).format("YYYY_MM_DD_HH_MM_SS");
     } else {
         current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS");
         date_format = moment(date).format("YYYY-MM-DD");
         date_only_format = moment(date).format("MMMM D, YYYY");
         time_format = moment(date).format("hh:MM a");
-        text_format_timestamp = moment(date).format("MMMM D, YYYY hh:MM a");
+        text_format_timestamp = moment(date).format("LLL");
         for_file_name = moment(date).format("YYYY_MM_DD_HH_MM_SS");
     }
 

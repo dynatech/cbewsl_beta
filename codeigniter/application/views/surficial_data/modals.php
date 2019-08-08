@@ -114,18 +114,7 @@
             </div>
             <hr>
             <div id="moms_image_container">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-12_10-44-21.png" alt="..." class="img-thumbnail" height="200px" width="200px">
-                <img src="http://cbewsl.com/uploads/moms/1/Screenshot_from_2019-07-15_09-39-51.png" alt="..." class="img-thumbnail" height="200px" width="200px">
+                
             </div>
         </div>
         <div class="modal-footer">

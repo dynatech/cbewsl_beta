@@ -293,7 +293,7 @@ function readMomsImages(file) {
                 t = file.type, // ext only: // file.type.split('/')[1],
                 n = file.name,
                 s = ~~(file.size / 1024) + 'KB';
-            $('#momsUploadPreview').append('<img height="100px" width="200px" src="' + this.src + '" class="thumb">');
+            $('#momsUploadPreview').append('<img src="' + this.src + '" class="img-thumbnail" height="200px" width="200px">');
         };
 
         image.onerror = function () {
@@ -306,6 +306,8 @@ function readMomsImages(file) {
 function uploadMomsData(moms_id) {
     $("#addMomsImagesModal").modal({ backdrop: 'static', keyboard: false })
     $('#upload_moms_images').unbind();
+    $('#moms_image').val('');
+    $('#momsUploadPreview').empty();
     $('#upload_moms_images').on('click', function (e) {
         $("#moms_upload_status").hide();
         $("#upload_spinner").show();
