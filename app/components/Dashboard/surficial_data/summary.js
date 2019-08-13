@@ -95,7 +95,7 @@ export default class Summary extends Component {
             <Text style={{ fontSize: 15 }}>Name of feature: {value.name_of_feature}</Text>
           </View>)
         }
-        this.setState({ moms_summary: moms_data, spinner: false})
+        this.setState({ moms_summary: moms_data, spinner: false })
         this.analyzeSurficialSummary(label_data)
         this.renderSurficialGraph(label_data, series_container)
       })
@@ -132,7 +132,7 @@ export default class Summary extends Component {
               <Text style={{ fontSize: 15 }}>No MOMs data.</Text>
             </View>)
           }
-          this.setState({ moms_summary: moms_data, spinner: false})
+          this.setState({ moms_summary: moms_data, spinner: false })
         });
 
         // let moms_data = []

@@ -29,9 +29,9 @@ class FamilyRiskProfile extends Component {
       this.setState({ role_id: role_id });
     });
     Notification.endOfValidity();
-    fetch('http://192.168.150.10:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
-      .then((responseJson) => {
-        Sync.clientToServer("RiskAssessmentFamilyRiskProfile").then(() => {
+    Sync.clientToServer("RiskAssessmentFamilyRiskProfile").then(() => {
+      fetch('http://192.168.150.10:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
+        .then((responseJson) => {
           let family_profile_data = [];
           let to_local_data = [];
           let counter = 0
@@ -64,31 +64,31 @@ class FamilyRiskProfile extends Component {
           this.setState({ family_profile_data: family_profile_data });
           this.tablePaginate(family_profile_data);
           this.setState({ spinner: false });
-        });
-
-      })
-      .catch((error) => {
-        let data_container = Storage.getItem('RiskAssessmentFamilyRiskProfile')
-        let family_profile_data = [];
-        data_container.then(response => {
-          if (response != null) {
-            for (const [index, value] of response.entries()) {
+        })
+        .catch((error) => {
+          let data_container = Storage.getItem('RiskAssessmentFamilyRiskProfile')
+          let family_profile_data = [];
+          data_container.then(response => {
+            if (response != null) {
+              for (const [index, value] of response.entries()) {
+                family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.members_count}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerable_members_count}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability_nature}</DataTable.Cell>
+                </DataTable.Row>)
+              }
+            } else {
               family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.members_count}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerable_members_count}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability_nature}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
               </DataTable.Row>)
             }
-          } else {
-            family_profile_data.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-            </DataTable.Row>)
-          }
-          this.setState({ family_profile_data: family_profile_data });
-          this.tablePaginate(family_profile_data);
-          this.setState({ spinner: false });
-        })
-      });
+            this.setState({ family_profile_data: family_profile_data });
+            this.tablePaginate(family_profile_data);
+            this.setState({ spinner: false });
+          })
+        });
+    });
+
   }
 
 

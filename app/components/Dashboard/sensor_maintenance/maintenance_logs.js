@@ -11,6 +11,7 @@ import Storage from '../../utils/storage';
 import RainfallGraph from './rainfall_graph';
 import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Sync from '../../utils/syncer';
 
 export default class MaintenanceLogs extends Component {
   constructor(props) {
@@ -73,9 +74,9 @@ export default class MaintenanceLogs extends Component {
     let next_days = []
     let new_days = {};
 
-    fetch('http://192.168.150.10:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
-      .then((responseJson) => {
-        Sync.clientToServer("SensorMaintenanceLogs").then(() => {
+    Sync.clientToServer("SensorMaintenanceLogs").then(() => {
+      fetch('http://192.168.150.10:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
+        .then((responseJson) => {
           let to_local_data = [];
           for (const [index, value] of responseJson.entries()) {
             let format_date_time = this.formatDateTime(date = value.timestamp);
@@ -102,35 +103,35 @@ export default class MaintenanceLogs extends Component {
               }
             };
           });
+
           Storage.removeItem("SensorMaintenanceLogs")
           Storage.setItem("SensorMaintenanceLogs", to_local_data)
-          this.setState({ marked_dates: new_days })
-        });
-        Storage.removeItem("SensorMaintenanceLogs")
-        Storage.setItem("SensorMaintenanceLogs", to_local_data)
-        this.setState({ marked_dates: new_days, spinner: false })
-      })
-      .catch((error) => {
-        let data_container = Storage.getItem('SensorMaintenanceLogs')
-        data_container.then(response => {
-          if (response.length != 0) {
-            for (const [index, value] of response.entries()) {
-              let format_date_time = this.formatDateTime(date = value.timestamp);
-              next_days.push(format_date_time["date"])
-            }
-            next_days.forEach((day) => {
-              new_days = {
-                ...new_days,
-                [day]: {
-                  day,
-                  marked: true
-                }
-              };
-            });
-            this.setState({ marked_dates: new_days, spinner: false })
-          }
+          this.setState({ marked_dates: new_days, spinner: false })
         })
-      });
+        .catch((error) => {
+          let data_container = Storage.getItem('SensorMaintenanceLogs')
+          data_container.then(response => {
+            if (response.length != 0) {
+              for (const [index, value] of response.entries()) {
+                let format_date_time = this.formatDateTime(date = value.timestamp);
+                next_days.push(format_date_time["date"])
+              }
+              next_days.forEach((day) => {
+                new_days = {
+                  ...new_days,
+                  [day]: {
+                    day,
+                    marked: true
+                  }
+                };
+              });
+              this.setState({ marked_dates: new_days, spinner: false })
+            }
+          })
+        });
+    });
+
+
   }
 
   selectDateToAddLogs(date) {
@@ -198,14 +199,14 @@ export default class MaintenanceLogs extends Component {
               }
 
             }
-            this.setState({ selected_date_logs: logs })
+            this.setState({ selected_date_logs: logs, spinner: false })
           })
         }
         catch (err) {
           logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
             <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
           </View>)
-          this.setState({ selected_date_logs: logs })
+          this.setState({ selected_date_logs: logs, spinner: false })
         }
 
 

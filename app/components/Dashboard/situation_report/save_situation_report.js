@@ -27,24 +27,36 @@ export default class SaveSituationReport extends Component {
         const { navigation } = this.props;
         const data = navigation.getParam("report_data", "none");
         if (data != "none") {
-            this.setState({
-                situation_report_id: data.situation_report_id,
-                local_storage_id: 0,
-                sync_status: 0,
-                timestamp: data.timestamp,
-                summary: data.summary,
-                pdf_path: "",
-                image_path: "",
-                spinner: false
-            })
+            if (data.situation_report_id == undefined) {
+                this.setState({
+                    timestamp: data.date_selected,
+                    spinner: false
+                });
+                console.log("add")
+            } else {
+                this.setState({
+                    situation_report_id: data.situation_report_id,
+                    local_storage_id: 0,
+                    sync_status: 0,
+                    timestamp: data.timestamp,
+                    summary: data.summary,
+                    pdf_path: "",
+                    image_path: "",
+                    spinner: false
+                })
+                console.log("update")
+            }
         } else {
-            this.setState({ timestamp: selected_date,
-            spinner: false })
+            console.log(data)
+            // this.setState({
+            //     timestamp: selected_date,
+            //     spinner: false
+            // })
         }
     }
 
     saveSituationReport() {
-        this.setState({spinner: true})
+        this.setState({ spinner: true })
         Notification.endOfValidity();
         const { situation_report_id,
             local_storage_id,

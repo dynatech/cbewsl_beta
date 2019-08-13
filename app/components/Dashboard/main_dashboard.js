@@ -27,7 +27,6 @@ export default class MainDashboard extends Component {
             let role_id = response.role_id;
             this.setState({ role_id: role_id })
         });
-
     }
 
     static navigationOptions = {
@@ -97,15 +96,19 @@ export default class MainDashboard extends Component {
     }
 
     initializeApp() {
+        Storage.removeItem("initializeApp");
         let offline_data = Storage.getItem("initializeApp");
         offline_data.then(response => {
             if (response == null || response == undefined) {
                 let init = Sync.serverToClient()
                 init.then(init_response => {
                     if (init_response.status == true) {
+                        Storage.setItem("initializeApp", "1")
                         this.setState({ spinner: false })
                     }
                 });
+            } else {
+                this.setState({ spinner: false })
             }
         })
     }

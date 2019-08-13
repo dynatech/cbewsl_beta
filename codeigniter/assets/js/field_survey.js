@@ -184,12 +184,15 @@ function sendFieldSurveyViaEmail(date) {
             date: date,
             email: $("#email_for_field_survey").val()
         }
-
+        $("#confirm_send_field_survey").prop('disabled', true);
         $.post(url, data).done(function (response) {
             alert(response.message);
             if (response.status == true) {
                 $("#email_for_field_survey").val("");
                 $("#sendEmailFieldSurveyModal").modal("hide");
+                $("#confirm_send_field_survey").prop('disabled', false);
+            } else {
+                $("#confirm_send_field_survey").prop('disabled', false);
             }
         });
     });
@@ -244,6 +247,7 @@ function fieldSurveyButtonAction() {
         $("#exposure").val("");
         $("#note").val("");
         $("#add_field_survey").text("Add");
+        $("#field_survey_modal").modal("hide");
     });
 
     $("#add_field_survey_form").click(function () {

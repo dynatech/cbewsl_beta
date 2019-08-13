@@ -9,6 +9,7 @@ import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
 import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Sync from '../../utils/syncer';
 
 export default class SituationLogs extends Component {
   constructor(props) {
@@ -78,68 +79,73 @@ export default class SituationLogs extends Component {
     this.setState({ date_selected: "" })
     let next_days = []
     let new_days = {};
-    fetch('http://192.168.150.10:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
-      .then((responseJson) => {
-        let to_local_data = [];
-        for (const [index, value] of responseJson.entries()) {
-          let format_date_time = this.formatDateTime(date = value.timestamp);
-          next_days.push(format_date_time["date"])
-          let counter = 0;
-          counter += 1;
-          to_local_data.push({
-            situation_report_id: value.situation_report_id,
-            local_storage_id: counter,
-            sync_status: 3,
-            timestamp: format_date_time["current_timestamp"],
-            summary: value.summary,
-            pdf_path: value.pdf_path,
-            image_path: value.image_path
-          });
-        }
 
-        next_days.forEach((day) => {
-          new_days = {
-            ...new_days,
-            [day]: {
-              day,
-              marked: true
-            }
-          };
-        });
-        this.setState({ marked_dates: new_days, spinner: false })
-        Storage.removeItem("SituationReportLogs")
-        Storage.setItem("SituationReportLogs", to_local_data)
-      })
-      .catch((error) => {
-
-        let data_container = Storage.getItem("SituationReportLogs")
-        data_container.then(response => {
-          console.log(response)
-          if (response != null) {
-            for (const [index, value] of response.entries()) {
-              let format_date_time = this.formatDateTime(date = value.timestamp);
-              next_days.push(format_date_time["date"])
-            }
-            next_days.forEach((day) => {
-              new_days = {
-                ...new_days,
-                [day]: {
-                  day,
-                  marked: true
-                }
-              };
-            });
-            this.setState({ marked_dates: new_days, spinner: false })
-          } else {
-            this.setState({
-              latest_date: "N/A",
-              latest_time: "N/A",
-              summary: "No current situation report",
-              spinner: false
+    Sync.clientToServer("SituationReportLogs").then(() => {
+      fetch('http://192.168.150.10:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
+        .then((responseJson) => {
+          let to_local_data = [];
+          for (const [index, value] of responseJson.entries()) {
+            let format_date_time = this.formatDateTime(date = value.timestamp);
+            next_days.push(format_date_time["date"])
+            let counter = 0;
+            counter += 1;
+            to_local_data.push({
+              situation_report_id: value.situation_report_id,
+              local_storage_id: counter,
+              sync_status: 3,
+              timestamp: format_date_time["current_timestamp"],
+              summary: value.summary,
+              pdf_path: value.pdf_path,
+              image_path: value.image_path
             });
           }
+
+          next_days.forEach((day) => {
+            new_days = {
+              ...new_days,
+              [day]: {
+                day,
+                marked: true
+              }
+            };
+          });
+          this.setState({ marked_dates: new_days, spinner: false })
+          Storage.removeItem("SituationReportLogs")
+          Storage.setItem("SituationReportLogs", to_local_data)
+
+        })
+        .catch((error) => {
+
+          let data_container = Storage.getItem("SituationReportLogs")
+          data_container.then(response => {
+            console.log(response)
+            if (response != null) {
+              for (const [index, value] of response.entries()) {
+                let format_date_time = this.formatDateTime(date = value.timestamp);
+                next_days.push(format_date_time["date"])
+              }
+              next_days.forEach((day) => {
+                new_days = {
+                  ...new_days,
+                  [day]: {
+                    day,
+                    marked: true
+                  }
+                };
+              });
+              this.setState({ marked_dates: new_days, spinner: false })
+            } else {
+              this.setState({
+                latest_date: "N/A",
+                latest_time: "N/A",
+                summary: "No current situation report",
+                spinner: false
+              });
+            }
+          });
         });
-      });
+    });
+
   }
 
 
@@ -158,8 +164,8 @@ export default class SituationLogs extends Component {
   selectDateToAddReport(date) {
     console.log(date)
     this.setState({ date_selected: date })
-    let selected_date = this.formatDateTime(date = date)
-    button_text = "Add Report for " + selected_date["text_date_format"]
+    let selected_date = this.formatDateTime(date = date);
+    button_text = "Add Report for " + selected_date["text_date_format"];
     this.setState({ add_report_text: button_text })
     fetch('http://192.168.150.10:5000/api/situation_report/get_report_by_date', {
       method: 'POST',
@@ -228,10 +234,10 @@ export default class SituationLogs extends Component {
 
   navigateSaveSituationReport() {
     role_id = this.state.role_id;
+    let date_selected = this.state.date_selected
     if (role_id == 1 || role_id == 2) {
       Alert.alert('Access denied', 'Unable to access this feature.');
     } else {
-      let date_selected = this.state.date_selected
       if (date_selected == "") {
         Alert.alert(
           'Alert!',
@@ -246,8 +252,9 @@ export default class SituationLogs extends Component {
           { cancelable: false },
         );
       } else {
+        let data = { date_selected: date_selected };
         this.props.navigation.navigate('save_situation_report', {
-          data: date_selected
+          report_data: data
         })
       }
     }

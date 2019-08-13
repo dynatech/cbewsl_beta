@@ -30,7 +30,7 @@ class Home extends CI_Controller {
 		header('Access-Control-Allow-Origin: *');
 		$this->load->view('templates/header');
 		$this->load->view('home');
-		$this->load->view('templates/footer');
+		$this->load->view('templates/home_footer');
 		if (isset($_SESSION) == true) {
 			header("Location: /dashboard");
 		}

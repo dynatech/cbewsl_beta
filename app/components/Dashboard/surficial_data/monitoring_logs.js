@@ -10,6 +10,7 @@ import { surficial_data_styles } from '../../../assets/styles/surficial_data_sty
 import Storage from '../../utils/storage';
 import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Sync from '../../utils/syncer';
 
 export default class MonitoringLogs extends Component {
   constructor(props) {
@@ -286,9 +287,10 @@ export default class MonitoringLogs extends Component {
   }
 
   getMonitoringLogs() {
-    fetch('http://192.168.150.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
-      .then((responseJson) => {
-        Sync.clientToServer("SurficialDataMomsSummary").then(() => {
+    Sync.clientToServer("SurficialDataMomsSummary").then(() => {
+      fetch('http://192.168.150.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
+        .then((responseJson) => {
+
           let monitoring_logs_data = []
           let to_local_data = []
           let counter = 0
@@ -328,38 +330,40 @@ export default class MonitoringLogs extends Component {
           this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
           this.tablePaginate(monitoring_logs_data)
 
-        });
-      })
-      .catch((error) => {
-        let data_container = Storage.getItem('SurficialDataMomsSummary')
-        let monitoring_logs_data = [];
-        data_container.then(response => {
-          console.log(response)
-          let counter = 0
-          if (response.length != 0) {
-            for (const [index, value] of response.entries()) {
-              let formatted_timestamp = this.formatDateTime(date = value.date)
+
+        })
+        .catch((error) => {
+          let data_container = Storage.getItem('SurficialDataMomsSummary')
+          let monitoring_logs_data = [];
+          data_container.then(response => {
+            console.log(response)
+            let counter = 0
+            if (response.length != 0) {
+              for (const [index, value] of response.entries()) {
+                let formatted_timestamp = this.formatDateTime(date = value.date)
+                monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
+                  <DataTable.Cell style={{ marginRight: 20 }}>{value.type_of_feature}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 20 }}>{value.description}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 20 }}>{value.name_of_feature}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 20 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
+                  <DataTable.Cell>
+                    <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+                    <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon><Text>   </Text>
+                    <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
+                  </DataTable.Cell>
+                </DataTable.Row>)
+              }
+            } else {
               monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
-                <DataTable.Cell style={{ marginRight: 20 }}>{value.type_of_feature}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 20 }}>{value.description}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 20 }}>{value.name_of_feature}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 20 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
-                <DataTable.Cell>
-                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon><Text>   </Text>
-                  <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
-                </DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
               </DataTable.Row>)
             }
-          } else {
-            monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-            </DataTable.Row>)
-          }
-          this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
-          this.tablePaginate(monitoring_logs_data)
+            this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
+            this.tablePaginate(monitoring_logs_data)
+          });
         });
-      });
+    });
+
   }
 
   render() {

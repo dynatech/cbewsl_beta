@@ -62,3 +62,4 @@
 <?php $this->load->view('field_survey/modals');?>
 <?php $this->load->view('surficial_data/modals');?>
 <?php $this->load->view('situation_report/modals');?>
+<?php $this->load->view('ewi/modals');?>
