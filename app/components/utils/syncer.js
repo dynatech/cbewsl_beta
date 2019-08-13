@@ -190,13 +190,19 @@ const Sync = {
                             Storage.setItem("SurficialDataMomsSummary", to_local_data)
                             break;
                         case "SurficialDataSummary":
-                            Storage.setItem("SurficialDataMomsSummary", responseJson[0].surficial_data)
+                            Storage.setItem("SurficialDataSummary", responseJson[0].surficial_data)
+                            break;
+                        case "RainfallSummary":
+                            console.log(responseJson);
+                            Storage.setItem("RainfallSummary", responseJson)
                             break;
                         default:
-                            Storage.setItem(Object.keys(response)[0], responseJson)
-                            to_loca_data = responseJson
+                            Storage.setItem(Object.keys(response)[0], responseJson);
+                            to_local_data = responseJson
                             break;
                     }
+                }).catch((error) => {
+                    console.log("Catching network failed");
                 });
 
             if (counter < KEYS_N_API.length - 1) {
@@ -226,9 +232,8 @@ const Sync = {
         const ms = Network.getPing();
 
         ms.then(response => {
-            console.log(response)
             if (response.status == "In-active") {
-                Alert.alert('Notice', response.msg);
+                ToastAndroid.show("You are offline.", ToastAndroid.SHORT);
             } else {
                 data.then(local_data => {
                     if (local_data != null || local_data != undefined) {
@@ -240,7 +245,7 @@ const Sync = {
                                         Accept: 'application/json',
                                         'Content-Type': 'application/json',
                                     },
-                                    body: JSON.stringify({ value }),
+                                    body: JSON.stringify(value),
                                 }).then((response) => response.json())
                                     .then((responseJson) => {
                                         ToastAndroid.show("Syncing...", ToastAndroid.SHORT);
@@ -258,6 +263,8 @@ const Sync = {
                 });
             }
         });
+
+        return true;
     },
     overrideServer: async function (keys) {
 

@@ -11,6 +11,7 @@ import FamilyRiskProfile from './family_risk_profile';
 import MapSection from './map_section';
 import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Sync from '../../utils/syncer';
 
 export default class ResourcesAndCapacities extends Component {
   constructor(props) {
@@ -83,9 +84,9 @@ export default class ResourcesAndCapacities extends Component {
 
   getAllResourcesAndCapacities() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.10:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
-      .then((responseJson) => {
-        Sync.clientToServer("RiskAssessmentRNC").then(() => {
+    Sync.clientToServer("RiskAssessmentRNC").then(() => {
+      fetch('http://192.168.150.10:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
+        .then((responseJson) => {
           let rnc_data = [];
           let to_local_data = [];
           let counter = 0
@@ -115,30 +116,30 @@ export default class ResourcesAndCapacities extends Component {
           }
           this.setState({ rnc_data: rnc_data, spinner: false })
           this.tablePaginate(rnc_data)
-        });
-
-      })
-      .catch((error) => {
-        let data_container = Storage.getItem('RiskAssessmentRNC')
-        let rnc_data = [];
-        data_container.then(response => {
-          if (response != null) {
-            for (const [index, value] of response.entries()) {
+        })
+        .catch((error) => {
+          let data_container = Storage.getItem('RiskAssessmentRNC')
+          let rnc_data = [];
+          data_container.then(response => {
+            if (response != null) {
+              for (const [index, value] of response.entries()) {
+                rnc_data.push(<DataTable.Row style={{ width: 500 }}>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
+                </DataTable.Row>)
+              }
+            } else {
               rnc_data.push(<DataTable.Row style={{ width: 500 }}>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
               </DataTable.Row>)
             }
-          } else {
-            rnc_data.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-            </DataTable.Row>)
-          }
-          this.setState({ rnc_data: rnc_data, spinner: false })
-          this.tablePaginate(rnc_data)
-        })
-      });
+            this.setState({ rnc_data: rnc_data, spinner: false })
+            this.tablePaginate(rnc_data)
+          })
+        });
+    });
+
 
   }
 

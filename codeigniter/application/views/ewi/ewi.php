@@ -51,10 +51,16 @@
     <div class="tab-pane fade" id="alert_validation" role="tabpanel" aria-labelledby="alert_validation_tab">
         <div class="card">
             <div class="card-body">
-            <div class="row">
+            <div id="no_candidate_alert">
+                <div class="col text-center">
+                    <h4><b>No current alert</b></h4>
+                </div>
+            </div>
+            <div class="row" id="candidate_alert_information">
                     <div class="col text-center">
                         <h2 style="color: #717171;">Validated Alert from PHIVOLCS</h2>
                         <h4><b id="alert_symbol" style="color: #ee9d01;">Alert 2</b></h4>
+                        <h5 id="alert_trigger">NULL</h5>
                         <h5 id="alert_information">NULL</h5>
                     </div>
                 </div>
@@ -70,10 +76,10 @@
                 </div>
                 <div class="row">
                     <div class="col-1">
-                        <input class="btn btn-primary" type="button" value="Valid" style="background-color: #195770;">
+                        <input class="btn btn-primary" type="button" value="Valid" style="background-color: #195770;" id="candidate_alert_valid">
                     </div>
                     <div class="col-1">
-                        <input class="btn btn-primary" type="button" value="Invalid" style="background-color: #195770;">
+                        <input class="btn btn-primary" type="button" value="Invalid" style="background-color: #195770;" id="candidate_alert_invalid">
                     </div>
                 </div>
             </div>

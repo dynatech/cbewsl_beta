@@ -11,6 +11,7 @@ import FamilyRiskProfile from './family_risk_profile';
 import MapSection from './map_section';
 import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Sync from '../../utils/syncer';
 
 export default class Summary extends Component {
   constructor(props) {
@@ -83,14 +84,14 @@ export default class Summary extends Component {
 
   getAllRiskAssessmentSummary() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.10:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
-      .then((responseJson) => {
-        Sync.clientToServer("RiskAssessmentSummary").then(() => {
+    Sync.clientToServer("RiskAssessmentSummary").then(() => {
+      fetch('http://192.168.150.10:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
+        .then((responseJson) => {
+          console.log("get all")
           let summary_data = [];
           let to_local_data = [];
-          let counter = 0
-          console.log("1")
-          console.log(responseJson)
+          let counter = 0;
+
           if (responseJson != null || responseJson != undefined) {
             for (const [index, value] of responseJson.entries()) {
               summary_data.push(<DataTable.Row style={{ width: 500 }}>
@@ -120,35 +121,34 @@ export default class Summary extends Component {
           this.setState({ summary_data: summary_data })
           this.tablePaginate(summary_data)
           this.setState({ spinner: false });
-        });
 
-      })
-      .catch((error) => {
-        let data_container = Storage.getItem('RiskAssessmentSummary')
-        let summary_data = [];
-        data_container.then(response => {
-          console.log("2")
-          console.log(response)
-          if (response != null || response != undefined) {
-            for (const [index, value] of response.entries()) {
+        })
+        .catch((error) => {
+          let data_container = Storage.getItem('RiskAssessmentSummary')
+          let summary_data = [];
+          data_container.then(response => {
+            if (response != null || response != undefined) {
+              for (const [index, value] of response.entries()) {
+                summary_data.push(<DataTable.Row style={{ width: 500 }}>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
+                </DataTable.Row>)
+              }
+            } else {
               summary_data.push(<DataTable.Row style={{ width: 500 }}>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.adaptive_capacity}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerability}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
               </DataTable.Row>)
             }
-          } else {
-            summary_data.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-            </DataTable.Row>)
-          }
 
-          this.setState({ summary_data: summary_data })
-          this.tablePaginate(summary_data)
-          this.setState({ spinner: false });
+            this.setState({ summary_data: summary_data })
+            this.tablePaginate(summary_data)
+            this.setState({ spinner: false });
+          });
         });
-      });
+    });
+
   }
 
   tablePaginate(summary_data) {

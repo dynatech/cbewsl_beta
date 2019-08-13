@@ -84,9 +84,9 @@ export default class HazardData extends Component {
 
   getAllHazardData() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.10:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
-      .then((responseJson) => {
-        Sync.clientToServer("RiskAssessmentHazardData").then(() => {
+    Sync.clientToServer("RiskAssessmentHazardData").then(() => {
+      fetch('http://192.168.150.10:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
+        .then((responseJson) => {
           let to_local_data = [];
           let counter = 0
           let hazard_data = [];
@@ -119,31 +119,32 @@ export default class HazardData extends Component {
           }
           this.setState({ hazard_data: hazard_data, spinner: false })
           this.tablePaginate(hazard_data)
-        });
-      })
-      .catch((error) => {
-        let data_container = Storage.getItem('RiskAssessmentHazardData')
-        let hazard_data = [];
-        data_container.then(response => {
-          console.log(response)
-          if (response != null) {
-            for (const [index, value] of response.entries()) {
+        })
+        .catch((error) => {
+          let data_container = Storage.getItem('RiskAssessmentHazardData')
+          let hazard_data = [];
+          data_container.then(response => {
+            console.log(response)
+            if (response != null) {
+              for (const [index, value] of response.entries()) {
+                hazard_data.push(<DataTable.Row style={{ width: 500 }}>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.hazard}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.speed_of_onset}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+                </DataTable.Row>)
+              }
+            } else {
               hazard_data.push(<DataTable.Row style={{ width: 500 }}>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.hazard}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.speed_of_onset}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.early_warning}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.impact}</DataTable.Cell>
+                <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
               </DataTable.Row>)
             }
-          } else {
-            hazard_data.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-            </DataTable.Row>)
-          }
-          this.setState({ hazard_data: hazard_data, spinner: false })
-          this.tablePaginate(hazard_data)
-        })
-      });
+            this.setState({ hazard_data: hazard_data, spinner: false })
+            this.tablePaginate(hazard_data)
+          })
+        });
+
+    });
 
   }
 

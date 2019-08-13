@@ -175,11 +175,9 @@ export default class RainfallGraph extends Component {
     Notification.endOfValidity();
     let offline_data = Storage.getItem("RainfallSummary");
     offline_data.then(response => {
+      console.log(response)
       let offline = response[0]
       let rainfall_container = []
-
-      console.log(offline)
-
       offline.plot.forEach(element => {
         rainfall_container.push(<View style={sensor_maintenance_styles.graphContainer}>
           <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Gauge name: {element.gauge_name.toUpperCase()} ({element.distance} KM away)</Text>

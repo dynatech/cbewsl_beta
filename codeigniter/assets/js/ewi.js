@@ -68,35 +68,30 @@ $(document).ready(function () {
 
 function getCurrentAlert() {
     $("#ewi_no_current_alert").hide();
+    $("#ewi_current_alert_container").hide();
     $.ajax({
-        url: "http://192.168.150.10:5000/api/monitoring/get_candidate_and_public_alert",
+        url: "http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
     }).done(function (data) {
         let json_data = JSON.parse(data);
         console.log(json_data);
-        let candidate_alerts = JSON.parse(json_data.candidate_alerts);
-        // let public_alerts = JSON.parse(json_data.public_alerts);
-        // displayCurrentAlert()
-        displayCandidateAlert(candidate_alerts)
-        // console.log(public_alerts)
-        // if (candidate_alerts.length != 0) {
-        //     $("#ewi_current_alert_container").show();
-        //     $("#ewi_no_current_alert").hide();
-        //     let public_alert_symbol = getPublicAlertSymbol(public_alerts[0].public_alert);
-        //     let triggers = public_alerts[0].event_triggers[0].trigger_type;
-        //     let tech_info = public_alerts[0].event_triggers[0].tech_info;
-        //     let validity = formatDateTime(public_alerts[0].validity);
-        //     $("#ewi_alert_symbol").text(public_alert_symbol);
-        //     $("#triggers").empty().append("Rainfall<br>")
-        //         .append(tech_info);
-        //     $("#validity").empty().append(validity.text_format_timestamp);
+        let candidate_alerts = JSON.parse(json_data.candidate_alert);
+        if (candidate_alerts.length != 0) {
+            displayCandidateAlert(candidate_alerts);
+            $("#no_candidate_alert").hide();
+            $("#candidate_alert_information").show();
+        } else {
+            $("#no_candidate_alert").show();
+            $("#candidate_alert_information").hide();
+        }
 
-        // } else {
-        //     $("#ewi_current_alert_container").hide();
-        //     $("#ewi_no_current_alert").show();
-        // }
+        if (json_data.leo.latest.length != 0) {
+
+        } else {
+
+        }
     });
 }
 
@@ -104,17 +99,21 @@ function displayCurrentAlert() {
 
 }
 
-function displayCandidateAlert(data) {
-    if (data.length != 0 || data.length != undefined) {
-        console.log(data)
-        let tech_info = data[0].trigger_list_arr[0].tech_info;
-        let alert_symbol = "Alert " + data[0].trigger_list_arr[0].alert_level;
-        $("#alert_information").text(tech_info);
-        $("#alert_symbol").text(alert_symbol);
-    } else {
+function displayCandidateAlert(candidate_alerts) {
+    console.log(candidate_alerts)
+    let public_alert_symbol = getPublicAlertSymbol(candidate_alerts[0].public_alert_symbol);
+    let tech_info = candidate_alerts[0].trigger_list_arr[0].tech_info;
+    let trigger_type = candidate_alerts[0].trigger_list_arr[0].trigger_type;
+    let alert_timestamp = formatDateTime(candidate_alerts[0].trigger_list_arr[0].ts_updated);
+    let trigger_id = candidate_alerts[0].trigger_list_arr[0].trigger_id;
 
-    }
+    $("#alert_symbol").text(public_alert_symbol);
+    $("#alert_information").empty().append(tech_info + "<br>")
+        .append("Data Timestamp: " + alert_timestamp["text_format_timestamp"]);
+    $('#alert_trigger').empty().append(trigger_type);
+    $('#alert_trigger').css('textTransform', 'capitalize');
 
+    onValidateCandidateAlert(trigger_id);
 }
 
 function getPublicAlertSymbol(alert_symbol) {
@@ -134,4 +133,51 @@ function getPublicAlertSymbol(alert_symbol) {
     }
 
     return alert_level;
+}
+
+function onValidateCandidateAlert(trigger_id) {
+    $("#candidate_alert_valid").unbind();
+    $("#candidate_alert_invalid").unbind();
+
+    $("#candidate_alert_valid").click(function () {
+        $("#validate_alert_modal").modal("show");
+        $("#validateAlertModalLabel").text("Remarks for this valid alert");
+        alertValidation(trigger_id, 1, 1);
+    });
+
+    $("#candidate_alert_invalid").click(function () {
+        $("#validate_alert_modal").modal("show");
+        $("#validateAlertModalLabel").text("Remarks for this invalid alert");
+        alertValidation(trigger_id, -1, 1);
+    });
+}
+
+function alertValidation(trigger_id, valid, user_id) {
+
+    $("#save_alert_validation").unbind();
+    $("#save_alert_validation").click(function () {
+
+        let url = "http://192.168.150.10:5000/api/monitoring/update_alert_status"
+        let remarks = $("#alert_remarks").val();
+        let data = {
+            "trigger_id": trigger_id,
+            "alert_status": valid,
+            "remarks": remarks,
+            "user_id": user_id,
+        }
+        console.log(data)
+        $.ajax({
+            url: url,
+            method: "POST",
+            data: data,
+            dataType: 'jsonp',
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    });
+
 }
