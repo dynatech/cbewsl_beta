@@ -193,7 +193,6 @@ const Sync = {
                             Storage.setItem("SurficialDataSummary", responseJson[0].surficial_data)
                             break;
                         case "RainfallSummary":
-                            console.log(responseJson);
                             Storage.setItem("RainfallSummary", responseJson)
                             break;
                         default:

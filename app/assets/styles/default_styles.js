@@ -64,6 +64,17 @@ const defaults = StyleSheet.create({
     marginLeft: 5,
     width: width * 0.4
   },
+  button_error: {
+    backgroundColor: 'red',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#083451',
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 5,
+    marginLeft: 5,
+    width: width * 0.4
+  },
   buttonText: {
     color: 'white',
     textAlign: 'center',
