@@ -153,7 +153,7 @@ function initializeMonitoringLogs() {
                     {
                         render(data, type, full) {
                             // ${full.resources_and_capacities_id}
-                            return `<a href="#" id="edit_monitoring_logs"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="remove_monitoring_logs"><i class="fas fa-minus-circle text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="add_moms_images"><i class="fas fa-upload text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="view_moms_images"><i class="fas fa-eye text-center"></i></a>`;
+                            return `<a href="#" id="edit_monitoring_logs"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="remove_monitoring_logs"><i class="fas fa-minus-circle text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="add_moms_images"><i class="fas fa-upload text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="view_moms_images"><i class="fas fa-eye text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="release_moms">Raise&nbsp;<i class="fas fa-share text-center"></i></a>`;
                         }
                     }
                 ]
@@ -188,6 +188,11 @@ function initializeCRUDLogs(datatable) {
     $('#moms_table tbody').on('click', '#view_moms_images', function () {
         let data = datatable.row($(this).parents('tr')).data();
         displayMomsImages(data);
+    });
+
+    $('#moms_table tbody').on('click', '#release_moms', function () {
+        let data = datatable.row($(this).parents('tr')).data();
+        displayRaiseMomsModal(data);
     });
 }
 
@@ -385,5 +390,70 @@ function displayMomsImages(data) {
             $("#moms_image_container").empty();
             $("#moms_image_container").append("<b>No uploaded images.</b>");
         }
+    });
+}
+
+function displayRaiseMomsModal(data) {
+    $("#raise_moms_modal").modal("show");
+    console.log(document.cookie);
+    $('#raise_moms').unbind();
+    $('#raise_moms').on('click', function () {
+        let alert_level = $("#moms_alert_level").val();
+        let current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
+        let alert_validity = ""
+        let int_sym = ""
+
+        if (alert_level == "2") {
+            int_sym = "m2"
+            alert_validity = moment(data.date).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
+        } else if (alert_level == "3") {
+            int_sym = "m3"
+            alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
+        }
+
+        let hour = moment(alert_validity).hours()
+        if (hour >= 0 && hour < 4) {
+            alert_validity = moment(alert_validity).format("YYYY-MM-DD 04:00:00")
+        } else if (hour >= 4 && hour < 8) {
+            alert_validity = moment(alert_validity).format("YYYY-MM-DD 08:00:00")
+        } else if (hour >= 8 && hour < 12) {
+            alert_validity = moment(alert_validity).format("YYYY-MM-DD 12:00:00")
+        } else if (hour >= 12 && hour < 16) {
+            alert_validity = moment(alert_validity).format("YYYY-MM-DD 16:00:00")
+        } else if (hour >= 16 && hour < 20) {
+            alert_validity = moment(alert_validity).format("YYYY-MM-DD 20:00:00")
+        } else if (hour >= 20) {
+            alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
+        }
+
+        let trigger_list = {
+            alert_level: alert_level,
+            alert_validity: alert_validity,
+            data_ts: current_timestamp,
+            user_id: 1,
+            trig_list: [
+                {
+                    int_sym: int_sym,
+                    remarks: data.description,
+                    f_name: data.feature_name,
+                    f_type: data.feature_type
+                }
+            ]
+        }
+        console.log(JSON.stringify(trigger_list));
+        let url = 'http://192.168.150.10:5000/api/monitoring/insert_cbewsl_ewi';
+        fetch(url, {
+            method: 'POST',
+            dataType: 'jsonp',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(trigger_list),
+        }).then((response) => response.json()).then((responseJson) => {
+            $("#raise_moms_modal").modal("hide");
+            publicAlert();
+            alert("Successfuly raise MOMs.");
+        });
     });
 }
