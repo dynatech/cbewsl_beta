@@ -79,6 +79,7 @@
 		2CB89604CF8244CFAA541A82 /* libRNBackgroundJob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 161870FCB6894E0FBB6B2FCF /* libRNBackgroundJob.a */; };
 		5528248594944DB5913FE6EF /* libreact-native-sha512.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 226A86205D8F4579B3694D2F /* libreact-native-sha512.a */; };
 		AEA8B4A46D6E4CBDA7DB6ADC /* libSendSMS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 025A5EB3050347E0989B62E5 /* libSendSMS.a */; };
+		DB26CEA5C70A492AA3228586 /* libRNReactNativePing.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2A5657429274385AC40A3DD /* libRNReactNativePing.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -431,6 +432,8 @@
 		226A86205D8F4579B3694D2F /* libreact-native-sha512.a */ = {isa = PBXFileReference; name = "libreact-native-sha512.a"; path = "libreact-native-sha512.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		028488137D0F490A82C704A6 /* SendSMS.xcodeproj */ = {isa = PBXFileReference; name = "SendSMS.xcodeproj"; path = "../node_modules/react-native-sms/SendSMS.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		025A5EB3050347E0989B62E5 /* libSendSMS.a */ = {isa = PBXFileReference; name = "libSendSMS.a"; path = "libSendSMS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		1B48F2527EC44431BA692DA8 /* RNReactNativePing.xcodeproj */ = {isa = PBXFileReference; name = "RNReactNativePing.xcodeproj"; path = "../node_modules/react-native-ping/ios/RNReactNativePing.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		E2A5657429274385AC40A3DD /* libRNReactNativePing.a */ = {isa = PBXFileReference; name = "libRNReactNativePing.a"; path = "libRNReactNativePing.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -464,6 +467,7 @@
 				2CB89604CF8244CFAA541A82 /* libRNBackgroundJob.a in Frameworks */,
 				5528248594944DB5913FE6EF /* libreact-native-sha512.a in Frameworks */,
 				AEA8B4A46D6E4CBDA7DB6ADC /* libSendSMS.a in Frameworks */,
+				DB26CEA5C70A492AA3228586 /* libRNReactNativePing.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -660,6 +664,7 @@
 				68001A09AF474E6F8E8BF307 /* RNBackgroundJob.xcodeproj */,
 				D695DF09A7FF49DCA3B22AEA /* react-native-sha512.xcodeproj */,
 				028488137D0F490A82C704A6 /* SendSMS.xcodeproj */,
+				1B48F2527EC44431BA692DA8 /* RNReactNativePing.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1369,6 +1374,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1377,6 +1383,7 @@
 					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
 					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
+					"$(SRCROOT)/../node_modules/react-native-ping/ios/**",
 				);
 			};
 			name = Debug;
@@ -1405,6 +1412,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1413,6 +1421,7 @@
 					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
 					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
+					"$(SRCROOT)/../node_modules/react-native-ping/ios/**",
 				);
 			};
 			name = Release;
@@ -1440,6 +1449,7 @@
 					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
 					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
+					"$(SRCROOT)/../node_modules/react-native-ping/ios/**",
 				);
 			};
 			name = Debug;
@@ -1466,6 +1476,7 @@
 					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
 					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
+					"$(SRCROOT)/../node_modules/react-native-ping/ios/**",
 				);
 			};
 			name = Release;
@@ -1502,6 +1513,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1510,6 +1522,7 @@
 					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
 					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
+					"$(SRCROOT)/../node_modules/react-native-ping/ios/**",
 				);
 			};
 			name = Debug;
@@ -1546,6 +1559,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1554,6 +1568,7 @@
 					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
 					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
+					"$(SRCROOT)/../node_modules/react-native-ping/ios/**",
 				);
 			};
 			name = Release;
@@ -1589,6 +1604,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1597,6 +1613,7 @@
 					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
 					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
+					"$(SRCROOT)/../node_modules/react-native-ping/ios/**",
 				);
 			};
 			name = Debug;
@@ -1632,6 +1649,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1640,6 +1658,7 @@
 					"$(SRCROOT)/../node_modules/react-native-background-job/ios",
 					"$(SRCROOT)/../node_modules/react-native-sha512/ios",
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
+					"$(SRCROOT)/../node_modules/react-native-ping/ios/**",
 				);
 			};
 			name = Release;

@@ -116,11 +116,13 @@ export default class MainDashboard extends Component {
     setBadge() {
         let offline_data = Storage.getItem("Pub&CandidAlert");
         offline_data.then(response => {
-
-            let candidate_alerts = JSON.parse(response.candidate_alerts);
-            let current_alerts = response.current_alerts;
+            let candidate_alerts = JSON.parse(response.candidate_alert);
+            let current_alerts = response.leo;
             let top_position = -10;
             let temp = []
+
+            console.log(current_alerts);
+            console.log(candidate_alerts);
 
             if (candidate_alerts.length != 0) {
                 temp.push(<Badge
@@ -135,7 +137,7 @@ export default class MainDashboard extends Component {
                 top_position = top_position - 20;
             }
 
-            if (response.leo.latest.length != 0) {
+            if (current_alerts.latest.length != 0) {
                 temp.push(<Badge
                     status="error"
                     containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
