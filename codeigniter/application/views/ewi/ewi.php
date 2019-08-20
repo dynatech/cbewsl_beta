@@ -27,7 +27,7 @@
                             <div id="validity"></div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="current_alert_buttons">
                         <div class="col-1">
                             <input class="btn btn-primary" type="button" value="e-Mail" style="background-color: #195770;">
                         </div>
