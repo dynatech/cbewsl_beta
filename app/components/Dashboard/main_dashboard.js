@@ -24,6 +24,8 @@ export default class MainDashboard extends Component {
     componentDidMount() {
         let credentials = Storage.getItem("loginCredentials")
         credentials.then(response => {
+            console.log("CRED")
+            console.log(response)
             let role_id = response.role_id;
             this.setState({ role_id: role_id })
         });

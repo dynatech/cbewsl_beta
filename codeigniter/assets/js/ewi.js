@@ -87,17 +87,53 @@ function getCandidateAndLatestAlerts() {
             $("#no_candidate_alert").show();
             $("#candidate_alert_information").hide();
         }
-
+        $("#current_alert_buttons").hide();
         if (json_data.leo.latest.length != 0) {
-
+            displayLatestAlert(json_data.leo.latest);
         } else {
-
+            displayOverdueAlert(json_data.leo.overdue);
+            displayExtendedAlert(json_data.leo.extended);
         }
     });
 }
 
-function displayCurrentAlert() {
+function displayLatestAlert(latest_data) {
+    $("#ewi_current_alert_container").show();
+    let latest = latest_data[0];
+    let internal_alert_level = latest.internal_alert_level;
+    let alert_level = "Alert " + latest.public_alert_symbol.alert_level;
+    let alert_type = latest.public_alert_symbol.alert_type;
+    let recommended_response = latest.public_alert_symbol.recommended_response;
+    let event_start = latest.event.event_start;
+    let validity = latest.event.validity;
 
+    $("#ewi_alert_symbol").text(alert_level);
+}
+
+function displayOverdueAlert(overdue_data) {
+    $("#ewi_current_alert_container").show();
+
+}
+
+function displayExtendedAlert(extended_data) {
+    $("#ewi_current_alert_container").show();
+
+}
+
+function updateEwiData() {
+    publicAlert();
+    let updated_data = null;
+    $.ajax({
+        url: "http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts",
+        beforeSend: function (xhr) {
+            xhr.overrideMimeType("text/plain; charset=x-user-defined");
+        }
+    }).done(function (data) {
+        updated_data = JSON.parse(data);
+
+    });
+
+    return updated_data;
 }
 
 function displayCandidateAlert(candidate_alerts) {
@@ -272,6 +308,5 @@ function publicAlert() {
     fetch(url).then((response) => response.json())
         .then((responseJson) => {
             console.log(responseJson)
-            getCandidateAndLatestAlerts();
         });
 }

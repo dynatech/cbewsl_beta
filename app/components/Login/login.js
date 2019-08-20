@@ -40,7 +40,6 @@ export default class Login extends Component {
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
           Storage.setItem("loginCredentials", responseJson);
           console.log(responseJson)
-          console.log(Storage.getItem("loginCredentials"))
 
         } else {
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);

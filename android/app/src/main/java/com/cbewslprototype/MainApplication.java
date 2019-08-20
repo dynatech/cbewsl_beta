@@ -4,10 +4,8 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.reactlibrary.RNReactNativePingPackage;
-import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 import com.reactlibrary.RNReactNativePingPackage;
 import com.tkporter.sendsms.SendSMSPackage;
-import com.pilloxa.backgroundjob.BackgroundJobPackage;
 import com.centaurwarchief.smslistener.SmsListenerPackage;
 import com.sha512lib.Sha512Package;
 import com.rhaker.reactnativesmsandroid.RNSmsAndroidPackage;
