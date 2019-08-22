@@ -196,7 +196,7 @@ function latestSensorMaintenanceData(latest_data) {
 
 function initalizeSensorMaintenanceData() {
     $.ajax({
-        url: "http://192.168.150.10:5000/api/rainfall/get_rainfall_plot_data",
+        url: "http://192.168.150.10:5000/api/rainfall/get_rainfall_plot_data/umi",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
             $("#one_day_rain").text("Loading. . . ");
@@ -204,7 +204,7 @@ function initalizeSensorMaintenanceData() {
         }
     }).done(function (data) {
         let rainfall_data = JSON.parse(data);
-
+        console.log(rainfall_data[0])
         let rain_percentage = displaySensorMaintenanceSummary(rainfall_data);
         renderRainfallChart(rainfall_data[0], rain_percentage);
     });

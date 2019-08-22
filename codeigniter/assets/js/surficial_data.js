@@ -450,7 +450,7 @@ function displayRaiseMomsModal(data) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(trigger_list),
-        }).then((response) => response.json()).then((responseJson) => {
+        }).then((responseJson) => {
             $("#raise_moms_modal").modal("hide");
             publicAlert();
             alert("Successfuly raise MOMs.");

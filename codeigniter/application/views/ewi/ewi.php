@@ -15,16 +15,24 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
+                        <div class="col text-center">
                             <h5>Triggers</h5>
                             <div id="triggers"></div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
+                        <div class="col text-center">
                             <br>
                             <h5>Validity</h5>
                             <div id="validity"></div>
+                        </div>
+                    </div>
+                    <div class="row" id="release_alert_button">
+                        <div class="col text-center">
+                        </div>
+                        <div class="col text-center" id="release_ewi">
+                        </div>
+                        <div class="col text-center">
                         </div>
                     </div>
                     <div class="row" id="current_alert_buttons">
