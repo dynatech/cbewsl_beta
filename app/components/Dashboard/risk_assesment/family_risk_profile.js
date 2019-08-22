@@ -30,7 +30,8 @@ class FamilyRiskProfile extends Component {
     });
     Notification.endOfValidity();
     Sync.clientToServer("RiskAssessmentFamilyRiskProfile").then(() => {
-      fetch('http://192.168.150.10:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
+      setTimeout(()=> {
+        fetch('http://192.168.150.10:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
         .then((responseJson) => {
           let family_profile_data = [];
           let to_local_data = [];
@@ -87,6 +88,8 @@ class FamilyRiskProfile extends Component {
             this.setState({ spinner: false });
           })
         });
+      }, 3000)
+      
     });
 
   }

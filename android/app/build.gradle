@@ -152,7 +152,6 @@ dependencies {
     implementation project(':react-native-ping')
     implementation project(':react-native-background-task')
     implementation project(':react-native-sms')
-    implementation project(':react-native-sha512')
     implementation project(':react-native-background-job')
     implementation project(':react-native-android-sms-listener')
     implementation project(':react-native-sms-android')

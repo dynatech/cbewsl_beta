@@ -85,7 +85,8 @@ export default class HazardData extends Component {
   getAllHazardData() {
     Notification.endOfValidity();
     Sync.clientToServer("RiskAssessmentHazardData").then(() => {
-      fetch('http://192.168.150.10:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
+      setTimeout(()=> {
+        fetch('http://192.168.150.10:5000/api/hazard_data/get_all_hazard_data').then((response) => response.json())
         .then((responseJson) => {
           let to_local_data = [];
           let counter = 0
@@ -143,7 +144,7 @@ export default class HazardData extends Component {
             this.tablePaginate(hazard_data)
           })
         });
-
+      }, 3000)
     });
 
   }
