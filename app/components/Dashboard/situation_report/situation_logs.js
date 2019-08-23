@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { Component } from 'react';
-import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, TouchableOpacity, View, ToastAndroid } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { NavigationEvents } from 'react-navigation';
 import { defaults } from '../../../assets/styles/default_styles';
@@ -81,69 +81,72 @@ export default class SituationLogs extends Component {
     let new_days = {};
 
     Sync.clientToServer("SituationReportLogs").then(() => {
-      fetch('http://192.168.150.10:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
-        .then((responseJson) => {
-          let to_local_data = [];
-          for (const [index, value] of responseJson.entries()) {
-            let format_date_time = this.formatDateTime(date = value.timestamp);
-            next_days.push(format_date_time["date"])
-            let counter = 0;
-            counter += 1;
-            to_local_data.push({
-              situation_report_id: value.situation_report_id,
-              local_storage_id: counter,
-              sync_status: 3,
-              timestamp: format_date_time["current_timestamp"],
-              summary: value.summary,
-              pdf_path: value.pdf_path,
-              image_path: value.image_path
-            });
-          }
-
-          next_days.forEach((day) => {
-            new_days = {
-              ...new_days,
-              [day]: {
-                day,
-                marked: true
-              }
-            };
-          });
-          this.setState({ marked_dates: new_days, spinner: false })
-          Storage.removeItem("SituationReportLogs")
-          Storage.setItem("SituationReportLogs", to_local_data)
-
-        })
-        .catch((error) => {
-
-          let data_container = Storage.getItem("SituationReportLogs")
-          data_container.then(response => {
-            console.log(response)
-            if (response != null) {
-              for (const [index, value] of response.entries()) {
-                let format_date_time = this.formatDateTime(date = value.timestamp);
-                next_days.push(format_date_time["date"])
-              }
-              next_days.forEach((day) => {
-                new_days = {
-                  ...new_days,
-                  [day]: {
-                    day,
-                    marked: true
-                  }
-                };
-              });
-              this.setState({ marked_dates: new_days, spinner: false })
-            } else {
-              this.setState({
-                latest_date: "N/A",
-                latest_time: "N/A",
-                summary: "No current situation report",
-                spinner: false
+      setTimeout(() => {
+        fetch('http://192.168.150.10:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
+          .then((responseJson) => {
+            let to_local_data = [];
+            for (const [index, value] of responseJson.entries()) {
+              let format_date_time = this.formatDateTime(date = value.timestamp);
+              next_days.push(format_date_time["date"])
+              let counter = 0;
+              counter += 1;
+              to_local_data.push({
+                situation_report_id: value.situation_report_id,
+                local_storage_id: counter,
+                sync_status: 3,
+                timestamp: format_date_time["current_timestamp"],
+                summary: value.summary,
+                pdf_path: value.pdf_path,
+                image_path: value.image_path
               });
             }
+
+            next_days.forEach((day) => {
+              new_days = {
+                ...new_days,
+                [day]: {
+                  day,
+                  marked: true
+                }
+              };
+            });
+            this.setState({ marked_dates: new_days, spinner: false })
+            Storage.removeItem("SituationReportLogs")
+            Storage.setItem("SituationReportLogs", to_local_data)
+
+          })
+          .catch((error) => {
+
+            let data_container = Storage.getItem("SituationReportLogs")
+            data_container.then(response => {
+              console.log(response)
+              if (response != null) {
+                for (const [index, value] of response.entries()) {
+                  let format_date_time = this.formatDateTime(date = value.timestamp);
+                  next_days.push(format_date_time["date"])
+                }
+                next_days.forEach((day) => {
+                  new_days = {
+                    ...new_days,
+                    [day]: {
+                      day,
+                      marked: true
+                    }
+                  };
+                });
+                this.setState({ marked_dates: new_days, spinner: false })
+              } else {
+                this.setState({
+                  latest_date: "N/A",
+                  latest_time: "N/A",
+                  summary: "No current situation report",
+                  spinner: false
+                });
+              }
+            });
           });
-        });
+      }, 3000)
+
     });
 
   }
@@ -156,13 +159,49 @@ export default class SituationLogs extends Component {
   }
 
   deleteSituationReport(data) {
-    console.log("Delete")
-    console.log(data)
+    Alert.alert(
+      'Warning',
+      'Are you sure you want to delete this entry?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Yes', onPress: () => {
+            fetch('http://192.168.150.10:5000/api/situation_report/delete_situation_report', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                situation_report_id: data.situation_report_id
+              }),
+            }).then((response) => response.json()).then((responseJson) => {
+              console.log(responseJson)
+              if (responseJson.status == true) {
+                this.displaySituationReportPerDay()
+                ToastAndroid.show('Delete successfull!', ToastAndroid.SHORT);
+                this.setState({selected_date_situations: []})
+              } else {
+                ToastAndroid.show('Failed to delete entry!', ToastAndroid.SHORT);
+              }
+            }).catch((error) => {
+              console.log(error)
+            });
+          }
+        },
+      ],
+      { cancelable: false },
+    );
+
+
   }
 
 
   selectDateToAddReport(date) {
-    console.log(date)
     this.setState({ date_selected: date })
     let selected_date = this.formatDateTime(date = date);
     button_text = "Add Report for " + selected_date["text_date_format"];

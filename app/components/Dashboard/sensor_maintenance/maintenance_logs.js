@@ -75,7 +75,8 @@ export default class MaintenanceLogs extends Component {
     let new_days = {};
 
     Sync.clientToServer("SensorMaintenanceLogs").then(() => {
-      fetch('http://192.168.150.10:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
+      setTimeout(()=> {
+        fetch('http://192.168.150.10:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
         .then((responseJson) => {
           let to_local_data = [];
           for (const [index, value] of responseJson.entries()) {
@@ -129,6 +130,8 @@ export default class MaintenanceLogs extends Component {
             }
           })
         });
+      }, 3000)
+      
     });
 
 

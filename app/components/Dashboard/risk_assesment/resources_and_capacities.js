@@ -85,7 +85,8 @@ export default class ResourcesAndCapacities extends Component {
   getAllResourcesAndCapacities() {
     Notification.endOfValidity();
     Sync.clientToServer("RiskAssessmentRNC").then(() => {
-      fetch('http://192.168.150.10:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
+      setTimeout(()=> {
+        fetch('http://192.168.150.10:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
         .then((responseJson) => {
           let rnc_data = [];
           let to_local_data = [];
@@ -138,6 +139,7 @@ export default class ResourcesAndCapacities extends Component {
             this.tablePaginate(rnc_data)
           })
         });
+      }, 3000)
     });
 
 

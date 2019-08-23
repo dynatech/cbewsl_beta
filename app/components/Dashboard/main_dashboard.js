@@ -122,9 +122,7 @@ export default class MainDashboard extends Component {
             let current_alerts = response.leo;
             let top_position = -10;
             let temp = []
-
-            console.log(current_alerts);
-            console.log(candidate_alerts);
+            let alert_level = ""
 
             if (candidate_alerts.length != 0) {
                 temp.push(<Badge
@@ -140,45 +138,73 @@ export default class MainDashboard extends Component {
             }
 
             if (current_alerts.latest.length != 0) {
+
+                switch (current_alerts.latest[0].public_alert_symbol.alert_level) {
+                    case 1:
+                        alert_level = "Alert 1"
+                        break;
+                    case 2:
+                        alert_level = "Alert 2"
+                        break;
+                    case 3:
+                        alert_level = "Alert 3"
+                        break;
+                    default:
+                        alert_level = "Alert 0"
+                        break;
+                }
+
+                if (alert_level == "Alert 0") {
+                    temp.push(<Badge
+                        status="success"
+                        containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
+                        value={
+                            <Text style={{ color: 'white', padding: 10, fontSize: 10 }}>
+                                {alert_level}
+                            </Text>
+                        }
+                    />)
+                } else {
+                    temp.push(<Badge
+                        status="error"
+                        containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
+                        value={
+                            <Text style={{ color: 'white', padding: 10, fontSize: 10 }}>
+                                {alert_level}
+                            </Text>
+                        }
+                    />)
+                }
+
+            }
+
+            if (current_alerts.overdue.length != 0) {
                 temp.push(<Badge
-                    status="error"
+                    status="warning"
                     containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
                     value={
                         <Text style={{ color: 'white', padding: 10, fontSize: 10 }}>
-                            Alert 1
+                            <Icon name="ios-warning" style={{ fontSize: 15, color: 'white' }}></Icon> Alert overdue
                             </Text>
                     }
                 />)
+                top_position = top_position - 20;
+            }
+
+            if (current_alerts.extended.length != 0) {
+                temp.push(<Badge
+                    status="success"
+                    containerStyle={{ position: 'absolute', top: top_position, left: -10 }}
+                    value={
+                        <Text style={{ color: 'white', padding: 10, fontSize: 10 }}>
+                            <Icon name="ios-warning" style={{ fontSize: 15, color: 'white' }}></Icon> Extended Monitoring
+                            </Text>
+                    }
+                />)
+                top_position = top_position - 20;
             }
 
             this.setState({ alert_badge: temp })
-
-
-            // if (response == null) {
-            //     this.setState({alert_badge: [<Badge
-            //         status="success"
-            //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-            //         value={<Text style={{color: 'white', padding: 20}}>Alert 0</Text>}
-            //     />]})
-            // } else if (response.alert_level == "1") {
-            //     this.setState({alert_badge: [<Badge
-            //         status="error"
-            //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-            //         value={<Text style={{color: 'white', padding: 20}}>Alert 1</Text>}
-            //     />]})
-            // } else if (response.alert_level == "2") {
-            //     this.setState({alert_badge: [<Badge
-            //         status="error"
-            //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-            //         value={<Text style={{color: 'white', padding: 20}}>Alert 2</Text>}
-            //     />]})
-            // } else if (response.alert_level == "3") {
-            //     this.setState({alert_badge: [<Badge
-            //         status="error"
-            //         containerStyle={{ position: 'absolute', top: -10, left: -10 }}
-            //         value={<Text style={{color: 'white', padding: 20}}>Alert 3</Text>}
-            //     />]})
-            // }
         })
     }
 

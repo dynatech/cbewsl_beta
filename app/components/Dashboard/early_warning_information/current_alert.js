@@ -7,24 +7,20 @@ import Storage from '../../utils/storage';
 import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Notification from '../../utils/alert_notification';
+import { defaults } from '../../../assets/styles/default_styles';
+import EwiTemplate from '../../utils/ewi_template';
 
 export default class CurrentAlert extends Component {
   constructor(props) {
     super(props);
     this.state = {
       alert_details: [],
-      alert_level: "",
-      alert_trigger: [],
-      rain_alert_trigger: [],
-      alert_validity: "",
-      moms_header: [],
-      rain_header: [],
       spinner: false
     };
   }
 
   navigateEwi(tab) {
-    switch(tab) {
+    switch (tab) {
       case "alert_validation":
         this.props.navigation.navigate('alert_validation')
         break;
@@ -38,6 +34,10 @@ export default class CurrentAlert extends Component {
     Notification.endOfValidity();
     let offline_data = Storage.getItem("Pub&CandidAlert")
     offline_data.then(response => {
+      let view = []
+      let latest = response.leo.latest
+      let extended = response.leo.extended
+      let overdue = response.leo.overdue
       let alert_details = []
       let alert_level = []
       let moms_header_container = []
@@ -45,74 +45,90 @@ export default class CurrentAlert extends Component {
       let rain_temp = ""
       let moms_temp = ""
 
-      if (response.leo.latest.length != 0) {
-
-       } else {
-        if (response.leo.extended != 0) {
-
-        } else {
-          if (response.leo.overdue != 0) {
-
-          } else {
-
-          }
+      if (latest.length != 0) {
+        switch (latest[0].public_alert_symbol.alert_level) {
+          case 1:
+            view.push(<Text style={{ fontSize: 50, color: "red", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 1</Text>)
+            break;
+          case 2:
+            view.push(<Text style={{ fontSize: 50, color: "red", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 2</Text>)
+            break;
+          case 3:
+            view.push(<Text style={{ fontSize: 50, color: "red", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 3</Text>)
+            break;
+          default:
+            view.push(<Text style={{ fontSize: 50, color: "green", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 0</Text>)
+            break;
         }
-      }
-      // if (response != null || response != undefined) {
-      //   if (response.alert_level == "0") {
-      //     alert_level.push(<Text style={{fontSize: 50, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 0</Text>)
-      //   } else if (response.alert_level == "1") {
-      //     alert_level.push(<Text style={{fontSize: 50, color: "#f09e01", fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 1</Text>)
-      //   } else if (response.alert_level == "2") {
-      //     alert_level.push(<Text style={{fontSize: 50, color: "#f27e10", fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 2</Text>)
-      //   } else if (response.alert_level == "3") {
-      //     alert_level.push(<Text style={{fontSize: 50, color: "#ef7b7e", fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 3</Text>)
-      //   } else {
-      //     alert_level.push(<Text style={{fontSize: 50, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 0</Text>)
-      //   }
 
-      //   response.trig_list.forEach(function(element) {
-      //     if (element.int_sym == "M") {
-      //       if (moms_header_container.length == 0) {
-      //         moms_header_container.push(<Text style={{fontWeight: 'bold', fontSize: 20}}>Manifestation of Movements</Text>)
-      //       }
-      //       moms_temp = "Feature type: "+ element.f_type+"("+element.f_name+")\n"+
-      //             "Description: "+ element.remarks+"\n"
-      //     } else {
-      //       if (rain_header_container.length == 0) {
-      //         rain_header_container.push(<Text style={{fontWeight: 'bold', fontSize: 20}}>Rainfall Alert</Text>)
-      //       }
-      //       rain_temp = "Rainfall data exceeded threshold level."
-      //     }
-      //   });
-  
-      //   alert_details.push(
-      //     <View style={{padding: 20}}>
-      //       {alert_level}
-      //       <Text style={{fontSize: 20, fontWeight: 'bold'}}>Triggers</Text>
-      //       <View style={{padding: 20}}>
-      //         {moms_header_container}
-      //         <Text style={{fontSize: 20}}>{moms_temp}</Text>
-      //         {rain_header_container}
-      //         <Text style={{fontSize: 20}}>{rain_temp}</Text>
-      //       </View>
-      //       <Text style={{fontSize: 20, fontWeight: 'bold'}}>Validity</Text>
-      //       <View style={{padding: 20}}>
-      //         <Text style={{fontSize: 20}}>{this.formatDateTime(response.alert_validity)}</Text>
-      //       </View>
-      //     </View>
-      //   )
-      //   this.setState({alert_details: alert_details, spinner: false})
-      // } else {
-      //   alert_level.push(<Text style={{fontSize: 50, fontWeight: 'bold', width: '100%', textAlign: 'center'}}>Alert 0</Text>)
-      //   alert_details.push(
-      //     <View style={{padding: 20}}>
-      //       {alert_level}
-      //       <Text style={{fontSize: 25, fontWeight: 'bold', color: '#4a8e1c', width: '100%', textAlign: 'center'}}>No candidate alerts.</Text>
-      //     </View>
-      //   )
-      //   this.setState({alert_details: alert_details, spinner: false})
-      // }
+        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Technical Information</Text>)
+
+        latest[0].releases[0].triggers.forEach(element => {
+          view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Event start timestamp: {latest[0].ts_start}</Text>)
+          view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Validity: {latest[0].event.validity}</Text>)
+          switch (element.internal_sym.alert_symbol) {
+            case "m":
+            case "M":
+              view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Manifestation of movements: {element.info}</Text>)
+              break;
+            case "R":
+              view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Rainfall: {element.info}</Text>)
+              break;
+            case "E":
+              view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Earthquake: {element.info}</Text>)
+              break;
+          }
+          view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {latest[0].public_alert_symbol.recommended_response}</Text>)
+        });
+
+      }
+
+      if (extended.length != 0) {
+        // INSERT EXTENDED
+        console.log("EXTENDED")
+        console.log(extended[0])
+      }
+
+      if (overdue.length != 0) {
+        console.log(overdue[0])
+        switch (overdue[0].public_alert_symbol.alert_level) {
+          case 1:
+            view.push(<Text style={{ fontSize: 50, color: "red", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 1 (Overdue)</Text>)
+            break;
+          case 2:
+            view.push(<Text style={{ fontSize: 50, color: "red", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 2 (Overdue)</Text>)
+            break;
+          case 3:
+            view.push(<Text style={{ fontSize: 50, color: "red", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 3 (Overdue)</Text>)
+            break;
+          default:
+            view.push(<Text style={{ fontSize: 50, color: "green", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 0</Text>)
+            break;
+        }
+
+        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Technical Information</Text>)
+
+        overdue[0].releases[0].triggers.forEach(element => {
+          view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Event start timestamp: {overdue[0].ts_start}</Text>)
+          view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Validity: {overdue[0].event.validity}</Text>)
+          switch (element.internal_sym.alert_symbol) {
+            case "m":
+            case "M":
+              view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Manifestation of movements: {element.info}</Text>)
+              break;
+            case "R":
+              view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Rainfall: {element.info}</Text>)
+              break;
+            case "E":
+              view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Earthquake: {element.info}</Text>)
+              break;
+          }
+          view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {overdue[0].public_alert_symbol.recommended_response}</Text>)
+        });
+
+      }
+
+      this.setState({ alert_details: view })
     })
   }
 
@@ -140,17 +156,20 @@ export default class CurrentAlert extends Component {
         />
         <NavigationEvents onDidFocus={() => this.getCurrentAlert()} />
         <View style={field_survey_styles.menuSection}>
-            <View style={field_survey_styles.buttonSection}>
-                <TouchableOpacity style={field_survey_styles.activeButton} >
-                    <Text style={field_survey_styles.buttonActiveText}>Current Alert</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={field_survey_styles.menuButton} onPress={() => this.navigateEwi("alert_validation")}>
-                    <Text style={field_survey_styles.buttonText}>Alert Validation</Text>
-                </TouchableOpacity>
-            </View>
-            <View>
-                {this.state.alert_details}
-            </View>
+          <View style={field_survey_styles.buttonSection}>
+            <TouchableOpacity style={field_survey_styles.activeButton} >
+              <Text style={field_survey_styles.buttonActiveText}>Current Alert</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={field_survey_styles.menuButton} onPress={() => this.navigateEwi("alert_validation")}>
+              <Text style={field_survey_styles.buttonText}>Alert Validation</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            {this.state.alert_details}
+            <TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+              <Text style={defaults.buttonText}>Send EWI</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     );

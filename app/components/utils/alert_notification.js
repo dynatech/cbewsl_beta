@@ -82,13 +82,13 @@ const Notification = {
         })
     },
     fetchCandidateAlert: async function () {
-        console.log("Fetching candidate alert...")
+        this.updateAlertGen()
         let offline_data = Storage.getItem("Pub&CandidAlert");
         offline_data.then(offline_response => {
-            if (offline_response != null || offline_response != undefined) {
+            if (offline_response != null || offline_response != undefined) {    
                 fetch('http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts').then((response) => response.json())
                     .then((online_data) => {
-                        if (online_data != offline_data) {
+                        if (JSON.stringify(online_data) != JSON.stringify(offline_response)) {
                             Alert.alert(
                                 'Notification',
                                 'New data generated for Public and Candidate Alerts.\nPlease refer to the EWI Menu.'
@@ -160,14 +160,14 @@ const Notification = {
             },
             body: JSON.stringify(release_data),
         }).then((response) => {
-            console.log(response)
+            this.updateAlertGen();
         });
     }, updateAlertGen: async function () {
         fetch('http://192.168.150.10:5000/api/monitoring/update_alert_gen').then((response) => response.json())
             .then((online_data) => {
                 console.log("Updating alert gen...")
                 if (online_data.status == true) {
-                    this.fetchCandidateAlert()
+                    // this.fetchCandidateAlert()
                 }
             }).catch((error) => {
                 console.log("Network error. offline data will be used...")

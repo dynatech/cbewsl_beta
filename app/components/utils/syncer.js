@@ -247,13 +247,13 @@ const Sync = {
                                     body: JSON.stringify(value),
                                 }).then((response) => response.json())
                                     .then((responseJson) => {
-                                        ToastAndroid.show("Syncing...", ToastAndroid.SHORT);
+                                        ToastAndroid.show("Syncing client to server...", ToastAndroid.SHORT);
                                     })
                                     .catch((error) => {
                                         ToastAndroid.show("No network detected, Unable to network sync..", ToastAndroid.SHORT);
                                     });
                             } else {
-                                ToastAndroid.show("Syncing...", ToastAndroid.SHORT);
+                                ToastAndroid.show("Syncing server to client...", ToastAndroid.SHORT);
                             }
                         });
                     } else {

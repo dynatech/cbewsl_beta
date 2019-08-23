@@ -38,7 +38,7 @@ export default class Summary extends Component {
 
   componentDidMount() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.10:5000/api/rainfall/get_rainfall_plot_data', {
+    fetch('http://192.168.150.10:5000/api/rainfall/get_rainfall_plot_data/umi', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -54,8 +54,17 @@ export default class Summary extends Component {
         responseJson[0].date = this.state.date
         Storage.setItem("RainfallSummary", responseJson)
         let online = responseJson[0]
-        this.setState({ one_day_rain: Math.round((online["1D cml"] / online["half of 2yr max"]) * 100) })
-        this.setState({ three_day_rain: Math.round((online["3D cml"] / online["2yr max"]) * 100), spinner: false })
+        if (online["1D cml"] == null || online["1D cml"] == undefined) {
+          online["1D cml"] = "NO DATA"
+        } else {
+          this.setState({ one_day_rain: Math.round((online["1D cml"] / online["half of 2yr max"]) * 100) })
+        }
+
+        if (online["3D cml"] == null || online["3D cml"] == undefined) {
+          online["3D cml"] = "NO DATA"
+        } else {
+          this.setState({ three_day_rain: Math.round((online["3D cml"] / online["2yr max"]) * 100), spinner: false })
+        }
       })
       .catch((error) => {
         let offline_data = Storage.getItem("RainfallSummary");

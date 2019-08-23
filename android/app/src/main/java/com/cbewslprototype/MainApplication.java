@@ -7,7 +7,6 @@ import com.reactlibrary.RNReactNativePingPackage;
 import com.reactlibrary.RNReactNativePingPackage;
 import com.tkporter.sendsms.SendSMSPackage;
 import com.centaurwarchief.smslistener.SmsListenerPackage;
-import com.sha512lib.Sha512Package;
 import com.rhaker.reactnativesmsandroid.RNSmsAndroidPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -34,7 +33,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNReactNativePingPackage(),
             SendSMSPackage.getInstance(),
             new SmsListenerPackage(),
-            new Sha512Package(),
             new RNSmsAndroidPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage()

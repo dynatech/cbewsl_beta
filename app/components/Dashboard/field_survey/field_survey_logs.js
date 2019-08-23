@@ -131,7 +131,8 @@ export default class FieldSurveyLogs extends Component {
   getAllFieldSurveyLogs() {
     Notification.endOfValidity();
     Sync.clientToServer("FieldSurveyLogs").then(() => {
-      fetch('http://192.168.150.10:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
+      setTimeout(()=> {
+        fetch('http://192.168.150.10:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
         .then((responseJson) => {
           let field_logs = [];
           let to_local_data = [];
@@ -195,6 +196,8 @@ export default class FieldSurveyLogs extends Component {
             this.tablePaginate(field_logs)
           });
         });
+      }, 3000)
+      
     });
 
   }

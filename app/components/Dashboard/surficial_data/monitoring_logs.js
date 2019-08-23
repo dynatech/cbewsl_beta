@@ -288,7 +288,8 @@ export default class MonitoringLogs extends Component {
 
   getMonitoringLogs() {
     Sync.clientToServer("SurficialDataMomsSummary").then(() => {
-      fetch('http://192.168.150.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
+      setTimeout(()=> {
+        fetch('http://192.168.150.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
         .then((responseJson) => {
 
           let monitoring_logs_data = []
@@ -362,6 +363,8 @@ export default class MonitoringLogs extends Component {
             this.tablePaginate(monitoring_logs_data)
           });
         });
+      }, 3000)
+      
     });
 
   }
