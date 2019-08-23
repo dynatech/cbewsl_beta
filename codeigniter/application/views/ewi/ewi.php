@@ -48,6 +48,22 @@
                     </div>
                 </div>
 
+                <div id="ewi_for_lowering">
+                    <div class="row">
+                        <div class="col text-center" style="color: #ee9d01;">
+                            <h4><b id="ewi_lowering_details">Alert 2</b></h4>
+                        </div>
+                    </div>
+                    <div class="row" id="ewi_lowering_button">
+                        <div class="col text-center">
+                        </div>
+                        <div class="col text-center" id="lower_ewi">
+                        </div>
+                        <div class="col text-center">
+                        </div>
+                    </div>
+                </div>
+
                 <div id="ewi_no_current_alert">
                     <div class="col text-center">
                         <h4><b>No current alert</b></h4>

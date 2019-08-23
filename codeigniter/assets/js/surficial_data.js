@@ -428,8 +428,8 @@ function displayRaiseMomsModal(data) {
 
         let trigger_list = {
             alert_level: alert_level,
-            alert_validity: alert_validity,
-            data_ts: current_timestamp,
+            alert_validity: alert_validity.toString(),
+            data_ts: current_timestamp.toString(),
             user_id: 1,
             trig_list: [
                 {

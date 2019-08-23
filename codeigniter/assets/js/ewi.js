@@ -91,6 +91,7 @@ function getCandidateAndLatestAlerts() {
             displayLatestAlert(json_data.leo.latest, candidate_alerts);
         } else {
             if (json_data.leo.overdue.length != 0) {
+                console.log("here")
                 displayOverdueAlert(json_data.leo.overdue, candidate_alerts);
                 $("#ewi_no_current_alert").hide();
                 $("#ewi_current_alert_container").show();
@@ -130,8 +131,6 @@ function displayLatestAlert(latest_data, candidate_alerts) {
 
 function displayOverdueAlert(overdue_data, candidate_alerts) {
     $("#ewi_current_alert_container").show();
-
-    $("#ewi_current_alert_container").show();
     let overdue = overdue_data[0];
     let internal_alert_level = overdue.internal_alert_level;
     let alert_level = "Alert " + overdue.public_alert_symbol.alert_level;
@@ -162,13 +161,12 @@ function updateEwiData() {
 }
 
 function displayCandidateAlert(candidate_alerts) {
-
+    $("#ewi_for_lowering").hide();
     let trigger_list = candidate_alerts[0].trigger_list_arr;
     $("#candidate_alert_list").empty();
     $("#candidate_alert_information").hide();
     if (trigger_list.length != 0) {
         $.each(trigger_list, function (key, value) {
-
             let public_alert_symbol = "Alert " + value.alert_level;
             let tech_info = value.tech_info;
             let trigger_type = value.trigger_type;
@@ -197,6 +195,35 @@ function displayCandidateAlert(candidate_alerts) {
     } else {
         $("#no_candidate_alert").show();
         $("#candidate_alert_information").hide();
+        let alert_level = candidate_alerts[0].public_alert_level;
+        if (alert_level == 0) {
+            $("#ewi_lowering_details").text("Alert 0 for Lowering");
+            $("#ewi_current_alert_container").hide();
+            $("#ewi_no_current_alert").hide();
+            $("#ewi_for_lowering").show();
+            $("#lower_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_lower_ewi" value="Release" style="background-color: #28a745;">');
+            $("#confirm_lower_ewi").click(function () {
+                let candidate_alerts = updateEwiData();
+                candidate_alerts.done(function (data) {
+                    let json_data = JSON.parse(data);
+                    candidate_alerts = JSON.parse(json_data.candidate_alert);
+                    let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+                    fetch(url, {
+                        method: 'POST',
+                        dataType: 'jsonp',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(candidate_alerts[0]),
+                    }).then((response) => response.json()).then((responseJson) => {
+                        let release_data = responseJson;
+                        releaseAlert(release_data);
+                        // $("#confirm_valid_alert_modal").modal("hide");
+                    });
+                });
+            });
+        }
     }
 
 
