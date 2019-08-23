@@ -70,6 +70,8 @@ function getCandidateAndLatestAlerts() {
     $("#ewi_no_current_alert").hide();
     $("#ewi_current_alert_container").hide();
     $("#candidate_alert_information").hide();
+    $("#ewi_for_lowering").hide();
+    $("#ewi_lowering_details").hide();
     $.ajax({
         url: "http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts",
         beforeSend: function (xhr) {
@@ -91,7 +93,6 @@ function getCandidateAndLatestAlerts() {
             displayLatestAlert(json_data.leo.latest, candidate_alerts);
         } else {
             if (json_data.leo.overdue.length != 0) {
-                console.log("here")
                 displayOverdueAlert(json_data.leo.overdue, candidate_alerts);
                 $("#ewi_no_current_alert").hide();
                 $("#ewi_current_alert_container").show();
@@ -161,7 +162,6 @@ function updateEwiData() {
 }
 
 function displayCandidateAlert(candidate_alerts) {
-    $("#ewi_for_lowering").hide();
     let trigger_list = candidate_alerts[0].trigger_list_arr;
     $("#candidate_alert_list").empty();
     $("#candidate_alert_information").hide();
@@ -356,8 +356,8 @@ function releaseAlert(release_data) {
     });
 }
 
-function publicAlert() {
-    let url = 'http://192.168.150.10:5000/api/monitoring/update_alert_gen'
+function publicAlert(is_onset = false) {
+    let url = 'http://192.168.150.10:5000/api/monitoring/update_alert_gen/' + is_onset;
     fetch(url).then((response) => response.json())
         .then((responseJson) => {
 
@@ -382,15 +382,20 @@ function formatTriggerToText(trigger) {
             let trigger_type = "Rainfall";
             let info = trigger.info;
             $("#triggers").append("<b>" + trigger_type + "</b> : " + info);
+        } else if (internal_symbol == "m" || internal_symbol == "M") {
+
         }
     }
 
-    $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">');
-    $("#release_ewi").click(function () {
+    $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
+        .append('<br><input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
+    $("#confirm_release_ewi").unbind();
+    $("#confirm_release_ewi").click(function () {
         let candidate_alerts = updateEwiData();
         candidate_alerts.done(function (data) {
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
+            console.log(candidate_alerts)
             let leo = json_data.leo;
             if (leo.latest.length != 0) {
                 let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
@@ -410,6 +415,31 @@ function formatTriggerToText(trigger) {
             } else {
                 alert('Please wait for the next release time.')
             }
+        });
+    });
+}
+
+function sendEwiToEmail() {
+    $("#ewi_send_to_email").unbind();
+    $("#ewi_send_to_email").click(function () {
+        $("#sendEwiToEmailModal").modal("show");
+    });
+
+    $("#confirm_send_ewi").click(function () {
+        let email = $("#email_for_ewi").val();
+        let url = "http://192.168.150.10:5000/api/ewi/send_ewi_via_email";
+        let data = {
+            email: email
+        }
+        $("#confirm_send_ewi").prop('disabled', true);
+
+        $.post(url, data).done(function (response) {
+            alert(response.message);
+            if (response.status == true) {
+                $("#email_for_ewi").val("");
+                $("#sendEwiToEmailModal").modal("hide");
+            }
+            $("#confirm_send_ewi").prop('disabled', false);
         });
     });
 }

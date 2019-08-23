@@ -429,7 +429,7 @@ function displayRaiseMomsModal(data) {
         let trigger_list = {
             alert_level: alert_level,
             alert_validity: alert_validity.toString(),
-            data_ts: current_timestamp.toString(),
+            data_ts: data.date.toString(),
             user_id: 1,
             trig_list: [
                 {
@@ -441,19 +441,48 @@ function displayRaiseMomsModal(data) {
             ]
         }
         console.log(JSON.stringify(trigger_list));
-        let url = 'http://192.168.150.10:5000/api/monitoring/insert_cbewsl_ewi';
-        fetch(url, {
-            method: 'POST',
-            dataType: 'jsonp',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(trigger_list),
-        }).then((responseJson) => {
-            $("#raise_moms_modal").modal("hide");
-            publicAlert();
-            alert("Successfuly raise MOMs.");
-        });
+        isOnSet(alert_level)
+            .then((response) => {
+                let url = 'http://192.168.150.10:5000/api/monitoring/insert_cbewsl_moms';
+                fetch(url, {
+                    method: 'POST',
+                    dataType: 'jsonp',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(trigger_list),
+                }).then((responseJson) => {
+                    $("#raise_moms_modal").modal("hide");
+                    publicAlert(response);
+                    // $("#confirm_release_ewi").trigger("click");
+                    // $("#confirm_send_ewi").trigger("click");
+                    alert("Successfuly raise MOMs.");
+                });
+            })
+
+    });
+}
+
+function isOnSet(moms_alert_level) {
+    let candidate_alerts = updateEwiData();
+    return candidate_alerts.then(function (data) {
+        let json_data = JSON.parse(data);
+        const { leo: { overdue, latest } } = json_data;
+
+        const merged_arr = [...latest, ...overdue];
+
+        let public_alert_level = 0;
+        if (merged_arr.length !== 0) {
+            const [current_alert] = merged_arr;
+            const { public_alert_symbol: { alert_level } } = current_alert;
+            public_alert_level = alert_level;
+        }
+
+        if (moms_alert_level > public_alert_level) {
+            return true;
+        } else {
+            return false;
+        }
     });
 }
