@@ -15,16 +15,24 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
+                        <div class="col text-center">
                             <h5>Triggers</h5>
                             <div id="triggers"></div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
+                        <div class="col text-center">
                             <br>
                             <h5>Validity</h5>
                             <div id="validity"></div>
+                        </div>
+                    </div>
+                    <div class="row" id="release_alert_button">
+                        <div class="col text-center">
+                        </div>
+                        <div class="col text-center" id="release_ewi">
+                        </div>
+                        <div class="col text-center">
                         </div>
                     </div>
                     <div class="row" id="current_alert_buttons">
@@ -36,6 +44,22 @@
                         </div>
                         <div class="col-1">
                             <input class="btn btn-primary" type="button" value="PRINT" style="background-color: #195770;">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ewi_for_lowering">
+                    <div class="row">
+                        <div class="col text-center" style="color: #ee9d01;">
+                            <h4><b id="ewi_lowering_details">Alert 2</b></h4>
+                        </div>
+                    </div>
+                    <div class="row" id="ewi_lowering_button">
+                        <div class="col text-center">
+                        </div>
+                        <div class="col text-center" id="lower_ewi">
+                        </div>
+                        <div class="col text-center">
                         </div>
                     </div>
                 </div>
