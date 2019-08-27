@@ -85,7 +85,7 @@ const Notification = {
         this.updateAlertGen()
         let offline_data = Storage.getItem("Pub&CandidAlert");
         offline_data.then(offline_response => {
-            if (offline_response != null || offline_response != undefined) {    
+            if (offline_response != null || offline_response != undefined) {
                 fetch('http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts').then((response) => response.json())
                     .then((online_data) => {
                         if (JSON.stringify(online_data) != JSON.stringify(offline_response)) {
@@ -115,7 +115,7 @@ const Notification = {
             }
         });
     },
-    validateAlert: async function (trigger_id, valid, remarks, user_id, candidate_alerts, flag=false) {
+    validateAlert: async function (trigger_id, valid, remarks, user_id, candidate_alerts, flag = false) {
         fetch('http://192.168.150.10:5000/api/monitoring/update_alert_status', {
             method: 'POST',
             dataType: 'jsonp',
@@ -131,6 +131,11 @@ const Notification = {
             }),
         }).then((response) => {
             // this.formatCandidateAlerts(candidate_alerts);
+            if (valid == 1) {
+                Alert.alert('Info', 'Alert Validated');
+            } else {
+                Alert.alert('Info', 'Alert Invalidated');
+            }
             return this.updateAlertGen();
         }).catch((error) => {
             // console.log(error)
@@ -160,10 +165,11 @@ const Notification = {
             },
             body: JSON.stringify(release_data),
         }).then((response) => {
+            Alert.alert('Success', 'Successfully Released!');
             this.updateAlertGen();
         });
     }, updateAlertGen: async function () {
-        fetch('http://192.168.150.10:5000/api/monitoring/update_alert_gen').then((response) => response.json())
+        fetch('http://192.168.150.10:5000/api/monitoring/update_alert_gen/false').then((response) => response.json())
             .then((online_data) => {
                 console.log("Updating alert gen...")
                 if (online_data.status == true) {

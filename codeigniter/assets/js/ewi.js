@@ -1,67 +1,3 @@
-
-// //Not Jquery !!! just a helper function to return an object
-// // function $(i_obj) {
-// //     return document.getElementById(i_obj);
-// // }
-
-// window.fbAsyncInit = function () {
-//     FB.init({
-//         appId: '1991811884256968', // App ID : Insert the APP ID of the APP you created here
-//         status: true,
-//     });
-// }
-
-
-// function fbLogin() {
-//     FB.login(function (response) {
-//         if (response.status == "connected") {
-//             //User has logged in, hide the login button and show the launch button
-
-//             $("btnlogin").className = "Hide";
-//             $("btnlauncher").className = "Show";
-
-//         } else {
-//             // user has not yet logged in, hide launcher button and display login button
-
-//             $("btnlogin").className = "Show";
-//             $("btnlauncher").className = "Hide";
-//         }
-//     });
-// }
-
-// //Function displays the Feed Dialog
-// function LaunchFeedDialog() {
-
-//     //Create an object with the below properties.
-//     //There are a lot more parameters than what I have written below. Will explain each one of them in coming posts.
-//     var obj = {
-//         method: 'feed',
-//         link: 'http://cbewsl.com/',
-//         name: 'A Title for Feed Dialog',
-//         caption: 'SAMPLE',
-//         description: 'A description for the URL which is to be displayed',
-//         message: 'ALert!'
-//     };
-
-//     //Calling the Facebook API : Important
-//     FB.ui(obj, callback);
-// }
-
-// function callback(response) {
-//     //Do anything you want here :)
-//     //document.getElementById('msg').innerHTML = "Post ID: " + response['post_id'];
-//     //alert(response['post_id']); Some diagnostics lol :)
-// }
-
-// // Load the SDK Asynchronously. This is a very important part. It loads the Facebook javascript SDK automatically.
-// (function (d) {
-//     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-//     if (d.getElementById(id)) { return; }
-//     js = d.createElement('script'); js.id = id; js.async = true;
-//     js.src = "//connect.facebook.net/en_US/all.js";
-//     ref.parentNode.insertBefore(js, ref);
-// }(document));
-
 $(document).ready(function () {
     getCandidateAndLatestAlerts();
 });
@@ -114,7 +50,6 @@ function getCandidateAndLatestAlerts() {
 }
 
 function displayLatestAlert(latest_data, candidate_alerts) {
-
     $("#ewi_current_alert_container").show();
     let latest = latest_data[0];
     let internal_alert_level = latest.internal_alert_level;
@@ -123,11 +58,12 @@ function displayLatestAlert(latest_data, candidate_alerts) {
     let recommended_response = latest.public_alert_symbol.recommended_response;
     let event_start = latest.event.event_start;
     let validity = formatDateTime(latest.event.validity);
-    let trigger = latest.releases[0].triggers[0];
+    let trigger = latest.releases[0].triggers;
 
     $("#ewi_alert_symbol").text(alert_level);
     $("#validity").text(validity["text_format_timestamp"]);
     formatTriggerToText(trigger);
+    $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
 }
 
 function displayOverdueAlert(overdue_data, candidate_alerts) {
@@ -139,11 +75,12 @@ function displayOverdueAlert(overdue_data, candidate_alerts) {
     let recommended_response = overdue.public_alert_symbol.recommended_response;
     let event_start = overdue.event.event_start;
     let validity = formatDateTime(overdue.event.validity);
-    let trigger = overdue.releases[0].triggers[0];
+    let trigger = overdue.releases[0].triggers;
 
     $("#ewi_alert_symbol").text(alert_level);
     $("#validity").text(validity["text_format_timestamp"]);
     formatTriggerToText(trigger);
+    $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
 }
 
 function displayExtendedAlert(extended_data, candidate_alerts) {
@@ -297,7 +234,7 @@ function formatCandidateAlerts(trigger_id) {
     candidate_alerts.done(function (data) {
         let json_data = JSON.parse(data);
         updated_data = JSON.parse(json_data.candidate_alert);
-
+        console.log("HERE", updated_data)
         $.each(updated_data[0].trigger_list_arr, function (key, value) {
             if (value.invalid != true) {
                 let public_alert_symbol = "Alert " + value.alert_level;
@@ -367,35 +304,43 @@ function publicAlert(is_onset = false) {
 
 function formatTriggerToText(trigger) {
     $("#triggers").empty();
-    if (trigger == undefined) {
-        $("#triggers").append("No new retriggers");
-    } else {
-        let internal_symbol = trigger.internal_sym.alert_symbol;
-        if (internal_symbol == "E") {
-            let trigger_type = "Earthquake";
-            let magnitude = trigger.trigger_misc.eq.magnitude;
-            let longitude = trigger.trigger_misc.eq.longitude;
-            let latitude = trigger.trigger_misc.eq.latitude;
-            let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-            $("#triggers").append("<b>" + trigger_type + "</b> : " + earth_quake_info);
-        } else if (internal_symbol == "R") {
-            let trigger_type = "Rainfall";
-            let info = trigger.info;
-            $("#triggers").append("<b>" + trigger_type + "</b> : " + info);
-        } else if (internal_symbol == "m" || internal_symbol == "M") {
-
+    $.each(trigger, function (key, value) {
+        if (value == undefined) {
+            $("#triggers").append("No new retriggers");
+        } else {
+            let internal_symbol = value.internal_sym.alert_symbol;
+            if (internal_symbol == "E") {
+                let trigger_type = "Earthquake: ";
+                let magnitude = value.trigger_misc.eq.magnitude;
+                let longitude = value.trigger_misc.eq.longitude;
+                let latitude = value.trigger_misc.eq.latitude;
+                let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+                $("#triggers").append("<b>" + trigger_type + "</b>" + earth_quake_info + "<br>");
+            } else if (internal_symbol == "R") {
+                let trigger_type = "Rainfall: ";
+                let info = value.info;
+                $("#triggers").append("<b>" + trigger_type + "</b>" + info + "<br>");
+            } else if (internal_symbol == "m" || internal_symbol == "M") {
+                console.log(trigger);
+                let trigger_type = "Manifestation of movements: ";
+                let info = value.info;
+                $("#triggers").append("<b>" + trigger_type + "</b>" + info + "<br>");
+            }
         }
-    }
+    });
+
 
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
         .append('<br><input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
+    sendEwiToEmail();
     $("#confirm_release_ewi").unbind();
     $("#confirm_release_ewi").click(function () {
+        console.log("Im clicked")
         let candidate_alerts = updateEwiData();
         candidate_alerts.done(function (data) {
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
-            console.log(candidate_alerts)
+            console.log("here", candidate_alerts)
             let leo = json_data.leo;
             if (leo.latest.length != 0) {
                 let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'

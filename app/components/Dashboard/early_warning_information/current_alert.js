@@ -15,6 +15,7 @@ export default class CurrentAlert extends Component {
     super(props);
     this.state = {
       alert_details: [],
+      release_button: [],
       spinner: false
     };
   }
@@ -34,6 +35,7 @@ export default class CurrentAlert extends Component {
     Notification.endOfValidity();
     let offline_data = Storage.getItem("Pub&CandidAlert")
     offline_data.then(response => {
+      let recommended_response = ""
       let view = []
       let latest = response.leo.latest
       let extended = response.leo.extended
@@ -44,6 +46,7 @@ export default class CurrentAlert extends Component {
       let rain_header_container = []
       let rain_temp = ""
       let moms_temp = ""
+      let release_button = [];
 
       if (latest.length != 0) {
         switch (latest[0].public_alert_symbol.alert_level) {
@@ -78,9 +81,19 @@ export default class CurrentAlert extends Component {
               view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Earthquake: {element.info}</Text>)
               break;
           }
-          view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {latest[0].public_alert_symbol.recommended_response}</Text>)
         });
 
+        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {latest[0].public_alert_symbol.recommended_response}</Text>)
+        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+          <Text style={defaults.buttonText}>Release</Text>
+        </TouchableOpacity>);
+        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+          <Text style={defaults.buttonText}>Send EWI</Text>
+        </TouchableOpacity>);
+        this.setState({ release_button: release_button })
+      } else {
+        release_button.push(<Text style={{ paddingTop: '20%', fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center' }}>No current alert</Text>);
+        this.setState({ release_button: release_button })
       }
 
       if (extended.length != 0) {
@@ -123,9 +136,19 @@ export default class CurrentAlert extends Component {
               view.push(<Text style={{ fontSize: 15, paddingBottom: 5 }}>Earthquake: {element.info}</Text>)
               break;
           }
-          view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {overdue[0].public_alert_symbol.recommended_response}</Text>)
-        });
 
+        });
+        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {overdue[0].public_alert_symbol.recommended_response}</Text>)
+        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+          <Text style={defaults.buttonText}>Release</Text>
+        </TouchableOpacity>);
+        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+          <Text style={defaults.buttonText}>Send EWI</Text>
+        </TouchableOpacity>);
+        this.setState({ release_button: release_button })
+      } else {
+        release_button.push(<Text style={{ paddingTop: '20%', fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center' }}>No current alert</Text>);
+        this.setState({ release_button: release_button })
       }
 
       this.setState({ alert_details: view })
@@ -166,9 +189,7 @@ export default class CurrentAlert extends Component {
           </View>
           <View>
             {this.state.alert_details}
-            <TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
-              <Text style={defaults.buttonText}>Send EWI</Text>
-            </TouchableOpacity>
+            {this.state.release_button}
           </View>
         </View>
       </ScrollView>
