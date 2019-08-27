@@ -136,6 +136,7 @@
         <div class="modal-body">
             <label>Select alert level</label>
             <select id="moms_alert_level" class="form-control">
+                <option value="0">Alert 0</option>
                 <option value="2">Alert 2</option>
                 <option value="3">Alert 3</option>
             <select>
