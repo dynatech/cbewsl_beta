@@ -50,18 +50,19 @@ export default class Summary extends Component {
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson)
         responseJson[0].date = this.state.date
         Storage.setItem("RainfallSummary", responseJson)
         let online = responseJson[0]
-        if (online["1D cml"] == null || online["1D cml"] == undefined) {
+        if (online["1D cml"] == null || online["1D cml"] == undefined || online["1D cml"] == "NO DATA") {
           online["1D cml"] = "NO DATA"
+          this.setState({ one_day_rain: "NO DATA", spinner: false })
         } else {
           this.setState({ one_day_rain: Math.round((online["1D cml"] / online["half of 2yr max"]) * 100) })
         }
 
-        if (online["3D cml"] == null || online["3D cml"] == undefined) {
+        if (online["3D cml"] == null || online["3D cml"] == undefined || online["3D cml"] == "NO DATA") {
           online["3D cml"] = "NO DATA"
+          this.setState({ three_day_rain: "NO DATA", spinner: false })
         } else {
           this.setState({ three_day_rain: Math.round((online["3D cml"] / online["2yr max"]) * 100), spinner: false })
         }
@@ -70,9 +71,19 @@ export default class Summary extends Component {
         let offline_data = Storage.getItem("RainfallSummary");
         offline_data.then(response => {
           let offline = response[0]
-          console.log(offline)
-          this.setState({ one_day_rain: Math.round((offline["1D cml"] / offline["half of 2yr max"]) * 100) })
-          this.setState({ three_day_rain: Math.round((offline["3D cml"] / offline["2yr max"]) * 100), spinner: false })
+          if (offline["1D cml"] == null || offline["1D cml"] == undefined || offline["1D cml"] == "NO DATA") {
+            offline["1D cml"] = "NO DATA"
+            this.setState({ one_day_rain: "NO DATA", spinner: false })
+          } else {
+            this.setState({ one_day_rain: Math.round((offline["1D cml"] / offline["half of 2yr max"]) * 100) })
+          }
+
+          if (offline["3D cml"] == null || offline["3D cml"] == undefined || offline["3D cml"] == "NO DATA") {
+            offline["3D cml"] = "NO DATA"
+            this.setState({ three_day_rain: "NO DATA", spinner: false })
+          } else {
+            this.setState({ three_day_rain: Math.round((offline["3D cml"] / offline["2yr max"]) * 100), spinner: false })
+          }
         });
       });
   }
