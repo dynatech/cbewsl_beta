@@ -166,7 +166,7 @@ const Notification = {
             body: JSON.stringify(release_data),
         }).then((response) => {
             Alert.alert('Success', 'Successfully Released!');
-            this.updateAlertGen();
+            this.fetchCandidateAlert();
         });
     }, updateAlertGen: async function () {
         fetch('http://192.168.150.10:5000/api/monitoring/update_alert_gen/false').then((response) => response.json())

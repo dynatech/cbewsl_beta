@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { Component } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { field_survey_styles } from '../../../assets/styles/field_survey_styles';
 import Storage from '../../utils/storage';
@@ -35,6 +35,9 @@ export default class CurrentAlert extends Component {
     Notification.endOfValidity();
     let offline_data = Storage.getItem("Pub&CandidAlert")
     offline_data.then(response => {
+      console.log(response)
+      let candidate_alert = JSON.parse(response.candidate_alert)
+      console.log(candidate_alert[0])
       let recommended_response = ""
       let view = []
       let latest = response.leo.latest
@@ -84,7 +87,7 @@ export default class CurrentAlert extends Component {
         });
 
         view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {latest[0].public_alert_symbol.recommended_response}</Text>)
-        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
           <Text style={defaults.buttonText}>Release</Text>
         </TouchableOpacity>);
         release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
@@ -139,7 +142,7 @@ export default class CurrentAlert extends Component {
 
         });
         view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {overdue[0].public_alert_symbol.recommended_response}</Text>)
-        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
           <Text style={defaults.buttonText}>Release</Text>
         </TouchableOpacity>);
         release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
@@ -153,6 +156,29 @@ export default class CurrentAlert extends Component {
 
       this.setState({ alert_details: view })
     })
+  }
+
+  releaseAlertConfirmation(alert_data) {
+    Alert.alert(
+      'Confirmation',
+      'Are you sure do you want to release ?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: () => this.releaseAlert(alert_data) },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  releaseAlert(alert_data) {
+    Notification.formatCandidateAlerts(alert_data)
+    setTimeout(() => {
+      this.getCurrentAlert()
+    }, 3000);
   }
 
 

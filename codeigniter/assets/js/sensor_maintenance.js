@@ -184,7 +184,7 @@ function latestSensorMaintenanceData(latest_data) {
             let formatted_date = formatDateTime(latest_data.start);
             $("#latest_sensor_status").empty().append("<b>NUMBER OF WORKING NODES: </b>" + latest_data.working_nodes + "<br><br>");
             $("#latest_sensor_status").append("<b>ANOMALOUS NODES: </b>" + latest_data.anomalous_nodes + "<br><br>");
-            $("#latest_sensor_status").append("<b>RAIN GUAGE STATUS: </b>" + latest_data.anomalous_nodes + "<br><br>");
+            $("#latest_sensor_status").append("<b>RAIN GAUGE STATUS: </b>" + latest_data.rain_gauge_status + "<br><br>");
             $("#latest_sensor_status").append("<b>LAST MAINTENANCE: </b>" + formatted_date.date_only_format + "");
         } else {
             $("#latest_sensor_status").empty().append("<b>No latest sensor status data. </b>");

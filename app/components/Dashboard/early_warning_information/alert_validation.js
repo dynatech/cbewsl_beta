@@ -42,7 +42,7 @@ export default class AlertValidation extends Component {
       Notification.formatCandidateAlerts(candidate_alerts)
       setTimeout(() => {
         this.constructValidation()
-      }, 5000);
+      }, 3000);
     } else {
       console.log("here2");
       let status = Notification.validateAlert(trigger_id, valid, remarks, user_id, candidate_alerts);
@@ -51,7 +51,7 @@ export default class AlertValidation extends Component {
           () => {
             this.constructValidation()
           },
-          5000
+          3000
         )
       })
     }
