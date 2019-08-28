@@ -157,7 +157,6 @@ export default class MaintenanceLogs extends Component {
       .then((responseJson) => {
         let logs = []
         let to_local_data = []
-        console.log(responseJson)
         if (responseJson.length == 0) {
           logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
             <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
@@ -211,9 +210,6 @@ export default class MaintenanceLogs extends Component {
           </View>)
           this.setState({ selected_date_logs: logs, spinner: false })
         }
-
-
-
       });
   }
 

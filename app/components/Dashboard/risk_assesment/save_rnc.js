@@ -180,6 +180,7 @@ export default class SaveResourcesAndCapacities extends Component {
                         }
                         this.props.navigation.navigate('modify_rnc');
                     });
+                    this.setState({spinner: true});
                 });
         } else {
             Alert.alert(

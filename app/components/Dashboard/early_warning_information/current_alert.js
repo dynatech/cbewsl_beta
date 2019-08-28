@@ -35,9 +35,7 @@ export default class CurrentAlert extends Component {
     Notification.endOfValidity();
     let offline_data = Storage.getItem("Pub&CandidAlert")
     offline_data.then(response => {
-      console.log(response)
       let candidate_alert = JSON.parse(response.candidate_alert)
-      console.log(candidate_alert[0])
       let recommended_response = ""
       let view = []
       let latest = response.leo.latest
@@ -155,6 +153,7 @@ export default class CurrentAlert extends Component {
       }
 
       this.setState({ alert_details: view })
+      this.setState({spinner: false})
     })
   }
 

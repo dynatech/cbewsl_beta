@@ -59,7 +59,7 @@ export default class LatestReportSummary extends Component {
           latest_report.push(<View style={{ padding: 10 }}>
             <Text style={{ width: '100%', textAlign: 'center' }}>No Data Available</Text>
           </View>)
-          this.setState({ latest_report: latest_report })
+          this.setState({ latest_report: latest_report, spinner: false })
         } else {
           for (const [index, value] of responseJson.entries()) {
             let format_date_time = this.formatDateTime(date = value.date);
