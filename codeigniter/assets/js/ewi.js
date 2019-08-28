@@ -340,7 +340,6 @@ function formatTriggerToText(trigger) {
         candidate_alerts.done(function (data) {
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
-            console.log("here", candidate_alerts)
             let leo = json_data.leo;
             if (leo.latest.length != 0) {
                 let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
