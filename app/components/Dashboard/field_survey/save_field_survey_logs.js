@@ -108,7 +108,6 @@ export default class SaveFieldSurveyLogs extends Component {
                 }),
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (responseJson.status == true) {
                         ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                         let data_container = Storage.getItem('FieldSurveyLogs')
@@ -154,9 +153,11 @@ export default class SaveFieldSurveyLogs extends Component {
                                 Storage.removeItem("FieldSurveyLatestReportSummary")
                                 Storage.setItem("FieldSurveyLatestReportSummary", [data])
                             }
+                            this.setState({spinner: true});
                             this.props.navigation.navigate('field_survery_logs');
                         });
                     } else {
+                        this.setState({spinner: true});
                         ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                     }
                 })
@@ -245,6 +246,7 @@ export default class SaveFieldSurveyLogs extends Component {
                             Storage.removeItem("FieldSurveyLogs")
                             Storage.setItem("FieldSurveyLogs", updated_data)
                         }
+                        this.setState({spinner: true});
                         this.props.navigation.navigate('field_survery_logs');
                     });
                 });

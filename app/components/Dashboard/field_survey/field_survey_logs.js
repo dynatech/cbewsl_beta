@@ -70,7 +70,6 @@ export default class FieldSurveyLogs extends Component {
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson)
         if (responseJson.status == true) {
           this.props.navigation.navigate('field_survery_logs');
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
@@ -78,6 +77,7 @@ export default class FieldSurveyLogs extends Component {
         } else {
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
         }
+        this.setState({spinner: false})
       })
       .catch((error) => {
         let offline_data = Storage.getItem("FieldSurveyLogs");
@@ -105,6 +105,7 @@ export default class FieldSurveyLogs extends Component {
         });
 
         this.getAllFieldSurveyLogs();
+        this.setState({spinner: false})
       });
   }
 
@@ -130,6 +131,7 @@ export default class FieldSurveyLogs extends Component {
 
   getAllFieldSurveyLogs() {
     Notification.endOfValidity();
+    this.setState({spinner: true});
     Sync.clientToServer("FieldSurveyLogs").then(() => {
       setTimeout(()=> {
         fetch('http://192.168.150.10:5000/api/field_survey/get_all_field_survey').then((response) => response.json())

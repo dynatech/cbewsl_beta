@@ -73,7 +73,6 @@ export default class AlertValidation extends Component {
     cred.then(cred_response => {
       offline_data.then(response => {
         let candidate = JSON.parse(response.candidate_alert)
-        console.log(candidate)
         if (candidate.length != 0) {
           this.setState({ trigger_length: candidate[0].trigger_list_arr.length })
           candidate[0].trigger_list_arr.forEach(element => {
@@ -251,6 +250,7 @@ export default class AlertValidation extends Component {
                   let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
                 })
               }
+              this.setState({spinner: false})
             })
           },
         }

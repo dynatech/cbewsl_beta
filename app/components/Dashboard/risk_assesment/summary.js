@@ -88,7 +88,6 @@ export default class Summary extends Component {
       setTimeout(()=> {
         fetch('http://192.168.150.10:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson)
           let summary_data = [];
           let to_local_data = [];
           let counter = 0;

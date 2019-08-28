@@ -58,7 +58,6 @@ export default class ModifyHazardData extends Component {
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson)
         if (responseJson.status == true) {
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
           this.props.navigation.navigate('modify_hazard_data');
@@ -66,6 +65,7 @@ export default class ModifyHazardData extends Component {
         } else {
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
         }
+        this.setState({spinner: true});
       })
       .catch((error) => {
         let offline_data = Storage.getItem("RiskAssessmentHazardData");
@@ -90,7 +90,7 @@ export default class ModifyHazardData extends Component {
           Storage.removeItem("RiskAssessmentHazardData")
           Storage.setItem("RiskAssessmentHazardData", updated_data)
         });
-
+        this.setState({spinner: true});
         this.getAllHazardData();
       });
 
