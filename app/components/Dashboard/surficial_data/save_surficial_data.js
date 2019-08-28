@@ -225,6 +225,7 @@ export default class SaveSurficialData extends Component {
                         }, (completed, cancelled, error) => {
                             console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
                             if (completed == true) {
+                                console.log(datetime)
                                 fetch('http://192.168.150.10:5000/api/surficial_data/save_monitoring_log', {
                                     method: 'POST',
                                     headers: {
@@ -242,11 +243,16 @@ export default class SaveSurficialData extends Component {
                                     }),
                                 }).then((response) => response.json())
                                     .then((responseJson) => {
+                                        console.log(datetime)
                                         console.log(responseJson)
                                         if (responseJson.status == true) {
+                                            console.log("HERE2")
                                             ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                                            console.log("HERE 1")
                                             let data_container = Storage.getItem('SurficialDataMomsSummary')
+                                            console.log("HEHE")
                                             let updated_data = []
+                                            console.log("HERE")
                                             data = {
                                                 moms_id: moms_id,
                                                 local_storage_id: 1,
@@ -257,11 +263,13 @@ export default class SaveSurficialData extends Component {
                                                 date: datetime
                                             }
                                             data_container.then(response => {
+                                                console.log("GO HERE")
                                                 if (response == null) {
                                                     Storage.removeItem("SurficialDataMomsSummary")
                                                     Storage.setItem("SurficialDataMomsSummary", [data])
                                                 } else {
                                                     let temp = response
+                                                    console.log(value.date)
                                                     temp.push(data)
                                                     let counter = 0
                                                     temp.forEach((value) => {
@@ -409,7 +417,7 @@ export default class SaveSurficialData extends Component {
                         customStyles={{ dateInput: { borderWidth: 0, } }}
                         disabled={true}
                         style={[defaults.datetimepicker, { width: '95%', borderWidth: 0 }]}
-                        date={this.state.time}
+                        date={this.state.datetime}
                         mode="datetime"
                         placeholder="Pick date and time (Not available)"
                         showIcon={false}
