@@ -91,7 +91,7 @@ function printData(data) {
                     { field: 'entry', displayName: 'Entry' },
                     { field: 'timestamp', displayName: 'Timestamp' }
                 ],
-                header: '<h3>Risk Profile</h3>'
+                header: '<h3>Risk Profile</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
             });
         } else {
             alert("No data.");
@@ -106,7 +106,7 @@ function printData(data) {
                     { field: 'vulnerable_members_count', displayName: 'Number of Vulnerable' },
                     { field: 'vulnerability_nature', displayName: 'Nature of Vulnerability' }
                 ],
-                header: '<h3>Family Risk Profile</h3>'
+                header: '<h3>Family Risk Profile</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
             });
         } else {
             alert("No data.");
@@ -124,7 +124,7 @@ function printData(data) {
                     { field: 'note', displayName: 'Note' },
                     { field: 'date', displayName: 'Date' }
                 ],
-                header: '<h3>Field Survey Log</h3>'
+                header: '<h3>Field Survey Log</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
             });
         } else {
             alert("No data.");
@@ -140,7 +140,7 @@ function printData(data) {
                     { field: 'early_warning', displayName: 'Early Warning' },
                     { field: 'impact', displayName: 'Impact' }
                 ],
-                header: '<h3>Hazard Data</h3>'
+                header: '<h3>Hazard Data</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
             });
         } else {
             alert("No data.");
@@ -155,7 +155,7 @@ function printData(data) {
                     { field: 'status', displayName: 'Status' },
                     { field: 'owner', displayName: 'Owner' }
                 ],
-                header: '<h3>Resource and Capacities</h3>'
+                header: '<h3>Resource and Capacities</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
             });
         } else {
             alert("No data.");
@@ -171,7 +171,7 @@ function printData(data) {
                     { field: 'rain_gauge_status', displayName: 'Rain Gauge Status' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<h3>Maintenance Logs</h3>'
+                header: '<h3>Maintenance Logs</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
             });
         } else {
             alert("No data.");
@@ -185,7 +185,7 @@ function printData(data) {
                     { field: 'title', displayName: 'Summary' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<h3>Situation Report</h3>'
+                header: '<h3>Situation Report</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
             });
         } else {
             alert("No data.");
@@ -204,7 +204,7 @@ function printData(data) {
                     { field: 'note', displayName: 'Note' },
                     { field: 'date', displayName: 'Date' }
                 ],
-                header: '<h3>Latest Field Survey Log</h3><img src="http://cbewsl.com/assets/images/banner.png"></img>'
+                header: '<h3>Latest Field Survey Log</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
             });
         } else {
             alert("No data.");
@@ -220,7 +220,7 @@ function printData(data) {
                     { field: 'title', displayName: 'Summary' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/banner.png"></img>'
+                header: '<h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
             });
         } else {
             alert("No data.");

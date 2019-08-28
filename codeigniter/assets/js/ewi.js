@@ -8,6 +8,7 @@ function getCandidateAndLatestAlerts() {
     $("#candidate_alert_information").hide();
     $("#ewi_for_lowering").hide();
     $("#ewi_lowering_details").hide();
+    $("#extended_column").hide();
     $.ajax({
         url: "http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts",
         beforeSend: function (xhr) {
@@ -85,6 +86,14 @@ function displayOverdueAlert(overdue_data, candidate_alerts) {
 
 function displayExtendedAlert(extended_data, candidate_alerts) {
     $("#ewi_current_alert_container").show();
+    $("#lower_ewi").hide();
+    $("#triggers_column").hide();
+    $("#validity_column").hide();
+    $("#ewi_alert_symbol").empty().append("Alert 0");
+    $("#extended_column").show();
+    let day_of_extended = "Day " + extended_data[0].day + " of extended monitoring";
+    $("#extended_day").empty().append(day_of_extended);
+    onClickReleaseExtended();
 
 }
 
@@ -274,8 +283,39 @@ function formatCandidateAlerts(trigger_id) {
             });
         });
     });
+}
 
-
+function onClickReleaseExtended() {
+    $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
+        .append('<br><input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
+    sendEwiToEmail();
+    $("#confirm_release_ewi").unbind();
+    $("#confirm_release_ewi").click(function () {
+        let candidate_alerts = updateEwiData();
+        candidate_alerts.done(function (data) {
+            let json_data = JSON.parse(data);
+            candidate_alerts = JSON.parse(json_data.candidate_alert);
+            let leo = json_data.leo;
+            if (leo.latest.length != 0) {
+                let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+                fetch(url, {
+                    method: 'POST',
+                    dataType: 'jsonp',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(candidate_alerts[0]),
+                }).then((response) => response.json()).then((responseJson) => {
+                    let release_data = responseJson;
+                    releaseAlert(release_data);
+                    $("#confirm_valid_alert_modal").modal("hide");
+                });
+            } else {
+                alert('Please wait for the next release time.')
+            }
+        });
+    });
 }
 
 function releaseAlert(release_data) {
@@ -335,7 +375,6 @@ function formatTriggerToText(trigger) {
     sendEwiToEmail();
     $("#confirm_release_ewi").unbind();
     $("#confirm_release_ewi").click(function () {
-        console.log("Im clicked")
         let candidate_alerts = updateEwiData();
         candidate_alerts.done(function (data) {
             let json_data = JSON.parse(data);

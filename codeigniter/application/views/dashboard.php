@@ -1,5 +1,5 @@
 <!-- <script src="../assets/js/session.js"></script> -->
-<img src="<?php echo base_url(); ?>assets/images/banner.png" class="img-fluid" alt="Responsive image" style="width:100%">
+<img src="<?php echo base_url(); ?>assets/images/banner_new.png" class="img-fluid" alt="Responsive image" style="width:100%">
 <!-- Nav tabs -->
 
 <ul class="nav nav-tabs" role="tablist">
