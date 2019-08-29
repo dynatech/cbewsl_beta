@@ -307,6 +307,7 @@ function onClickReleaseExtended() {
                     },
                     body: JSON.stringify(candidate_alerts[0]),
                 }).then((response) => response.json()).then((responseJson) => {
+                    console.log(responseJson)
                     let release_data = responseJson;
                     releaseAlert(release_data);
                     $("#confirm_valid_alert_modal").modal("hide");
@@ -344,10 +345,11 @@ function publicAlert(is_onset = false) {
 
 function formatTriggerToText(trigger) {
     $("#triggers").empty();
-    $.each(trigger, function (key, value) {
-        if (value == undefined) {
-            $("#triggers").append("No new retriggers");
-        } else {
+    console.log(trigger.length)
+    if (trigger.length == 0) {
+        $("#triggers").append("No new retriggers");
+    } else {
+        $.each(trigger, function (key, value) {
             let internal_symbol = value.internal_sym.alert_symbol;
             if (internal_symbol == "E") {
                 let trigger_type = "Earthquake: ";
@@ -366,8 +368,10 @@ function formatTriggerToText(trigger) {
                 let info = value.info;
                 $("#triggers").append("<b>" + trigger_type + "</b>" + info + "<br>");
             }
-        }
-    });
+
+        });
+    }
+
 
 
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
@@ -391,6 +395,7 @@ function formatTriggerToText(trigger) {
                     },
                     body: JSON.stringify(candidate_alerts[0]),
                 }).then((response) => response.json()).then((responseJson) => {
+                    console.log(responseJson)
                     let release_data = responseJson;
                     releaseAlert(release_data);
                     $("#confirm_valid_alert_modal").modal("hide");
