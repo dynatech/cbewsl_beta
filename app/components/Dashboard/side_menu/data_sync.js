@@ -17,7 +17,7 @@ export default class DataSyncer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      server_number: '09175394337',
+      server_number: '09175392665',
       storage_key: "",
       spinner: false
     };

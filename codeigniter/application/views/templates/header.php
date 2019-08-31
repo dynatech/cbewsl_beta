@@ -7,6 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<title>COMMUNITY-BASED EARLY WARNING SYSTEM FOR DEEP-SEATED LANDSLIDES</title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables.min.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap/custom_css/style.css">
     <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/printjs/print.min.css"> -->
     <link href="<?php echo base_url(); ?>assets/font_awesome/css/all.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/full_calendar/core/main.css" rel="stylesheet" />
