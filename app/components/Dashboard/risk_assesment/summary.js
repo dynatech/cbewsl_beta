@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, View, Alert } from 'react-native';
+import { Text, TouchableOpacity, View, Alert, ToastAndroid } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
@@ -91,8 +91,8 @@ export default class Summary extends Component {
           let summary_data = [];
           let to_local_data = [];
           let counter = 0;
-
-          if (responseJson != null || responseJson != undefined) {
+          console.log(responseJson)
+          if (responseJson != null && responseJson != undefined && responseJson.length != 0) {
             for (const [index, value] of responseJson.entries()) {
               summary_data.push(<DataTable.Row style={{ width: 500 }}>
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>

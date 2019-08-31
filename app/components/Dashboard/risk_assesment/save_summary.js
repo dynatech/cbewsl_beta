@@ -78,9 +78,8 @@ export default class SaveSummary extends Component {
                 }),
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (responseJson.status == true) {
-                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                        ToastAndroid.show(responseJson.message, ToastAndroid.LONG);
                         let data_container = Storage.getItem('RiskAssessmentSummary')
                         let updated_data = []
                         data = {
@@ -96,6 +95,7 @@ export default class SaveSummary extends Component {
                             if (response == null) {
                                 Storage.removeItem("RiskAssessmentSummary")
                                 Storage.setItem("RiskAssessmentSummary", [data])
+                                ToastAndroid.show("Sucessfully added a new entry!", ToastAndroid.LONG)
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -114,12 +114,15 @@ export default class SaveSummary extends Component {
                                 });
                                 Storage.removeItem("RiskAssessmentSummary")
                                 Storage.setItem("RiskAssessmentSummary", updated_data)
+                                ToastAndroid.show("Successfully updated an entry!", ToastAndroid.LONG)
                             }
-                            this.props.navigation.navigate('modify_summary');
+                            setTimeout(()=> {
+                                this.props.navigation.navigate('modify_summary');
+                            },1000)
                         });
 
                     } else {
-                        ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
+                        ToastAndroid.show(responseJson.message, ToastAndroid.LONG);
                     }
                 })
                 .catch((error) => {
@@ -158,6 +161,7 @@ export default class SaveSummary extends Component {
                                 });
                                 Storage.removeItem("RiskAssessmentSummary")
                                 Storage.setItem("RiskAssessmentSummary", updated_data)
+                                ToastAndroid.show("Sucessfully added a new entry!", ToastAndroid.LONG)
                             }
                         } else {
                             let temp = response
@@ -189,8 +193,11 @@ export default class SaveSummary extends Component {
                             });
                             Storage.removeItem("RiskAssessmentSummary")
                             Storage.setItem("RiskAssessmentSummary", updated_data)
+                            ToastAndroid.show("Successfully updated an entry!", ToastAndroid.LONG)
                         }
-                        this.props.navigation.navigate('modify_summary');
+                        setTimeout(()=> {
+                            this.props.navigation.navigate('modify_summary');
+                        }, 1000)
                     });
                     // 1 - adding |2 - modified |3 - old_data
                 });

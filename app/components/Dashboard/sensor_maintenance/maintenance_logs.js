@@ -170,7 +170,7 @@ export default class MaintenanceLogs extends Component {
             logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
               <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
               <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
-              <Text style={{ fontSize: 15 }}>Rain Guage Status: {value.rain_gauge_status}</Text>
+              <Text style={{ fontSize: 15 }}>Rain Gauge Status: {value.rain_gauge_status}</Text>
             </View>)
           }
           this.setState({ selected_date_logs: logs, spinner: false })
@@ -196,7 +196,7 @@ export default class MaintenanceLogs extends Component {
                 logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
                   <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
                   <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
-                  <Text style={{ fontSize: 15 }}>Rain Guage Status: {value.rain_gauge_status}</Text>
+                  <Text style={{ fontSize: 15 }}>Rain Gauge Status: {value.rain_gauge_status}</Text>
                 </View>)
               }
 
