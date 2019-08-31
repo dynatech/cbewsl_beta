@@ -154,7 +154,10 @@ export default class SaveFieldSurveyLogs extends Component {
                                 Storage.setItem("FieldSurveyLatestReportSummary", [data])
                             }
                             this.setState({spinner: true});
-                            this.props.navigation.navigate('field_survery_logs');
+                            setTimeout(()=> {
+                                this.props.navigation.navigate('field_survery_logs');
+                            }, 1000)
+                            
                         });
                     } else {
                         this.setState({spinner: true});
@@ -182,6 +185,7 @@ export default class SaveFieldSurveyLogs extends Component {
                             if (response == null) {
                                 Storage.removeItem("FieldSurveyLogs")
                                 Storage.setItem("FieldSurveyLogs", [data])
+                                ToastAndroid.show('Successfully added a new entry!', ToastAndroid.LONG)
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -203,6 +207,7 @@ export default class SaveFieldSurveyLogs extends Component {
                                 });
                                 Storage.removeItem("FieldSurveyLogs")
                                 Storage.setItem("FieldSurveyLogs", updated_data)
+                                ToastAndroid.show('Successfully updated an entry!', ToastAndroid.LONG)
                             }
 
                             Storage.removeItem("FieldSurveyLatestReportSummary")
@@ -245,9 +250,12 @@ export default class SaveFieldSurveyLogs extends Component {
                             });
                             Storage.removeItem("FieldSurveyLogs")
                             Storage.setItem("FieldSurveyLogs", updated_data)
+                            ToastAndroid.show('Successfully updated an entry!', ToastAndroid.LONG)
                         }
                         this.setState({spinner: true});
-                        this.props.navigation.navigate('field_survery_logs');
+                        setTimeout(()=> {
+                            this.props.navigation.navigate('field_survery_logs');
+                        },1000)
                     });
                 });
         } else {

@@ -37,8 +37,6 @@ export default class Reports extends Component {
   getAllReports() {
     Notification.endOfValidity();
     let all_reports = []
-
-    let alertGeneration = Storage.getItem('Pub&CandidAlert')
     let FieldSurveyLatestReportSummary = Storage.getItem('FieldSurveyLatestReportSummary')
     let RiskAssessmentFamilyRiskProfile = Storage.getItem('RiskAssessmentFamilyRiskProfile')
     let RiskAssessmentHazardData = Storage.getItem('RiskAssessmentHazardData')
@@ -49,18 +47,6 @@ export default class Reports extends Component {
     let SituationReportLatest = Storage.getItem('SituationReportLatest')
     let SurficialDataCurrentMeasurement = Storage.getItem('SurficialDataCurrentMeasurement')
     let SurficialDataMomsSummary = Storage.getItem('SurficialDataMomsSummary')
-
-    alertGeneration.then(response => {
-      if (response.length != 0) {
-        let date = this.formatDateTime(date = response.event_start)
-        all_reports.push({
-          "date": date["text_format_timestamp"],
-          "data": response,
-          "report_name": "Current Alert",
-          "key": "alert_gen"
-        });
-      }
-    });
 
     RiskAssessmentSummary.then(response => {
       if (response.length != 0) {

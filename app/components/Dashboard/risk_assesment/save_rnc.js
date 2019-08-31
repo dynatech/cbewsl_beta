@@ -73,7 +73,6 @@ export default class SaveResourcesAndCapacities extends Component {
                 }),
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (responseJson.status == true) {
                         ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                         let data_container = Storage.getItem('RiskAssessmentRNC')
@@ -90,6 +89,7 @@ export default class SaveResourcesAndCapacities extends Component {
                             if (response == null) {
                                 Storage.removeItem("RiskAssessmentRNC")
                                 Storage.setItem("RiskAssessmentRNC", [data])
+                                ToastAndroid.show("Sucessfully added a new entry!", ToastAndroid.LONG)
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -107,8 +107,11 @@ export default class SaveResourcesAndCapacities extends Component {
                                 });
                                 Storage.removeItem("RiskAssessmentRNC")
                                 Storage.setItem("RiskAssessmentRNC", updated_data)
+                                ToastAndroid.show("Successfully updated an entry!", ToastAndroid.LONG)
                             }
-                            this.props.navigation.navigate('modify_rnc');
+                            setTimeout(()=> {
+                                this.props.navigation.navigate('modify_rnc');
+                            })
                         });
                     } else {
                         ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
@@ -148,6 +151,7 @@ export default class SaveResourcesAndCapacities extends Component {
                                 });
                                 Storage.removeItem("RiskAssessmentRNC")
                                 Storage.setItem("RiskAssessmentRNC", updated_data)
+                                ToastAndroid.show("Sucessfully added a new entry!", ToastAndroid.LONG)
                             }
                         } else {
                             let temp = response
@@ -177,8 +181,11 @@ export default class SaveResourcesAndCapacities extends Component {
                             });
                             Storage.removeItem("RiskAssessmentRNC")
                             Storage.setItem("RiskAssessmentRNC", updated_data)
+                            ToastAndroid.show("Successfully updated an entry!", ToastAndroid.LONG)
                         }
-                        this.props.navigation.navigate('modify_rnc');
+                        setTimeout(()=> {
+                            this.props.navigation.navigate('modify_rnc')
+                        },1000);
                     });
                     this.setState({spinner: true});
                 });
