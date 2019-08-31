@@ -64,7 +64,6 @@ function displayLatestAlert(latest_data, candidate_alerts) {
     let trigger = latest.releases[0].triggers;
     let latest_release = latest_data[0].releases[0].release_time;
     let data_ts = formatDateTime(latest_data[0].releases[0].data_ts);
-    // console.log(latest_release)
     let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
     let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
 
@@ -84,9 +83,13 @@ function displayOverdueAlert(overdue_data, candidate_alerts) {
     let event_start = overdue.event.event_start;
     let validity = formatDateTime(overdue.event.validity);
     let trigger = overdue.releases[0].triggers;
+    let latest_release = overdue[0].releases[0].release_time;
+    let data_ts = formatDateTime(overdue[0].releases[0].data_ts);
+    let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
+    let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
 
     $("#ewi_alert_symbol").text(alert_level);
-    $("#validity").text(validity["text_format_timestamp"]);
+    $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest data: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
     formatTriggerToText(trigger);
     $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
 }
@@ -179,7 +182,6 @@ function displayCandidateAlert(candidate_alerts) {
                     }).then((response) => response.json()).then((responseJson) => {
                         let release_data = responseJson;
                         releaseAlert(release_data);
-                        // $("#confirm_valid_alert_modal").modal("hide");
                     });
                 });
             });
@@ -305,6 +307,11 @@ function onClickReleaseExtended() {
     sendEwiToEmail();
     $("#confirm_release_ewi").unbind();
     $("#confirm_release_ewi").click(function () {
+        $("#confirmReleaseModal").modal("show");
+    });
+
+    $("#confirm_release_ewi_modal").unbind();
+    $("#confirm_release_ewi_modal").click(function () {
         let candidate_alerts = updateEwiData();
         candidate_alerts.done(function (data) {
             let json_data = JSON.parse(data);
@@ -322,6 +329,7 @@ function onClickReleaseExtended() {
                     body: JSON.stringify(candidate_alerts[0]),
                 }).then((response) => response.json()).then((responseJson) => {
                     console.log(responseJson)
+                    $("#confirmReleaseModal").modal("hide");
                     let release_data = responseJson;
                     releaseAlert(release_data);
                     $("#confirm_valid_alert_modal").modal("hide");
@@ -392,13 +400,15 @@ function formatTriggerToText(trigger, ts) {
         .append('<br><input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
     sendEwiToEmail();
 
-    // const hour = moment(ts).hour();
-    // const minute = moment(ts).minutes();
-    // if ((hour % 4 === 3 && minute === 30) || false) $("#confirm_release_ewi").prop("disabled", false);
-    // else $("#confirm_release_ewi").prop("disabled", true);
+
 
     $("#confirm_release_ewi").unbind();
     $("#confirm_release_ewi").click(function () {
+        $("#confirmReleaseModal").modal("show");
+    });
+
+    $("#confirm_release_ewi_modal").unbind();
+    $("#confirm_release_ewi_modal").click(function () {
         let candidate_alerts = updateEwiData();
         candidate_alerts.done(function (data) {
             let json_data = JSON.parse(data);
@@ -418,8 +428,10 @@ function formatTriggerToText(trigger, ts) {
                 }).then((response) => response.json()).then((responseJson) => {
                     console.log(responseJson)
                     let release_data = responseJson;
+                    alert("Successfully Release!");
                     $("#ewi_send_to_email").show();
                     $("#confirm_release_ewi").hide();
+                    $("#confirmReleaseModal").modal("hide");
                     releaseAlert(release_data);
                     $("#confirm_valid_alert_modal").modal("hide");
                 });
