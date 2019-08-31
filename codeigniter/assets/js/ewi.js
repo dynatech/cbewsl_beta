@@ -19,34 +19,36 @@ function getCandidateAndLatestAlerts() {
 
         let candidate_alerts = JSON.parse(json_data.candidate_alert);
         console.log(json_data)
+        console.log(candidate_alerts)
         if (candidate_alerts.length != 0) {
             displayCandidateAlert(candidate_alerts);
         } else {
             $("#no_candidate_alert").show();
             $("#candidate_alert_information").hide();
-        }
-        $("#current_alert_buttons").hide();
-        if (json_data.leo.latest.length != 0) {
-            displayLatestAlert(json_data.leo.latest, candidate_alerts);
-        } else {
-            if (json_data.leo.overdue.length != 0) {
-                displayOverdueAlert(json_data.leo.overdue, candidate_alerts);
-                $("#ewi_no_current_alert").hide();
-                $("#ewi_current_alert_container").show();
+            $("#current_alert_buttons").hide();
+            if (json_data.leo.latest.length != 0) {
+                displayLatestAlert(json_data.leo.latest, candidate_alerts);
             } else {
-                $("#ewi_no_current_alert").show();
-                $("#ewi_current_alert_container").hide();
-            }
+                if (json_data.leo.overdue.length != 0) {
+                    displayOverdueAlert(json_data.leo.overdue, candidate_alerts);
+                    $("#ewi_no_current_alert").hide();
+                    $("#ewi_current_alert_container").show();
+                } else {
+                    $("#ewi_no_current_alert").show();
+                    $("#ewi_current_alert_container").hide();
+                }
 
-            if (json_data.leo.extended.length != 0) {
-                displayExtendedAlert(json_data.leo.extended, candidate_alerts);
-                $("#ewi_no_current_alert").hide();
-                $("#ewi_current_alert_container").show();
-            } else {
-                $("#ewi_no_current_alert").show();
-                $("#ewi_current_alert_container").hide();
+                if (json_data.leo.extended.length != 0) {
+                    displayExtendedAlert(json_data.leo.extended, candidate_alerts);
+                    $("#ewi_no_current_alert").hide();
+                    $("#ewi_current_alert_container").show();
+                } else {
+                    $("#ewi_no_current_alert").show();
+                    $("#ewi_current_alert_container").hide();
+                }
             }
         }
+
     });
 }
 
@@ -57,13 +59,18 @@ function displayLatestAlert(latest_data, candidate_alerts) {
     let alert_level = "Alert " + latest.public_alert_symbol.alert_level;
     let alert_type = latest.public_alert_symbol.alert_type;
     let recommended_response = latest.public_alert_symbol.recommended_response;
-    let event_start = latest.event.event_start;
+    let event_start = formatDateTime(latest.event.event_start);
     let validity = formatDateTime(latest.event.validity);
     let trigger = latest.releases[0].triggers;
+    let latest_release = latest_data[0].releases[0].release_time;
+    let data_ts = formatDateTime(latest_data[0].releases[0].data_ts);
+    // console.log(latest_release)
+    let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
+    let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
 
     $("#ewi_alert_symbol").text(alert_level);
-    $("#validity").text(validity["text_format_timestamp"]);
-    formatTriggerToText(trigger);
+    $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest data: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
+    formatTriggerToText(trigger, latest_data[0].releases[0].data_ts);
     $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
 }
 
@@ -85,6 +92,7 @@ function displayOverdueAlert(overdue_data, candidate_alerts) {
 }
 
 function displayExtendedAlert(extended_data, candidate_alerts) {
+    console.log(extended_data)
     $("#ewi_current_alert_container").show();
     $("#lower_ewi").hide();
     $("#triggers_column").hide();
@@ -92,7 +100,12 @@ function displayExtendedAlert(extended_data, candidate_alerts) {
     $("#ewi_alert_symbol").empty().append("Alert 0");
     $("#extended_column").show();
     let day_of_extended = "Day " + extended_data[0].day + " of extended monitoring";
+    let latest_release = extended_data[0].releases[0].release_time;
+    let data_ts = formatDateTime(extended_data[0].releases[0].data_ts);
+    let latest_release_text = data_ts["date_only_format"] + " " + latest_release;
+
     $("#extended_day").empty().append(day_of_extended);
+    $("#extended_latest_release").empty().append("Latest Release: " + latest_release_text);
     onClickReleaseExtended();
 
 }
@@ -147,6 +160,7 @@ function displayCandidateAlert(candidate_alerts) {
             $("#ewi_current_alert_container").hide();
             $("#ewi_no_current_alert").hide();
             $("#ewi_for_lowering").show();
+            $("#ewi_lowering_details").show();
             $("#lower_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_lower_ewi" value="Release" style="background-color: #28a745;">');
             $("#confirm_lower_ewi").click(function () {
                 let candidate_alerts = updateEwiData();
@@ -343,7 +357,7 @@ function publicAlert(is_onset = false) {
         });
 }
 
-function formatTriggerToText(trigger) {
+function formatTriggerToText(trigger, ts) {
     $("#triggers").empty();
     console.log(trigger.length)
     if (trigger.length == 0) {
@@ -377,6 +391,12 @@ function formatTriggerToText(trigger) {
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
         .append('<br><input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
     sendEwiToEmail();
+
+    // const hour = moment(ts).hour();
+    // const minute = moment(ts).minutes();
+    // if ((hour % 4 === 3 && minute === 30) || false) $("#confirm_release_ewi").prop("disabled", false);
+    // else $("#confirm_release_ewi").prop("disabled", true);
+
     $("#confirm_release_ewi").unbind();
     $("#confirm_release_ewi").click(function () {
         let candidate_alerts = updateEwiData();
@@ -384,6 +404,7 @@ function formatTriggerToText(trigger) {
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
             let leo = json_data.leo;
+            console.log(json_data);
             if (leo.latest.length != 0) {
                 let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
                 fetch(url, {
@@ -397,6 +418,8 @@ function formatTriggerToText(trigger) {
                 }).then((response) => response.json()).then((responseJson) => {
                     console.log(responseJson)
                     let release_data = responseJson;
+                    $("#ewi_send_to_email").show();
+                    $("#confirm_release_ewi").hide();
                     releaseAlert(release_data);
                     $("#confirm_valid_alert_modal").modal("hide");
                 });
@@ -408,6 +431,7 @@ function formatTriggerToText(trigger) {
 }
 
 function sendEwiToEmail() {
+    $("#ewi_send_to_email").hide();
     $("#ewi_send_to_email").unbind();
     $("#ewi_send_to_email").click(function () {
         $("#sendEwiToEmailModal").modal("show");
