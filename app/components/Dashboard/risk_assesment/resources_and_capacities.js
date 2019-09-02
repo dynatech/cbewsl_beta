@@ -41,7 +41,7 @@ export default class ResourcesAndCapacities extends Component {
 
   navigateModifyRNC() {
     role_id = this.state.role_id;
-    if (role_id == 1 || role_id == 2) {
+    if (role_id == 1) {
       Alert.alert('Access denied', 'Unable to access this feature.');
     } else {
       this.props.navigation.navigate('modify_rnc');
@@ -85,51 +85,31 @@ export default class ResourcesAndCapacities extends Component {
   getAllResourcesAndCapacities() {
     Notification.endOfValidity();
     Sync.clientToServer("RiskAssessmentRNC").then(() => {
-      setTimeout(()=> {
-        fetch('http://192.168.150.10:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
-        .then((responseJson) => {
-          let rnc_data = [];
-          let to_local_data = [];
-          let counter = 0
-          if (responseJson.length != 0) {
-            for (const [index, value] of responseJson.entries()) {
-              rnc_data.push(<DataTable.Row style={{ width: 500 }}>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
-              </DataTable.Row>)
-              counter += 1
-              to_local_data.push({
-                resources_and_capacities_id: value.resources_and_capacities_id,
-                local_storage_id: counter,
-                sync_status: 3,
-                resource_and_capacity: value.resource_and_capacity,
-                status: value.status,
-                owner: value.owner
-              })
-            }
-            Storage.removeItem("RiskAssessmentRNC")
-            Storage.setItem("RiskAssessmentRNC", to_local_data)
-          } else {
-            rnc_data.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-            </DataTable.Row>)
-          }
-          this.setState({ rnc_data: rnc_data, spinner: false })
-          this.tablePaginate(rnc_data)
-        })
-        .catch((error) => {
-          let data_container = Storage.getItem('RiskAssessmentRNC')
-          let rnc_data = [];
-          data_container.then(response => {
-            if (response != null) {
-              for (const [index, value] of response.entries()) {
+      setTimeout(() => {
+        fetch('http://192.168.8.100:5000/api/resources_and_capacities/get_all_resources_and_capacities').then((response) => response.json())
+          .then((responseJson) => {
+            let rnc_data = [];
+            let to_local_data = [];
+            let counter = 0
+            if (responseJson.length != 0) {
+              for (const [index, value] of responseJson.entries()) {
                 rnc_data.push(<DataTable.Row style={{ width: 500 }}>
                   <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
                   <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
                   <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
                 </DataTable.Row>)
+                counter += 1
+                to_local_data.push({
+                  resources_and_capacities_id: value.resources_and_capacities_id,
+                  local_storage_id: counter,
+                  sync_status: 3,
+                  resource_and_capacity: value.resource_and_capacity,
+                  status: value.status,
+                  owner: value.owner
+                })
               }
+              Storage.removeItem("RiskAssessmentRNC")
+              Storage.setItem("RiskAssessmentRNC", to_local_data)
             } else {
               rnc_data.push(<DataTable.Row style={{ width: 500 }}>
                 <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
@@ -138,7 +118,27 @@ export default class ResourcesAndCapacities extends Component {
             this.setState({ rnc_data: rnc_data, spinner: false })
             this.tablePaginate(rnc_data)
           })
-        });
+          .catch((error) => {
+            let data_container = Storage.getItem('RiskAssessmentRNC')
+            let rnc_data = [];
+            data_container.then(response => {
+              if (response != null) {
+                for (const [index, value] of response.entries()) {
+                  rnc_data.push(<DataTable.Row style={{ width: 500 }}>
+                    <DataTable.Cell style={{ marginRight: 10 }}>{value.resource_and_capacity}</DataTable.Cell>
+                    <DataTable.Cell style={{ marginRight: 10 }}>{value.status}</DataTable.Cell>
+                    <DataTable.Cell style={{ marginRight: 10 }}>{value.owner}</DataTable.Cell>
+                  </DataTable.Row>)
+                }
+              } else {
+                rnc_data.push(<DataTable.Row style={{ width: 500 }}>
+                  <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+                </DataTable.Row>)
+              }
+              this.setState({ rnc_data: rnc_data, spinner: false })
+              this.tablePaginate(rnc_data)
+            })
+          });
       }, 3000)
     });
 

@@ -16,7 +16,7 @@ function initializeLogin() {
 
 function validateCredentials(username, password) {
     $.ajax({
-        url: "http://192.168.150.10:5000/api/login/validate_credentials",
+        url: "http://192.168.8.100:5000/api/login/validate_credentials",
         type: "POST",
         data: {
             "username": username,
