@@ -102,7 +102,7 @@ export default class ModifySummary extends Component {
         let summary_data = [];
         let to_local_data = [];
         let counter = 0
-        if (responseJson.length != 0) {
+        if (responseJson.length != 0 && responseJson != null && responseJson != undefined) {
           for (const [index, value] of responseJson.entries()) {
             summary_data.push(<DataTable.Row style={{ width: 500 }}>
               <DataTable.Cell style={{ marginRight: 10 }}>{value.location}</DataTable.Cell>

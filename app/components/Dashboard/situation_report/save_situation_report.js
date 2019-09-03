@@ -100,6 +100,7 @@ export default class SaveSituationReport extends Component {
                             if (response == null) {
                                 Storage.removeItem("SituationReportLogs")
                                 Storage.setItem("SituationReportLogs", [data])
+                                ToastAndroid.show("Successfully added a new entry!",ToastAndroid.LONG);
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -118,13 +119,16 @@ export default class SaveSituationReport extends Component {
                                 });
                                 Storage.removeItem("SituationReportLogs")
                                 Storage.setItem("SituationReportLogs", updated_data)
+                                ToastAndroid.show("Successfully updated an entry!",ToastAndroid.LONG);
                             }
                             if (situation_report_id == 0) {
                                 Storage.removeItem("SituationReportLatest")
                                 Storage.setItem("SituationReportLatest", [data])
                             }
-
-                            this.props.navigation.navigate('situation_logs');
+                            
+                            setItemout(()=> {
+                                this.props.navigation.navigate('situation_logs');
+                            }, 1000)
                         });
                     } else {
                         ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
@@ -147,6 +151,7 @@ export default class SaveSituationReport extends Component {
                             if (response == null) {
                                 Storage.removeItem("SituationReportLogs")
                                 Storage.setItem("SituationReportLogs", [data])
+                                ToastAndroid.show("Successfully added a new entry!",ToastAndroid.LONG);
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -166,9 +171,8 @@ export default class SaveSituationReport extends Component {
                                 });
                                 Storage.removeItem("SituationReportLogs")
                                 Storage.setItem("SituationReportLogs", updated_data)
+                                ToastAndroid.show("Successfully updated an entry!",ToastAndroid.LONG);
                             }
-                            Storage.removeItem("SituationReportLatest")
-                            Storage.setItem("SituationReportLatest", [data])
                         } else {
                             let temp = response
                             let updated_data = []
@@ -185,6 +189,7 @@ export default class SaveSituationReport extends Component {
                                         pdf_path: pdf_path,
                                         image_path: image_path
                                     })
+                                    ToastAndroid.show("Successfully added a new entry!",ToastAndroid.LONG);
                                 } else {
                                     updated_data.push({
                                         situation_report_id: value.situation_report_id,
@@ -195,12 +200,15 @@ export default class SaveSituationReport extends Component {
                                         pdf_path: value.pdf_path,
                                         image_path: value.image_path
                                     })
+                                    ToastAndroid.show("Successfully updated an entry!",ToastAndroid.LONG);
                                 }
                             });
                             Storage.removeItem("SituationReportLogs")
                             Storage.setItem("SituationReportLogs", updated_data)
                         }
-                        this.props.navigation.navigate('situation_logs');
+                        setItemout(()=> {
+                            this.props.navigation.navigate('situation_logs');
+                        }, 1000)
                     });
                 });
         } else {

@@ -95,6 +95,7 @@ export default class SaveHazardData extends Component {
                             if (response == null) {
                                 Storage.removeItem("RiskAssessmentHazardData")
                                 Storage.setItem("RiskAssessmentHazardData", [data])
+                                ToastAndroid.show("Sucessfully added a new entry!", ToastAndroid.LONG)
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -113,9 +114,11 @@ export default class SaveHazardData extends Component {
                                 });
                                 Storage.removeItem("RiskAssessmentHazardData")
                                 Storage.setItem("RiskAssessmentHazardData", updated_data)
+                                ToastAndroid.show("Successfully updated an entry!", ToastAndroid.LONG)
                             }
-
-                            this.props.navigation.navigate('modify_hazard_data');
+                            setTimeout(()=> {
+                                this.props.navigation.navigate('modify_hazard_data');
+                            })
                         });
 
                     } else {
@@ -158,6 +161,7 @@ export default class SaveHazardData extends Component {
                                 });
                                 Storage.removeItem("RiskAssessmentHazardData")
                                 Storage.setItem("RiskAssessmentHazardData", updated_data)
+                                ToastAndroid.show('Successfully added a new entry!', ToastAndroid.LONG)
                             }
                         } else {
                             let temp = response
@@ -189,8 +193,11 @@ export default class SaveHazardData extends Component {
                             });
                             Storage.removeItem("RiskAssessmentHazardData")
                             Storage.setItem("RiskAssessmentHazardData", updated_data)
+                            ToastAndroid.show('Successfully updated an entry!', ToastAndroid.LONG)
                         }
-                        this.props.navigation.navigate('modify_hazard_data');
+                        setTimeout(()=> {
+                            this.props.navigation.navigate('modify_hazard_data');
+                        },1000)
                     });
                 });
         } else {
