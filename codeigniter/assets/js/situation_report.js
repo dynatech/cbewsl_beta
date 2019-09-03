@@ -9,7 +9,7 @@ function initializeSituationReportCalendar() {
     $("#situation_report_calendar").empty();
     let situation_reports = [];
     $.ajax({
-        url: "http://192.168.8.100:5000/api/situation_report/get_all_situation_report",
+        url: "http://192.168.8.101:5000/api/situation_report/get_all_situation_report",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -136,7 +136,7 @@ function sendSituationReportViaEmail(date) {
 
     $("#confirm_send_situation_report").unbind();
     $("#confirm_send_situation_report").click(function () {
-        let url = "http://192.168.8.100:5000/api/situation_report/send_email";
+        let url = "http://192.168.8.101:5000/api/situation_report/send_email";
         let data = {
             date: date,
             email: $("#email_for_situation_report").val()
@@ -154,7 +154,7 @@ function sendSituationReportViaEmail(date) {
 
 function saveSituationReport() {
     $("#add_situation_report").click(function () {
-        let url = "http://192.168.8.100:5000/api/situation_report/save_situation_report";
+        let url = "http://192.168.8.101:5000/api/situation_report/save_situation_report";
         let summary = $("#summary").val();
         let data = {
             situation_report_id: $("#situation_report_id").val(),
@@ -199,7 +199,7 @@ function situationReportSummaryAction() {
 
     $("#delete_situation_report").click(function () {
         if (confirm('Are you sure you want to delete this entry?')) {
-            let url = "http://192.168.8.100:5000/api/situation_report/delete_situation_report";
+            let url = "http://192.168.8.101:5000/api/situation_report/delete_situation_report";
             let data = {
                 "situation_report_id": $("#situation_report_id").val()
             }

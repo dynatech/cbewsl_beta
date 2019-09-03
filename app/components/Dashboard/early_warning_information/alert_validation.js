@@ -38,13 +38,11 @@ export default class AlertValidation extends Component {
 
   validateAlert(trigger_id, valid, remarks, user_id, candidate_alerts) {
     if (this.state.trigger_length == 1) {
-      console.log("here");
       Notification.formatCandidateAlerts(candidate_alerts)
       setTimeout(() => {
         this.constructValidation()
       }, 3000);
     } else {
-      console.log("here2");
       let status = Notification.validateAlert(trigger_id, valid, remarks, user_id, candidate_alerts);
       status.then(response => {
         setTimeout(
@@ -73,95 +71,104 @@ export default class AlertValidation extends Component {
     cred.then(cred_response => {
       offline_data.then(response => {
         let candidate = JSON.parse(response.candidate_alert)
+        console.log(candidate.length)
         if (candidate.length != 0) {
           this.setState({ trigger_length: candidate[0].trigger_list_arr.length })
-          candidate[0].trigger_list_arr.forEach(element => {
-            disable_invalid = []
-            switch (element.trigger_type) {
-              case "rainfall":
-                invalid_flag = []
-                if (element.invalid == true) {
-                  this.setState({ trigger_length: this.state.trigger_length - 1 })
-                  invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%', color: 'red' }}>Rainfall Alert (INVALID): {element.tech_info}</Text>)
-                  disable_invalid.push(
-                    <TouchableOpacity disabled={true} style={defaults.button_error} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
-                      <Text style={defaults.buttonText}>Invalid</Text>
-                    </TouchableOpacity>)
-                } else {
-                  invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Rainfall Alert: {element.tech_info}</Text>)
-                  disable_invalid.push(
-                    <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
-                      <Text style={defaults.buttonText}>Invalid</Text>
-                    </TouchableOpacity>)
-                }
-                temp_rainfall.push(invalid_flag)
-                temp_rainfall.push(
-                  <View style={{ textAlign: 'center', flex: 0.5 }}>
-                    <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-                      <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, 1, "", cred_response.user_data.account_id, candidate[0]) }}>
-                        <Text style={defaults.buttonText}>Valid</Text>
-                      </TouchableOpacity>
-                      {disable_invalid}
+          if (candidate[0].trigger_list_arr == 0) {
+            temp_rainfall.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Rainfall Alert: No rainfall alert</Text>)
+            temp_moms.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Surficial Alert: No surficial alert.</Text>)
+            temp_earthquake.push(<Text style={{ paddingTop: '10%', paddingBottom: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Earthquake Alert: No earthquake alert.</Text>)
+
+          } else {
+            candidate[0].trigger_list_arr.forEach(element => {
+              disable_invalid = []
+              switch (element.trigger_type) {
+                case "rainfall":
+                  invalid_flag = []
+                  if (element.invalid == true) {
+                    this.setState({ trigger_length: this.state.trigger_length - 1 })
+                    invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%', color: 'red' }}>Rainfall Alert (INVALID): {element.tech_info}</Text>)
+                    disable_invalid.push(
+                      <TouchableOpacity disabled={true} style={defaults.button_error} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
+                        <Text style={defaults.buttonText}>Invalid</Text>
+                      </TouchableOpacity>)
+                  } else {
+                    invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Rainfall Alert: {element.tech_info}</Text>)
+                    disable_invalid.push(
+                      <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
+                        <Text style={defaults.buttonText}>Invalid</Text>
+                      </TouchableOpacity>)
+                  }
+                  temp_rainfall.push(invalid_flag)
+                  temp_rainfall.push(
+                    <View style={{ textAlign: 'center', flex: 0.5 }}>
+                      <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+                        <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, 1, "", cred_response.user_data.account_id, candidate[0]) }}>
+                          <Text style={defaults.buttonText}>Valid</Text>
+                        </TouchableOpacity>
+                        {disable_invalid}
+                      </View>
                     </View>
-                  </View>
-                )
-                break;
-              case "moms":
-                invalid_flag = []
-                if (element.invalid == true) {
-                  this.setState({ trigger_length: this.state.trigger_length - 1 })
-                  invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%', color: 'red' }}>Surficial Alert (INVALID): {element.tech_info}</Text>)
-                  disable_invalid.push(
-                    <TouchableOpacity disabled={true} style={defaults.button_error} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
-                      <Text style={defaults.buttonText}>Invalid</Text>
-                    </TouchableOpacity>)
-                } else {
-                  invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Surficial Alert: {element.tech_info}</Text>)
-                  disable_invalid.push(
-                    <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
-                      <Text style={defaults.buttonText}>Invalid</Text>
-                    </TouchableOpacity>)
-                }
-                temp_moms.push(invalid_flag)
-                temp_moms.push(
-                  <View style={{ textAlign: 'center', flex: 0.5 }}>
-                    <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-                      <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, 1, "", cred_response.user_data.account_id, candidate[0]) }}>
-                        <Text style={defaults.buttonText}>Valid</Text>
-                      </TouchableOpacity>
-                      {disable_invalid}
-                    </View>
-                  </View>)
-                break;
-              case "earthquake":
-                invalid_flag = []
-                if (element.invalid == true) {
-                  this.setState({ trigger_length: this.state.trigger_length - 1 })
-                  invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%', color: 'red' }}>Earthquake Alert (INVALID): {element.tech_info}</Text>)
-                  disable_invalid.push(
-                    <TouchableOpacity disabled={true} style={defaults.button_error} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
-                      <Text style={defaults.buttonText}>Invalid</Text>
-                    </TouchableOpacity>)
-                } else {
-                  invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Earthquake Alert: {element.tech_info}</Text>)
-                  disable_invalid.push(
-                    <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
-                      <Text style={defaults.buttonText}>Invalid</Text>
-                    </TouchableOpacity>)
-                }
-                temp_earthquake.push(invalid_flag)
-                temp_earthquake.push(
-                  <View style={{ textAlign: 'center', flex: 0.5 }}>
-                    <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-                      <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, 1, "", cred_response.user_data.account_id, candidate[0]) }}>
-                        <Text style={defaults.buttonText}>Valid</Text>
-                      </TouchableOpacity>
-                      {disable_invalid}
-                    </View>
-                  </View>)
-                break;
-            }
-          });
+                  )
+                  break;
+                case "moms":
+                  invalid_flag = []
+                  if (element.invalid == true) {
+                    this.setState({ trigger_length: this.state.trigger_length - 1 })
+                    invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%', color: 'red' }}>Surficial Alert (INVALID): {element.tech_info}</Text>)
+                    disable_invalid.push(
+                      <TouchableOpacity disabled={true} style={defaults.button_error} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
+                        <Text style={defaults.buttonText}>Invalid</Text>
+                      </TouchableOpacity>)
+                  } else {
+                    invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Surficial Alert: {element.tech_info}</Text>)
+                    disable_invalid.push(
+                      <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
+                        <Text style={defaults.buttonText}>Invalid</Text>
+                      </TouchableOpacity>)
+                  }
+                  temp_moms.push(invalid_flag)
+                  temp_moms.push(
+                    <View style={{ textAlign: 'center', flex: 0.5 }}>
+                      <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+                        <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, 1, "", cred_response.user_data.account_id, candidate[0]) }}>
+                          <Text style={defaults.buttonText}>Valid</Text>
+                        </TouchableOpacity>
+                        {disable_invalid}
+                      </View>
+                    </View>)
+                  break;
+                case "earthquake":
+                  invalid_flag = []
+                  if (element.invalid == true) {
+                    this.setState({ trigger_length: this.state.trigger_length - 1 })
+                    invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%', color: 'red' }}>Earthquake Alert (INVALID): {element.tech_info}</Text>)
+                    disable_invalid.push(
+                      <TouchableOpacity disabled={true} style={defaults.button_error} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
+                        <Text style={defaults.buttonText}>Invalid</Text>
+                      </TouchableOpacity>)
+                  } else {
+                    invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Earthquake Alert: {element.tech_info}</Text>)
+                    disable_invalid.push(
+                      <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
+                        <Text style={defaults.buttonText}>Invalid</Text>
+                      </TouchableOpacity>)
+                  }
+                  temp_earthquake.push(invalid_flag)
+                  temp_earthquake.push(
+                    <View style={{ textAlign: 'center', flex: 0.5 }}>
+                      <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+                        <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, 1, "", cred_response.user_data.account_id, candidate[0]) }}>
+                          <Text style={defaults.buttonText}>Valid</Text>
+                        </TouchableOpacity>
+                        {disable_invalid}
+                      </View>
+                    </View>)
+                  break;
+              }
+            });
+          }
+
 
         } else {
           if (temp_rainfall.length == 0) {
@@ -188,14 +195,15 @@ export default class AlertValidation extends Component {
     });
   }
 
+
   requestDataToPhivolcs() {
     Alert.alert('Feature comming soon.')
   }
 
   raiseAlert() {
     Alert.alert(
-      'Release Alert',
-      'Are you sure you want release to this alert?',
+      'Raise Alert',
+      'Are you sure you want raise this alert?',
       [
         {
           text: 'Cancel',
@@ -250,7 +258,7 @@ export default class AlertValidation extends Component {
                   let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
                 })
               }
-              this.setState({spinner: false})
+              this.setState({ spinner: false })
             })
           },
         }

@@ -7,7 +7,7 @@ $(document).ready(function () {
 
 function getAllFamilyRiskProfile() {
     $.ajax({
-        url: "http://192.168.8.100:5000/api/family_profile/get_all_family_profile",
+        url: "http://192.168.8.101:5000/api/family_profile/get_all_family_profile",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -65,7 +65,7 @@ function getAllFamilyRiskProfile() {
 
 function getRiskProfile() {
     $.ajax({
-        url: "http://192.168.8.100:5000/api/family_profile/get_all_risk_profile",
+        url: "http://192.168.8.101:5000/api/family_profile/get_all_risk_profile",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -120,7 +120,7 @@ function setFamilyRiskDataForm(data) {
 
 function saveFamilyRisk() {
     $("#add_family_risk").click(function () {
-        let url = "http://192.168.8.100:5000/api/family_profile/save_family_profile";
+        let url = "http://192.168.8.101:5000/api/family_profile/save_family_profile";
         let data = {
             family_profile_id: $("#family_profile_id").val(),
             members_count: $("#number_of_members").val(),
@@ -145,7 +145,7 @@ function saveFamilyRisk() {
 
 function saveRiskProfile() {
     $("#add_risk_profile").click(function () {
-        let url = "http://192.168.8.100:5000/api/family_profile/save_risk_profile";
+        let url = "http://192.168.8.101:5000/api/family_profile/save_risk_profile";
         let data = {
             risk_profile_id: $("#risk_profile_id").val(),
             entry: $("#entry").val()
@@ -183,7 +183,7 @@ function deleteFamilyRiskConfirmation(data) {
 }
 
 function deleteFamilyRisk(family_profile_id) {
-    let url = "http://192.168.8.100:5000/api/family_profile/delete_family_profile";
+    let url = "http://192.168.8.101:5000/api/family_profile/delete_family_profile";
     let data = {
         "family_profile_id": family_profile_id
     }
@@ -202,7 +202,7 @@ function deleteFamilyRisk(family_profile_id) {
 }
 
 function deleteRiskProfile(risk_profile_id) {
-    let url = "http://192.168.8.100:5000/api/family_profile/delete_risk_profile";
+    let url = "http://192.168.8.101:5000/api/family_profile/delete_risk_profile";
     let data = {
         "risk_profile_id": risk_profile_id
     }
