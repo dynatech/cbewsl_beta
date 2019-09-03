@@ -7,6 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<title>COMMUNITY-BASED EARLY WARNING SYSTEM FOR DEEP-SEATED LANDSLIDES</title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables.min.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap/custom_css/style.css">
     <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/printjs/print.min.css"> -->
     <link href="<?php echo base_url(); ?>assets/font_awesome/css/all.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/full_calendar/core/main.css" rel="stylesheet" />
@@ -47,19 +48,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <li class="nav-item active">
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-      </li>
     </ul>
     <form class="form-inline my-2 my-lg-0"> 
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-bars"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a>
-          <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </form>

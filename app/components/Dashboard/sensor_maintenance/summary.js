@@ -38,7 +38,7 @@ export default class Summary extends Component {
 
   componentDidMount() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.10:5000/api/rainfall/get_rainfall_plot_data/umi', {
+    fetch('http://192.168.8.101:5000/api/rainfall/get_rainfall_plot_data/umi', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -57,14 +57,14 @@ export default class Summary extends Component {
           online["1D cml"] = "NO DATA"
           this.setState({ one_day_rain: "NO DATA", spinner: false })
         } else {
-          this.setState({ one_day_rain: Math.round((online["1D cml"] / online["half of 2yr max"]) * 100) })
+          this.setState({ one_day_rain: Math.round((online["1D cml"] / online["half of 2yr max"]) * 100).toString()+"%" })
         }
 
         if (online["3D cml"] == null || online["3D cml"] == undefined || online["3D cml"] == "NO DATA") {
           online["3D cml"] = "NO DATA"
           this.setState({ three_day_rain: "NO DATA", spinner: false })
         } else {
-          this.setState({ three_day_rain: Math.round((online["3D cml"] / online["2yr max"]) * 100), spinner: false })
+          this.setState({ three_day_rain: Math.round((online["3D cml"] / online["2yr max"]) * 100).toString()+"%", spinner: false })
         }
       })
       .catch((error) => {
@@ -75,14 +75,14 @@ export default class Summary extends Component {
             offline["1D cml"] = "NO DATA"
             this.setState({ one_day_rain: "NO DATA", spinner: false })
           } else {
-            this.setState({ one_day_rain: Math.round((offline["1D cml"] / offline["half of 2yr max"]) * 100) })
+            this.setState({ one_day_rain: Math.round((offline["1D cml"] / offline["half of 2yr max"]) * 100).toString()+"%" })
           }
 
           if (offline["3D cml"] == null || offline["3D cml"] == undefined || offline["3D cml"] == "NO DATA") {
             offline["3D cml"] = "NO DATA"
             this.setState({ three_day_rain: "NO DATA", spinner: false })
           } else {
-            this.setState({ three_day_rain: Math.round((offline["3D cml"] / offline["2yr max"]) * 100), spinner: false })
+            this.setState({ three_day_rain: Math.round((offline["3D cml"] / offline["2yr max"]) * 100).toString()+"%", spinner: false })
           }
         });
       });
@@ -112,8 +112,8 @@ export default class Summary extends Component {
         <View style={sensor_maintenance_styles.contentContainer}>
           <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Rainfall</Text>
           <View style={sensor_maintenance_styles.subContainer}>
-            <Text>1-day threshold: {this.state.one_day_rain}%</Text>
-            <Text>3-day threshold: {this.state.three_day_rain}%</Text>
+            <Text>1-day threshold: {this.state.one_day_rain}</Text>
+            <Text>3-day threshold: {this.state.three_day_rain}</Text>
           </View>
         </View>
         <View style={sensor_maintenance_styles.graphContainer}>

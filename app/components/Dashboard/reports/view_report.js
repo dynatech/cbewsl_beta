@@ -65,7 +65,9 @@ export default class ViewReport extends Component {
             default:
             // code block
         }
-        this.setState({spinner: false})
+        setTimeout(()=> {
+            this.setState({spinner: false})
+        },2000)
     }
 
     tablePaginate(data) {
@@ -375,7 +377,7 @@ export default class ViewReport extends Component {
             <Text style={{ fontSize: 15, fontWeight: 'bold', textAlign: 'center' }}>as of {data.date}</Text>
             <Text style={{ fontSize: 15, textAlign: 'center' }}>Working Nodes: {response.working_nodes}</Text>
             <Text style={{ fontSize: 15, textAlign: 'center' }}>Anomalous Nodes: {response.anomalous_nodes}</Text>
-            <Text style={{ fontSize: 15, textAlign: 'center' }}>Rain Guage Status: {response.rain_gauge_status}</Text>
+            <Text style={{ fontSize: 15, textAlign: 'center' }}>Rain Gauge Status: {response.rain_gauge_status}</Text>
         </View>)
 
         this.setState({ report_name: data.report_name })

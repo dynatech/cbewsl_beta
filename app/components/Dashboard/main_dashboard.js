@@ -24,7 +24,6 @@ export default class MainDashboard extends Component {
     componentDidMount() {
         let credentials = Storage.getItem("loginCredentials")
         credentials.then(response => {
-            console.log("CRED")
             console.log(response)
             let role_id = response.role_id;
             this.setState({ role_id: role_id })
@@ -44,39 +43,19 @@ export default class MainDashboard extends Component {
                 this.props.navigation.navigate('riskAssessment');
                 break;
             case 'field_survey':
-                if (role_id == 1) {
-                    Alert.alert('Access denied', 'Unable to access this feature.');
-                } else {
-                    this.props.navigation.navigate('fieldSurvey');
-                }
+                this.props.navigation.navigate('fieldSurvey');
                 break;
             case 'sensor_maintenance':
-                if (role_id == 1) {
-                    Alert.alert('Access denied', 'Unable to access this feature.');
-                } else {
-                    this.props.navigation.navigate('sensorMaintenance');
-                }
+                this.props.navigation.navigate('sensorMaintenance');
                 break;
             case 'surficial_data':
-                if (role_id == 1) {
-                    Alert.alert('Access denied', 'Unable to access this feature.');
-                } else {
-                    this.props.navigation.navigate('surficialData');
-                }
+                this.props.navigation.navigate('surficialData');
                 break;
             case 'ewi':
-                if (role_id == 1) {
-                    Alert.alert('Access denied', 'Unable to access this feature.');
-                } else {
-                    this.props.navigation.navigate('ewi');
-                }
+                this.props.navigation.navigate('ewi');
                 break;
             case 'reports':
-                if (role_id == 1) {
-                    Alert.alert('Access denied', 'Unable to access this feature.');
-                } else {
-                    this.props.navigation.navigate('reports');
-                }
+                this.props.navigation.navigate('reports');
                 break;
             case 'call':
                 Linking.openURL('tel:')
@@ -85,11 +64,7 @@ export default class MainDashboard extends Component {
                 Linking.openURL(`sms:?addresses=null&body=`);
                 break;
             case 'situation_report':
-                if (role_id == 1) {
-                    Alert.alert('Access denied', 'Unable to access this feature.');
-                } else {
-                    this.props.navigation.navigate('situationReport')
-                }
+                this.props.navigation.navigate('situationReport');
                 break;
             default:
                 console.info("Invalid menu... skipping...")

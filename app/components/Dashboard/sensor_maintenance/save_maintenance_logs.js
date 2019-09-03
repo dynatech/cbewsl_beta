@@ -41,7 +41,7 @@ export default class SaveMaintenanceLogs extends Component {
             timestamp } = this.state
 
         if (working_nodes != "" && anomalous_nodes != "" && rain_gauge_status != "") {
-            fetch('http://192.168.150.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs', {
+            fetch('http://192.168.8.101:5000/api/sensor_maintenance/save_sensor_maintenance_logs', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -58,7 +58,6 @@ export default class SaveMaintenanceLogs extends Component {
                 }),
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (responseJson.status == true) {
                         ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                         let data_container = Storage.getItem('SensorMaintenanceLogs')
@@ -76,6 +75,7 @@ export default class SaveMaintenanceLogs extends Component {
                             if (response == null) {
                                 Storage.removeItem("SensorMaintenanceLogs")
                                 Storage.setItem("SensorMaintenanceLogs", [data])
+                                ToastAndroid.show("Sucessfully added a new entry!",ToastAndroid.LONG)
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -94,8 +94,11 @@ export default class SaveMaintenanceLogs extends Component {
                                 });
                                 Storage.removeItem("SensorMaintenanceLogs")
                                 Storage.setItem("SensorMaintenanceLogs", updated_data)
+                                ToastAndroid.show("Successfully updated an entry!",ToastAndroid.LONG)
                             }
-                            this.props.navigation.navigate('maintenance_logs');
+                            setTimeout(()=> {
+                                this.props.navigation.navigate('maintenance_logs');
+                            })
                         });
 
                     } else {
@@ -119,6 +122,7 @@ export default class SaveMaintenanceLogs extends Component {
                             if (response == null) {
                                 Storage.removeItem("SensorMaintenanceLogs")
                                 Storage.setItem("SensorMaintenanceLogs", [data])
+                                ToastAndroid.show("Sucessfully added a new entry!",ToastAndroid.LONG)
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -138,6 +142,7 @@ export default class SaveMaintenanceLogs extends Component {
                                 });
                                 Storage.removeItem("SensorMaintenanceLogs")
                                 Storage.setItem("SensorMaintenanceLogs", updated_data)
+                                ToastAndroid.show("Successfully updated an entry!",ToastAndroid.LONG)
                             }
                         } else {
                             let temp = response
@@ -169,8 +174,11 @@ export default class SaveMaintenanceLogs extends Component {
                             });
                             Storage.removeItem("SensorMaintenanceLogs")
                             Storage.setItem("SensorMaintenanceLogs", updated_data)
+                            ToastAndroid.show("Successfully updated an entry!",ToastAndroid.LONG)
                         }
-                        this.props.navigation.navigate('maintenance_logs');
+                        setTimeout(()=> {
+                                this.props.navigation.navigate('maintenance_logs');
+                            })
                     });
                     // 1 - adding |2 - modified |3 - old_data
                 });
@@ -203,7 +211,7 @@ export default class SaveMaintenanceLogs extends Component {
                 <View style={sensor_maintenance_styles.contentContainer}>
                     <TextInput style={defaults.inputs} placeholder="Working Nodes" value={this.state.working_nodes} onChangeText={text => this.setState({ working_nodes: text })} />
                     <TextInput style={defaults.inputs} placeholder="Anomalous Nodes" value={this.state.anomalous_nodes} onChangeText={text => this.setState({ anomalous_nodes: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Rain Guage Status" value={this.state.rain_gauge_status} onChangeText={text => this.setState({ rain_gauge_status: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Rain Gauge Status" value={this.state.rain_gauge_status} onChangeText={text => this.setState({ rain_gauge_status: text })} />
                 </View>
                 <View>
                     <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.saveSensorMaintenanceLogs()}>

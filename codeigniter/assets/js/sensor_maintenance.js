@@ -16,7 +16,7 @@ function initializeMaintenanceLogsCalendar() {
     $("#maintenance_logs_calendar").empty();
     let maintenance_logs = [];
     $.ajax({
-        url: "http://192.168.150.10:5000/api/sensor_maintenance/get_all_sensor_maintenance",
+        url: "http://192.168.8.101:5000/api/sensor_maintenance/get_all_sensor_maintenance",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -104,7 +104,7 @@ function initializeMaintenanceLogsCalendar() {
 
 function saveMaintenanceLogs() {
     $("#add_maintenance_logs").click(function () {
-        let url = "http://192.168.150.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs";
+        let url = "http://192.168.8.101:5000/api/sensor_maintenance/save_sensor_maintenance_logs";
         let working_nodes = $("#working_nodes").val();
         let anomalous_nodes = $("#anomalous_nodes").val();
         let rain_gauge_status = $("#rain_gauge_status").val();
@@ -153,7 +153,7 @@ function maintenanceLogsDataAction() {
 
     $("#delete_maintenance_log").click(function () {
         if (confirm('Are you sure you want to delete this entry?')) {
-            let url = "http://192.168.150.10:5000/api/sensor_maintenance/delete_sensor_maintenance";
+            let url = "http://192.168.8.101:5000/api/sensor_maintenance/delete_sensor_maintenance";
             let data = {
                 "sensor_maintenance_id": $("#sensor_maintenance_id").val()
             }
@@ -196,7 +196,7 @@ function latestSensorMaintenanceData(latest_data) {
 
 function initalizeSensorMaintenanceData() {
     $.ajax({
-        url: "http://192.168.150.10:5000/api/rainfall/get_rainfall_plot_data/umi",
+        url: "http://192.168.8.101:5000/api/rainfall/get_rainfall_plot_data/umi",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
             $("#one_day_rain").text("Loading. . . ");

@@ -21,12 +21,14 @@ function formatDateTime(date = null) {
     let date_format = ""
     let date_only_format = ""
     let time_format = ""
+    let time_format2 = ""
     let for_file_name = ""
     if (timestamp == null) {
         current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS");
         date_format = moment(new Date()).format("YYYY-MM-DD");
         date_only_format = moment(new Date()).format("MMMM D, YYYY");
         time_format = moment(new Date()).format("hh:MM a");
+        time_format2 = moment(new Date()).format("HH:MM a");
         text_format_timestamp = moment(new Date()).format("LLL");
         for_file_name = moment(new Date()).format("YYYY_MM_DD_HH_MM_SS");
     } else {
@@ -34,6 +36,7 @@ function formatDateTime(date = null) {
         date_format = moment(date).format("YYYY-MM-DD");
         date_only_format = moment(date).format("MMMM D, YYYY");
         time_format = moment(date).format("hh:MM a");
+        time_format2 = moment(date).format("HH:MM a");
         text_format_timestamp = moment(date).format("LLL");
         for_file_name = moment(date).format("YYYY_MM_DD_HH_MM_SS");
     }
@@ -42,6 +45,7 @@ function formatDateTime(date = null) {
         current_timestamp: current_timestamp,
         date: date_format,
         time_format: time_format,
+        time_format2: time_format2,
         date_only_format: date_only_format,
         text_format_timestamp: text_format_timestamp,
         for_file_name: for_file_name
@@ -91,7 +95,7 @@ function printData(data) {
                     { field: 'entry', displayName: 'Entry' },
                     { field: 'timestamp', displayName: 'Timestamp' }
                 ],
-                header: '<h3>Risk Profile</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Risk Profile</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -106,7 +110,7 @@ function printData(data) {
                     { field: 'vulnerable_members_count', displayName: 'Number of Vulnerable' },
                     { field: 'vulnerability_nature', displayName: 'Nature of Vulnerability' }
                 ],
-                header: '<h3>Family Risk Profile</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Family Risk Profile</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -124,7 +128,7 @@ function printData(data) {
                     { field: 'note', displayName: 'Note' },
                     { field: 'date', displayName: 'Date' }
                 ],
-                header: '<h3>Field Survey Log</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Field Survey Logs</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -140,7 +144,7 @@ function printData(data) {
                     { field: 'early_warning', displayName: 'Early Warning' },
                     { field: 'impact', displayName: 'Impact' }
                 ],
-                header: '<h3>Hazard Data</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Hazard Data</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -155,7 +159,7 @@ function printData(data) {
                     { field: 'status', displayName: 'Status' },
                     { field: 'owner', displayName: 'Owner' }
                 ],
-                header: '<h3>Resource and Capacities</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Resources and Capacities</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -171,7 +175,7 @@ function printData(data) {
                     { field: 'rain_gauge_status', displayName: 'Rain Gauge Status' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<h3>Maintenance Logs</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Maintenance Log</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -185,7 +189,7 @@ function printData(data) {
                     { field: 'title', displayName: 'Summary' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<h3>Situation Report</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Situation Report</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -204,7 +208,7 @@ function printData(data) {
                     { field: 'note', displayName: 'Note' },
                     { field: 'date', displayName: 'Date' }
                 ],
-                header: '<h3>Latest Field Survey Log</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Latest Field Survey Log</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -212,7 +216,9 @@ function printData(data) {
 
     } else if (logs == "current_situation_report") {
         let data = [SITUATION_LOG_DATA[0]];
-        if (data.length != 0) {
+        if (data[0] == undefined) {
+            alert("No data.");
+        } else {
             printJS({
                 printable: data,
                 type: 'json',
@@ -220,11 +226,22 @@ function printData(data) {
                     { field: 'title', displayName: 'Summary' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
-        } else {
-            alert("No data.");
         }
+        // if (data.length != 0 || data[0] != undefined) {
+        //     printJS({
+        //         printable: data,
+        //         type: 'json',
+        //         properties: [
+        //             { field: 'title', displayName: 'Summary' },
+        //             { field: 'start', displayName: 'Date' }
+        //         ],
+        //         header: '<h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
+        //     });
+        // } else {
+        //     alert("No data.");
+        // }
     }
 
 }

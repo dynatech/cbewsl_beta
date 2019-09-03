@@ -22,7 +22,8 @@ export default class MaintenanceLogs extends Component {
       date_selected: "",
       selected_date_logs: [],
       add_report_text: "Add Report",
-      spinner: true
+      spinner: true,
+      role_id: 0
     };
   }
 
@@ -40,6 +41,7 @@ export default class MaintenanceLogs extends Component {
         break;
     }
   }
+
 
   formatDateTime(date = null) {
     let timestamp = date
@@ -69,69 +71,74 @@ export default class MaintenanceLogs extends Component {
   }
 
   displayMaintenanceLogsPerDay() {
+    let credentials = Storage.getItem("loginCredentials");
+    credentials.then(response => {
+      let role_id = response.role_id;
+      this.setState({ role_id: role_id });
+    });
     Notification.endOfValidity();
     this.setState({ date_selected: "" })
     let next_days = []
     let new_days = {};
 
     Sync.clientToServer("SensorMaintenanceLogs").then(() => {
-      setTimeout(()=> {
-        fetch('http://192.168.150.10:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
-        .then((responseJson) => {
-          let to_local_data = [];
-          for (const [index, value] of responseJson.entries()) {
-            let format_date_time = this.formatDateTime(date = value.timestamp);
-            next_days.push(format_date_time["date"])
-            let counter = 0;
-            counter += 1;
-            to_local_data.push({
-              sensor_maintenance_id: value.sensor_maintenance_id,
-              local_storage_id: counter,
-              sync_status: 3,
-              working_nodes: value.working_nodes,
-              anomalous_nodes: value.anomalous_nodes,
-              rain_gauge_status: value.rain_gauge_status,
-              timestamp: format_date_time["current_timestamp"],
-            });
-          }
-
-          next_days.forEach((day) => {
-            new_days = {
-              ...new_days,
-              [day]: {
-                day,
-                marked: true
-              }
-            };
-          });
-
-          Storage.removeItem("SensorMaintenanceLogs")
-          Storage.setItem("SensorMaintenanceLogs", to_local_data)
-          this.setState({ marked_dates: new_days, spinner: false })
-        })
-        .catch((error) => {
-          let data_container = Storage.getItem('SensorMaintenanceLogs')
-          data_container.then(response => {
-            if (response.length != 0) {
-              for (const [index, value] of response.entries()) {
-                let format_date_time = this.formatDateTime(date = value.timestamp);
-                next_days.push(format_date_time["date"])
-              }
-              next_days.forEach((day) => {
-                new_days = {
-                  ...new_days,
-                  [day]: {
-                    day,
-                    marked: true
-                  }
-                };
+      setTimeout(() => {
+        fetch('http://192.168.8.101:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
+          .then((responseJson) => {
+            let to_local_data = [];
+            for (const [index, value] of responseJson.entries()) {
+              let format_date_time = this.formatDateTime(date = value.timestamp);
+              next_days.push(format_date_time["date"])
+              let counter = 0;
+              counter += 1;
+              to_local_data.push({
+                sensor_maintenance_id: value.sensor_maintenance_id,
+                local_storage_id: counter,
+                sync_status: 3,
+                working_nodes: value.working_nodes,
+                anomalous_nodes: value.anomalous_nodes,
+                rain_gauge_status: value.rain_gauge_status,
+                timestamp: format_date_time["current_timestamp"],
               });
-              this.setState({ marked_dates: new_days, spinner: false })
             }
+
+            next_days.forEach((day) => {
+              new_days = {
+                ...new_days,
+                [day]: {
+                  day,
+                  marked: true
+                }
+              };
+            });
+
+            Storage.removeItem("SensorMaintenanceLogs")
+            Storage.setItem("SensorMaintenanceLogs", to_local_data)
+            this.setState({ marked_dates: new_days, spinner: false })
           })
-        });
+          .catch((error) => {
+            let data_container = Storage.getItem('SensorMaintenanceLogs')
+            data_container.then(response => {
+              if (response.length != 0) {
+                for (const [index, value] of response.entries()) {
+                  let format_date_time = this.formatDateTime(date = value.timestamp);
+                  next_days.push(format_date_time["date"])
+                }
+                next_days.forEach((day) => {
+                  new_days = {
+                    ...new_days,
+                    [day]: {
+                      day,
+                      marked: true
+                    }
+                  };
+                });
+                this.setState({ marked_dates: new_days, spinner: false })
+              }
+            })
+          });
       }, 3000)
-      
+
     });
 
 
@@ -144,7 +151,7 @@ export default class MaintenanceLogs extends Component {
     let selected_date = this.formatDateTime(date = date)
     button_text = "Add Report for " + selected_date["text_format_timestamp"]
     this.setState({ add_report_text: button_text })
-    fetch('http://192.168.150.10:5000/api/sensor_maintenance/get_report_by_date', {
+    fetch('http://192.168.8.101:5000/api/sensor_maintenance/get_report_by_date', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -170,7 +177,7 @@ export default class MaintenanceLogs extends Component {
             logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
               <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
               <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
-              <Text style={{ fontSize: 15 }}>Rain Guage Status: {value.rain_gauge_status}</Text>
+              <Text style={{ fontSize: 15 }}>Rain Gauge Status: {value.rain_gauge_status}</Text>
             </View>)
           }
           this.setState({ selected_date_logs: logs, spinner: false })
@@ -196,7 +203,7 @@ export default class MaintenanceLogs extends Component {
                 logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
                   <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
                   <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
-                  <Text style={{ fontSize: 15 }}>Rain Guage Status: {value.rain_gauge_status}</Text>
+                  <Text style={{ fontSize: 15 }}>Rain Gauge Status: {value.rain_gauge_status}</Text>
                 </View>)
               }
 
@@ -214,25 +221,31 @@ export default class MaintenanceLogs extends Component {
   }
 
   navigateSaveMaintenanceLogs() {
-    let date_selected = this.state.date_selected
-    if (date_selected == "") {
-      Alert.alert(
-        'Alert!',
-        'Please pick a date to add report.',
-        [
-          {
-            text: 'Close',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          }
-        ],
-        { cancelable: false },
-      );
+    role_id = this.state.role_id;
+    if (role_id == 1) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
     } else {
-      this.props.navigation.navigate('save_maintenance_logs', {
-        data: date_selected
-      })
+      let date_selected = this.state.date_selected
+      if (date_selected == "") {
+        Alert.alert(
+          'Alert!',
+          'Please pick a date to add report.',
+          [
+            {
+              text: 'Close',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            }
+          ],
+          { cancelable: false },
+        );
+      } else {
+        this.props.navigation.navigate('save_maintenance_logs', {
+          data: date_selected
+        })
+      }
     }
+
   }
 
   render() {

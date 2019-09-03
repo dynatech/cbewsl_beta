@@ -20,7 +20,8 @@ export default class MonitoringLogs extends Component {
       monitoring_logs_data_paginate: [],
       page: 0,
       number_of_pages: 0,
-      spinner: true
+      spinner: true,
+      role_id: 0
     };
   }
 
@@ -100,29 +101,40 @@ export default class MonitoringLogs extends Component {
 
 
   updateLog(moms_data) {
-    this.props.navigation.navigate('save_surficial_data', {
-      data: moms_data
-    })
+    role_id = this.state.role_id;
+    if (role_id == 1) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
+    } else {
+      this.props.navigation.navigate('save_surficial_data', {
+        data: moms_data
+      })
+    }
   }
 
   removeConfirmation(id) {
-    Alert.alert(
-      'Confirmation',
-      'Are you sure do you want to delete ?',
-      [
-        {
-          text: 'No',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        { text: 'Yes', onPress: () => this.removeLog(id) },
-      ],
-      { cancelable: false },
-    );
+    role_id = this.state.role_id;
+    if (role_id == 1) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
+    } else {
+      Alert.alert(
+        'Confirmation',
+        'Are you sure do you want to delete ?',
+        [
+          {
+            text: 'No',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'Yes', onPress: () => this.removeLog(id) },
+        ],
+        { cancelable: false },
+      );
+    }
+
   }
 
   removeLog(id) {
-    fetch('http://192.168.150.10:5000/api/moms_data/delete_moms_data', {
+    fetch('http://192.168.8.101:5000/api/moms_data/delete_moms_data', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -171,25 +183,39 @@ export default class MonitoringLogs extends Component {
   }
 
   raiseAlert(data) {
-    Alert.alert(
-      'Raise Alert',
-      'Are you sure you want raise to this alert?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel'
-        },
-        {
-          text: 'Alert 2',
-          onPress: () => this.setAlertForMoms(data, "2"),
-        },
-        {
-          text: 'Alert 3',
-          onPress: () => this.setAlertForMoms(data, "3"),
-        },
-      ],
-      { cancelable: false },
-    );
+    role_id = this.state.role_id;
+    if (role_id == 1) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
+    } else {
+      Alert.alert(
+        'Raise Alert',
+        'Are you sure you want raise to this alert?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel'
+          },
+          {
+            text: 'Significant',
+            onPress: () => this.setAlertForMoms(data, "2"),
+          },
+          {
+            text: 'Critical',
+            onPress: () => this.setAlertForMoms(data, "3"),
+          },
+        ],
+        { cancelable: false },
+      );
+    }
+  }
+
+  addLog() {
+    role_id = this.state.role_id;
+    if (role_id == 1) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
+    } else {
+      this.props.navigation.navigate('save_surficial_data')
+    }
   }
 
   setAlertForMoms(data, alert_level) {
@@ -287,73 +313,48 @@ export default class MonitoringLogs extends Component {
   }
 
   getMonitoringLogs() {
+    let credentials = Storage.getItem("loginCredentials");
+    credentials.then(response => {
+      let role_id = response.role_id;
+      this.setState({ role_id: role_id });
+    });
+
     Sync.clientToServer("SurficialDataMomsSummary").then(() => {
-      setTimeout(()=> {
-        fetch('http://192.168.150.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
-        .then((responseJson) => {
+      setTimeout(() => {
+        fetch('http://192.168.8.101:5000/api/surficial_data/get_moms_data').then((response) => response.json())
+          .then((responseJson) => {
 
-          let monitoring_logs_data = []
-          let to_local_data = []
-          let counter = 0
-          if (responseJson.length != 0) {
-            for (const [index, value] of responseJson.entries()) {
-              let formatted_timestamp = this.formatDateTime(date = value.date)
-              monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
-                <DataTable.Cell style={{ paddingRight: 10 }}>{value.type_of_feature}</DataTable.Cell>
-                <DataTable.Cell style={{ paddingRight: 10 }}>{value.description}</DataTable.Cell>
-                <DataTable.Cell style={{ paddingRight: 10 }}>{value.name_of_feature}</DataTable.Cell>
-                <DataTable.Cell style={{ paddingRight: 10 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
-                <DataTable.Cell>
-                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
-                  <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
-                </DataTable.Cell>
-              </DataTable.Row>)
-
-              counter += 1
-              to_local_data.push({
-                moms_id: value.moms_id,
-                local_storage_id: counter,
-                sync_status: 3,
-                type_of_feature: value.type_of_feature,
-                description: value.description,
-                name_of_feature: value.name_of_feature,
-                date: value.date
-              })
-            }
-            Storage.removeItem("SurficialDataMomsSummary")
-            Storage.setItem("SurficialDataMomsSummary", to_local_data)
-          } else {
-            monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-            </DataTable.Row>)
-          }
-          this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
-          this.tablePaginate(monitoring_logs_data)
-
-
-        })
-        .catch((error) => {
-          let data_container = Storage.getItem('SurficialDataMomsSummary')
-          let monitoring_logs_data = [];
-          data_container.then(response => {
-            console.log(response)
+            let monitoring_logs_data = []
+            let to_local_data = []
             let counter = 0
-            if (response.length != 0) {
-              for (const [index, value] of response.entries()) {
+            if (responseJson.length != 0) {
+              for (const [index, value] of responseJson.entries()) {
                 let formatted_timestamp = this.formatDateTime(date = value.date)
                 monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
-                  <DataTable.Cell style={{ marginRight: 20 }}>{value.type_of_feature}</DataTable.Cell>
-                  <DataTable.Cell style={{ marginRight: 20 }}>{value.description}</DataTable.Cell>
-                  <DataTable.Cell style={{ marginRight: 20 }}>{value.name_of_feature}</DataTable.Cell>
-                  <DataTable.Cell style={{ marginRight: 20 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
+                  <DataTable.Cell style={{ paddingRight: 10 }}>{value.type_of_feature}</DataTable.Cell>
+                  <DataTable.Cell style={{ paddingRight: 10 }}>{value.description}</DataTable.Cell>
+                  <DataTable.Cell style={{ paddingRight: 10 }}>{value.name_of_feature}</DataTable.Cell>
+                  <DataTable.Cell style={{ paddingRight: 10 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
                   <DataTable.Cell>
                     <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                    <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon><Text>   </Text>
+                    <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.moms_id)}></Icon><Text>   </Text>
                     <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
                   </DataTable.Cell>
                 </DataTable.Row>)
+
+                counter += 1
+                to_local_data.push({
+                  moms_id: value.moms_id,
+                  local_storage_id: counter,
+                  sync_status: 3,
+                  type_of_feature: value.type_of_feature,
+                  description: value.description,
+                  name_of_feature: value.name_of_feature,
+                  date: value.date
+                })
               }
+              Storage.removeItem("SurficialDataMomsSummary")
+              Storage.setItem("SurficialDataMomsSummary", to_local_data)
             } else {
               monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
                 <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
@@ -361,10 +362,41 @@ export default class MonitoringLogs extends Component {
             }
             this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
             this.tablePaginate(monitoring_logs_data)
+
+
+          })
+          .catch((error) => {
+            let data_container = Storage.getItem('SurficialDataMomsSummary')
+            let monitoring_logs_data = [];
+            data_container.then(response => {
+              console.log(response)
+              let counter = 0
+              if (response.length != 0) {
+                for (const [index, value] of response.entries()) {
+                  let formatted_timestamp = this.formatDateTime(date = value.date)
+                  monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
+                    <DataTable.Cell style={{ marginRight: 20 }}>{value.type_of_feature}</DataTable.Cell>
+                    <DataTable.Cell style={{ marginRight: 20 }}>{value.description}</DataTable.Cell>
+                    <DataTable.Cell style={{ marginRight: 20 }}>{value.name_of_feature}</DataTable.Cell>
+                    <DataTable.Cell style={{ marginRight: 20 }}>{formatted_timestamp["text_format_timestamp"]}</DataTable.Cell>
+                    <DataTable.Cell>
+                      <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+                      <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon><Text>   </Text>
+                      <Icon name="ios-share-alt" style={{ color: "#083451" }} onPress={() => this.raiseAlert(value)}><Text style={{ fontSize: 5 }}>Raise</Text></Icon>
+                    </DataTable.Cell>
+                  </DataTable.Row>)
+                }
+              } else {
+                monitoring_logs_data.push(<DataTable.Row style={{ width: 600 }}>
+                  <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+                </DataTable.Row>)
+              }
+              this.setState({ monitoring_logs_data: monitoring_logs_data, spinner: false })
+              this.tablePaginate(monitoring_logs_data)
+            });
           });
-        });
       }, 3000)
-      
+
     });
 
   }
@@ -413,7 +445,7 @@ export default class MonitoringLogs extends Component {
         </View>
         <View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-            <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('save_surficial_data')}>
+            <TouchableOpacity style={defaults.button} onPress={() => this.addLog()}>
               <Text style={defaults.buttonText}>Add Log</Text>
             </TouchableOpacity>
           </View>

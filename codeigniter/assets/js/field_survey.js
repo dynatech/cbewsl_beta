@@ -6,7 +6,7 @@ $(document).ready(function () {
 
 function getAllFieldSurvey() {
     $.ajax({
-        url: "http://192.168.150.10:5000/api/field_survey/get_all_field_survey",
+        url: "http://192.168.8.101:5000/api/field_survey/get_all_field_survey",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -81,7 +81,7 @@ function deleteFieldSurveyConfirmation(data) {
 }
 
 function deleteFieldSurvey(field_survey_id) {
-    let url = "http://192.168.150.10:5000/api/field_survey/delete_field_survey";
+    let url = "http://192.168.8.101:5000/api/field_survey/delete_field_survey";
     let data = {
         "field_survey_id": field_survey_id
     }
@@ -179,7 +179,7 @@ function sendFieldSurveyViaEmail(date) {
 
     $("#confirm_send_field_survey").unbind();
     $("#confirm_send_field_survey").click(function () {
-        let url = "http://192.168.150.10:5000/api/field_survey/send_email";
+        let url = "http://192.168.8.101:5000/api/field_survey/send_email";
         let data = {
             date: date,
             email: $("#email_for_field_survey").val()
@@ -210,7 +210,7 @@ function setFieldSurveyDataForm(data) {
 
 function fieldSurveyButtonAction() {
     $("#add_field_survey").click(function () {
-        let url = "http://192.168.150.10:5000/api/field_survey/save_field_survey";
+        let url = "http://192.168.8.101:5000/api/field_survey/save_field_survey";
         let data = {
             field_survey_id: $("#field_survey_id").val(),
             features: $("#features").val(),
