@@ -66,7 +66,7 @@ export default class SaveSituationReport extends Component {
             pdf_path,
             image_path } = this.state
         if (summary != "") {
-            fetch('http://192.168.8.100:5000/api/situation_report/save_situation_report', {
+            fetch('http://192.168.8.101:5000/api/situation_report/save_situation_report', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

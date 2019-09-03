@@ -90,7 +90,7 @@ export default class SaveFieldSurveyLogs extends Component {
             note,
             date } = this.state
         if (features != "" && mat_characterization != "" && mechanism != "" && exposure != "" && note != "") {
-            fetch('http://192.168.8.100:5000/api/field_survey/save_field_survey', {
+            fetch('http://192.168.8.101:5000/api/field_survey/save_field_survey', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -153,14 +153,14 @@ export default class SaveFieldSurveyLogs extends Component {
                                 Storage.removeItem("FieldSurveyLatestReportSummary")
                                 Storage.setItem("FieldSurveyLatestReportSummary", [data])
                             }
-                            this.setState({spinner: true});
-                            setTimeout(()=> {
+                            this.setState({ spinner: true });
+                            setTimeout(() => {
                                 this.props.navigation.navigate('field_survery_logs');
                             }, 1000)
-                            
+
                         });
                     } else {
-                        this.setState({spinner: true});
+                        this.setState({ spinner: true });
                         ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
                     }
                 })
@@ -252,10 +252,10 @@ export default class SaveFieldSurveyLogs extends Component {
                             Storage.setItem("FieldSurveyLogs", updated_data)
                             ToastAndroid.show('Successfully updated an entry!', ToastAndroid.LONG)
                         }
-                        this.setState({spinner: true});
-                        setTimeout(()=> {
+                        this.setState({ spinner: true });
+                        setTimeout(() => {
                             this.props.navigation.navigate('field_survery_logs');
-                        },1000)
+                        }, 1000)
                     });
                 });
         } else {

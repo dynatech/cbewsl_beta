@@ -4,7 +4,7 @@ const Network = {
     getPing: async function (keys) {
         let ret_val = {}
         try {
-            const ms = await Ping.start('192.168.8.100', { timeout: 1000 });
+            const ms = await Ping.start('192.168.8.101', { timeout: 1000 });
             ret_val = {
                 status: 'Active',
                 latency: ms + "ms",

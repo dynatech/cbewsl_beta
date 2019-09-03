@@ -82,7 +82,7 @@ export default class SituationLogs extends Component {
 
     Sync.clientToServer("SituationReportLogs").then(() => {
       setTimeout(() => {
-        fetch('http://192.168.8.100:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
+        fetch('http://192.168.8.101:5000/api/situation_report/get_all_situation_report').then((response) => response.json())
           .then((responseJson) => {
             let to_local_data = [];
             for (const [index, value] of responseJson.entries()) {
@@ -175,7 +175,7 @@ export default class SituationLogs extends Component {
           },
           {
             text: 'Yes', onPress: () => {
-              fetch('http://192.168.8.100:5000/api/situation_report/delete_situation_report', {
+              fetch('http://192.168.8.101:5000/api/situation_report/delete_situation_report', {
                 method: 'POST',
                 headers: {
                   Accept: 'application/json',
@@ -213,7 +213,7 @@ export default class SituationLogs extends Component {
     let selected_date = this.formatDateTime(date = date);
     button_text = "Add Report for " + selected_date["text_date_format"];
     this.setState({ add_report_text: button_text })
-    fetch('http://192.168.8.100:5000/api/situation_report/get_report_by_date', {
+    fetch('http://192.168.8.101:5000/api/situation_report/get_report_by_date', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

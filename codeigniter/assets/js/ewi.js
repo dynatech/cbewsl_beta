@@ -10,7 +10,7 @@ function getCandidateAndLatestAlerts() {
     $("#ewi_lowering_details").hide();
     $("#extended_column").hide();
     $.ajax({
-        url: "http://192.168.8.100:5000/api/monitoring/get_candidate_and_current_alerts",
+        url: "http://192.168.8.101:5000/api/monitoring/get_candidate_and_current_alerts",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -20,43 +20,72 @@ function getCandidateAndLatestAlerts() {
         let candidate_alerts = JSON.parse(json_data.candidate_alert);
         console.log(json_data)
         console.log(candidate_alerts)
+        $("#current_alert_buttons").hide();
         if (candidate_alerts.length != 0) {
-            $("#current_alert_buttons").hide();
-            if (json_data.leo.extended.length != 0) {
-                displayExtendedAlert(json_data.leo.extended, candidate_alerts);
-                $("#ewi_no_current_alert").hide();
-                $("#ewi_current_alert_container").show();
-            } else {
-                displayCandidateAlert(candidate_alerts);
-                $("#ewi_no_current_alert").show();
-                $("#ewi_current_alert_container").hide();
-            }
+            $("#no_candidate_alert").hide();
+            displayCandidateAlert(candidate_alerts);
         } else {
             $("#no_candidate_alert").show();
-            $("#candidate_alert_information").hide();
-            $("#current_alert_buttons").hide();
-            if (json_data.leo.latest.length != 0) {
-                displayLatestAlert(json_data.leo.latest, candidate_alerts);
-            } else {
-                if (json_data.leo.overdue.length != 0) {
-                    displayOverdueAlert(json_data.leo.overdue, candidate_alerts);
-                    $("#ewi_no_current_alert").hide();
-                    $("#ewi_current_alert_container").show();
-                } else {
-                    $("#ewi_no_current_alert").show();
-                    $("#ewi_current_alert_container").hide();
-                }
-
-                if (json_data.leo.extended.length != 0) {
-                    displayExtendedAlert(json_data.leo.extended, candidate_alerts);
-                    $("#ewi_no_current_alert").hide();
-                    $("#ewi_current_alert_container").show();
-                } else {
-                    $("#ewi_no_current_alert").show();
-                    $("#ewi_current_alert_container").hide();
-                }
-            }
         }
+
+        if (json_data.leo.latest.length != 0) {
+            displayLatestAlert(json_data.leo.latest, candidate_alerts);
+            $("#ewi_no_current_alert").hide();
+        } else {
+            $("#ewi_no_current_alert").show();
+        }
+
+        if (json_data.extended.latest.length != 0) {
+            displayExtendedAlert(json_data.leo.latest, candidate_alerts);
+            $("#ewi_no_current_alert").hide();
+        } else {
+            $("#ewi_no_current_alert").show();
+        }
+
+        if (json_data.overdue.latest.length != 0) {
+            displayOverdueAlert(json_data.leo.latest, candidate_alerts);
+            $("#ewi_no_current_alert").hide();
+        } else {
+            $("#ewi_no_current_alert").show();
+        }
+
+        // if (candidate_alerts.length != 0) {
+        //     $("#current_alert_buttons").hide();
+        //     if (json_data.leo.extended.length != 0) {
+        //         displayExtendedAlert(json_data.leo.extended, candidate_alerts);
+        //         $("#ewi_no_current_alert").hide();
+        //         $("#ewi_current_alert_container").show();
+        //     } else {
+        //         displayCandidateAlert(candidate_alerts);
+        //         $("#ewi_no_current_alert").show();
+        //         $("#ewi_current_alert_container").hide();
+        //     }
+        // } else {
+        //     $("#no_candidate_alert").show();
+        //     $("#candidate_alert_information").hide();
+        //     $("#current_alert_buttons").hide();
+        //     if (json_data.leo.latest.length != 0) {
+        //         displayLatestAlert(json_data.leo.latest, candidate_alerts);
+        //     } else {
+        //         if (json_data.leo.overdue.length != 0) {
+        //             displayOverdueAlert(json_data.leo.overdue, candidate_alerts);
+        //             $("#ewi_no_current_alert").hide();
+        //             $("#ewi_current_alert_container").show();
+        //         } else {
+        //             $("#ewi_no_current_alert").show();
+        //             $("#ewi_current_alert_container").hide();
+        //         }
+
+        //         if (json_data.leo.extended.length != 0) {
+        //             displayExtendedAlert(json_data.leo.extended, candidate_alerts);
+        //             $("#ewi_no_current_alert").hide();
+        //             $("#ewi_current_alert_container").show();
+        //         } else {
+        //             $("#ewi_no_current_alert").show();
+        //             $("#ewi_current_alert_container").hide();
+        //         }
+        //     }
+        // }
 
     });
 }
@@ -111,7 +140,7 @@ function displayExtendedAlert(extended_data, candidate_alerts) {
     $("#validity_column").hide();
     $("#ewi_alert_symbol").empty().append("Alert 0");
     $("#extended_column").show();
-    let day_of_extended = "Day " + extended_data[0].day + " of extended monitoring";
+    let day_of_extended = "Day " + extended_data[0].day + " of Extended monitoring";
     let latest_release = extended_data[0].releases[0].release_time;
     let data_ts = formatDateTime(extended_data[0].releases[0].data_ts);
     let formatted_latest_release = moment(latest_release, 'HH:mm').format('h:mm A');
@@ -125,7 +154,7 @@ function displayExtendedAlert(extended_data, candidate_alerts) {
 
 function updateEwiData() {
     return $.ajax({
-        url: "http://192.168.8.100:5000/api/monitoring/get_candidate_and_current_alerts",
+        url: "http://192.168.8.101:5000/api/monitoring/get_candidate_and_current_alerts",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -165,7 +194,9 @@ function displayCandidateAlert(candidate_alerts) {
         $("#no_candidate_alert").hide();
         $("#candidate_alert_information").show();
     } else {
-        $("#no_candidate_alert").show();
+        if (candidate_alerts[0].trigger_list_arr.length == 0) {
+            $("#no_candidate_alert").show();
+        }
         $("#candidate_alert_information").hide();
         let alert_level = candidate_alerts[0].public_alert_level;
         if (alert_level == 0) {
@@ -180,7 +211,7 @@ function displayCandidateAlert(candidate_alerts) {
                 candidate_alerts.done(function (data) {
                     let json_data = JSON.parse(data);
                     candidate_alerts = JSON.parse(json_data.candidate_alert);
-                    let url = 'http://192.168.8.100:5000/api/monitoring/format_candidate_alerts_for_insert'
+                    let url = 'http://192.168.8.101:5000/api/monitoring/format_candidate_alerts_for_insert'
                     fetch(url, {
                         method: 'POST',
                         dataType: 'jsonp',
@@ -225,7 +256,7 @@ function alertValidation(trigger_id, valid, user_id, candidate_alerts, alert_dat
     $("#save_alert_validation").unbind();
     $("#save_alert_validation").click(function () {
 
-        let url = "http://192.168.8.100:5000/api/monitoring/update_alert_status"
+        let url = "http://192.168.8.101:5000/api/monitoring/update_alert_status"
         let remarks = $("#alert_remarks").val();
 
         fetch(url, {
@@ -293,7 +324,7 @@ function formatCandidateAlerts(trigger_id) {
 
         $("#confirm_release_alert").unbind();
         $("#confirm_release_alert").click(function () {
-            let url = 'http://192.168.8.100:5000/api/monitoring/format_candidate_alerts_for_insert'
+            let url = 'http://192.168.8.101:5000/api/monitoring/format_candidate_alerts_for_insert'
             fetch(url, {
                 method: 'POST',
                 dataType: 'jsonp',
@@ -328,7 +359,7 @@ function onClickReleaseExtended() {
             candidate_alerts = JSON.parse(json_data.candidate_alert);
             let leo = json_data.leo;
             if (leo.latest.length != 0) {
-                let url = 'http://192.168.8.100:5000/api/monitoring/format_candidate_alerts_for_insert'
+                let url = 'http://192.168.8.101:5000/api/monitoring/format_candidate_alerts_for_insert'
                 fetch(url, {
                     method: 'POST',
                     dataType: 'jsonp',
@@ -352,7 +383,7 @@ function onClickReleaseExtended() {
 }
 
 function releaseAlert(release_data) {
-    let url = 'http://192.168.8.100:5000/api/monitoring/insert_ewi';
+    let url = 'http://192.168.8.101:5000/api/monitoring/insert_ewi';
     fetch(url, {
         method: 'POST',
         dataType: 'jsonp',
@@ -367,7 +398,7 @@ function releaseAlert(release_data) {
 }
 
 function publicAlert(is_onset = false) {
-    let url = 'http://192.168.8.100:5000/api/monitoring/update_alert_gen/' + is_onset;
+    let url = 'http://192.168.8.101:5000/api/monitoring/update_alert_gen/' + is_onset;
     fetch(url).then((response) => response.json())
         .then((responseJson) => {
 
@@ -409,9 +440,6 @@ function formatTriggerToText(trigger, ts) {
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
         .append('<br><input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
     sendEwiToEmail();
-
-
-
     $("#confirm_release_ewi").unbind();
     $("#confirm_release_ewi").click(function () {
         $("#confirmReleaseModal").modal("show");
@@ -426,7 +454,7 @@ function formatTriggerToText(trigger, ts) {
             let leo = json_data.leo;
             console.log(json_data);
             if (leo.latest.length != 0) {
-                let url = 'http://192.168.8.100:5000/api/monitoring/format_candidate_alerts_for_insert'
+                let url = 'http://192.168.8.101:5000/api/monitoring/format_candidate_alerts_for_insert'
                 fetch(url, {
                     method: 'POST',
                     dataType: 'jsonp',
@@ -453,7 +481,7 @@ function formatTriggerToText(trigger, ts) {
 }
 
 function sendEwiToEmail() {
-    $("#ewi_send_to_email").hide();
+    // $("#ewi_send_to_email").hide();
     $("#ewi_send_to_email").unbind();
     $("#ewi_send_to_email").click(function () {
         $("#sendEwiToEmailModal").modal("show");
@@ -461,7 +489,7 @@ function sendEwiToEmail() {
 
     $("#confirm_send_ewi").click(function () {
         let email = $("#email_for_ewi").val();
-        let url = "http://192.168.8.100:5000/api/ewi/send_ewi_via_email";
+        let url = "http://192.168.8.101:5000/api/ewi/send_ewi_via_email";
         let data = {
             email: email
         }
