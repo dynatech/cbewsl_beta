@@ -20,7 +20,8 @@ export default class FieldSurveyLogs extends Component {
       field_logs_data_paginate: [],
       page: 0,
       number_of_pages: 0,
-      spinner: true
+      spinner: true,
+      role_id: 0
     };
   }
 
@@ -36,25 +37,37 @@ export default class FieldSurveyLogs extends Component {
   }
 
   updateLog(field_survey_logs_data) {
-    this.props.navigation.navigate('save_field_survey_logs', {
-      data: field_survey_logs_data
-    })
+    role_id = this.state.role_id;
+    if (role_id == 1) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
+    } else {
+      this.props.navigation.navigate('save_field_survey_logs', {
+        data: field_survey_logs_data
+      });
+    }
+
   }
 
   removeConfirmation(id) {
-    Alert.alert(
-      'Confirmation',
-      'Are you sure do you want to delete ?',
-      [
-        {
-          text: 'No',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        { text: 'Yes', onPress: () => this.removeLog(id) },
-      ],
-      { cancelable: false },
-    );
+    role_id = this.state.role_id;
+    if (role_id == 1) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
+    } else {
+      Alert.alert(
+        'Confirmation',
+        'Are you sure do you want to delete ?',
+        [
+          {
+            text: 'No',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'Yes', onPress: () => this.removeLog(id) },
+        ],
+        { cancelable: false },
+      );
+    }
+
   }
 
   removeLog(id) {
@@ -77,7 +90,7 @@ export default class FieldSurveyLogs extends Component {
         } else {
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
         }
-        this.setState({spinner: false})
+        this.setState({ spinner: false })
       })
       .catch((error) => {
         let offline_data = Storage.getItem("FieldSurveyLogs");
@@ -105,7 +118,7 @@ export default class FieldSurveyLogs extends Component {
         });
 
         this.getAllFieldSurveyLogs();
-        this.setState({spinner: false})
+        this.setState({ spinner: false })
       });
   }
 
@@ -130,65 +143,45 @@ export default class FieldSurveyLogs extends Component {
 
 
   getAllFieldSurveyLogs() {
+    let credentials = Storage.getItem("loginCredentials");
+    credentials.then(response => {
+      let role_id = response.role_id;
+      this.setState({ role_id: role_id });
+    });
     Notification.endOfValidity();
-    this.setState({spinner: true});
+    this.setState({ spinner: true });
     Sync.clientToServer("FieldSurveyLogs").then(() => {
-      setTimeout(()=> {
+      setTimeout(() => {
         fetch('http://192.168.150.10:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
-        .then((responseJson) => {
-          let field_logs = [];
-          let to_local_data = [];
-          let counter = 0
-          if (responseJson.length != 0) {
-            for (const [index, value] of responseJson.entries()) {
-              let format_date_time = this.formatDateTime(date = value.date);
-              field_logs.push(<DataTable.Row style={{ width: 500 }}>
-                <DataTable.Cell style={{ marginRight: -90 }}><Text style={{ fontSize: 10 }}>{format_date_time["text_format_timestamp"]}</Text></DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: 10 }}>Field Survey Report {value.date.split(' ')[0]}</DataTable.Cell>
-                <DataTable.Cell style={{ marginRight: -190 }}>
-                  <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                  <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.field_survey_id)}></Icon>
-                </DataTable.Cell>
-              </DataTable.Row>)
-              counter += 1
-              to_local_data.push({
-                field_survey_id: value.field_survey_id,
-                local_storage_id: counter,
-                sync_status: 3,
-                mat_characterization: value.mat_characterization,
-                mechanism: value.mechanism,
-                exposure: value.exposure,
-                note: value.note,
-                date: value.date,
-              });
-            }
-            Storage.removeItem("FieldSurveyLogs")
-            Storage.setItem("FieldSurveyLogs", to_local_data)
-          } else {
-            field_logs.push(<DataTable.Row style={{ width: 500 }}>
-              <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
-            </DataTable.Row>)
-          }
-          this.setState({ field_logs: field_logs, spinner: false })
-          this.tablePaginate(field_logs)
-        })
-        .catch((error) => {
-          let data_container = Storage.getItem('FieldSurveyLogs')
-          let field_logs = [];
-          data_container.then(response => {
-            console.log(response)
-            if (response != null) {
-              for (const [index, value] of response.entries()) {
+          .then((responseJson) => {
+            let field_logs = [];
+            let to_local_data = [];
+            let counter = 0
+            if (responseJson.length != 0) {
+              for (const [index, value] of responseJson.entries()) {
                 let format_date_time = this.formatDateTime(date = value.date);
                 field_logs.push(<DataTable.Row style={{ width: 500 }}>
-                  <DataTable.Cell style={{ marginRight: -90 }}>{format_date_time["text_format_timestamp"]}</DataTable.Cell>
-                  <DataTable.Cell style={{ marginRight: 10 }}>Field Survey Report {value.date}</DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: -90 }}><Text style={{ fontSize: 10 }}>{format_date_time["text_format_timestamp"]}</Text></DataTable.Cell>
+                  <DataTable.Cell style={{ marginRight: 10 }}>Field Survey Report {value.date.split(' ')[0]}</DataTable.Cell>
                   <DataTable.Cell style={{ marginRight: -190 }}>
                     <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
-                    <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon>
+                    <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.field_survey_id)}></Icon>
                   </DataTable.Cell>
                 </DataTable.Row>)
+                counter += 1
+                to_local_data.push({
+                  field_survey_id: value.field_survey_id,
+                  local_storage_id: counter,
+                  sync_status: 3,
+                  mat_characterization: value.mat_characterization,
+                  mechanism: value.mechanism,
+                  exposure: value.exposure,
+                  note: value.note,
+                  date: value.date,
+                });
               }
+              Storage.removeItem("FieldSurveyLogs")
+              Storage.setItem("FieldSurveyLogs", to_local_data)
             } else {
               field_logs.push(<DataTable.Row style={{ width: 500 }}>
                 <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
@@ -196,10 +189,35 @@ export default class FieldSurveyLogs extends Component {
             }
             this.setState({ field_logs: field_logs, spinner: false })
             this.tablePaginate(field_logs)
+          })
+          .catch((error) => {
+            let data_container = Storage.getItem('FieldSurveyLogs')
+            let field_logs = [];
+            data_container.then(response => {
+              console.log(response)
+              if (response != null) {
+                for (const [index, value] of response.entries()) {
+                  let format_date_time = this.formatDateTime(date = value.date);
+                  field_logs.push(<DataTable.Row style={{ width: 500 }}>
+                    <DataTable.Cell style={{ marginRight: -90 }}>{format_date_time["text_format_timestamp"]}</DataTable.Cell>
+                    <DataTable.Cell style={{ marginRight: 10 }}>Field Survey Report {value.date}</DataTable.Cell>
+                    <DataTable.Cell style={{ marginRight: -190 }}>
+                      <Icon name="md-create" style={{ color: "blue" }} onPress={() => this.updateLog(value)}></Icon><Text>   </Text>
+                      <Icon name="ios-trash" style={{ color: "red" }} onPress={() => this.removeConfirmation(value.local_storage_id)}></Icon>
+                    </DataTable.Cell>
+                  </DataTable.Row>)
+                }
+              } else {
+                field_logs.push(<DataTable.Row style={{ width: 500 }}>
+                  <DataTable.Cell style={{ marginRight: 10 }}>No data</DataTable.Cell>
+                </DataTable.Row>)
+              }
+              this.setState({ field_logs: field_logs, spinner: false })
+              this.tablePaginate(field_logs)
+            });
           });
-        });
       }, 3000)
-      
+
     });
 
   }

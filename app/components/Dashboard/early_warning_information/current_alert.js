@@ -99,8 +99,15 @@ export default class CurrentAlert extends Component {
 
       if (extended.length != 0) {
         // INSERT EXTENDED
-        console.log("EXTENDED")
         console.log(extended[0])
+        let day_of_extended = "Day " + extended[0].day + " of extended monitoring";
+        let latest_release = extended[0].releases[0].release_time;
+        let data_ts = formatDateTime(extended[0].releases[0].data_ts);
+        let latest_release_text = data_ts["date_only_format"] + " " + latest_release;
+        console.log(day_of_extended)
+        console.log(latest_release)
+        console.log(data_ts)
+        console.log(latest_release_text)
       }
 
       if (overdue.length != 0) {
@@ -153,7 +160,7 @@ export default class CurrentAlert extends Component {
       }
 
       this.setState({ alert_details: view })
-      this.setState({spinner: false})
+      this.setState({ spinner: false })
     })
   }
 
