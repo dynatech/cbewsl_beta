@@ -64,7 +64,7 @@ export default class MainDashboard extends Component {
                 Linking.openURL(`sms:?addresses=null&body=`);
                 break;
             case 'situation_report':
-                this.props.navigation.navigate('situationReport')
+                this.props.navigation.navigate('situationReport');
                 break;
             default:
                 console.info("Invalid menu... skipping...")

@@ -43,7 +43,7 @@ export default class FieldSurveyLogs extends Component {
     } else {
       this.props.navigation.navigate('save_field_survey_logs', {
         data: field_survey_logs_data
-      })
+      });
     }
 
   }
@@ -152,11 +152,10 @@ export default class FieldSurveyLogs extends Component {
 
 
   getAllFieldSurveyLogs() {
-    let credentials = Storage.getItem("loginCredentials")
+    let credentials = Storage.getItem("loginCredentials");
     credentials.then(response => {
-      console.log(response)
       let role_id = response.role_id;
-      this.setState({ role_id: role_id })
+      this.setState({ role_id: role_id });
     });
     Notification.endOfValidity();
     this.setState({ spinner: true });
