@@ -196,7 +196,7 @@ export default class DataSyncer extends Component {
       "SensorMaintenanceLogs": "http://192.168.150.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs",
       "Pub&CandidAlert": "9"
     }
-    console.log("hereee")
+
     let url = API_LIST[storage_key];
     this.setState({ spinner: true });
     let data = Storage.getItem(storage_key);
