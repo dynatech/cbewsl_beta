@@ -13,6 +13,7 @@ let specialElementHandlers = {
 };
 $(document).ready(function () {
     reportData();
+    logout();
 });
 function formatDateTime(date = null) {
     let timestamp = date
@@ -83,6 +84,13 @@ function reportData() {
     });
 }
 
+function logout() {
+    $("#logout").on("click", function () {
+        fetch('http://192.168.8.101:5000/dashboard/unregister_session').then(function (response) {
+            console.log(response)
+        });
+    })
+}
 
 function printData(data) {
     let logs = data.logs
@@ -116,7 +124,7 @@ function printData(data) {
             alert("No data.");
         }
     } else if (logs == "field_survey") {
-        if (FIELD_SURVEY_LOG_DATA.length != 0) {
+        if (FIELD_SURVEY_LOG_DATA != 0) {
             printJS({
                 printable: FIELD_SURVEY_LOG_DATA,
                 type: 'json',
@@ -202,9 +210,9 @@ function printData(data) {
                 type: 'json',
                 properties: [
                     { field: 'features', displayName: 'Features' },
-                    { field: 'mat_characterization', displayName: 'Material Characterization' },
-                    { field: 'mechanism', displayName: 'Mechanism' },
-                    { field: 'exposure', displayName: 'Exposure' },
+                    { field: 'mat_characterizationreportData', displayName: 'Material Characterization' },
+                    { field: 'mechanism', displayNreportDataame: 'Mechanism' },
+                    { field: 'exposure', displayNareportDatame: 'Exposure' },
                     { field: 'note', displayName: 'Note' },
                     { field: 'date', displayName: 'Date' }
                 ],
