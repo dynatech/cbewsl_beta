@@ -57,7 +57,7 @@ export default class CurrentSituationReport extends Component {
 
   getLatestSituationReport() {
     Notification.endOfValidity();
-    fetch('http://192.168.150.10:5000/api/situation_report/get_latest_situation_report_data').then((response) => response.json())
+    fetch('http://192.168.8.100:5000/api/situation_report/get_latest_situation_report_data').then((response) => response.json())
       .then((responseJson) => {
         let to_local_data = [];
         for (const [index, value] of responseJson.entries()) {

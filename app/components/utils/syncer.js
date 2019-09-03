@@ -4,7 +4,7 @@ import { Alert, ToastAndroid } from 'react-native';
 
 const Sync = {
     serverToClient: async function (storage_key = "") {
-        const DOCROOT = 'http://192.168.150.10:5000'
+        const DOCROOT = 'http://192.168.8.100:5000'
         let KEYS_N_API = [
             { 'Pub&CandidAlert': DOCROOT + '/api/monitoring/get_candidate_and_current_alerts' },
             { 'FieldSurveyLogs': DOCROOT + '/api/field_survey/get_all_field_survey' },
@@ -215,16 +215,16 @@ const Sync = {
     },
     clientToServer: async function (storage_key) {
         const API_LIST = {
-            "RiskAssessmentSummary": "http://192.168.150.10:5000/api/risk_assesment_summary/save_risk_assessment_summary",
-            "RiskAssessmentFamilyRiskProfile": "http://192.168.150.10:5000/api/family_profile/save_family_profile",
-            "RiskAssessmentHazardData": "http://192.168.150.10:5000/api/hazard_data/save_hazard_data",
-            "RiskAssessmentRNC": "http://192.168.150.10:5000/api/resources_and_capacities/save_resources_and_capacities",
-            "FieldSurveyLogs": "http://192.168.150.10:5000/api/field_survey/save_field_survey",
+            "RiskAssessmentSummary": "http://192.168.8.100:5000/api/risk_assesment_summary/save_risk_assessment_summary",
+            "RiskAssessmentFamilyRiskProfile": "http://192.168.8.100:5000/api/family_profile/save_family_profile",
+            "RiskAssessmentHazardData": "http://192.168.8.100:5000/api/hazard_data/save_hazard_data",
+            "RiskAssessmentRNC": "http://192.168.8.100:5000/api/resources_and_capacities/save_resources_and_capacities",
+            "FieldSurveyLogs": "http://192.168.8.100:5000/api/field_survey/save_field_survey",
             "SurficialDataMeasurements": "6",
-            "SurficialDataMomsSummary": "http://192.168.150.10:5000/api/surficial_data/save_monitoring_log",
-            "SensorMaintenanceLogs": "http://192.168.150.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs",
+            "SurficialDataMomsSummary": "http://192.168.8.100:5000/api/surficial_data/save_monitoring_log",
+            "SensorMaintenanceLogs": "http://192.168.8.100:5000/api/sensor_maintenance/save_sensor_maintenance_logs",
             "Pub&CandidAlert": "9",
-            "SituationReportLogs": "http://192.168.150.10:5000/api/situation_report/save_situation_report"
+            "SituationReportLogs": "http://192.168.8.100:5000/api/situation_report/save_situation_report"
         }
         let url = API_LIST[storage_key];
         let data = Storage.getItem(storage_key);

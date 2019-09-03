@@ -90,7 +90,7 @@ export default class SaveFieldSurveyLogs extends Component {
             note,
             date } = this.state
         if (features != "" && mat_characterization != "" && mechanism != "" && exposure != "" && note != "") {
-            fetch('http://192.168.150.10:5000/api/field_survey/save_field_survey', {
+            fetch('http://192.168.8.100:5000/api/field_survey/save_field_survey', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

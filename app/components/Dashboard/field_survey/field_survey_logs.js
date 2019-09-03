@@ -72,7 +72,7 @@ export default class FieldSurveyLogs extends Component {
 
   removeLog(id) {
     Notification.endOfValidity();
-    fetch('http://192.168.150.10:5000/api/field_survey/delete_field_survey', {
+    fetch('http://192.168.8.100:5000/api/field_survey/delete_field_survey', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -122,6 +122,15 @@ export default class FieldSurveyLogs extends Component {
       });
   }
 
+  addLog() {
+    role_id = this.state.role_id;
+    if (role_id == 1) {
+      Alert.alert('Access denied', 'Unable to access this feature.');
+    } else {
+      this.props.navigation.navigate('save_field_survey_logs')
+    }
+  }
+
   formatDateTime(date = null) {
     let timestamp = date
     let current_timestamp = ""
@@ -152,7 +161,7 @@ export default class FieldSurveyLogs extends Component {
     this.setState({ spinner: true });
     Sync.clientToServer("FieldSurveyLogs").then(() => {
       setTimeout(() => {
-        fetch('http://192.168.150.10:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
+        fetch('http://192.168.8.100:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
           .then((responseJson) => {
             let field_logs = [];
             let to_local_data = [];
@@ -295,7 +304,7 @@ export default class FieldSurveyLogs extends Component {
         </ScrollView>
         <View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-            <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('save_field_survey_logs')}>
+            <TouchableOpacity style={defaults.button} onPress={() => this.addLog()}>
               <Text style={defaults.buttonText}>Add Log</Text>
             </TouchableOpacity>
           </View>

@@ -168,7 +168,7 @@ export default class DataSyncer extends Component {
     // this.setState({ storage_key: storage_key })
     // data.then(response => {
     //   console.log(response)
-    //   fetch('http://192.168.150.10:5000/api/monitoring/insert_cbewsl_ewi', {
+    //   fetch('http://192.168.8.100:5000/api/monitoring/insert_cbewsl_ewi', {
     //       method: 'POST',
     //       headers: {
     //           Accept: 'application/json',
@@ -186,14 +186,14 @@ export default class DataSyncer extends Component {
   networkSync(storage_key) {
 
     const API_LIST = {
-      "RiskAssessmentSummary": "http://192.168.150.10:5000/api/risk_assesment_summary/save_risk_assessment_summary",
-      "RiskAssessmentFamilyRiskProfile": "http://192.168.150.10:5000/api/family_profile/save_family_profile",
-      "RiskAssessmentHazardData": "http://192.168.150.10:5000/api/hazard_data/save_hazard_data",
-      "RiskAssessmentRNC": "http://192.168.150.10:5000/api/resources_and_capacities/save_resources_and_capacities",
-      "FieldSurveyLogs": "http://192.168.150.10:5000/api/field_survey/save_field_survey",
+      "RiskAssessmentSummary": "http://192.168.8.100:5000/api/risk_assesment_summary/save_risk_assessment_summary",
+      "RiskAssessmentFamilyRiskProfile": "http://192.168.8.100:5000/api/family_profile/save_family_profile",
+      "RiskAssessmentHazardData": "http://192.168.8.100:5000/api/hazard_data/save_hazard_data",
+      "RiskAssessmentRNC": "http://192.168.8.100:5000/api/resources_and_capacities/save_resources_and_capacities",
+      "FieldSurveyLogs": "http://192.168.8.100:5000/api/field_survey/save_field_survey",
       "SurficialDataMeasurements": "6",
-      "SurficialDataMomsSummary": "http://192.168.150.10:5000/api/surficial_data/save_monitoring_log",
-      "SensorMaintenanceLogs": "http://192.168.150.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs",
+      "SurficialDataMomsSummary": "http://192.168.8.100:5000/api/surficial_data/save_monitoring_log",
+      "SensorMaintenanceLogs": "http://192.168.8.100:5000/api/sensor_maintenance/save_sensor_maintenance_logs",
       "Pub&CandidAlert": "9"
     }
     console.log("hereee")
