@@ -50,7 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['api/register_session'] = 'home/registerSession';
-
+$router['api/unregister_session'] = 'dashboard/unregisterSession';
 $route['default_controller'] = 'home';
 $route['dashboard'] = 'dashboard';
 $route['404_override'] = '';

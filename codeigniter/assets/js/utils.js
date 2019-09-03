@@ -86,7 +86,7 @@ function reportData() {
 
 function logout() {
     $("#logout").on("click", function () {
-        fetch('http://192.168.8.101:5000/dashboard/unregister_session').then(function (response) {
+        fetch('http://192.168.8.101:5000/api/unregister_session').then(function (response) {
             console.log(response)
         });
     })
