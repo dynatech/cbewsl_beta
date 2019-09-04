@@ -10,7 +10,7 @@ function getCandidateAndLatestAlerts() {
     $("#ewi_lowering_details").hide();
     $("#extended_column").hide();
     $.ajax({
-        url: "http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts",
+        url: "http://192.168.1.10:5000/api/monitoring/get_candidate_and_current_alerts",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -154,7 +154,7 @@ function displayExtendedAlert(extended_data, candidate_alerts) {
 
 function updateEwiData() {
     return $.ajax({
-        url: "http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts",
+        url: "http://192.168.1.10:5000/api/monitoring/get_candidate_and_current_alerts",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -210,7 +210,7 @@ function displayCandidateAlert(candidate_alerts) {
                 candidate_alerts.done(function (data) {
                     let json_data = JSON.parse(data);
                     candidate_alerts = JSON.parse(json_data.candidate_alert);
-                    let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+                    let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
                     fetch(url, {
                         method: 'POST',
                         dataType: 'jsonp',
@@ -255,7 +255,7 @@ function alertValidation(trigger_id, valid, user_id, candidate_alerts, alert_dat
     $("#save_alert_validation").unbind();
     $("#save_alert_validation").click(function () {
 
-        let url = "http://192.168.150.10:5000/api/monitoring/update_alert_status"
+        let url = "http://192.168.1.10:5000/api/monitoring/update_alert_status"
         let remarks = $("#alert_remarks").val();
 
         fetch(url, {
@@ -323,7 +323,7 @@ function formatCandidateAlerts(trigger_id) {
 
         $("#confirm_release_alert").unbind();
         $("#confirm_release_alert").click(function () {
-            let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+            let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
             fetch(url, {
                 method: 'POST',
                 dataType: 'jsonp',
@@ -343,7 +343,7 @@ function formatCandidateAlerts(trigger_id) {
 
 function onClickReleaseExtended() {
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
-        .append('<br><input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
+        .append('&nbsp;<input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
     sendEwiToEmail();
     $("#confirm_release_ewi").unbind();
     $("#confirm_release_ewi").click(function () {
@@ -358,7 +358,7 @@ function onClickReleaseExtended() {
             candidate_alerts = JSON.parse(json_data.candidate_alert);
             let leo = json_data.leo;
             if (leo.latest.length != 0) {
-                let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+                let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
                 fetch(url, {
                     method: 'POST',
                     dataType: 'jsonp',
@@ -382,7 +382,7 @@ function onClickReleaseExtended() {
 }
 
 function releaseAlert(release_data) {
-    let url = 'http://192.168.150.10:5000/api/monitoring/insert_ewi';
+    let url = 'http://192.168.1.10:5000/api/monitoring/insert_ewi';
     fetch(url, {
         method: 'POST',
         dataType: 'jsonp',
@@ -397,7 +397,7 @@ function releaseAlert(release_data) {
 }
 
 function publicAlert(is_onset = false) {
-    let url = 'http://192.168.150.10:5000/api/monitoring/update_alert_gen/' + is_onset;
+    let url = 'http://192.168.1.10:5000/api/monitoring/update_alert_gen/' + is_onset;
     fetch(url).then((response) => response.json())
         .then((responseJson) => {
 
@@ -437,7 +437,7 @@ function formatTriggerToText(trigger, ts) {
 
 
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
-        .append('<br><input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
+        .append('&nbsp;<input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
     sendEwiToEmail();
     $("#confirm_release_ewi").unbind();
     $("#confirm_release_ewi").click(function () {
@@ -453,7 +453,7 @@ function formatTriggerToText(trigger, ts) {
             let leo = json_data.leo;
             console.log(json_data);
             if (leo.latest.length != 0) {
-                let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+                let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
                 fetch(url, {
                     method: 'POST',
                     dataType: 'jsonp',
@@ -488,7 +488,7 @@ function sendEwiToEmail() {
 
     $("#confirm_send_ewi").click(function () {
         let email = $("#email_for_ewi").val();
-        let url = "http://192.168.150.10:5000/api/ewi/send_ewi_via_email";
+        let url = "http://192.168.1.10:5000/api/ewi/send_ewi_via_email";
         let data = {
             email: email
         }

@@ -70,7 +70,7 @@ export default class Summary extends Component {
   getSurficialData() {
     Notification.endOfValidity();
     let line_colors = ['#7cb5ec', '#000000', '#8ce77d']
-    fetch('http://192.168.150.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
+    fetch('http://192.168.1.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
       .then((responseJson) => {
         Storage.removeItem("SurficialDataSummary")
         Storage.setItem("SurficialDataSummary", responseJson[0].surficial_data)
