@@ -9,7 +9,7 @@ const Notification = {
         this.fetchCandidateAlert()
         offline_data.then(response => {
             if (response == null || response == undefined) {
-                // fetch('http://192.168.150.10:5000/api/monitoring/get_latest_cbewls_release/50').then((response) => response.json())
+                // fetch('http://192.168.1.10:5000/api/monitoring/get_latest_cbewls_release/50').then((response) => response.json())
                 //     .then((responseJson) => {
                 //         console.log(responseJson)
                 //         let set_offline_data = Storage.setItem("Pub&CandidAlert", responseJson)
@@ -86,7 +86,7 @@ const Notification = {
         let offline_data = Storage.getItem("Pub&CandidAlert");
         offline_data.then(offline_response => {
             if (offline_response != null || offline_response != undefined) {
-                fetch('http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts').then((response) => response.json())
+                fetch('http://192.168.1.10:5000/api/monitoring/get_candidate_and_current_alerts').then((response) => response.json())
                     .then((online_data) => {
                         if (JSON.stringify(online_data) != JSON.stringify(offline_response)) {
                             Alert.alert(
@@ -101,7 +101,7 @@ const Notification = {
                         return
                     });
             } else {
-                fetch('http://192.168.150.10:5000/api/monitoring/get_candidate_and_current_alerts').then((response) => response.json())
+                fetch('http://192.168.1.10:5000/api/monitoring/get_candidate_and_current_alerts').then((response) => response.json())
                     .then((online_data) => {
                         Alert.alert(
                             'Notification',
@@ -116,7 +116,7 @@ const Notification = {
         });
     },
     validateAlert: async function (trigger_id, valid, remarks, user_id, candidate_alerts, flag = false) {
-        fetch('http://192.168.150.10:5000/api/monitoring/update_alert_status', {
+        fetch('http://192.168.1.10:5000/api/monitoring/update_alert_status', {
             method: 'POST',
             dataType: 'jsonp',
             headers: {
@@ -141,7 +141,7 @@ const Notification = {
             // console.log(error)
         });
     }, formatCandidateAlerts: async function (candidate_alerts) {
-        let url = 'http://192.168.150.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+        let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
         fetch(url, {
             method: 'POST',
             dataType: 'jsonp',
@@ -155,7 +155,7 @@ const Notification = {
             this.releaseAlert(release_data)
         });
     }, releaseAlert: async function (release_data) {
-        let url = 'http://192.168.150.10:5000/api/monitoring/insert_ewi';
+        let url = 'http://192.168.1.10:5000/api/monitoring/insert_ewi';
         fetch(url, {
             method: 'POST',
             dataType: 'jsonp',
@@ -169,7 +169,7 @@ const Notification = {
             this.fetchCandidateAlert();
         });
     }, updateAlertGen: async function () {
-        fetch('http://192.168.150.10:5000/api/monitoring/update_alert_gen/false').then((response) => response.json())
+        fetch('http://192.168.1.10:5000/api/monitoring/update_alert_gen/false').then((response) => response.json())
             .then((online_data) => {
                 console.log("Updating alert gen...")
                 if (online_data.status == true) {

@@ -23,7 +23,7 @@ export default class Login extends Component {
 
   validateCredentials() {
     const { username, password } = this.state
-    fetch('http://192.168.150.10:5000/api/login/validate_credentials', {
+    fetch('http://192.168.1.10:5000/api/login/validate_credentials', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

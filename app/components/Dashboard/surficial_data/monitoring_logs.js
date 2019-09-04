@@ -134,7 +134,7 @@ export default class MonitoringLogs extends Component {
   }
 
   removeLog(id) {
-    fetch('http://192.168.150.10:5000/api/moms_data/delete_moms_data', {
+    fetch('http://192.168.1.10:5000/api/moms_data/delete_moms_data', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -321,7 +321,7 @@ export default class MonitoringLogs extends Component {
 
     Sync.clientToServer("SurficialDataMomsSummary").then(() => {
       setTimeout(() => {
-        fetch('http://192.168.150.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
+        fetch('http://192.168.1.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
           .then((responseJson) => {
 
             let monitoring_logs_data = []
