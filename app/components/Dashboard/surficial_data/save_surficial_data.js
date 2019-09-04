@@ -225,7 +225,7 @@ export default class SaveSurficialData extends Component {
                         }, (completed, cancelled, error) => {
                             console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
                             if (completed == true) {
-                                fetch('http://192.168.8.101:5000/api/surficial_data/save_monitoring_log', {
+                                fetch('http://192.168.150.10:5000/api/surficial_data/save_monitoring_log', {
                                     method: 'POST',
                                     headers: {
                                         Accept: 'application/json',

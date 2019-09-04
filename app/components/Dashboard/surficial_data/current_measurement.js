@@ -61,7 +61,7 @@ export default class CurrentMeasurement extends Component {
 
   getSurficialCurrentMeasurement() {
     Notification.endOfValidity();
-    fetch('http://192.168.8.101:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
+    fetch('http://192.168.150.10:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
       .then((responseJson) => {
         let formmated_timestamp = this.formatDateTime(date = responseJson.current_measurement_date)
         let crack_sets = []

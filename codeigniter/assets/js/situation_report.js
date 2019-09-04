@@ -9,7 +9,7 @@ function initializeSituationReportCalendar() {
     $("#situation_report_calendar").empty();
     let situation_reports = [];
     $.ajax({
-        url: "http://192.168.8.101:5000/api/situation_report/get_all_situation_report",
+        url: "http://192.168.150.10:5000/api/situation_report/get_all_situation_report",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -99,32 +99,47 @@ function initializeSituationReportCalendar() {
 function generateSituationReportPDF(data) {
     $("#print_current_situation_report").unbind();
     $("#print_current_situation_report").click(function () {
-        let pageWidth = 8.5,
-            lineHeight = 1.2,
-            margin = 0.5,
-            maxLineWidth = pageWidth - margin * 2,
-            fontSize = 20,
-            ptsPerInch = 72,
-            oneLineHeight = fontSize * lineHeight / ptsPerInch,
-            text = 'Summary: ' + '\n' + data.title + '\n',
-            doc = new jsPDF({
-                unit: 'in',
-                lineHeight: lineHeight
-            }).setProperties({ title: 'Current Situation Report' });
+        // let pageWidth = 8.5,
+        //     lineHeight = 1.2,
+        //     margin = 0.5,
+        //     maxLineWidth = pageWidth - margin * 2,
+        //     fontSize = 20,
+        //     ptsPerInch = 72,
+        //     oneLineHeight = fontSize * lineHeight / ptsPerInch,
+        //     text = 'Summary: ' + '\n' + data.title + '\n',
+        //     doc = new jsPDF({
+        //         unit: 'in',
+        //         lineHeight: lineHeight
+        //     }).setProperties({ title: 'Current Situation Report' });
 
-        let textLines = doc
-            .setFontSize(fontSize)
-            .splitTextToSize(text, maxLineWidth);
+        // let textLines = doc
+        //     .setFontSize(fontSize)
+        //     .splitTextToSize(text, maxLineWidth);
 
-        doc.text(textLines, margin, margin + 2 * oneLineHeight);
+        // doc.text(textLines, margin, margin + 2 * oneLineHeight);
 
-        let format_date_time = formatDateTime(data.start);
-        let file_name = 'Current_Situation_Report_' + format_date_time.for_file_name
-        doc.setFontStyle('bold')
-            .text('Current Situation Report Date: ' + format_date_time.date_only_format + '', margin, margin + oneLineHeight);
+        // let format_date_time = formatDateTime(data.start);
+        // let file_name = 'Current_Situation_Report_' + format_date_time.for_file_name
+        // doc.setFontStyle('bold')
+        //     .text('Current Situation Report Date: ' + format_date_time.date_only_format + '', margin, margin + oneLineHeight);
 
-        doc.save(file_name + '.pdf');
-        doc.output('dataurlnewwindow');
+        // doc.save(file_name + '.pdf');
+        // doc.output('dataurlnewwindow');
+
+        let data = [SITUATION_LOG_DATA[0]];
+        if (data[0] == undefined) {
+            alert("No data.");
+        } else {
+            printJS({
+                printable: data,
+                type: 'json',
+                properties: [
+                    { field: 'title', displayName: 'Summary' },
+                    { field: 'start', displayName: 'Date' }
+                ],
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+            });
+        }
     });
 }
 
@@ -136,7 +151,7 @@ function sendSituationReportViaEmail(date) {
 
     $("#confirm_send_situation_report").unbind();
     $("#confirm_send_situation_report").click(function () {
-        let url = "http://192.168.8.101:5000/api/situation_report/send_email";
+        let url = "http://192.168.150.10:5000/api/situation_report/send_email";
         let data = {
             date: date,
             email: $("#email_for_situation_report").val()
@@ -154,7 +169,7 @@ function sendSituationReportViaEmail(date) {
 
 function saveSituationReport() {
     $("#add_situation_report").click(function () {
-        let url = "http://192.168.8.101:5000/api/situation_report/save_situation_report";
+        let url = "http://192.168.150.10:5000/api/situation_report/save_situation_report";
         let summary = $("#summary").val();
         let data = {
             situation_report_id: $("#situation_report_id").val(),
@@ -199,7 +214,7 @@ function situationReportSummaryAction() {
 
     $("#delete_situation_report").click(function () {
         if (confirm('Are you sure you want to delete this entry?')) {
-            let url = "http://192.168.8.101:5000/api/situation_report/delete_situation_report";
+            let url = "http://192.168.150.10:5000/api/situation_report/delete_situation_report";
             let data = {
                 "situation_report_id": $("#situation_report_id").val()
             }
