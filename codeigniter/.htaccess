@@ -6,6 +6,6 @@
 	php_value upload_max_filesize 700M
 	php_value post_max_size 16M
 	<IfModule mod_headers.c>
-        Header set Access-Control-Allow-Origin "http://192.168.8.101:5000/"
+        Header set Access-Control-Allow-Origin "http://192.168.1.10:5000/"
 	
 	</IfModule>

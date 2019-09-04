@@ -53,17 +53,21 @@ export default class CurrentAlert extends Component {
       if (latest.length != 0) {
         let alert_level = this.displayAlertLevel(latest[0].public_alert_symbol.alert_level);
         view.push(alert_level)
-        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20, textAlign: 'center' }}>Technical Information</Text>)
+        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20, textAlign: 'center' }}>Triggers</Text>)
         let triggers = this.displayTrigger(latest[0].releases[0].triggers, latest);
         view.push(triggers);
 
         view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {latest[0].public_alert_symbol.recommended_response}</Text>)
-        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
-          <Text style={defaults.buttonText}>Release</Text>
-        </TouchableOpacity>);
-        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
-          <Text style={defaults.buttonText}>Send EWI</Text>
-        </TouchableOpacity>);
+        release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
+          <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+            <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
+              <Text style={defaults.buttonText}>Release</Text>
+            </TouchableOpacity>
+            <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+              <Text style={defaults.buttonText}>Send EWI</Text>
+            </TouchableOpacity>
+          </View>
+        </View>);
         this.setState({ release_button: release_button })
       }
 
@@ -79,12 +83,16 @@ export default class CurrentAlert extends Component {
         view.push(alert_level);
         view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20, textAlign: 'center' }}>{day_of_extended}</Text>)
         view.push(<Text style={{ fontSize: 20, textAlign: 'center' }}>{"Latest release: " + latest_release_text}</Text>)
-        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
-          <Text style={defaults.buttonText}>Release</Text>
-        </TouchableOpacity>);
-        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
-          <Text style={defaults.buttonText}>Send EWI</Text>
-        </TouchableOpacity>);
+        release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
+          <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+            <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
+              <Text style={defaults.buttonText}>Release</Text>
+            </TouchableOpacity>
+            <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+              <Text style={defaults.buttonText}>Send EWI</Text>
+            </TouchableOpacity>
+          </View>
+        </View>);
         this.setState({ release_button: release_button })
 
       }
@@ -92,17 +100,21 @@ export default class CurrentAlert extends Component {
       if (overdue.length != 0) {
         let alert_level = this.displayAlertLevel(overdue[0].public_alert_symbol.alert_level);
         view.push(alert_level);
-        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Technical Information</Text>)
+        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Triggers</Text>)
         let triggers = this.displayTrigger(overdue[0].releases[0].triggers, overdue);
         view.push(triggers);
 
         view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {overdue[0].public_alert_symbol.recommended_response}</Text>)
-        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
-          <Text style={defaults.buttonText}>Release</Text>
-        </TouchableOpacity>);
-        release_button.push(<TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
-          <Text style={defaults.buttonText}>Send EWI</Text>
-        </TouchableOpacity>);
+        release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
+          <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+            <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
+              <Text style={defaults.buttonText}>Release</Text>
+            </TouchableOpacity>
+            <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+              <Text style={defaults.buttonText}>Send EWI</Text>
+            </TouchableOpacity>
+          </View>
+        </View>);
         this.setState({ release_button: release_button })
       }
 
@@ -145,10 +157,7 @@ export default class CurrentAlert extends Component {
       let data_ts = this.formatDateTime(data[0].releases[0].data_ts);
       let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
       let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Event Start: {event_start.text_format_timestamp}</Text>)
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Latest Data: {data_ts.text_format_timestamp}</Text>)
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Latest Release: {latest_release_text}</Text>)
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Validity: {validity.text_format_timestamp}</Text>)
+
       switch (element.internal_sym.alert_symbol) {
         case "m":
         case "M":
@@ -161,6 +170,11 @@ export default class CurrentAlert extends Component {
           view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Earthquake: {element.info}</Text>)
           break;
       }
+
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Event Start: {event_start.text_format_timestamp}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Latest Data: {data_ts.text_format_timestamp}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Latest Release: {latest_release_text}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Validity: {validity.text_format_timestamp}</Text>)
 
     });
 

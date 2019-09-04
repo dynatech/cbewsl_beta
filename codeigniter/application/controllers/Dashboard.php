@@ -132,6 +132,18 @@ class Dashboard extends CI_Controller {
 
       echo json_encode($feedback);
     }
+
+    public function unregisterSession() {
+      try {
+        $this->session->unset_userdata($this->session->get_userdata());
+        $this->session->sess_destroy();
+        $status = true;
+        redirect('/home');
+      } catch (Exception $e) {
+        $status = false;
+      }
+      echo json_encode($status);
+    }
     
     
 }

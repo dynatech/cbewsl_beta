@@ -41,7 +41,7 @@ export default class SaveMaintenanceLogs extends Component {
             timestamp } = this.state
 
         if (working_nodes != "" && anomalous_nodes != "" && rain_gauge_status != "") {
-            fetch('http://192.168.8.101:5000/api/sensor_maintenance/save_sensor_maintenance_logs', {
+            fetch('http://192.168.1.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

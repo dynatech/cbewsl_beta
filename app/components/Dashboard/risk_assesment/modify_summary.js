@@ -46,7 +46,7 @@ export default class ModifySummary extends Component {
 
   removeLog(id) {
     Notification.endOfValidity();
-    fetch('http://192.168.8.101:5000/api/risk_assesment_summary/delete_risk_assessment_summary', {
+    fetch('http://192.168.1.10:5000/api/risk_assesment_summary/delete_risk_assessment_summary', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -97,7 +97,7 @@ export default class ModifySummary extends Component {
 
   getAllRiskAssessmentSummary() {
     Notification.endOfValidity();
-    fetch('http://192.168.8.101:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
+    fetch('http://192.168.1.10:5000/api/risk_assesment_summary/get_all_risk_assessment_summary').then((response) => response.json())
       .then((responseJson) => {
         let summary_data = [];
         let to_local_data = [];

@@ -46,7 +46,7 @@ export default class ModifyFamilyRisk extends Component {
 
   removeLog(id) {
     Notification.endOfValidity();
-    fetch('http://192.168.8.101:5000/api/family_profile/delete_family_profile', {
+    fetch('http://192.168.1.10:5000/api/family_profile/delete_family_profile', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -96,7 +96,7 @@ export default class ModifyFamilyRisk extends Component {
 
   getAllFamilyProfile() {
     Notification.endOfValidity();
-    fetch('http://192.168.8.101:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
+    fetch('http://192.168.1.10:5000/api/family_profile/get_all_family_profile').then((response) => response.json())
       .then((responseJson) => {
         let family_profile_data = [];
         let to_local_data = [];

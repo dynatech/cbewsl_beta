@@ -78,7 +78,7 @@
             </button>
         </div>
         <div class="modal-body">
-        test
+        Are you sure you want release this alert?
             <!-- <form>
                 <div class="row">
                     <div class="col">
