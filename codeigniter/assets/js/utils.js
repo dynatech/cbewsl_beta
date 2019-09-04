@@ -86,8 +86,8 @@ function reportData() {
 
 function logout() {
     $("#logout").on("click", function () {
-        fetch('http://192.168.8.101:5000/api/unregister_session').then(function (response) {
-            console.log(response)
+        fetch('http://cbewsl.com/dashboard/unregisterSession').then(function (response) {
+
         });
     })
 }
@@ -210,9 +210,9 @@ function printData(data) {
                 type: 'json',
                 properties: [
                     { field: 'features', displayName: 'Features' },
-                    { field: 'mat_characterizationreportData', displayName: 'Material Characterization' },
-                    { field: 'mechanism', displayNreportDataame: 'Mechanism' },
-                    { field: 'exposure', displayNareportDatame: 'Exposure' },
+                    { field: 'mat_characterization', displayName: 'Material Characterization' },
+                    { field: 'mechanism', displayName: 'Mechanism' },
+                    { field: 'exposure', displayName: 'Exposure' },
                     { field: 'note', displayName: 'Note' },
                     { field: 'date', displayName: 'Date' }
                 ],

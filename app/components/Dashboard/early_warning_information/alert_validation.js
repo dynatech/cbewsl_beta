@@ -37,6 +37,23 @@ export default class AlertValidation extends Component {
   }
 
   validateAlert(trigger_id, valid, remarks, user_id, candidate_alerts) {
+    Alert.alert(
+      'Release Alert',
+      'Are you sure you want raise this alert?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: () => this.confirmValidateAlert(trigger_id, valid, remarks, user_id, candidate_alerts) },
+      ],
+      { cancelable: false },
+    );
+
+  }
+
+  confirmValidateAlert() {
     if (this.state.trigger_length == 1) {
       Notification.formatCandidateAlerts(candidate_alerts)
       setTimeout(() => {

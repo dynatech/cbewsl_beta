@@ -61,7 +61,7 @@ export default class SaveSummary extends Component {
             adaptive_capacity,
             vulnerability } = this.state
         if (location != "" && impact != "" && adaptive_capacity != "" && vulnerability != "") {
-            fetch('http://192.168.8.101:5000/api/risk_assesment_summary/save_risk_assessment_summary', {
+            fetch('http://192.168.150.10:5000/api/risk_assesment_summary/save_risk_assessment_summary', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

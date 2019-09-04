@@ -72,7 +72,7 @@ export default class FieldSurveyLogs extends Component {
 
   removeLog(id) {
     Notification.endOfValidity();
-    fetch('http://192.168.8.101:5000/api/field_survey/delete_field_survey', {
+    fetch('http://192.168.150.10:5000/api/field_survey/delete_field_survey', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -161,7 +161,7 @@ export default class FieldSurveyLogs extends Component {
     this.setState({ spinner: true });
     Sync.clientToServer("FieldSurveyLogs").then(() => {
       setTimeout(() => {
-        fetch('http://192.168.8.101:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
+        fetch('http://192.168.150.10:5000/api/field_survey/get_all_field_survey').then((response) => response.json())
           .then((responseJson) => {
             let field_logs = [];
             let to_local_data = [];

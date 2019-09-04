@@ -26,7 +26,7 @@ export default class ForgotPassword extends Component {
       this.setState({ reset_entry: parseInt(temp) })
     }
 
-    fetch('http://192.168.8.101:5000/api/forgot_password', {
+    fetch('http://192.168.150.10:5000/api/forgot_password', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

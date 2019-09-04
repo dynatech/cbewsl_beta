@@ -13,7 +13,7 @@ function initializeSurficialData() {
     $('#surficial-data-tab').on('click', function () {
         console.log("Loaded");
         $(".surficial-measuremnt-container h5").text("Change");
-        fetch('http://192.168.8.101:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
+        fetch('http://192.168.150.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
             .then((responseJson) => {
                 let surficial_summary = responseJson;
                 let graph_plot_data = [];
@@ -112,7 +112,7 @@ function initializeCurrentMeasurement() {
     $("#current_measurement_tab").on('click', function () {
         $('.measurement-header').empty();
         $('.measurements').empty();
-        fetch('http://192.168.8.101:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
+        fetch('http://192.168.150.10:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
             .then((responseJson) => {
                 let formmated_timestamp = formatDateTime(date = responseJson.current_measurement_date)
                 let crack_sets = []
@@ -130,7 +130,7 @@ function initializeCurrentMeasurement() {
 
 function initializeMonitoringLogs() {
     let formatted_data = []
-    fetch('http://192.168.8.101:5000/api/surficial_data/get_moms_data').then((response) => response.json())
+    fetch('http://192.168.150.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
         .then((responseJson) => {
             responseJson.forEach(function (value) {
                 let entry = {
@@ -224,7 +224,7 @@ function deleteMonitoringLogsConfirmation(data) {
 }
 
 function deleteMonitoringLogs(moms_id) {
-    let url = "http://192.168.8.101:5000/api/moms_data/delete_moms_data";
+    let url = "http://192.168.150.10:5000/api/moms_data/delete_moms_data";
     let data = {
         "moms_id": moms_id
     }
@@ -245,7 +245,7 @@ function deleteMonitoringLogs(moms_id) {
 
 function initializeCRUDMonitoringLogs() {
     $('#add_monitoring_logs').on('click', function () {
-        let url = "http://192.168.8.101:5000/api/surficial_data/save_monitoring_log";
+        let url = "http://192.168.150.10:5000/api/surficial_data/save_monitoring_log";
         let data = {
             moms_id: $("#moms_id").val(),
             type_of_feature: $("#moms_t_feature").val(),
@@ -443,7 +443,7 @@ function displayRaiseMomsModal(data) {
         console.log(JSON.stringify(trigger_list));
         isOnSet(alert_level)
             .then((response) => {
-                let url = 'http://192.168.8.101:5000/api/monitoring/insert_cbewsl_moms';
+                let url = 'http://192.168.150.10:5000/api/monitoring/insert_cbewsl_moms';
                 fetch(url, {
                     method: 'POST',
                     dataType: 'jsonp',

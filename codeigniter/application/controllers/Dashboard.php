@@ -138,11 +138,11 @@ class Dashboard extends CI_Controller {
         $this->session->unset_userdata($this->session->get_userdata());
         $this->session->sess_destroy();
         $status = true;
-        // header("Location: /home");
+        redirect('/home');
       } catch (Exception $e) {
         $status = false;
       }
-      print($status);
+      echo json_encode($status);
     }
     
     

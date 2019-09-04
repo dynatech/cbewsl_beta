@@ -144,6 +144,9 @@ export default class RainfallGraph extends Component {
           cursor: "pointer"
         }
       },
+      credits: {
+        enabled: false
+      },
       series: [{
         name: '24hr',
         data: temp_a,

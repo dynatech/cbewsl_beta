@@ -6,7 +6,7 @@ $(document).ready(function () {
 
 function getAllFieldSurvey() {
     $.ajax({
-        url: "http://192.168.8.101:5000/api/field_survey/get_all_field_survey",
+        url: "http://192.168.150.10:5000/api/field_survey/get_all_field_survey",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -81,7 +81,7 @@ function deleteFieldSurveyConfirmation(data) {
 }
 
 function deleteFieldSurvey(field_survey_id) {
-    let url = "http://192.168.8.101:5000/api/field_survey/delete_field_survey";
+    let url = "http://192.168.150.10:5000/api/field_survey/delete_field_survey";
     let data = {
         "field_survey_id": field_survey_id
     }
@@ -133,40 +133,58 @@ function setLatestFieldSurvey(formatted_data) {
 function generateFieldSurveyPDF(data, date) {
     $("#print_latest_field_survey").unbind();
     $("#print_latest_field_survey").click(function () {
-        let pageWidth = 8.5,
-            lineHeight = 1.2,
-            margin = 0.5,
-            maxLineWidth = pageWidth - margin * 2,
-            fontSize = 20,
-            ptsPerInch = 72,
-            oneLineHeight = fontSize * lineHeight / ptsPerInch,
-            text = 'Features: ' + data.features + '\n' +
-                '\n' +
-                'Material Characterization: ' + data.mat_characterization + '\n' +
-                '\n' +
-                'Mechanism: ' + data.mechanism + '\n' +
-                '\n' +
-                'Exposure: ' + data.exposure + '\n' +
-                '\n' +
-                'Note: ' + data.note + '\n',
-            doc = new jsPDF({
-                unit: 'in',
-                lineHeight: lineHeight
-            }).setProperties({ title: 'Latest Field Survey Report' });
+        // let pageWidth = 8.5,
+        //     lineHeight = 1.2,
+        //     margin = 0.5,
+        //     maxLineWidth = pageWidth - margin * 2,
+        //     fontSize = 20,
+        //     ptsPerInch = 72,
+        //     oneLineHeight = fontSize * lineHeight / ptsPerInch,
+        //     text = 'Features: ' + data.features + '\n' +
+        //         '\n' +
+        //         'Material Characterization: ' + data.mat_characterization + '\n' +
+        //         '\n' +
+        //         'Mechanism: ' + data.mechanism + '\n' +
+        //         '\n' +
+        //         'Exposure: ' + data.exposure + '\n' +
+        //         '\n' +
+        //         'Note: ' + data.note + '\n',
+        //     doc = new jsPDF({
+        //         unit: 'in',
+        //         lineHeight: lineHeight
+        //     }).setProperties({ title: 'Latest Field Survey Report' });
 
-        let textLines = doc
-            .setFontSize(fontSize)
-            .splitTextToSize(text, maxLineWidth);
+        // let textLines = doc
+        //     .setFontSize(fontSize)
+        //     .splitTextToSize(text, maxLineWidth);
 
-        doc.text(textLines, margin, margin + 2 * oneLineHeight);
+        // doc.text(textLines, margin, margin + 2 * oneLineHeight);
 
-        let format_date_time = formatDateTime(date);
-        let file_name = 'Latest_Field_Survey_Date_' + format_date_time.for_file_name
-        doc.setFontStyle('bold')
-            .text('Latest Field Survey Date: ' + date + '', margin, margin + oneLineHeight);
+        // let format_date_time = formatDateTime(date);
+        // let file_name = 'Latest_Field_Survey_Date_' + format_date_time.for_file_name
+        // doc.setFontStyle('bold')
+        //     .text('Latest Field Survey Date: ' + date + '', margin, margin + oneLineHeight);
 
-        doc.save(file_name + '.pdf');
-        doc.output('dataurlnewwindow');
+        // doc.save(file_name + '.pdf');
+        // doc.output('dataurlnewwindow');
+        let data = [FIELD_SURVEY_LOG_DATA[0]]
+        if (data.length != 0) {
+            printJS({
+                printable: data,
+                type: 'json',
+                properties: [
+                    { field: 'features', displayName: 'Features' },
+                    { field: 'mat_characterization', displayName: 'Material Characterization' },
+                    { field: 'mechanism', displayName: 'Mechanism' },
+                    { field: 'exposure', displayName: 'Exposure' },
+                    { field: 'note', displayName: 'Note' },
+                    { field: 'date', displayName: 'Date' }
+                ],
+                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Latest Field Survey Log</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+            });
+        } else {
+            alert("No data.");
+        }
     });
 
 }
@@ -179,7 +197,7 @@ function sendFieldSurveyViaEmail(date) {
 
     $("#confirm_send_field_survey").unbind();
     $("#confirm_send_field_survey").click(function () {
-        let url = "http://192.168.8.101:5000/api/field_survey/send_email";
+        let url = "http://192.168.150.10:5000/api/field_survey/send_email";
         let data = {
             date: date,
             email: $("#email_for_field_survey").val()
@@ -210,7 +228,7 @@ function setFieldSurveyDataForm(data) {
 
 function fieldSurveyButtonAction() {
     $("#add_field_survey").click(function () {
-        let url = "http://192.168.8.101:5000/api/field_survey/save_field_survey";
+        let url = "http://192.168.150.10:5000/api/field_survey/save_field_survey";
         let data = {
             field_survey_id: $("#field_survey_id").val(),
             features: $("#features").val(),

@@ -29,7 +29,7 @@ export default class Register extends Component {
       mobile_number } = this.state
 
     if (password == confirm_password) {
-      fetch('http://192.168.8.101:5000/api/register/account', {
+      fetch('http://192.168.150.10:5000/api/register/account', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
