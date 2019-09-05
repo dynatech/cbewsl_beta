@@ -88,7 +88,6 @@ export default class AlertValidation extends Component {
     cred.then(cred_response => {
       offline_data.then(response => {
         let candidate = JSON.parse(response.candidate_alert)
-        console.log(candidate.length)
         if (candidate.length != 0) {
           this.setState({ trigger_length: candidate[0].trigger_list_arr.length })
           if (candidate[0].trigger_list_arr == 0) {
