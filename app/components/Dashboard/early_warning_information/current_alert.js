@@ -48,8 +48,6 @@ export default class CurrentAlert extends Component {
       let rain_temp = ""
       let moms_temp = ""
       let release_button = [];
-      console.log(candidate_alert)
-      console.log(response)
       if (latest.length != 0) {
         let alert_level = this.displayAlertLevel(latest[0].public_alert_symbol.alert_level);
         view.push(alert_level)
@@ -63,7 +61,7 @@ export default class CurrentAlert extends Component {
             <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
               <Text style={defaults.buttonText}>Release</Text>
             </TouchableOpacity>
-            <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+            <TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS(latest[0].internal_alert_level,latest[0].releases[0].data_ts) }}>
               <Text style={defaults.buttonText}>Send EWI</Text>
             </TouchableOpacity>
           </View>
@@ -204,10 +202,9 @@ export default class CurrentAlert extends Component {
     }, 3000);
   }
 
-  sendEwi() {
-
+  nextRelease(release_time) {
+    console.log(release_time)
   }
-
 
   formatDateTime(date = null) {
     let timestamp = date
