@@ -35,11 +35,14 @@ function initializeSurficialData() {
                 let end_date = surficial_summary[0].surficial_data[0].ts[surficial_summary[0].surficial_data[0].ts.length - 1]
                 let formatted_date = formatDateTime(end_date);
                 let last_data = "Last surficial data received is on " + formatted_date.text_format_timestamp;
+                console.log(surficial_summary[0].moms_data[0].date)
+                let latest_moms_date = formatDateTime(surficial_summary[0].moms_data[0].date)
                 $(".surficial-measuremnt-container h5").text(last_data);
                 $(".moms-container").empty();
                 $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Type of Feature: " + surficial_summary[0].moms_data[0].type_of_feature + "</p>");
                 $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Description: " + surficial_summary[0].moms_data[0].description + "</p>");
                 $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Name of Feature: " + surficial_summary[0].moms_data[0].name_of_feature + "</p>");
+                $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Latest Date Time: " + latest_moms_date.text_format_timestamp + "</p>");
                 console.log(graph_plot_data)
                 $(".surficial-graph-container").highcharts({
                     series: graph_plot_data,

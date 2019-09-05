@@ -45,12 +45,12 @@ export default class Summary extends Component {
       current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
       date = moment(new Date()).format("MMMM D, YYYY")
       time = moment(new Date()).format("h:mm A")
-      text_format_timestamp = moment(new Date()).format("MMMM D, YYYY h:mm A")
+      text_format_timestamp = moment(new Date()).format("LLL")
     } else {
       current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS")
       date = moment(date).format("MMMM D, YYYY")
       time = moment(date).format("h:mm A")
-      text_format_timestamp = moment(date).format("MMMM D, YYYY h:mm A")
+      text_format_timestamp = moment(date).format("LLL")
     }
 
     return {
@@ -89,10 +89,12 @@ export default class Summary extends Component {
         }
         let moms_data = []
         for (const [index, value] of responseJson[0].moms_data.entries()) {
+          let date = this.formatDateTime(value.date)
           moms_data.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
             <Text style={{ fontSize: 15 }}>Type of feature: {value.type_of_feature}</Text>
             <Text style={{ fontSize: 15 }}>Description: {value.description}</Text>
             <Text style={{ fontSize: 15 }}>Name of feature: {value.name_of_feature}</Text>
+            <Text style={{ fontSize: 15 }}>Latest Date Time: {date.text_format_timestamp}</Text>
           </View>)
         }
         this.setState({ moms_summary: moms_data, spinner: false })

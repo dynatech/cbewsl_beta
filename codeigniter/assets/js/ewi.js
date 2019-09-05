@@ -20,30 +20,31 @@ function getCandidateAndLatestAlerts() {
         let candidate_alerts = JSON.parse(json_data.candidate_alert);
         console.log(json_data)
         console.log(candidate_alerts)
+        const is_release_time = candidate_alerts.is_release_time
         $("#current_alert_buttons").hide();
         if (candidate_alerts.length != 0) {
             $("#no_candidate_alert").hide();
-            displayCandidateAlert(candidate_alerts);
+            displayCandidateAlert(candidate_alerts, is_release_time);
         } else {
             $("#no_candidate_alert").show();
         }
 
         if (json_data.leo.latest.length != 0) {
-            displayLatestAlert(json_data.leo.latest, candidate_alerts);
+            displayLatestAlert(json_data.leo.latest, candidate_alerts, is_release_time);
             $("#ewi_no_current_alert").hide();
         } else {
             $("#ewi_no_current_alert").show();
         }
 
         if (json_data.extended.latest.length != 0) {
-            displayExtendedAlert(json_data.leo.latest, candidate_alerts);
+            displayExtendedAlert(json_data.leo.latest, candidate_alerts, is_release_time);
             $("#ewi_no_current_alert").hide();
         } else {
             $("#ewi_no_current_alert").show();
         }
 
         if (json_data.overdue.latest.length != 0) {
-            displayOverdueAlert(json_data.leo.latest, candidate_alerts);
+            displayOverdueAlert(json_data.leo.latest, candidate_alerts, is_release_time);
             $("#ewi_no_current_alert").hide();
         } else {
             $("#ewi_no_current_alert").show();
@@ -90,7 +91,7 @@ function getCandidateAndLatestAlerts() {
     });
 }
 
-function displayLatestAlert(latest_data, candidate_alerts) {
+function displayLatestAlert(latest_data, candidate_alerts, is_release_time) {
     $("#ewi_current_alert_container").show();
     let latest = latest_data[0];
     let internal_alert_level = latest.internal_alert_level;
@@ -107,11 +108,11 @@ function displayLatestAlert(latest_data, candidate_alerts) {
 
     $("#ewi_alert_symbol").text(alert_level);
     $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest data: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
-    formatTriggerToText(trigger, latest_data[0].releases[0].data_ts);
+    formatTriggerToText(trigger, latest_data[0].releases[0].data_ts, is_release_time);
     $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
 }
 
-function displayOverdueAlert(overdue_data, candidate_alerts) {
+function displayOverdueAlert(overdue_data, candidate_alerts, is_release_time) {
     $("#ewi_current_alert_container").show();
     let overdue = overdue_data[0];
     let internal_alert_level = overdue.internal_alert_level;
@@ -128,11 +129,11 @@ function displayOverdueAlert(overdue_data, candidate_alerts) {
 
     $("#ewi_alert_symbol").text(alert_level);
     $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest data: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
-    formatTriggerToText(trigger);
+    formatTriggerToText(trigger, is_release_time);
     $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
 }
 
-function displayExtendedAlert(extended_data, candidate_alerts) {
+function displayExtendedAlert(extended_data, candidate_alerts, is_release_time) {
     console.log(extended_data)
     $("#ewi_current_alert_container").show();
     $("#lower_ewi").hide();
@@ -148,7 +149,7 @@ function displayExtendedAlert(extended_data, candidate_alerts) {
 
     $("#extended_day").empty().append(day_of_extended);
     $("#extended_latest_release").empty().append("Latest Release: " + latest_release_text);
-    onClickReleaseExtended();
+    onClickReleaseExtended(is_release_time);
 
 }
 
@@ -161,7 +162,7 @@ function updateEwiData() {
     })
 }
 
-function displayCandidateAlert(candidate_alerts) {
+function displayCandidateAlert(candidate_alerts, is_release_time) {
     let trigger_list = candidate_alerts[0].trigger_list_arr;
     $("#candidate_alert_list").empty();
     $("#candidate_alert_information").hide();
@@ -231,7 +232,7 @@ function displayCandidateAlert(candidate_alerts) {
 
 }
 
-function onValidateCandidateAlert(trigger_id, candidate_alerts, alert_data, trigger_type) {
+function onValidateCandidateAlert(trigger_id, candidate_alerts, alert_data, trigger_type, is_release_time) {
 
     $("#candidate_alert_valid_" + trigger_id).unbind();
     $("#candidate_alert_invalid_" + trigger_id).unbind();
@@ -239,17 +240,17 @@ function onValidateCandidateAlert(trigger_id, candidate_alerts, alert_data, trig
 
         $("#validate_alert_modal").modal("show");
         $("#validateAlertModalLabel").text("Remarks for this valid alert");
-        alertValidation(trigger_id, 1, 1, candidate_alerts, alert_data, trigger_type);
+        alertValidation(trigger_id, 1, 1, candidate_alerts, alert_data, trigger_type, is_release_time);
     });
 
     $("#candidate_alert_invalid_" + trigger_id).click(function () {
         $("#validate_alert_modal").modal("show");
         $("#validateAlertModalLabel").text("Remarks for this invalid alert");
-        alertValidation(trigger_id, -1, 1, candidate_alerts, "", trigger_type);
+        alertValidation(trigger_id, -1, 1, candidate_alerts, "", trigger_type, is_release_time);
     });
 }
 
-function alertValidation(trigger_id, valid, user_id, candidate_alerts, alert_data, trigger_type) {
+function alertValidation(trigger_id, valid, user_id, candidate_alerts, alert_data, trigger_type, is_release_time) {
     $("#alert_remarks").val("");
 
     $("#save_alert_validation").unbind();
@@ -278,7 +279,7 @@ function alertValidation(trigger_id, valid, user_id, candidate_alerts, alert_dat
                 $("#alert_level_" + trigger_id).text("Alert " + alert_data.alert_level).css("color", "#ee9d01");
                 $("#candidate_alert_valid_" + trigger_id).css("background-color", "#28a745").val("Raise");
                 $("#candidate_alert_invalid_" + trigger_id).prop('disabled', false);
-                formatCandidateAlerts(trigger_id);
+                formatCandidateAlerts(trigger_id, is_release_time);
             } else {
                 alert_message = "Alert invalidated!";
                 alert_level = $("#alert_level_" + trigger_id).text();
@@ -293,7 +294,7 @@ function alertValidation(trigger_id, valid, user_id, candidate_alerts, alert_dat
 
 }
 
-function formatCandidateAlerts(trigger_id) {
+function formatCandidateAlerts(trigger_id, is_release_time) {
     $("#valid_alert_information").empty();
     let candidate_alerts = updateEwiData();
     candidate_alerts.done(function (data) {
@@ -341,7 +342,7 @@ function formatCandidateAlerts(trigger_id) {
     });
 }
 
-function onClickReleaseExtended() {
+function onClickReleaseExtended(is_release_time) {
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
         .append('&nbsp;<input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
     sendEwiToEmail();
@@ -405,7 +406,7 @@ function publicAlert(is_onset = false) {
         });
 }
 
-function formatTriggerToText(trigger, ts) {
+function formatTriggerToText(trigger, ts, is_release_time) {
     $("#triggers").empty();
     console.log(trigger.length)
     if (trigger.length == 0) {
