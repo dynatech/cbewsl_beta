@@ -218,7 +218,7 @@ export default class ModifyFamilyRisk extends Component {
         <View style={{ textAlign: 'center', flex: 1 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
             <TouchableOpacity style={defaults.button} onPress={() => this.props.navigation.navigate('save_family_risk_profile')}>
-              <Text style={defaults.buttonText}>Add Risks</Text>
+              <Text style={defaults.buttonText}>Add Vulnerable Groups</Text>
             </TouchableOpacity>
           </View>
         </View>

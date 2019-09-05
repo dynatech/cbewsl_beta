@@ -284,12 +284,12 @@ export default class SaveFieldSurveyLogs extends Component {
                     textStyle={spinner_styles.spinnerTextStyle}
                 />
                 <View style={field_survey_styles.menuSection}>
-                    <TextInput multiline={true}
-                        numberOfLines={4} style={defaults.inputs} placeholder="Features" value={this.state.features} onChangeText={text => this.setState({ features: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Features" value={this.state.features} onChangeText={text => this.setState({ features: text })} />
                     <TextInput style={defaults.inputs} placeholder="Materials characterization" value={this.state.mat_characterization} onChangeText={text => this.setState({ mat_characterization: text })} />
                     <TextInput style={defaults.inputs} placeholder="Mechanism" value={this.state.mechanism} onChangeText={text => this.setState({ mechanism: text })} />
                     <TextInput style={defaults.inputs} placeholder="Exposure" value={this.state.exposure} onChangeText={text => this.setState({ exposure: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Note" value={this.state.note} onChangeText={text => this.setState({ note: text })} />
+                    <TextInput multiline={true}
+                        numberOfLines={4} style={defaults.inputs} placeholder="Note" value={this.state.note} onChangeText={text => this.setState({ note: text })} />
                 </View>
                 <View>
                     <TouchableOpacity style={defaults.touchableButtons} onPress={() => this.saveFieldSurveyLog()}>
