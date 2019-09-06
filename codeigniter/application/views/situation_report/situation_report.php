@@ -50,6 +50,7 @@
                                         <form>
                                             <div class="form-group">
                                                 <label id="situation_report_label">Please select a date</label><br>
+                                                <input id="situation_log_time_picker" width="300" />
                                                 <label for="summary">Summary</label>
                                                 <textarea class="form-control" id="summary" style="height : 300px"></textarea><br>
                                                 <button type="button" class="btn btn-primary btn-sm float-right" id="add_situation_report">Add</button>

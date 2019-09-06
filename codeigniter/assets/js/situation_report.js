@@ -2,7 +2,17 @@ $(document).ready(function () {
     initializeSituationReportCalendar();
     saveSituationReport();
     situationReportSummaryAction();
+    initializeTimePicker();
 });
+
+function initializeTimePicker() {
+    $('#situation_log_time_picker').timepicker({
+        uiLibrary: 'bootstrap4'
+    });
+    $(".gj-icon").addClass("fa fa-clock").removeClass("clock").removeClass("gj-icon")
+    $("#situation_log_time_picker").prop('disabled', true);
+    $("#situation_log_time_picker").val("");
+}
 
 let situation_date_selected = "none";
 function initializeSituationReportCalendar() {
@@ -171,20 +181,23 @@ function saveSituationReport() {
     $("#add_situation_report").click(function () {
         let url = "http://192.168.1.10:5000/api/situation_report/save_situation_report";
         let summary = $("#summary").val();
+        let time = $("#situation_log_time_picker").val();
         let data = {
             situation_report_id: $("#situation_report_id").val(),
             timestamp: situation_date_selected,
             summary: summary,
+            time_selected: time,
             pdf_path: "",
             image_path: ""
         }
         if (situation_date_selected != "none") {
-            if (summary != "") {
+            if (summary != "" || time != "") {
                 $.post(url, data).done(function (response) {
                     alert(response.message);
                     if (response.status == true) {
                         $("#situation_report_id").val(0);
                         $("#summary").val("");
+                        $("#situation_log_time_picker").val("");
                         $("#situation_report_data").hide(300);
                         $("#situation_report_form").hide(300);
                         $("#situation_report_log").hide(300);
@@ -195,7 +208,7 @@ function saveSituationReport() {
                     }
                 });
             } else {
-                alert("Summary field is required!");
+                alert("All fields are required!");
             }
 
         } else {

@@ -37,19 +37,19 @@ export default class CurrentSituationReport extends Component {
     if (timestamp == null) {
       current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
       date = moment(new Date()).format("YYYY/MM/DD")
-      time = moment(new Date()).format("h:mm:ss A")
-      text_format_timestamp = moment(new Date()).format("MMMM D, YYYY h:mm:ss A")
+      time = moment(new Date()).format('h:mm:ss a')
+      text_format_timestamp = moment(new Date()).format("LLL")
     } else {
-      current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS")
-      date = moment(date).format("YYYY/MM/DD")
-      time = moment(date).format("h:mm:ss A")
-      text_format_timestamp = moment(date).format("MMMM D, YYYY h:mm:ss A")
+      current_timestamp = moment(date).format("YYYY-MM-DD HH:mm:ss")
+      date_only = moment(date).format('YYYY-MM-DD')
+      time = moment(date.toString()).format('hh:mm:ss A');
+      text_format_timestamp = moment(date).format("LLL")
     }
 
 
     return {
       current_timestamp: current_timestamp,
-      date: date,
+      date: date_only,
       time: time,
       text_format_timestamp: text_format_timestamp
     }
@@ -80,7 +80,7 @@ export default class CurrentSituationReport extends Component {
         }
         Storage.removeItem("SituationReportLatest")
         Storage.setItem("SituationReportLatest", to_local_data)
-        this.setState({spinner:false})
+        this.setState({ spinner: false })
       })
       .catch((error) => {
         let data_container = Storage.getItem("SituationReportLatest")
@@ -95,14 +95,14 @@ export default class CurrentSituationReport extends Component {
                 summary: value.summary
               });
             }
-            this.setState({spinner:false})
+            this.setState({ spinner: false })
           } else {
             this.setState({
               latest_date: "N/A",
               latest_time: "N/A",
               summary: "No current situation report"
             });
-            this.setState({spinner:false})
+            this.setState({ spinner: false })
           }
         });
       });

@@ -16,7 +16,7 @@ function getCandidateAndLatestAlerts() {
         }
     }).done(function (data) {
         let json_data = JSON.parse(data);
-
+        let has_alert_data = false;
         let candidate_alerts = JSON.parse(json_data.candidate_alert);
         console.log(json_data)
         console.log(candidate_alerts)
@@ -32,61 +32,28 @@ function getCandidateAndLatestAlerts() {
         if (json_data.leo.latest.length != 0) {
             displayLatestAlert(json_data.leo.latest, candidate_alerts, is_release_time);
             $("#ewi_no_current_alert").hide();
-        } else {
-            $("#ewi_no_current_alert").show();
+            has_alert_data = true;
         }
 
-        if (json_data.extended.latest.length != 0) {
-            displayExtendedAlert(json_data.leo.latest, candidate_alerts, is_release_time);
+        if (json_data.leo.extended.length != 0) {
+            displayExtendedAlert(json_data.leo.extended, candidate_alerts, is_release_time);
             $("#ewi_no_current_alert").hide();
-        } else {
-            $("#ewi_no_current_alert").show();
+            has_alert_data = true;
         }
 
-        if (json_data.overdue.latest.length != 0) {
-            displayOverdueAlert(json_data.leo.latest, candidate_alerts, is_release_time);
+        if (json_data.leo.overdue.length != 0) {
+            displayOverdueAlert(json_data.leo.overdue, candidate_alerts, is_release_time);
             $("#ewi_no_current_alert").hide();
-        } else {
-            $("#ewi_no_current_alert").show();
+            has_alert_data = true;
         }
 
-        // if (candidate_alerts.length != 0) {
-        //     $("#current_alert_buttons").hide();
-        //     if (json_data.leo.extended.length != 0) {
-        //         displayExtendedAlert(json_data.leo.extended, candidate_alerts);
-        //         $("#ewi_no_current_alert").hide();
-        //         $("#ewi_current_alert_container").show();
-        //     } else {
-        //         displayCandidateAlert(candidate_alerts);
-        //         $("#ewi_no_current_alert").show();
-        //         $("#ewi_current_alert_container").hide();
-        //     }
-        // } else {
-        //     $("#no_candidate_alert").show();
-        //     $("#candidate_alert_information").hide();
-        //     $("#current_alert_buttons").hide();
-        //     if (json_data.leo.latest.length != 0) {
-        //         displayLatestAlert(json_data.leo.latest, candidate_alerts);
-        //     } else {
-        //         if (json_data.leo.overdue.length != 0) {
-        //             displayOverdueAlert(json_data.leo.overdue, candidate_alerts);
-        //             $("#ewi_no_current_alert").hide();
-        //             $("#ewi_current_alert_container").show();
-        //         } else {
-        //             $("#ewi_no_current_alert").show();
-        //             $("#ewi_current_alert_container").hide();
-        //         }
+        if (has_alert_data == false) {
+            $("#ewi_no_current_alert").show();
+        } else {
+            $("#ewi_no_current_alert").hide();
+        }
 
-        //         if (json_data.leo.extended.length != 0) {
-        //             displayExtendedAlert(json_data.leo.extended, candidate_alerts);
-        //             $("#ewi_no_current_alert").hide();
-        //             $("#ewi_current_alert_container").show();
-        //         } else {
-        //             $("#ewi_no_current_alert").show();
-        //             $("#ewi_current_alert_container").hide();
-        //         }
-        //     }
-        // }
+
 
     });
 }
@@ -122,8 +89,8 @@ function displayOverdueAlert(overdue_data, candidate_alerts, is_release_time) {
     let event_start = overdue.event.event_start;
     let validity = formatDateTime(overdue.event.validity);
     let trigger = overdue.releases[0].triggers;
-    let latest_release = overdue[0].releases[0].release_time;
-    let data_ts = formatDateTime(overdue[0].releases[0].data_ts);
+    let latest_release = overdue_data[0].releases[0].release_time;
+    let data_ts = formatDateTime(overdue_data[0].releases[0].data_ts);
     let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
     let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
 
@@ -196,10 +163,14 @@ function displayCandidateAlert(candidate_alerts, is_release_time) {
     } else {
         if (candidate_alerts[0].trigger_list_arr.length == 0) {
             $("#no_candidate_alert").show();
+        } else {
+            $("#no_candidate_alert").hide();
         }
+
         $("#candidate_alert_information").hide();
         let alert_level = candidate_alerts[0].public_alert_level;
-        if (alert_level == 0) {
+        let internal_alert_level = candidate_alerts[0].internal_alert_level;
+        if (candidate_alerts[0].general_status == "lowering") {
             $("#ewi_lowering_details").text("Alert 0 for Lowering");
             $("#ewi_current_alert_container").hide();
             $("#ewi_no_current_alert").hide();

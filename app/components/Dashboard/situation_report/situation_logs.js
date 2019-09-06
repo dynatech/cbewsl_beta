@@ -281,7 +281,7 @@ export default class SituationLogs extends Component {
   navigateSaveSituationReport() {
     role_id = this.state.role_id;
     let date_selected = this.state.date_selected
-    if (role_id == 1 || role_id == 2) {
+    if (role_id == 1) {
       Alert.alert('Access denied', 'Unable to access this feature.');
     } else {
       if (date_selected == "") {
