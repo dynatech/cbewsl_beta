@@ -16,6 +16,7 @@ export default class CurrentAlert extends Component {
     this.state = {
       alert_details: [],
       release_button: [],
+      retrigger_details: [],
       spinner: false
     };
   }
@@ -49,22 +50,21 @@ export default class CurrentAlert extends Component {
       let moms_temp = ""
       let has_alert_data = false;
       let release_button = [];
-      console.log(candidate_alert)
-      console.log(response)
+
       if (latest.length != 0) {
+        this.setState({ retrigger_details: this.getRetriggers(candidate_alert) });
         let alert_level = this.displayAlertLevel(latest[0].public_alert_symbol.alert_level);
         view.push(alert_level)
-        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20, textAlign: 'center' }}>Triggers</Text>)
         let triggers = this.displayTrigger(latest[0].releases[0].triggers, latest);
         view.push(triggers);
 
-        view.push(<Text style={{ fontSize: 20, paddingTop: 20, paddingBottom: 20 }}>Recommended response: {latest[0].public_alert_symbol.recommended_response}</Text>)
+        view.push(<Text style={{ fontSize: 20, paddingBottom: 20 }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text> {latest[0].public_alert_symbol.recommended_response}</Text>)
         release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
             <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
               <Text style={defaults.buttonText}>Release</Text>
             </TouchableOpacity>
-            <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+            <TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS(latest[0].internal_alert_level, latest[0].releases[0].data_ts) }}>
               <Text style={defaults.buttonText}>Send EWI</Text>
             </TouchableOpacity>
           </View>
@@ -162,20 +162,20 @@ export default class CurrentAlert extends Component {
       switch (element.internal_sym.alert_symbol) {
         case "m":
         case "M":
-          view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Manifestation of movements: {element.info}</Text>)
+          view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Manifestation of movements:</Text> {element.info}</Text>)
           break;
         case "R":
-          view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Rainfall: {element.info}</Text>)
+          view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Rainfall Trigger:</Text> {element.info}</Text>)
           break;
         case "E":
-          view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Earthquake: {element.info}</Text>)
+          view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Earthquake:</Text> {element.info}</Text>)
           break;
       }
 
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Event Start: {event_start.text_format_timestamp}</Text>)
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Latest Data: {data_ts.text_format_timestamp}</Text>)
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Latest Release: {latest_release_text}</Text>)
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}>Validity: {validity.text_format_timestamp}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Event start:</Text> {event_start.text_format_timestamp}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Data timestamp :</Text> {data_ts.text_format_timestamp}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Latest release:</Text> {latest_release_text}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Validity:</Text> {validity.text_format_timestamp}</Text>)
 
     });
 
@@ -205,10 +205,58 @@ export default class CurrentAlert extends Component {
     }, 3000);
   }
 
-  sendEwi() {
+  getRetriggers(data) {
+    let view = []
+    let temp = []
 
+    view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
+    )
+    let current_time = data[0].release_details.data_ts
+    temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time}</Text></Text></View>)
+
+    if (data[0].trigger_list_arr != 0) {
+
+      this.setState({ trigger_length: data[0].trigger_list_arr.length })
+      data[0].trigger_list_arr.forEach(element => {
+        switch (element.trigger_type) {
+          case "rainfall":
+            invalid_flag = []
+            if (element.invalid == true) {
+              this.setState({ trigger_length: this.state.trigger_length - 1 })
+              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert (INVALID):</Text> {element.tech_info}</Text>)
+            } else {
+              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}</Text>)
+            }
+            break;
+          case "moms":
+            invalid_flag = []
+            if (element.invalid == true) {
+              this.setState({ trigger_length: this.state.trigger_length - 1 })
+              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Surficial Alert (INVALID):</Text> {element.tech_info}</Text>)
+            } else {
+              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Surficial Alert:</Text> {element.tech_info}</Text>)
+            }
+            break;
+          case "earthquake":
+            invalid_flag = []
+            if (element.invalid == true) {
+              this.setState({ trigger_length: this.state.trigger_length - 1 })
+              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Earthquake Alert (INVALID):</Text> {element.tech_info}</Text>)
+            } else {
+              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Earthquake Alert:</Text> {element.tech_info}</Text>)
+            }
+            break;
+        }
+      })
+      temp.push(invalid_flag)
+
+    } else {
+      temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
+    }
+
+    view.push(<View style={{ alignItems: 'center', textAlign: 'center' }}>{temp}</View>)
+    return view;
   }
-
 
   formatDateTime(date = null) {
     let timestamp = date
@@ -268,6 +316,7 @@ export default class CurrentAlert extends Component {
           </View>
           <View>
             {this.state.alert_details}
+            {this.state.retrigger_details}
             {this.state.release_button}
           </View>
         </View>
