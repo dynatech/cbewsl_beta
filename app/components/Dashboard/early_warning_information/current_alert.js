@@ -133,13 +133,13 @@ export default class CurrentAlert extends Component {
     let view = []
     switch (alert_level) {
       case 1:
-        view.push(<Text style={{ fontSize: 50, color: "red", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 1</Text>)
+        view.push(<Text style={{ fontSize: 50, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 1</Text>)
         break;
       case 2:
-        view.push(<Text style={{ fontSize: 50, color: "red", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 2</Text>)
+        view.push(<Text style={{ fontSize: 50, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 2</Text>)
         break;
       case 3:
-        view.push(<Text style={{ fontSize: 50, color: "red", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 3</Text>)
+        view.push(<Text style={{ fontSize: 50, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 3</Text>)
         break;
       default:
         view.push(<Text style={{ fontSize: 50, color: "green", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 0</Text>)

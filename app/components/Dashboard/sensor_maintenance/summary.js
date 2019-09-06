@@ -52,6 +52,7 @@ export default class Summary extends Component {
       .then((responseJson) => {
         responseJson[0].date = this.state.date
         Storage.setItem("RainfallSummary", responseJson)
+        console.log(responseJson)
         let online = responseJson[0]
         if (online["1D cml"] == null || online["1D cml"] == undefined || online["1D cml"] == "NO DATA") {
           online["1D cml"] = "NO DATA"

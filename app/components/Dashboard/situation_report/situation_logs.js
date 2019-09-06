@@ -202,80 +202,85 @@ export default class SituationLogs extends Component {
         { cancelable: false },
       );
     }
-
-
-
   }
 
 
   selectDateToAddReport(date) {
+    Notification.endOfValidity();
     this.setState({ date_selected: date })
-    let selected_date = this.formatDateTime(date = date);
-    button_text = "Add Report for " + selected_date["text_date_format"];
-    this.setState({ add_report_text: button_text })
-    fetch('http://192.168.1.10:5000/api/situation_report/get_report_by_date', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        date_selected: selected_date["date"]
-      }),
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        let situation_reports = []
-        if (responseJson != null && responseJson.length != 0) {
-          for (const [index, value] of responseJson.entries()) {
-            let format_date_time = this.formatDateTime(date = value.timestamp);
-            situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10, borderTopWidth: 1, borderColor: '#083451' }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_date_format"]}</Text>
-              <Text style={{ fontSize: 15, marginLeft: 10 }}>{value.summary}</Text>
-              <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity style={[defaults.button, { width: '20%' }]} onPress={() => this.modifySituationReport(value)}>
-                  <Text style={defaults.buttonText}>Update</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[defaults.button, { width: '20%' }]} onPress={() => this.deleteSituationReport(value)}>
-                  <Text style={defaults.buttonText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
+    let current_date = moment(new Date()).format("YYYY-MM-DD");
+    let compare_date = moment(current_date).isSameOrAfter(date);
+    if (compare_date == false) {
+      Alert.alert('Alert', 'Unable to add future report');
+    } else {
+      let selected_date = this.formatDateTime(date = date);
+      button_text = "Add Report for " + selected_date["text_date_format"];
+      this.setState({ add_report_text: button_text })
+      fetch('http://192.168.1.10:5000/api/situation_report/get_report_by_date', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          date_selected: selected_date["date"]
+        }),
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          let situation_reports = []
+          if (responseJson != null && responseJson.length != 0) {
+            for (const [index, value] of responseJson.entries()) {
+              let format_date_time = this.formatDateTime(date = value.timestamp);
+              situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10, borderTopWidth: 1, borderColor: '#083451' }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_date_format"]}</Text>
+                <Text style={{ fontSize: 15, marginLeft: 10 }}>{value.summary}</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity style={[defaults.button, { width: '20%' }]} onPress={() => this.modifySituationReport(value)}>
+                    <Text style={defaults.buttonText}>Update</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[defaults.button, { width: '20%' }]} onPress={() => this.deleteSituationReport(value)}>
+                    <Text style={defaults.buttonText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>)
+            }
+          } else {
+            situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
             </View>)
           }
-        } else {
-          situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
-          </View>)
-        }
-        this.setState({ selected_date_situations: situation_reports, spinner: false })
-      })
-      .catch((error) => {
-
-        let situation_reports = []
-        try {
-          let get_all_marked_dates = this.state.marked_dates
-          let selected_date = get_all_marked_dates[date].day
-          let data_container = Storage.getItem("SituationReportLogs")
-          data_container.then(response => {
-            for (const [index, value] of response.entries()) {
-              let format_date_time = this.formatDateTime(date = value.timestamp);
-              let timestamp = format_date_time["date"]
-              if (timestamp == selected_date) {
-                situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_format_timestamp"]}</Text>
-                  <Text style={{ fontSize: 15 }}>{value.summary}</Text>
-                </View>)
-              }
-            }
-            this.setState({ selected_date_situations: situation_reports, spinner: false })
-          });
-        }
-        catch (err) {
-          situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
-          </View>)
           this.setState({ selected_date_situations: situation_reports, spinner: false })
-        }
-      });
+        })
+        .catch((error) => {
+
+          let situation_reports = []
+          try {
+            let get_all_marked_dates = this.state.marked_dates
+            let selected_date = get_all_marked_dates[date].day
+            let data_container = Storage.getItem("SituationReportLogs")
+            data_container.then(response => {
+              for (const [index, value] of response.entries()) {
+                let format_date_time = this.formatDateTime(date = value.timestamp);
+                let timestamp = format_date_time["date"]
+                if (timestamp == selected_date) {
+                  situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Situation Report for {format_date_time["text_format_timestamp"]}</Text>
+                    <Text style={{ fontSize: 15 }}>{value.summary}</Text>
+                  </View>)
+                }
+              }
+              this.setState({ selected_date_situations: situation_reports, spinner: false })
+            });
+          }
+          catch (err) {
+            situation_reports.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
+            </View>)
+            this.setState({ selected_date_situations: situation_reports, spinner: false })
+          }
+        });
+    }
+
   }
 
   navigateSaveSituationReport() {

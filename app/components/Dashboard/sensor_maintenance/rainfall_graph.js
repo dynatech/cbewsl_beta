@@ -176,6 +176,22 @@ export default class RainfallGraph extends Component {
 
   componentDidMount() {
     Notification.endOfValidity();
+    // fetch('http://192.168.1.10:5000/api/rainfall/get_rainfall_plot_data/umi', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     site_code: this.state.site_code,
+    //     date: this.state.date
+    //   }),
+    // }).then((response) => response.json())
+    //   .then((responseJson) => {
+    //   })
+    //   .catch((error) => {
+    //   });
+
     let offline_data = Storage.getItem("RainfallSummary");
     offline_data.then(response => {
       console.log(response)

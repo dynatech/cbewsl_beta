@@ -73,14 +73,21 @@ function initializeSituationReportCalendar() {
                 }
             },
             dateClick: function (date, jsEvent, view, resource) {
+                let current_date = moment(new Date()).format("YYYY-MM-DD");
                 situation_date_selected = date.dateStr;
-                let formatted_date = formatDateTime(situation_date_selected);
-                $("#situation_report_label").text("Add report for " + formatted_date.date_only_format);
-                $("#situation_report_data").show(300);
-                $("#situation_report_form").show(300);
-                $("#situation_report_log").hide(300);
-                $("#situation_report_id").val(0);
-                $("#summary").val("");
+                let compare_date = moment(current_date).isSameOrAfter(situation_date_selected);
+                if (compare_date == false) {
+                    alert("Unable to add future report");
+                } else {
+                    let formatted_date = formatDateTime(situation_date_selected);
+                    $("#situation_report_label").text("Add report for " + formatted_date.date_only_format);
+                    $("#situation_report_data").show(300);
+                    $("#situation_report_form").show(300);
+                    $("#situation_report_log").hide(300);
+                    $("#situation_report_id").val(0);
+                    $("#summary").val("");
+                }
+
                 //api get event by date
             },
             eventClick: function (info) {
