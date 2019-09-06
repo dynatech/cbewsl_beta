@@ -53,7 +53,7 @@ export default class AlertValidation extends Component {
 
   }
 
-  confirmValidateAlert() {
+  confirmValidateAlert(trigger_id, valid, remarks, user_id, candidate_alerts) {
     if (this.state.trigger_length == 1) {
       Notification.formatCandidateAlerts(candidate_alerts)
       setTimeout(() => {
