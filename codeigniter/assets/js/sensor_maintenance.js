@@ -64,17 +64,24 @@ function initializeMaintenanceLogsCalendar() {
                 }
             },
             dateClick: function (date, jsEvent, view, resource) {
+                let current_date = moment(new Date()).format("YYYY-MM-DD");
                 maintenance_log_date_selected = date.dateStr;
-                let formatted_date = formatDateTime(maintenance_log_date_selected);
-                $("#maintenance_log_label").text("Add log for " + formatted_date.date_only_format);
-                $("#maintenance_logs_data").show(300);
-                $("#maintenance_log_form").show(300);
-                $("#maintenance_log").hide(300);
-                $("#sensor_maintenance_id").val(0);
-                $("#working_nodes").val("");
-                $("#anomalous_nodes").val("");
-                $("#rain_gauge_status").val("");
-                $("#add_maintenance_logs").text("Add");
+                let compare_date = moment(current_date).isSameOrAfter(maintenance_log_date_selected);
+                if (compare_date == false) {
+                    alert("Unable to add future report");
+                } else {
+                    let formatted_date = formatDateTime(maintenance_log_date_selected);
+                    $("#maintenance_log_label").text("Add log for " + formatted_date.date_only_format);
+                    $("#maintenance_logs_data").show(300);
+                    $("#maintenance_log_form").show(300);
+                    $("#maintenance_log").hide(300);
+                    $("#sensor_maintenance_id").val(0);
+                    $("#working_nodes").val("");
+                    $("#anomalous_nodes").val("");
+                    $("#rain_gauge_status").val("");
+                    $("#add_maintenance_logs").text("Add");
+                }
+
             },
             eventClick: function (info) {
                 let maintenance_log = info.event;

@@ -145,79 +145,87 @@ export default class MaintenanceLogs extends Component {
   }
 
   selectDateToAddLogs(date) {
-    this.setState({ spinner: true })
     Notification.endOfValidity();
+    this.setState({ spinner: true })
     this.setState({ date_selected: date })
-    let selected_date = this.formatDateTime(date = date)
-    button_text = "Add Report for " + selected_date["text_format_timestamp"]
-    this.setState({ add_report_text: button_text })
-    fetch('http://192.168.1.10:5000/api/sensor_maintenance/get_report_by_date', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        date_selected: selected_date["date"]
-      }),
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        let logs = []
-        let to_local_data = []
-        if (responseJson.length == 0) {
-          logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
-          </View>)
-          this.setState({ selected_date_logs: logs, spinner: false })
-        } else {
-          logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Logs for {selected_date["text_format_timestamp"]}</Text>
-          </View>)
-          for (const [index, value] of responseJson.entries()) {
+    let current_date = moment(new Date()).format("YYYY-MM-DD");
+    let compare_date = moment(current_date).isSameOrAfter(date);
+    if (compare_date == false) {
+      Alert.alert('Alert', 'Unable to add future report');
+      this.setState({ spinner: false })
+    } else {
+      let selected_date = this.formatDateTime(date = date)
+      button_text = "Add Report for " + selected_date["text_format_timestamp"]
+      this.setState({ add_report_text: button_text })
+      fetch('http://192.168.1.10:5000/api/sensor_maintenance/get_report_by_date', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          date_selected: selected_date["date"]
+        }),
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          let logs = []
+          let to_local_data = []
+          if (responseJson.length == 0) {
             logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-              <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
-              <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
-              <Text style={{ fontSize: 15 }}>Rain Gauge Status: {value.rain_gauge_status}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
             </View>)
-          }
-          this.setState({ selected_date_logs: logs, spinner: false })
-        }
-
-      })
-      .catch((error) => {
-
-        let logs = []
-        try {
-          let get_all_marked_dates = this.state.marked_dates
-          let date_selected = get_all_marked_dates[date].day
-          let data_container = Storage.getItem('SensorMaintenanceLogs')
-          data_container.then(response => {
+            this.setState({ selected_date_logs: logs, spinner: false })
+          } else {
             logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
               <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Logs for {selected_date["text_format_timestamp"]}</Text>
             </View>)
-            for (const [index, value] of response.entries()) {
-              let format_date_time = this.formatDateTime(date = value.timestamp);
-              let timestamp = format_date_time["date"]
-              console.log(timestamp + "|" + date_selected)
-              if (timestamp == date_selected) {
-                logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-                  <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
-                  <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
-                  <Text style={{ fontSize: 15 }}>Rain Gauge Status: {value.rain_gauge_status}</Text>
-                </View>)
-              }
-
+            for (const [index, value] of responseJson.entries()) {
+              logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+                <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
+                <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
+                <Text style={{ fontSize: 15 }}>Rain Gauge Status: {value.rain_gauge_status}</Text>
+              </View>)
             }
             this.setState({ selected_date_logs: logs, spinner: false })
-          })
-        }
-        catch (err) {
-          logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
-          </View>)
-          this.setState({ selected_date_logs: logs, spinner: false })
-        }
-      });
+          }
+
+        })
+        .catch((error) => {
+
+          let logs = []
+          try {
+            let get_all_marked_dates = this.state.marked_dates
+            let date_selected = get_all_marked_dates[date].day
+            let data_container = Storage.getItem('SensorMaintenanceLogs')
+            data_container.then(response => {
+              logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Logs for {selected_date["text_format_timestamp"]}</Text>
+              </View>)
+              for (const [index, value] of response.entries()) {
+                let format_date_time = this.formatDateTime(date = value.timestamp);
+                let timestamp = format_date_time["date"]
+                console.log(timestamp + "|" + date_selected)
+                if (timestamp == date_selected) {
+                  logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+                    <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>
+                    <Text style={{ fontSize: 15 }}>Anomalous Nodes: {value.anomalous_nodes}</Text>
+                    <Text style={{ fontSize: 15 }}>Rain Gauge Status: {value.rain_gauge_status}</Text>
+                  </View>)
+                }
+
+              }
+              this.setState({ selected_date_logs: logs, spinner: false })
+            })
+          }
+          catch (err) {
+            logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 18 }}>No report on this date</Text>
+            </View>)
+            this.setState({ selected_date_logs: logs, spinner: false })
+          }
+        });
+    }
+
   }
 
   navigateSaveMaintenanceLogs() {
