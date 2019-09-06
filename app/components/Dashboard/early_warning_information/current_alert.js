@@ -75,7 +75,7 @@ export default class CurrentAlert extends Component {
       if (extended.length != 0) {
         console.log(extended[0])
         let day_of_extended = "Day " + extended[0].day + " of Extended monitoring";
-        let latest_release = extended[0].releases[0].release_time;
+        let latest_release = extendegetCurrentAlertd[0].releases[0].release_time;
         let data_ts = this.formatDateTime(extended[0].releases[0].data_ts);
         let formatted_latest_release = moment(latest_release, 'HH:mm').format('h:mm A');
         let latest_release_text = data_ts["date_only_format"] + " " + formatted_latest_release;
@@ -151,6 +151,8 @@ export default class CurrentAlert extends Component {
 
   displayTrigger(triggers, data) {
     let view = [];
+    console.log(triggers);
+    console.log(data)
     triggers.forEach(element => {
       let event_start = this.formatDateTime(data[0].event.event_start);
       let validity = this.formatDateTime(data[0].event.validity);

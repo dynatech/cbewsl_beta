@@ -219,7 +219,7 @@ export default class SaveSurficialData extends Component {
                     {
                         text: 'OK', onPress: () => SendSMS.send({
                             body: `MoMsReport:${type_of_feature}<*>${description}<*>${name_of_feature}<*>${datetime.replace(":", "_")}`,
-                            recipients: [this.state.server_number],
+                            recipients: this.state.server_number,
                             successTypes: ['sent', 'queued'],
                             allowAndroidSendWithoutReadPermission: true
                         }, (completed, cancelled, error) => {

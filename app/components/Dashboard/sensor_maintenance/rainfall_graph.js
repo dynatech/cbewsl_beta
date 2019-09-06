@@ -17,7 +17,6 @@ export default class RainfallGraph extends Component {
       data_ts: [],
       hr24: [],
       hr72: []
-
     };
   }
 
@@ -198,15 +197,21 @@ export default class RainfallGraph extends Component {
       let offline = response[0]
       let rainfall_container = []
       offline.plot.forEach(element => {
-        rainfall_container.push(<View style={sensor_maintenance_styles.graphContainer}>
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Gauge name: {element.gauge_name.toUpperCase()} ({element.distance} KM away)</Text>
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {offline.date} </Text>
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
-          <View style={{ width: '100%' }}>
-            <ChartView style={{ height: 200 }} config={this.renderTrendGraph(element.data, offline['half of 2yr max'], offline['2yr max'])}></ChartView>
-          </View>
-        </View>)
+
       });
+
+      for (const [index, value] of offline.plot.entries()) {
+        let temp = this.renderTrendGraph(value.data, offline['half of 2yr max'], offline['2yr max'])
+          this.setState({rain_data: temp})
+          rainfall_container.push(<View style={sensor_maintenance_styles.graphContainer}>
+            <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Gauge name: {value.gauge_name.toUpperCase()} ({value.distance} KM away)</Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {offline.date} </Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
+            <View style={{ width: '100%' }}>
+              <ChartView style={{ height: 200 }} config={this.state.rain_data}></ChartView>
+            </View>
+          </View>)
+      }
       this.setState({ render_rainfall_graphs: rainfall_container })
     });
   }
