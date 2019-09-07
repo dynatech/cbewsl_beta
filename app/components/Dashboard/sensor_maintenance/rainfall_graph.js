@@ -12,7 +12,7 @@ export default class RainfallGraph extends Component {
       date: null,
       time: null,
       modalVisible: false,
-      render_rainfall_graphs: [],
+      render_rainfall_graphs: [<Text>TEST</Text>],
       data_availablity_graph: {},
       data_ts: [],
       hr24: [],
@@ -175,45 +175,57 @@ export default class RainfallGraph extends Component {
 
   componentDidMount() {
     Notification.endOfValidity();
-    // fetch('http://192.168.1.10:5000/api/rainfall/get_rainfall_plot_data/umi', {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     site_code: this.state.site_code,
-    //     date: this.state.date
-    //   }),
-    // }).then((response) => response.json())
-    //   .then((responseJson) => {
-    //   })
-    //   .catch((error) => {
-    //   });
+    fetch('http://192.168.1.10:5000/api/rainfall/get_rainfall_plot_data/umi', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        site_code: this.state.site_code,
+        date: this.state.date
+      }),
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        let online = responseJson[0]
+        let rainfall_container = []
+        for (const [index, value] of online.plot.entries()) {
+          let temp = this.renderTrendGraph(value.data, online['half of 2yr max'], online['2yr max'])
+            this.setState({rain_data: temp})
+            rainfall_container.push(<View style={sensor_maintenance_styles.graphContainer}>
+              <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Gauge name: {value.gauge_name.toUpperCase()} ({value.distance} KM away)</Text>
+              <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {online.date} </Text>
+              <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
+              <View style={{ width: '100%' }}>
+                <ChartView style={{ height: 200 }} config={this.state.rain_data}></ChartView>
+              </View>
+            </View>)
+        }
+        this.setState({ render_rainfall_graphs: rainfall_container });
 
-    let offline_data = Storage.getItem("RainfallSummary");
-    offline_data.then(response => {
-      console.log(response)
-      let offline = response[0]
-      let rainfall_container = []
-      offline.plot.forEach(element => {
-
+        console.log(this.state.render_rainfall_graphs);
+      })
+      .catch((error) => {
+        let offline_data = Storage.getItem("RainfallSummary");
+        offline_data.then(response => {
+          let offline = response[0]
+          let rainfall_container = []
+          for (const [index, value] of offline.plot.entries()) {
+            let temp = this.renderTrendGraph(value.data, offline['half of 2yr max'], offline['2yr max'])
+              this.setState({rain_data: temp})
+              rainfall_container.push(<View style={sensor_maintenance_styles.graphContainer}>
+                <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Gauge name: {value.gauge_name.toUpperCase()} ({value.distance} KM away)</Text>
+                <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {offline.date} </Text>
+                <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
+                <View style={{ width: '100%' }}>
+                  <ChartView style={{ height: 200 }} config={this.state.rain_data}></ChartView>
+                </View>
+              </View>)
+          }
+          this.setState({ render_rainfall_graphs: rainfall_container })
+          console.log(this.state.render_rainfall_graphs);
+        });
       });
-
-      for (const [index, value] of offline.plot.entries()) {
-        let temp = this.renderTrendGraph(value.data, offline['half of 2yr max'], offline['2yr max'])
-          this.setState({rain_data: temp})
-          rainfall_container.push(<View style={sensor_maintenance_styles.graphContainer}>
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Gauge name: {value.gauge_name.toUpperCase()} ({value.distance} KM away)</Text>
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {offline.date} </Text>
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
-            <View style={{ width: '100%' }}>
-              <ChartView style={{ height: 200 }} config={this.state.rain_data}></ChartView>
-            </View>
-          </View>)
-      }
-      this.setState({ render_rainfall_graphs: rainfall_container })
-    });
   }
   render() {
     return (
