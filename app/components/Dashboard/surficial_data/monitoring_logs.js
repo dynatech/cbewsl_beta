@@ -396,7 +396,6 @@ export default class MonitoringLogs extends Component {
             });
           });
       }, 3000)
-
     });
 
   }
