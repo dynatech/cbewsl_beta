@@ -17,7 +17,8 @@ export default class CurrentAlert extends Component {
       alert_details: [],
       release_button: [],
       retrigger_details: [],
-      spinner: false
+      spinner: false,
+      event_start_ts: ""
     };
   }
 
@@ -151,10 +152,10 @@ export default class CurrentAlert extends Component {
 
   displayTrigger(triggers, data) {
     let view = [];
-    console.log(triggers);
-    console.log(data)
+
     triggers.forEach(element => {
       let event_start = this.formatDateTime(data[0].event.event_start);
+      this.setState({event_start_ts: data[0].event.event_start})
       let validity = this.formatDateTime(data[0].event.validity);
       let latest_release = data[0].releases[0].release_time;
       let data_ts = this.formatDateTime(data[0].releases[0].data_ts);
@@ -211,13 +212,14 @@ export default class CurrentAlert extends Component {
     let view = []
     let temp = []
 
-    view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
-    )
-    let current_time = data[0].release_details.data_ts
-    temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time}</Text></Text></View>)
 
     if (data[0].trigger_list_arr != 0) {
 
+      view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
+      )
+      let current_time = data[0].release_details.data_ts
+      temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time}</Text></Text></View>)
+  
       this.setState({ trigger_length: data[0].trigger_list_arr.length })
       data[0].trigger_list_arr.forEach(element => {
         switch (element.trigger_type) {
@@ -253,7 +255,14 @@ export default class CurrentAlert extends Component {
       temp.push(invalid_flag)
 
     } else {
-      temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
+      if (data[0].release_details.data_ts != this.state.event_start_ts) {
+        view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
+        )
+        let current_time = data[0].release_details.data_ts
+        temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time}</Text></Text></View>)
+    
+        temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
+      }
     }
 
     view.push(<View style={{ alignItems: 'center', textAlign: 'center' }}>{temp}</View>)

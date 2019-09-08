@@ -182,8 +182,8 @@ export default class Summary extends Component {
                   this.setState({ spinner: false });
                 });
               });
-          }, 3000)
-      });
+          })
+      }, 2000);
     });
   }
 

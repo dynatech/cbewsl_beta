@@ -202,6 +202,8 @@ export default class DataSyncer extends Component {
     let data = Storage.getItem(storage_key);
     const ms = Network.getPing();
 
+    console.log("sync to server")
+    console.log(data)
     ms.then(response => {
       if (response.status == "In-active") {
         Alert.alert('Notice', response.msg)
@@ -209,6 +211,7 @@ export default class DataSyncer extends Component {
         data.then(local_data => {
           if (local_data != null || local_data != undefined) {
             local_data.forEach((value) => {
+              console.log(value)
               if (value.sync_status == 1 || value.sync_status == 2) {
                 fetch(url, {
                   method: 'POST',
@@ -219,6 +222,7 @@ export default class DataSyncer extends Component {
                   body: JSON.stringify({ value }),
                 }).then((response) => response.json())
                   .then((responseJson) => {
+                    console.log(responseJson)
                     ToastAndroid.show("Successfully sync to main server.", ToastAndroid.SHORT);
                   })
                   .catch((error) => {

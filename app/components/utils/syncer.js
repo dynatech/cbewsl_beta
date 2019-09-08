@@ -229,7 +229,6 @@ const Sync = {
         let url = API_LIST[storage_key];
         let data = Storage.getItem(storage_key);
         const ms = Network.getPing();
-
         ms.then(response => {
             if (response.status == "In-active") {
                 ToastAndroid.show("You are offline.", ToastAndroid.SHORT);
@@ -238,18 +237,21 @@ const Sync = {
                     if (local_data != null || local_data != undefined) {
                         local_data.forEach((value) => {
                             if (value.sync_status == 1 || value.sync_status == 2) {
+                                console.log(JSON.stringify(value))
                                 fetch(url, {
                                     method: 'POST',
                                     headers: {
                                         Accept: 'application/json',
                                         'Content-Type': 'application/json',
                                     },
-                                    body: JSON.stringify(value),
+                                    body: JSON.stringify({value}),
                                 }).then((response) => response.json())
                                     .then((responseJson) => {
+                                        this.updateStorage(storage_key)
                                         ToastAndroid.show("Syncing client to server...", ToastAndroid.SHORT);
                                     })
                                     .catch((error) => {
+                                        console.log(error)
                                         ToastAndroid.show("No network detected, Unable to network sync..", ToastAndroid.SHORT);
                                     });
                             } else {
@@ -271,7 +273,7 @@ const Sync = {
     overrideClient: async function (keys) {
 
     },
-    updateStorage: async function (key) {
+    updateStorage: function (key) {
         let stored_data = Storage.getItem(key)
         let updated_data = []
         stored_data.then(response => {

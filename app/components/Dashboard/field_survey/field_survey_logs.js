@@ -226,7 +226,6 @@ export default class FieldSurveyLogs extends Component {
             });
           });
       }, 3000)
-
     });
 
   }
