@@ -78,16 +78,17 @@ export default class SensorStatus extends Component {
   getStatusSummary() {
     let data_container = Storage.getItem('SensorMaintenanceLogs')
     data_container.then(response => {
-      console.log(response)
-      let latest_status = response[0]
-      let latest_maintenance = this.formatDateTime(latest_status.timestamp);
-      this.setState({
-        last_maintenance: latest_maintenance["date_only_format"],
-        rain_gauge_status: latest_status.rain_gauge_status,
-        number_of_working_nodes: latest_status.working_nodes,
-        anomalous_nodes: latest_status.anomalous_nodes,
-        spinner: false
-      })
+      if (response.length != 0) {
+        let latest_status = response[0]
+        let latest_maintenance = this.formatDateTime(latest_status.timestamp);
+        this.setState({
+          last_maintenance: latest_maintenance["date_only_format"],
+          rain_gauge_status: latest_status.rain_gauge_status,
+          number_of_working_nodes: latest_status.working_nodes,
+          anomalous_nodes: latest_status.anomalous_nodes
+        })
+      }
+      this.setState({spinner: false});
     })
   }
 

@@ -34,6 +34,7 @@ export default class CurrentSituationReport extends Component {
     let timestamp = date
     let current_timestamp = ""
     let text_format_timestamp = ""
+    let time = ""
     if (timestamp == null) {
       current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
       date = moment(new Date()).format("YYYY/MM/DD")
@@ -41,7 +42,7 @@ export default class CurrentSituationReport extends Component {
       text_format_timestamp = moment(new Date()).format("LLL")
     } else {
       current_timestamp = moment(date).format("YYYY-MM-DD HH:mm:ss")
-      date_only = moment(date).format('YYYY-MM-DD')
+      date = moment(date).format('YYYY/MM/DD')
       time = moment(date.toString()).format('hh:mm:ss A');
       text_format_timestamp = moment(date).format("LLL")
     }
@@ -49,7 +50,7 @@ export default class CurrentSituationReport extends Component {
 
     return {
       current_timestamp: current_timestamp,
-      date: date_only,
+      date: date,
       time: time,
       text_format_timestamp: text_format_timestamp
     }
