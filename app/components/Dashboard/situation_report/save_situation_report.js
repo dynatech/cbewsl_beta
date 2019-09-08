@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, ScrollView, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import DatePicker from 'react-native-datepicker';
 import { defaults } from '../../../assets/styles/default_styles';
 import { situation_report_styles } from '../../../assets/styles/situation_report_styles';
 import Notification from '../../utils/alert_notification';
@@ -18,6 +19,7 @@ export default class SaveSituationReport extends Component {
             summary: "",
             pdf_path: "",
             image_path: "",
+            time: "",
             spinner: true
         };
     }
@@ -56,16 +58,23 @@ export default class SaveSituationReport extends Component {
     }
 
     saveSituationReport() {
-        this.setState({ spinner: true })
+        // this.setState({ spinner: true })
         Notification.endOfValidity();
         const { situation_report_id,
             local_storage_id,
             sync_status,
             timestamp,
+            time,
             summary,
             pdf_path,
             image_path } = this.state
-        if (summary != "") {
+        if (summary != "" || date_time != "") {
+            let date_time = time;
+            let time_split = date_time.split(" ");
+            let time_selected = time_split[0];
+            console.log(date_time)
+            console.log(time_split)
+            console.log(time_selected)
             fetch('http://192.168.1.10:5000/api/situation_report/save_situation_report', {
                 method: 'POST',
                 headers: {
@@ -76,6 +85,7 @@ export default class SaveSituationReport extends Component {
                     situation_report_id: situation_report_id,
                     local_storage_id: local_storage_id,
                     sync_status: sync_status,
+                    time_selected: time_selected,
                     timestamp: timestamp,
                     summary: summary,
                     pdf_path: pdf_path,
@@ -100,7 +110,7 @@ export default class SaveSituationReport extends Component {
                             if (response == null) {
                                 Storage.removeItem("SituationReportLogs")
                                 Storage.setItem("SituationReportLogs", [data])
-                                ToastAndroid.show("Successfully added a new entry!",ToastAndroid.LONG);
+                                ToastAndroid.show("Successfully added a new entry!", ToastAndroid.LONG);
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -119,16 +129,16 @@ export default class SaveSituationReport extends Component {
                                 });
                                 Storage.removeItem("SituationReportLogs")
                                 Storage.setItem("SituationReportLogs", updated_data)
-                                ToastAndroid.show("Successfully updated an entry!",ToastAndroid.LONG);
+                                ToastAndroid.show("Successfully updated an entry!", ToastAndroid.LONG);
                             }
                             if (situation_report_id == 0) {
                                 Storage.removeItem("SituationReportLatest")
                                 Storage.setItem("SituationReportLatest", [data])
                             }
-                            
-                            setItemout(()=> {
-                                this.props.navigation.navigate('situation_logs');
-                            }, 1000)
+
+                            // setItemout(() => {
+                            this.props.navigation.navigate('situation_logs');
+                            // }, 1000)
                         });
                     } else {
                         ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
@@ -151,7 +161,7 @@ export default class SaveSituationReport extends Component {
                             if (response == null) {
                                 Storage.removeItem("SituationReportLogs")
                                 Storage.setItem("SituationReportLogs", [data])
-                                ToastAndroid.show("Successfully added a new entry!",ToastAndroid.LONG);
+                                ToastAndroid.show("Successfully added a new entry!", ToastAndroid.LONG);
                             } else {
                                 let temp = response
                                 temp.push(data)
@@ -171,7 +181,7 @@ export default class SaveSituationReport extends Component {
                                 });
                                 Storage.removeItem("SituationReportLogs")
                                 Storage.setItem("SituationReportLogs", updated_data)
-                                ToastAndroid.show("Successfully updated an entry!",ToastAndroid.LONG);
+                                ToastAndroid.show("Successfully updated an entry!", ToastAndroid.LONG);
                             }
                         } else {
                             let temp = response
@@ -189,7 +199,7 @@ export default class SaveSituationReport extends Component {
                                         pdf_path: pdf_path,
                                         image_path: image_path
                                     })
-                                    ToastAndroid.show("Successfully added a new entry!",ToastAndroid.LONG);
+                                    ToastAndroid.show("Successfully added a new entry!", ToastAndroid.LONG);
                                 } else {
                                     updated_data.push({
                                         situation_report_id: value.situation_report_id,
@@ -200,13 +210,13 @@ export default class SaveSituationReport extends Component {
                                         pdf_path: value.pdf_path,
                                         image_path: value.image_path
                                     })
-                                    ToastAndroid.show("Successfully updated an entry!",ToastAndroid.LONG);
+                                    ToastAndroid.show("Successfully updated an entry!", ToastAndroid.LONG);
                                 }
                             });
                             Storage.removeItem("SituationReportLogs")
                             Storage.setItem("SituationReportLogs", updated_data)
                         }
-                        setItemout(()=> {
+                        setItemout(() => {
                             this.props.navigation.navigate('situation_logs');
                         }, 1000)
                     });
@@ -237,6 +247,21 @@ export default class SaveSituationReport extends Component {
                     textStyle={spinner_styles.spinnerTextStyle}
                 />
                 <View style={situation_report_styles.menuSection}>
+                    <View style={{ width: '100%' }}>
+                        <DatePicker
+                            customStyles={{ dateInput: { borderWidth: 0 } }}
+                            style={[{ width: '95%' }, defaults.inputs]}
+                            format="HH:mm"
+                            date={this.state.time}
+                            mode="time"
+                            placeholder="Select time"
+                            duration={400}
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            showIcon={false}
+                            onDateChange={(time) => { this.setState({ time: time }) }}
+                        />
+                    </View>
                     <TextInput multiline={true}
                         numberOfLines={10} style={defaults.inputs} placeholder="Summary" value={this.state.summary} onChangeText={text => this.setState({ summary: text })} />
 

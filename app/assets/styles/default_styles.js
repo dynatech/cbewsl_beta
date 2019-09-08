@@ -5,10 +5,18 @@ let { height } = Dimensions.get('window');
 
 const defaults = StyleSheet.create({
   inputs: {
-    borderBottomWidth: 3,
+    borderWidth: 3,
     borderBottomColor: '#083451',
+    borderTopColor: '#083451',
+    borderLeftColor: '#083451',
+    borderRightColor: '#083451',
+    borderRadius: 5,
     marginLeft: 10,
     marginRight: 10,
+    marginTop: 3,
+    marginBottom: 3,
+    paddingLeft: 15,
+    paddingRight: 15,
     color: '#000'
   },
   datetimepicker: {

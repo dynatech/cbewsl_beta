@@ -47,6 +47,7 @@ export default class CurrentAlert extends Component {
       let rain_header_container = []
       let rain_temp = ""
       let moms_temp = ""
+      let has_alert_data = false;
       let release_button = [];
       console.log(candidate_alert)
       console.log(response)
