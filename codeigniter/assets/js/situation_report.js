@@ -44,8 +44,11 @@ function initializeSituationReportCalendar() {
             $("#print_current_situation_report").show();
             sendSituationReportViaEmail(date);
             generateSituationReportPDF(situation_reports[0]);
+            $("#situation_latest_report_details").show();
+            $("#no_latest_situation_report").hide();
         } else {
-            $("#latest_situation_report_date_time").text("No latest report.");
+            $("#situation_latest_report_details").hide();
+            $("#no_latest_situation_report").show();
             $("#send_current_situation_report").hide();
             $("#print_current_situation_report").hide();
         }
@@ -161,6 +164,7 @@ function generateSituationReportPDF(data) {
 }
 
 function sendSituationReportViaEmail(date) {
+    $("#send_situation_report_spinner").hide();
     $("#send_current_situation_report").unbind();
     $("#send_current_situation_report").click(function () {
         $("#sendEmailSituationReportModal").modal("show");
@@ -168,6 +172,8 @@ function sendSituationReportViaEmail(date) {
 
     $("#confirm_send_situation_report").unbind();
     $("#confirm_send_situation_report").click(function () {
+        $("#send_situation_report_spinner").show();
+        $("#confirm_send_situation_report").hide();
         let url = "http://192.168.1.10:5000/api/situation_report/send_email";
         let data = {
             date: date,
@@ -176,6 +182,8 @@ function sendSituationReportViaEmail(date) {
 
         $.post(url, data).done(function (response) {
             alert(response.message);
+            $("#send_situation_report_spinner").hide();
+            $("#confirm_send_situation_report").show();
             if (response.status == true) {
                 $("#email_for_situation_report").val("");
                 $("#sendEmailSituationReportModal").modal("hide");

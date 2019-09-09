@@ -87,6 +87,10 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button class="btn btn-primary" type="button" id="send_field_survey_spinner" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Sending. . .
+            </button>
             <button type="button" class="btn btn-primary" id="confirm_send_field_survey">Confirm</button>
         </div>
         </div>

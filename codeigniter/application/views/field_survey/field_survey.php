@@ -11,8 +11,8 @@
                 <p id="field_survey_status"></p>
                 <div class="row" id="latest_report_summary_details">
                     <div>
-                        <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"></img>
-                        <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"></img>
+                        <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
+                        <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"/>
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
@@ -40,7 +40,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"></img>
+                        <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/>
                     </div>
                     <div class="float-left" style="padding-top: 100px;">
                         <button type="button" class="btn btn-primary btn-sm" id="send_latest_field_survey">SEND</button>

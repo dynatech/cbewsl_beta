@@ -133,40 +133,6 @@ function setLatestFieldSurvey(formatted_data) {
 function generateFieldSurveyPDF(data, date) {
     $("#print_latest_field_survey").unbind();
     $("#print_latest_field_survey").click(function () {
-        // let pageWidth = 8.5,
-        //     lineHeight = 1.2,
-        //     margin = 0.5,
-        //     maxLineWidth = pageWidth - margin * 2,
-        //     fontSize = 20,
-        //     ptsPerInch = 72,
-        //     oneLineHeight = fontSize * lineHeight / ptsPerInch,
-        //     text = 'Features: ' + data.features + '\n' +
-        //         '\n' +
-        //         'Material Characterization: ' + data.mat_characterization + '\n' +
-        //         '\n' +
-        //         'Mechanism: ' + data.mechanism + '\n' +
-        //         '\n' +
-        //         'Exposure: ' + data.exposure + '\n' +
-        //         '\n' +
-        //         'Note: ' + data.note + '\n',
-        //     doc = new jsPDF({
-        //         unit: 'in',
-        //         lineHeight: lineHeight
-        //     }).setProperties({ title: 'Latest Field Survey Report' });
-
-        // let textLines = doc
-        //     .setFontSize(fontSize)
-        //     .splitTextToSize(text, maxLineWidth);
-
-        // doc.text(textLines, margin, margin + 2 * oneLineHeight);
-
-        // let format_date_time = formatDateTime(date);
-        // let file_name = 'Latest_Field_Survey_Date_' + format_date_time.for_file_name
-        // doc.setFontStyle('bold')
-        //     .text('Latest Field Survey Date: ' + date + '', margin, margin + oneLineHeight);
-
-        // doc.save(file_name + '.pdf');
-        // doc.output('dataurlnewwindow');
         let data = [FIELD_SURVEY_LOG_DATA[0]]
         if (data.length != 0) {
             printJS({
@@ -190,6 +156,7 @@ function generateFieldSurveyPDF(data, date) {
 }
 
 function sendFieldSurveyViaEmail(date) {
+    $("#send_field_survey_spinner").hide();
     $("#send_latest_field_survey").unbind();
     $("#send_latest_field_survey").click(function () {
         $("#sendEmailFieldSurveyModal").modal("show");
@@ -197,6 +164,8 @@ function sendFieldSurveyViaEmail(date) {
 
     $("#confirm_send_field_survey").unbind();
     $("#confirm_send_field_survey").click(function () {
+        $("#send_field_survey_spinner").show();
+        $("#confirm_send_field_survey").hide();
         let url = "http://192.168.1.10:5000/api/field_survey/send_email";
         let data = {
             date: date,
@@ -205,6 +174,8 @@ function sendFieldSurveyViaEmail(date) {
         $("#confirm_send_field_survey").prop('disabled', true);
         $.post(url, data).done(function (response) {
             alert(response.message);
+            $("#send_field_survey_spinner").hide();
+            $("#confirm_send_field_survey").show();
             if (response.status == true) {
                 $("#email_for_field_survey").val("");
                 $("#sendEmailFieldSurveyModal").modal("hide");

@@ -9,7 +9,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/datatables.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap/custom_css/style.css">
     <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/printjs/print.min.css"> -->
-    <link href="<?php echo base_url(); ?>assets/gijgo/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/gijgo/gijgo.min.css" rel="stylesheet" type="text/css">
+    <link href="<?php echo base_url(); ?>assets/bootstrap_datetime_picker/datetime_picker.css" rel="stylesheet" type="text/css">
     <link href="<?php echo base_url(); ?>assets/font_awesome/css/all.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/full_calendar/core/main.css" rel="stylesheet" />
     <link href="<?php echo base_url(); ?>assets/full_calendar/daygrid/main.css" rel="stylesheet" />
@@ -27,6 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <script src="<?php echo base_url(); ?>assets/highcharts/highcharts.js"></script>
     <script src="<?php echo base_url(); ?>assets/jspdf/jspdf.js"></script>
     <script src="<?php echo base_url(); ?>assets/gijgo/gijgo.min.js" type="text/javascript"></script>
+    <script src="<?php echo base_url(); ?>assets/bootstrap_datetime_picker/datetime_picker.js" type="text/javascript"></script>
     <!-- <script src="<?php echo base_url(); ?>assets/highcharts/highstock.js"></script> -->
     <!-- <script src="<?php echo base_url(); ?>assets/printjs/jspdf.min.js"></script> -->
     <script src="<?php echo base_url(); ?>assets/printjs/print.min.js"></script>

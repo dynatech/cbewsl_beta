@@ -22,12 +22,7 @@ function getCandidateAndLatestAlerts() {
         console.log(candidate_alerts)
         const is_release_time = candidate_alerts.is_release_time
         $("#current_alert_buttons").hide();
-        if (candidate_alerts.length != 0) {
-            $("#no_candidate_alert").hide();
-            displayCandidateAlert(candidate_alerts, is_release_time);
-        } else {
-            $("#no_candidate_alert").show();
-        }
+
 
         if (json_data.leo.latest.length != 0) {
             displayLatestAlert(json_data.leo.latest, candidate_alerts, is_release_time);
@@ -53,6 +48,13 @@ function getCandidateAndLatestAlerts() {
             $("#ewi_no_current_alert").hide();
         }
 
+        if (candidate_alerts.length != 0) {
+            $("#no_candidate_alert").hide();
+            displayCandidateAlert(candidate_alerts, is_release_time);
+        } else {
+            $("#no_candidate_alert").show();
+        }
+
 
 
     });
@@ -75,7 +77,7 @@ function displayLatestAlert(latest_data, candidate_alerts, is_release_time) {
 
     $("#ewi_alert_symbol").text(alert_level);
     $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest data: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
-    formatTriggerToText(trigger, latest_data[0].releases[0].data_ts, is_release_time);
+    formatTriggerToText(trigger, is_release_time, false);
     $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
 }
 
@@ -86,7 +88,7 @@ function displayOverdueAlert(overdue_data, candidate_alerts, is_release_time) {
     let alert_level = "Alert " + overdue.public_alert_symbol.alert_level;
     let alert_type = overdue.public_alert_symbol.alert_type;
     let recommended_response = overdue.public_alert_symbol.recommended_response;
-    let event_start = overdue.event.event_start;
+    let event_start = formatDateTime(overdue.event.event_start);
     let validity = formatDateTime(overdue.event.validity);
     let trigger = overdue.releases[0].triggers;
     let latest_release = overdue_data[0].releases[0].release_time;
@@ -96,7 +98,8 @@ function displayOverdueAlert(overdue_data, candidate_alerts, is_release_time) {
 
     $("#ewi_alert_symbol").text(alert_level);
     $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest data: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
-    formatTriggerToText(trigger, is_release_time);
+
+    formatTriggerToText(trigger, is_release_time, true);
     $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
 }
 
@@ -151,14 +154,15 @@ function displayCandidateAlert(candidate_alerts, is_release_time) {
                 .append("<input class='btn btn-primary' type='button' value='Valid' style='background-color: #195770;' id='candidate_alert_valid_" + trigger_id + "'>&nbsp;")
                 .append("<input class='btn btn-primary' type='button' value='Invalid' style='background-color: #195770;' id='candidate_alert_invalid_" + trigger_id + "'><hr>");
 
-            $('.alert_trigger').css('textTransform', 'capitalize');
+            $('.alert_trigger').css('texfalseransform', 'capitalize');
             if (value.invalid == true) {
-                $("#candidate_alert_invalid_" + trigger_id).prop('disabled', true);
+                false
+                $("#candidate_alert_invafalsed_" + trigger_id).prop('disabled', true);
             }
             onValidateCandidateAlert(trigger_id, candidate_alerts, value, trigger_type);
 
         });
-        $("#no_candidate_alert").hide();
+        $("#no_candidate_alert").hide(); false
         $("#candidate_alert_information").show();
     } else {
         if (candidate_alerts[0].trigger_list_arr.length == 0) {
@@ -166,6 +170,7 @@ function displayCandidateAlert(candidate_alerts, is_release_time) {
         } else {
             $("#no_candidate_alert").hide();
         }
+        // alert();
 
         $("#candidate_alert_information").hide();
         let alert_level = candidate_alerts[0].public_alert_level;
@@ -377,7 +382,8 @@ function publicAlert(is_onset = false) {
         });
 }
 
-function formatTriggerToText(trigger, ts, is_release_time) {
+function formatTriggerToText(trigger, is_release_time, is_overdue = false) {
+    console.log("is_overdue", is_overdue);
     $("#triggers").empty();
     console.log(trigger.length)
     if (trigger.length == 0) {
@@ -406,8 +412,6 @@ function formatTriggerToText(trigger, ts, is_release_time) {
         });
     }
 
-
-
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
         .append('&nbsp;<input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
     sendEwiToEmail();
@@ -422,10 +426,12 @@ function formatTriggerToText(trigger, ts, is_release_time) {
         candidate_alerts.done(function (data) {
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
+            candidate_alerts[0].is_overdue = is_overdue;
             let leo = json_data.leo;
             console.log(json_data);
-            if (leo.latest.length != 0) {
-                let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+            console.log("candidate_alerts", candidate_alerts);
+            if (leo.latest.length != 0 || leo.overdue.length != 0) {
+                let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert';
                 fetch(url, {
                     method: 'POST',
                     dataType: 'jsonp',
@@ -450,6 +456,8 @@ function formatTriggerToText(trigger, ts, is_release_time) {
         });
     });
 }
+
+
 
 function sendEwiToEmail() {
     // $("#ewi_send_to_email").hide();
