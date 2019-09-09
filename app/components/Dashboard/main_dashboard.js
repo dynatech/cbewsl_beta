@@ -178,8 +178,9 @@ export default class MainDashboard extends Component {
                 />)
                 top_position = top_position - 20;
             }
-
-            this.setState({ alert_badge: temp })
+            setTimeout(()=> {
+                this.setState({ alert_badge: temp })
+            },1000)   
         })
     }
 

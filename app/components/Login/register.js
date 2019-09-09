@@ -46,7 +46,6 @@ export default class Register extends Component {
         }),
       }).then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson)
           if (responseJson.status == true) {
             this.props.navigation.navigate('login');
             ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);

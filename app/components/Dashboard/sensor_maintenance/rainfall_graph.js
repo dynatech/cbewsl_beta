@@ -12,7 +12,7 @@ export default class RainfallGraph extends Component {
       date: null,
       time: null,
       modalVisible: false,
-      render_rainfall_graphs: [<Text>TEST</Text>],
+      render_rainfall_graphs: [<Text>Fetching Graph...</Text>],
       data_availablity_graph: {},
       data_ts: [],
       hr24: [],

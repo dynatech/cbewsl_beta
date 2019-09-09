@@ -5,9 +5,9 @@ const EwiTemplate = {
     EWI_SMS: async function (alert, ts_release) {
         let template = ""
         let site = "Umingan, Alimodian, Iloilo"
-        let greetings = "umaga"
         let nxt_ts_release = this.NEXT_RELEASE_TS(ts_release)
         let gndmeas_ts = this.GNDMEASE_TS(ts_release)
+        let greetings = this.GREATINGS(ts_release)
 
         switch (alert) {
             case "A1-R":
@@ -127,6 +127,20 @@ const EwiTemplate = {
         }
 
         return gndmeas_ts;
+    },
+    GREATINGS: function (release_ts) {
+        let release_hour = parseInt(release_ts.substring(11,13));
+        let greetings = ""
+        if (release_hour >= 0 && release_hour <= 11) {
+            greetings = "Umaga"
+        } else if (release_hour == 12) {
+            greetings = "Tanghali"
+        } else if (release_hour > 12 && release_hour <= 17) {
+            greetings = "Hapon"
+        } else {
+            greetings = "Gabi"
+        }
+        return greetings;
     }
 };
 
