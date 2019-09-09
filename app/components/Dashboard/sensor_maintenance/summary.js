@@ -55,17 +55,20 @@ export default class Summary extends Component {
         let online = responseJson[0]
         if (online["1D cml"] == null || online["1D cml"] == undefined || online["1D cml"] == "NO DATA") {
           online["1D cml"] = "NO DATA"
-          this.setState({ one_day_rain: "NO DATA", spinner: false })
+          this.setState({ one_day_rain: "NO DATA" })
         } else {
           this.setState({ one_day_rain: Math.round((online["1D cml"] / online["half of 2yr max"]) * 100).toString() + "%" })
         }
 
         if (online["3D cml"] == null || online["3D cml"] == undefined || online["3D cml"] == "NO DATA") {
           online["3D cml"] = "NO DATA"
-          this.setState({ three_day_rain: "NO DATA", spinner: false })
+          this.setState({ three_day_rain: "NO DATA" })
         } else {
-          this.setState({ three_day_rain: Math.round((online["3D cml"] / online["2yr max"]) * 100).toString() + "%", spinner: false })
+          this.setState({ three_day_rain: Math.round((online["3D cml"] / online["2yr max"]) * 100).toString() + "%" })
         }
+        setTimeout(()=> {
+          this.setState({spinner: false})
+        },3000)
       })
       .catch((error) => {
         let offline_data = Storage.getItem("RainfallSummary");
@@ -73,18 +76,21 @@ export default class Summary extends Component {
           let offline = response[0]
           if (offline["1D cml"] == null || offline["1D cml"] == undefined || offline["1D cml"] == "NO DATA") {
             offline["1D cml"] = "NO DATA"
-            this.setState({ one_day_rain: "NO DATA", spinner: false })
+            this.setState({ one_day_rain: "NO DATA" })
           } else {
             this.setState({ one_day_rain: Math.round((offline["1D cml"] / offline["half of 2yr max"]) * 100).toString() + "%" })
           }
 
           if (offline["3D cml"] == null || offline["3D cml"] == undefined || offline["3D cml"] == "NO DATA") {
             offline["3D cml"] = "NO DATA"
-            this.setState({ three_day_rain: "NO DATA", spinner: false })
+            this.setState({ three_day_rain: "NO DATA" })
           } else {
-            this.setState({ three_day_rain: Math.round((offline["3D cml"] / offline["2yr max"]) * 100).toString() + "%", spinner: false })
+            this.setState({ three_day_rain: Math.round((offline["3D cml"] / offline["2yr max"]) * 100).toString() + "%" })
           }
         });
+          setTimeout(()=> {
+            this.setState({spinner: false})
+          },3000)
       });
   }
 

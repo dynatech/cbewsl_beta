@@ -197,13 +197,11 @@ export default class RainfallGraph extends Component {
               <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {online.date} </Text>
               <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
               <View style={{ width: '100%' }}>
-                <ChartView style={{ height: 200 }} config={this.state.rain_data}></ChartView>
+                <ChartView originWhitelist={[""]} javascriptEnabled domStorageEnabled style={{ height: 200 }} config={this.state.rain_data}></ChartView>
               </View>
             </View>)
         }
         this.setState({ render_rainfall_graphs: rainfall_container });
-
-        console.log(this.state.render_rainfall_graphs);
       })
       .catch((error) => {
         let offline_data = Storage.getItem("RainfallSummary");
@@ -218,12 +216,11 @@ export default class RainfallGraph extends Component {
                 <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {offline.date} </Text>
                 <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
                 <View style={{ width: '100%' }}>
-                  <ChartView style={{ height: 200 }} config={this.state.rain_data}></ChartView>
+                  <ChartView originWhitelist={[""]} javascriptEnabled domStorageEnabled style={{ height: 200 }} config={this.state.rain_data}></ChartView>
                 </View>
               </View>)
           }
           this.setState({ render_rainfall_graphs: rainfall_container })
-          console.log(this.state.render_rainfall_graphs);
         });
       });
   }
