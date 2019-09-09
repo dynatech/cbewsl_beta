@@ -188,16 +188,21 @@ export default class CurrentAlert extends Component {
       });
     } else {
       let temp = data[0];
+      console.log(temp)
       let last_retirgger_ts = ""
+      let last_data_ts = this.formatDateTime(data[0].releases[0].data_ts)
+      let temp_info = ""
       temp.releases.forEach(element => {
         if (element.triggers.length != 0) {
           last_retirgger_ts = this.formatDateTime(element.triggers[0].ts);
+          temp_info = element.triggers[0].info
         }
       })
 
       view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Event start:</Text> {event_start.text_format_timestamp}</Text>)
       view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Last retrigger timestamp :</Text> {last_retirgger_ts.text_format_timestamp}</Text>)
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Latest release:</Text> {latest_release_text}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Last retrigger info :</Text> {temp_info}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Latest Data timestamp release:</Text> {last_data_ts.text_format_timestamp}</Text>)
       view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Validity:</Text> {validity.text_format_timestamp}</Text>)
     }
 
