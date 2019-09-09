@@ -60,30 +60,43 @@ export default class CurrentSituationReport extends Component {
     Notification.endOfValidity();
     fetch('http://192.168.1.10:5000/api/situation_report/get_latest_situation_report_data').then((response) => response.json())
       .then((responseJson) => {
+        console.log("GO HERE")
+        console.log(responseJson)
         let to_local_data = [];
-        for (const [index, value] of responseJson.entries()) {
-          let format_date_time = this.formatDateTime(date = value.timestamp);
+        if (Object.entries(responseJson[0]).length != 0 && responseJson[0].constructor === Object) {
+          for (const [index, value] of responseJson.entries()) {
+            let format_date_time = this.formatDateTime(date = value.timestamp);
+            this.setState({
+              latest_date: format_date_time["date"],
+              latest_time: format_date_time["time"],
+              summary: value.summary
+            });
+  
+            to_local_data.push({
+              situation_report_id: value.situation_report_id,
+              local_storage_id: 1,
+              sync_status: 3,
+              timestamp: format_date_time["current_timestamp"],
+              summary: value.summary,
+              pdf_path: value.pdf_path,
+              image_path: value.image_path
+            });
+          }
+          Storage.removeItem("SituationReportLatest")
+          Storage.setItem("SituationReportLatest", to_local_data)
+        } else {
           this.setState({
-            latest_date: format_date_time["date"],
-            latest_time: format_date_time["time"],
-            summary: value.summary
-          });
-
-          to_local_data.push({
-            situation_report_id: value.situation_report_id,
-            local_storage_id: 1,
-            sync_status: 3,
-            timestamp: format_date_time["current_timestamp"],
-            summary: value.summary,
-            pdf_path: value.pdf_path,
-            image_path: value.image_path
+            latest_date: "N/A",
+            latest_time: "N/A",
+            summary: "No current situation report"
           });
         }
-        Storage.removeItem("SituationReportLatest")
-        Storage.setItem("SituationReportLatest", to_local_data)
+
         this.setState({ spinner: false })
       })
       .catch((error) => {
+        console.log("NAH GO HERE")
+        console.log(error)
         let data_container = Storage.getItem("SituationReportLatest")
         let latest_report = [];
         data_container.then(response => {
@@ -96,15 +109,14 @@ export default class CurrentSituationReport extends Component {
                 summary: value.summary
               });
             }
-            this.setState({ spinner: false })
           } else {
             this.setState({
               latest_date: "N/A",
               latest_time: "N/A",
               summary: "No current situation report"
             });
-            this.setState({ spinner: false })
           }
+          this.setState({ spinner: false })
         });
       });
   }
