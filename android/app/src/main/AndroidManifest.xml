@@ -3,8 +3,6 @@
   package="com.cbewslprototype">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
       android:name=".MainApplication"
@@ -16,10 +14,9 @@
       android:usesCleartextTraffic="true" tools:targetApi="28">
       <activity
         android:name=".MainActivity"
-        android:launchMode="singleTask"
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-        android:windowSoftInputMode="adjustPan">
+        android:windowSoftInputMode="adjustResize">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />

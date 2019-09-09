@@ -88,7 +88,9 @@ export default class SensorStatus extends Component {
           anomalous_nodes: latest_status.anomalous_nodes
         })
       }
-      this.setState({spinner: false});
+      setTimeout(()=> {
+        this.setState({spinner: false});
+      }, 3000)
     })
   }
 

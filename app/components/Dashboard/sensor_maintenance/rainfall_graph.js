@@ -4,6 +4,7 @@ import ChartView from 'react-native-highcharts';
 import { sensor_maintenance_styles } from '../../../assets/styles/sensor_maintenance_styles';
 import Notification from '../../utils/alert_notification';
 import Storage from '../../utils/storage';
+import {WebView} from 'react-native-webview'
 
 export default class RainfallGraph extends Component {
   constructor(props) {
@@ -197,13 +198,11 @@ export default class RainfallGraph extends Component {
               <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {online.date} </Text>
               <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
               <View style={{ width: '100%' }}>
-                <ChartView style={{ height: 200 }} config={this.state.rain_data}></ChartView>
+                <ChartView originWhitelist={[""]} javaScriptEnabled={true} domStorageEnabled={true} style={{ height: 200 }} config={this.state.rain_data}></ChartView>
               </View>
             </View>)
         }
         this.setState({ render_rainfall_graphs: rainfall_container });
-
-        console.log(this.state.render_rainfall_graphs);
       })
       .catch((error) => {
         let offline_data = Storage.getItem("RainfallSummary");
@@ -218,12 +217,11 @@ export default class RainfallGraph extends Component {
                 <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Date: {offline.date} </Text>
                 <Text style={{ fontSize: 15, fontWeight: 'bold' }}> Data window: 7 days</Text>
                 <View style={{ width: '100%' }}>
-                  <ChartView style={{ height: 200 }} config={this.state.rain_data}></ChartView>
+                  <ChartView originWhitelist={[""]} javaScriptEnabled={true} domStorageEnabled={true} style={{ height: 200 }} config={this.state.rain_data}></ChartView>
                 </View>
               </View>)
           }
           this.setState({ render_rainfall_graphs: rainfall_container })
-          console.log(this.state.render_rainfall_graphs);
         });
       });
   }
