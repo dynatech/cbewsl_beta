@@ -17,7 +17,8 @@ export default class Summary extends Component {
       three_day_rain: 'Loading...',
       site_code: "umi",
       date: moment(new Date()).format("YYYY-MM-DD HH:MM:00"),
-      spinner: true
+      spinner: true,
+      graph_view: []
     };
   }
 

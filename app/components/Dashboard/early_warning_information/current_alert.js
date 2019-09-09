@@ -53,12 +53,12 @@ export default class CurrentAlert extends Component {
       let release_button = [];
 
       if (latest.length != 0) {
-        this.setState({ retrigger_details: this.getRetriggers(candidate_alert) });
+        
         let alert_level = this.displayAlertLevel(latest[0].public_alert_symbol.alert_level);
         view.push(alert_level)
         let triggers = this.displayTrigger(latest[0].releases[0].triggers, latest);
+        this.setState({ retrigger_details: this.getRetriggers(candidate_alert) });
         view.push(triggers);
-
         view.push(<Text style={{ fontSize: 20, paddingBottom: 20 }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text> {latest[0].public_alert_symbol.recommended_response}</Text>)
         release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
@@ -152,53 +152,77 @@ export default class CurrentAlert extends Component {
 
   displayTrigger(triggers, data) {
     let view = [];
+    console.log(triggers);
+    console.log(data);
 
-    triggers.forEach(element => {
-      let event_start = this.formatDateTime(data[0].event.event_start);
-      this.setState({event_start_ts: data[0].event.event_start})
-      let validity = this.formatDateTime(data[0].event.validity);
-      let latest_release = data[0].releases[0].release_time;
-      let data_ts = this.formatDateTime(data[0].releases[0].data_ts);
-      let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
-      let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
+    let event_start = this.formatDateTime(data[0].event.event_start);
+    this.setState({event_start_ts: data[0].event.event_start})
+    let validity = this.formatDateTime(data[0].event.validity);
+    let latest_release = data[0].releases[0].release_time;
+    let data_ts = this.formatDateTime(data[0].releases[0].data_ts);
+    let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
+    let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
 
-      switch (element.internal_sym.alert_symbol) {
-        case "m":
-        case "M":
-          view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Manifestation of movements:</Text> {element.info}</Text>)
-          break;
-        case "R":
-          view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Rainfall Trigger:</Text> {element.info}</Text>)
-          break;
-        case "E":
-          view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Earthquake:</Text> {element.info}</Text>)
-          break;
-      }
+    if (triggers.length != 0) {
+
+
+      triggers.forEach(element => {
+        switch (element.internal_sym.alert_symbol) {
+          case "m":
+          case "M":
+            view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Manifestation of movements:</Text> {element.info}</Text>)
+            break;
+          case "R":
+            view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Rainfall Trigger:</Text> {element.info}</Text>)
+            break;
+          case "E":
+            view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Earthquake:</Text> {element.info}</Text>)
+            break;
+        }
+  
+        view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Event start:</Text> {event_start.text_format_timestamp}</Text>)
+        view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Data timestamp :</Text> {data_ts.text_format_timestamp}</Text>)
+        view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Latest release:</Text> {latest_release_text}</Text>)
+        view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Validity:</Text> {validity.text_format_timestamp}</Text>)
+
+      });
+    } else {
+      let temp = data[0];
+      let last_retirgger_ts = ""
+      temp.releases.forEach(element => {
+        if (element.triggers.length != 0) {
+          last_retirgger_ts = this.formatDateTime(element.triggers[0].ts);
+        }
+      })
 
       view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Event start:</Text> {event_start.text_format_timestamp}</Text>)
-      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Data timestamp :</Text> {data_ts.text_format_timestamp}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Last retrigger timestamp :</Text> {last_retirgger_ts.text_format_timestamp}</Text>)
       view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Latest release:</Text> {latest_release_text}</Text>)
       view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Validity:</Text> {validity.text_format_timestamp}</Text>)
+    }
 
-    });
 
     return view;
   }
 
   releaseAlertConfirmation(alert_data) {
-    Alert.alert(
-      'Release Alert',
-      'Are you sure you want release this alert?',
-      [
-        {
-          text: 'No',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        { text: 'Yes', onPress: () => this.releaseAlert(alert_data) },
-      ],
-      { cancelable: false },
-    );
+    if (alert_data.is_release_time == false) {
+      Alert.alert('Notice', 'Please wait for the next release time.')
+    } else {
+      Alert.alert(
+        'Release Alert',
+        'Are you sure you want release this alert?',
+        [
+          {
+            text: 'No',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'Yes', onPress: () => this.releaseAlert(alert_data) },
+        ],
+        { cancelable: false },
+      );
+    }
   }
 
   releaseAlert(alert_data) {
@@ -255,6 +279,7 @@ export default class CurrentAlert extends Component {
       temp.push(invalid_flag)
 
     } else {
+
       if (data[0].release_details.data_ts != this.state.event_start_ts) {
         view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
         )
