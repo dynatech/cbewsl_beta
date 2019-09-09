@@ -3,11 +3,6 @@ package com.cbewslprototype;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.reactlibrary.RNReactNativePingPackage;
-import com.reactlibrary.RNReactNativePingPackage;
-import com.tkporter.sendsms.SendSMSPackage;
-import com.centaurwarchief.smslistener.SmsListenerPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -29,10 +24,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNReactNativePingPackage(),
-            SendSMSPackage.getInstance(),
-            new SmsListenerPackage(),
-            new VectorIconsPackage(),
             new RNGestureHandlerPackage()
       );
     }
