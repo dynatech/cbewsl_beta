@@ -24,6 +24,7 @@
                         <div class="col text-center" id="validity_column">
                             <br>
                             <div id="validity"></div>
+                            <div id="recommended_response"></div>
                         </div>
                     </div>
                     <div class="row">

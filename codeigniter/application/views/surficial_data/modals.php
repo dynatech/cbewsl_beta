@@ -16,7 +16,12 @@
                             <div class="form-group">
                                 <input type="text" id="moms_id" style="display: none;">
                                 <label for="number_of_members">Date and Time</label>
-                                <input class="form-control" type="text" id="moms_dt">
+                                <div class="input-group date" id="moms_dt" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#moms_dt" id="moms_date_time"/>
+                                    <div class="input-group-append" data-target="#moms_dt" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -24,13 +29,22 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="number_of_members">Type of feature</label>
-                                <textarea class="form-control" id="moms_t_feature" style="height : 100px"></textarea>
+                                <select class="form-control" id="moms_t_feature">
+                                    <option value="Crack">Crack</option>
+                                    <option value="Scarp">Scarp</option>
+                                    <option value="Seepage">Seepage</option>
+                                    <option value="Ponding">Ponding</option>
+                                    <option value="Tilted/Split trees">Tilted/Split trees</option>
+                                    <option value="Damage structures">Damage structures</option>
+                                    <option value="Slope Failure">Slope failure</option>
+                                    <option value="Bulding/Depression">Bulding/Depression</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col">
                         <div class="form-group">
-                                <label for="number_of_members">Name of feature</label>
-                                <textarea class="form-control" id="moms_n_feature" style="height : 100px"></textarea>
+                            <label for="number_of_members">Name of feature</label>
+                            <input type="text" class="form-control" id="moms_n_feature">
                             </div>
                         </div>
                     </div>
