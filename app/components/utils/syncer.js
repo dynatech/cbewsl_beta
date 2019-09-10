@@ -244,7 +244,7 @@ const Sync = {
                                         Accept: 'application/json',
                                         'Content-Type': 'application/json',
                                     },
-                                    body: JSON.stringify({value}),
+                                    body: JSON.stringify({ value }),
                                 }).then((response) => response.json())
                                     .then((responseJson) => {
                                         this.updateStorage(storage_key)

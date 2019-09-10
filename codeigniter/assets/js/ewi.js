@@ -71,14 +71,15 @@ function displayLatestAlert(latest_data, candidate_alerts, is_release_time) {
     let validity = formatDateTime(latest.event.validity);
     let trigger = latest.releases[0].triggers;
     let latest_release = latest_data[0].releases[0].release_time;
-    let data_ts = formatDateTime(latest_data[0].releases[0].data_ts);
+    let data_ts = formatDateTime(trigger[0].ts);
     let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
     let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
+    let as_of_datetime = candidate_alerts[0].release_details.data_ts
 
     $("#ewi_alert_symbol").text(alert_level);
-    $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest data: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
+    $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest retrigger timestamp: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest Data timestamp release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
     formatTriggerToText(trigger, is_release_time, false);
-    $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
+    $("#recommended_response").append("<hr><br>As of <b>" + as_of_datetime + "</b><br><b>Recommended Response:</b> " + recommended_response);
 }
 
 function displayOverdueAlert(overdue_data, candidate_alerts, is_release_time) {
@@ -92,15 +93,16 @@ function displayOverdueAlert(overdue_data, candidate_alerts, is_release_time) {
     let validity = formatDateTime(overdue.event.validity);
     let trigger = overdue.releases[0].triggers;
     let latest_release = overdue_data[0].releases[0].release_time;
-    let data_ts = formatDateTime(overdue_data[0].releases[0].data_ts);
+    let data_ts = formatDateTime(trigger[0].ts);
     let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
     let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
+    let as_of_datetime = candidate_alerts[0].release_details.data_ts
 
     $("#ewi_alert_symbol").text(alert_level);
-    $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest data: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
+    $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest retrigger timestamp: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest Data timestamp release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
 
     formatTriggerToText(trigger, is_release_time, true);
-    $("#triggers").append("<br><b>Recommended Response:</b> " + recommended_response);
+    $("#recommended_response").append("<hr><br>As of <b>" + as_of_datetime + "</b><br><b>Recommended Response:</b> " + recommended_response);
 }
 
 function displayExtendedAlert(extended_data, candidate_alerts, is_release_time) {

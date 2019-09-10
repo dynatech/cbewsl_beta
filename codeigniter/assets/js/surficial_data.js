@@ -7,6 +7,7 @@ $(document).ready(function () {
     onUploadMOMSChange();
     // uploadMomsData();
     $('#cancel_add_field_survey').modal('hide');
+    $('#moms_dt').datetimepicker();
 });
 
 function initializeSurficialData() {
@@ -249,11 +250,14 @@ function deleteMonitoringLogs(moms_id) {
 function initializeCRUDMonitoringLogs() {
     $('#add_monitoring_logs').on('click', function () {
         let url = "http://192.168.1.10:5000/api/surficial_data/save_monitoring_log";
+        let date_picker = $("#moms_date_time").val();
+        let formatted_datetime = moment(date_picker).format('YYYY-MM-DD H:mm:ss')
         let data = {
             moms_id: $("#moms_id").val(),
             type_of_feature: $("#moms_t_feature").val(),
             description: $("#moms_description").val(),
-            name_of_feature: $("#moms_n_feature").val()
+            name_of_feature: $("#moms_n_feature").val(),
+            timestamp: formatted_datetime
         }
 
         $.post(url, data).done(function (response) {
