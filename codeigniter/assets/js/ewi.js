@@ -74,7 +74,7 @@ function displayLatestAlert(latest_data, candidate_alerts, is_release_time) {
     let data_ts = formatDateTime(trigger[0].ts);
     let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
     let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
-    let as_of_datetime = candidate_alerts[0].release_details.data_ts
+    let as_of_datetime = latest_data[0].releases[0].data_ts
 
     $("#ewi_alert_symbol").text(alert_level);
     $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest retrigger timestamp: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest Data timestamp release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
@@ -96,7 +96,7 @@ function displayOverdueAlert(overdue_data, candidate_alerts, is_release_time) {
     let data_ts = formatDateTime(trigger[0].ts);
     let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
     let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
-    let as_of_datetime = candidate_alerts[0].release_details.data_ts
+    let as_of_datetime = latest_data[0].releases[0].data_ts
 
     $("#ewi_alert_symbol").text(alert_level);
     $("#validity").empty().append("<b>Event start: </b>" + event_start["text_format_timestamp"] + "<br><b>Latest retrigger timestamp: </b>" + data_ts["text_format_timestamp"] + "<br><b>Latest Data timestamp release:</b> " + latest_release_text + "<br><b>Validity:</b> " + validity["text_format_timestamp"]);
@@ -172,7 +172,6 @@ function displayCandidateAlert(candidate_alerts, is_release_time) {
         } else {
             $("#no_candidate_alert").hide();
         }
-        // alert();
 
         $("#candidate_alert_information").hide();
         let alert_level = candidate_alerts[0].public_alert_level;
@@ -189,19 +188,24 @@ function displayCandidateAlert(candidate_alerts, is_release_time) {
                 candidate_alerts.done(function (data) {
                     let json_data = JSON.parse(data);
                     candidate_alerts = JSON.parse(json_data.candidate_alert);
-                    let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
-                    fetch(url, {
-                        method: 'POST',
-                        dataType: 'jsonp',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(candidate_alerts[0]),
-                    }).then((response) => response.json()).then((responseJson) => {
-                        let release_data = responseJson;
-                        releaseAlert(release_data);
-                    });
+                    if (candidate_alerts != 0) {
+                        let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+                        fetch(url, {
+                            method: 'POST',
+                            dataType: 'jsonp',
+                            headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(candidate_alerts[0]),
+                        }).then((response) => response.json()).then((responseJson) => {
+                            let release_data = responseJson;
+                            releaseAlert(release_data);
+                        });
+                    } else {
+                        alert('Unable to release this time.')
+                    }
+
                 });
             });
         }
@@ -336,26 +340,33 @@ function onClickReleaseExtended(is_release_time) {
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
             let leo = json_data.leo;
-            if (leo.latest.length != 0) {
-                let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
-                fetch(url, {
-                    method: 'POST',
-                    dataType: 'jsonp',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(candidate_alerts[0]),
-                }).then((response) => response.json()).then((responseJson) => {
-                    console.log(responseJson)
-                    $("#confirmReleaseModal").modal("hide");
-                    let release_data = responseJson;
-                    releaseAlert(release_data);
-                    $("#confirm_valid_alert_modal").modal("hide");
-                });
+
+            if (candidate_alerts != 0) {
+                if (leo.extended.length != 0) {
+                    let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+                    fetch(url, {
+                        method: 'POST',
+                        dataType: 'jsonp',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(candidate_alerts[0]),
+                    }).then((response) => response.json()).then((responseJson) => {
+                        console.log(responseJson)
+                        $("#confirmReleaseModal").modal("hide");
+                        let release_data = responseJson;
+                        releaseAlert(release_data);
+                        $("#confirm_valid_alert_modal").modal("hide");
+                    });
+                } else {
+                    alert('Please wait for the next release time.')
+                }
             } else {
-                alert('Please wait for the next release time.')
+                alert('Unable to release this time.')
+                $("#confirm_valid_alert_modal").modal("hide");
             }
+
         });
     });
 }
@@ -428,33 +439,37 @@ function formatTriggerToText(trigger, is_release_time, is_overdue = false) {
         candidate_alerts.done(function (data) {
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
-            candidate_alerts[0].is_overdue = is_overdue;
             let leo = json_data.leo;
-            console.log(json_data);
-            console.log("candidate_alerts", candidate_alerts);
-            if (leo.latest.length != 0 || leo.overdue.length != 0) {
-                let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert';
-                fetch(url, {
-                    method: 'POST',
-                    dataType: 'jsonp',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(candidate_alerts[0]),
-                }).then((response) => response.json()).then((responseJson) => {
-                    console.log(responseJson)
-                    let release_data = responseJson;
-                    alert("Successfully Release!");
-                    $("#ewi_send_to_email").show();
-                    $("#confirm_release_ewi").hide();
-                    $("#confirmReleaseModal").modal("hide");
-                    releaseAlert(release_data);
-                    $("#confirm_valid_alert_modal").modal("hide");
-                });
+            if (candidate_alerts != 0) {
+                candidate_alerts[0].is_overdue = is_overdue;
+                if (leo.latest.length != 0 || leo.overdue.length != 0) {
+                    let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert';
+                    fetch(url, {
+                        method: 'POST',
+                        dataType: 'jsonp',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(candidate_alerts[0]),
+                    }).then((response) => response.json()).then((responseJson) => {
+                        console.log(responseJson)
+                        let release_data = responseJson;
+                        alert("Successfully Release!");
+                        $("#ewi_send_to_email").show();
+                        $("#confirm_release_ewi").hide();
+                        $("#confirmReleaseModal").modal("hide");
+                        releaseAlert(release_data);
+                        $("#confirm_valid_alert_modal").modal("hide");
+                    });
+                } else {
+                    alert('Please wait for the next release time.')
+                }
             } else {
-                alert('Please wait for the next release time.')
+                alert('Unable to release this time.')
+                $("#confirmReleaseModal").modal("hide");
             }
+
         });
     });
 }
