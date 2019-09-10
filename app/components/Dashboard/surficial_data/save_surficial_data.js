@@ -452,7 +452,7 @@ export default class SaveSurficialData extends Component {
                                     this.setState({ type_of_feature: itemValue })
                                 }>
                                 <Picker.Item label="Scarp" value="Scarp" />
-                                <Picker.Item label="Bitak" value="Bitak" />
+                                <Picker.Item label="Crack" value="Crack" />
                                 <Picker.Item label="Seepage" value="Seepage" />
                                 <Picker.Item label="Tilted/Split Trees" value="Tilted/Split Trees" />
                                 <Picker.Item label="Ponding" value="Ponding" />

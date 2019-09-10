@@ -98,6 +98,7 @@ export default class AlertValidation extends Component {
           } else {
             candidate[0].trigger_list_arr.forEach(element => {
               disable_invalid = []
+              let as_of_current_ts = this.formatDateTime(element.ts_updated)
               switch (element.trigger_type) {
                 case "rainfall":
                   invalid_flag = []
@@ -109,7 +110,9 @@ export default class AlertValidation extends Component {
                         <Text style={defaults.buttonText}>Invalid</Text>
                       </TouchableOpacity>)
                   } else {
-                    invalid_flag.push(<Text style={{ color: "#f59823", paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Rainfall Alert: {element.tech_info}</Text>)
+                    console.log(element)
+                    invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>As of {as_of_current_ts["text_format_timestamp"]}</Text>)
+                    invalid_flag.push(<Text style={{ color: "#f59823", textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Rainfall Alert: {element.tech_info}</Text>)
                     disable_invalid.push(
                       <TouchableOpacity style={defaults.button} onPress={() => { this.validateAlert(element.trigger_id, -1, "", cred_response.user_data.account_id, candidate[0]) }}>
                         <Text style={defaults.buttonText}>Invalid</Text>
@@ -281,6 +284,44 @@ export default class AlertValidation extends Component {
       ],
       { cancelable: false },
     );
+  }
+
+  formatDateTime(date = null) {
+    let timestamp = date
+    let current_timestamp = ""
+    let text_format_timestamp = ""
+    let date_format = ""
+    let date_only_format = ""
+    let time_format = ""
+    let time_format2 = ""
+    let for_file_name = ""
+    if (timestamp == null) {
+      current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS");
+      date_format = moment(new Date()).format("YYYY-MM-DD");
+      date_only_format = moment(new Date()).format("MMMM D, YYYY");
+      time_format = moment(new Date()).format("hh:MM a");
+      time_format2 = moment(new Date()).format("HH:MM a");
+      text_format_timestamp = moment(new Date()).format("LLL");
+      for_file_name = moment(new Date()).format("YYYY_MM_DD_HH_MM_SS");
+    } else {
+      current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS");
+      date_format = moment(date).format("YYYY-MM-DD");
+      date_only_format = moment(date).format("MMMM D, YYYY");
+      time_format = moment(date).format("hh:MM a");
+      time_format2 = moment(date).format("HH:MM a");
+      text_format_timestamp = moment(date).format("LLL");
+      for_file_name = moment(date).format("YYYY_MM_DD_HH_MM_SS");
+    }
+
+    return {
+      current_timestamp: current_timestamp,
+      date: date_format,
+      time_format: time_format,
+      time_format2: time_format2,
+      date_only_format: date_only_format,
+      text_format_timestamp: text_format_timestamp,
+      for_file_name: for_file_name
+    }
   }
 
   render() {

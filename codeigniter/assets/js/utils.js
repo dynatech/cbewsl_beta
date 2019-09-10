@@ -87,7 +87,7 @@ function reportData() {
 function logout() {
     $("#logout").on("click", function () {
         fetch('http://cbewsl.com/dashboard/unregisterSession').then(function (response) {
-
+            window.location.href = "http://cbewsl.com/home";
         });
     })
 }

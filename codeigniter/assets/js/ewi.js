@@ -213,7 +213,7 @@ function displayCandidateAlert(candidate_alerts, is_release_time) {
                             releaseAlert(release_data);
                         });
                     } else {
-                        alert('Unable to release this time.')
+                        alert('Notice! Please wait for the next releases time.')
                     }
 
                 });
@@ -495,9 +495,11 @@ function sendEwiToEmail() {
 
     $("#confirm_send_ewi").click(function () {
         let email = $("#email_for_ewi").val();
+        let html = $("#report_to_email").html();
         let url = "http://192.168.1.10:5000/api/ewi/send_ewi_via_email";
         let data = {
-            email: email
+            email: email,
+            html: html
         }
         $("#confirm_send_ewi").prop('disabled', true);
 

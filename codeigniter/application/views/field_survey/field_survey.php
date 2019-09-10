@@ -13,6 +13,7 @@
                     <div>
                         <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
                         <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"/>
+                        <div id="field_survey_to_email">
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
@@ -40,6 +41,7 @@
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                         <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/>
                     </div>
                     <div class="float-left" style="padding-top: 100px;">

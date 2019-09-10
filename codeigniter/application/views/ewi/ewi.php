@@ -9,35 +9,36 @@
         <div class="card">
             <div class="card-body">
                 <div id="ewi_current_alert_container">
-                    <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
+                <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
                     <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"/>
-                    <div class="row">
-                        <div class="col text-center" style="color: #ee9d01;">
-                            <h4><b id="ewi_alert_symbol">Alert 2</b></h4>
+                    <div id="report_to_email">
+                        <div class="row">
+                            <div class="col text-center" style="color: #ee9d01;">
+                                <h4><b id="ewi_alert_symbol">Alert 2</b></h4>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col text-center" id="triggers_column">
-                            <h5>Triggers</h5>
-                            <div id="triggers"></div>
+                        <div class="row">
+                            <div class="col text-center" id="triggers_column">
+                                <h5>Triggers</h5>
+                                <div id="triggers"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col text-center" id="validity_column">
-                            <br>
-                            <div id="validity"></div>
-                            <div id="recommended_response"></div>
+                        <div class="row">
+                            <div class="col text-center" id="validity_column">
+                                <br>
+                                <div id="validity"></div>
+                                <div id="recommended_response"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col text-center" id="extended_column">
-                            <br>
-                            <h5 id="extended_day">Validity</h5>
-                            <div id="extended_latest_release"></div>
+                        <div class="row">
+                            <div class="col text-center" id="extended_column">
+                                <br>
+                                <h5 id="extended_day">Validity</h5>
+                                <div id="extended_latest_release"></div>
+                            </div>
                         </div>
                     </div>
                     <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/>
-                    
                     <div class="row" id="release_alert_button">
                         <div class="col text-center">
                         </div>

@@ -96,17 +96,39 @@ const EwiTemplate = {
     },
     NEXT_RELEASE_TS: function (release_ts) {
         let release_hour = parseInt(release_ts.substring(11,13));
+        let release_minute = parseInt(release_ts.substring(14,16));
+        console.log(release_minute)
         let next_release = ""
-        if (release_hour > 0 && release_hour <= 4) {
-           next_release = "Mamayang 04:00 AM"
-        } else if (release_hour > 4 && release_hour <= 8) {
-           next_release = "Mamayang 08:00 AM"
-        } else if (release_hour > 8 && release_hour <= 12) {
-           next_release = "Mamayang 12:00 PM"
-        } else if (release_hour > 12 && release_hour <= 16) {
-           next_release = "Mamayang 04:00 PM"
-        } else if (release_hour > 16 && release_hour <= 20) {
-           next_release = "Mamayang 08:00 PM"
+        if (release_hour > 0 && release_hour < 4 ) {
+            if (release_minute < 30) {
+                next_release = "Mamayang 08:00 AM"
+            } else {
+                next_release = "Mamayang 04:00 AM"
+            }
+        } else if (release_hour > 4 && release_hour < 8 && release_minute <= 30) {
+            if (release_minute < 30) {
+                next_release = "Mamayang 12:00 PM"
+            } else {
+                next_release = "Mamayang 08:00 AM"
+            }  
+        } else if (release_hour > 8 && release_hour < 12 && release_minute <= 30) {
+            if (release_minute < 30) {
+                next_release = "Mamayang 04:00 PM"
+            } else {
+                next_release = "Mamayang 12:00 PM"
+            }   
+        } else if (release_hour > 12 && release_hour < 16 && release_minute <= 30) {
+            if (release_minute >= 30) {
+                next_release = "Mamayang 08:00 PM"
+            } else {
+                next_release = "Mamayang 04:00 PM"
+            }   
+        } else if (release_hour > 16 && release_hour < 17 && release_minute <= 30) {
+            if (release_minute >= 30) {
+                next_release = "Mamayang 12:00 AM"
+            } else {
+                next_release = "Mamayang 08:00 PM"
+            } 
         } else if (release_hour > 20 && release_hour <= 23) {
            next_release = "Bukas ng 12:00 AM"
         }

@@ -416,6 +416,8 @@ function displayRaiseMomsModal(data) {
         } else if (alert_level == "3") {
             int_sym = "m3"
             alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
+        } else {
+            int_sym = "m0"
         }
 
         let hour = moment(alert_validity).hours()
@@ -450,6 +452,7 @@ function displayRaiseMomsModal(data) {
         console.log(JSON.stringify(trigger_list));
         isOnSet(alert_level)
             .then((response) => {
+                console.log(response)
                 let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms';
                 fetch(url, {
                     method: 'POST',
@@ -460,6 +463,7 @@ function displayRaiseMomsModal(data) {
                     },
                     body: JSON.stringify(trigger_list),
                 }).then((responseJson) => {
+                    console.log(responseJson)
                     $("#raise_moms_modal").modal("hide");
                     publicAlert(response);
                     // $("#confirm_release_ewi").trigger("click");

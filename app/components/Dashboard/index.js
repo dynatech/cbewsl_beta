@@ -37,12 +37,6 @@ const AppDrawerNavigator = createDrawerNavigator({
     navigationOptions: {
       drawerLabel: "Logout"
     }
-  },
-  icon: {
-    screen: SearchIcon,
-    navigationOptions: {
-      drawerLabel: "Icon"
-    }
   }
 }, {
     contentComponent: CustomDrawerComponent,
