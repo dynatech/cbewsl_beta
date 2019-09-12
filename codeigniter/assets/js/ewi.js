@@ -71,7 +71,12 @@ function displayLatestAlert(latest_data, candidate_alerts, is_release_time) {
     let validity = formatDateTime(latest.event.validity);
     let trigger = latest.releases[0].triggers;
     let latest_release = latest_data[0].releases[0].release_time;
-    let data_ts = formatDateTime(trigger[0].ts);
+    let data_ts = ""
+    // if (trigger[0].ts == "undefined") {
+    // data_ts = "No new retrigger"
+    // } else {
+    data_ts = formatDateTime(trigger[0].ts);
+    // }
     let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
     let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
     let as_of_datetime = latest_data[0].releases[0].data_ts
@@ -93,7 +98,12 @@ function displayOverdueAlert(overdue_data, candidate_alerts, is_release_time) {
     let validity = formatDateTime(overdue.event.validity);
     let trigger = overdue.releases[0].triggers;
     let latest_release = overdue_data[0].releases[0].release_time;
-    let data_ts = formatDateTime(trigger[0].ts);
+    let data_ts = ""
+    // if (trigger[0].ts == "undefined") {
+    //     data_ts = "No new retrigger"
+    // } else {
+    data_ts = formatDateTime(trigger[0].ts);
+    // }
     let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
     let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
     let as_of_datetime = latest_data[0].releases[0].data_ts

@@ -9,6 +9,8 @@
         <div class="card">
             <div class="card-body">
                 <div id="ewi_current_alert_container">
+                    <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
+                    <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"/>
                     <div class="row">
                         <div class="col text-center" style="color: #ee9d01;">
                             <h4><b id="ewi_alert_symbol">Alert 2</b></h4>
@@ -34,6 +36,8 @@
                             <div id="extended_latest_release"></div>
                         </div>
                     </div>
+                    <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/>
+                    
                     <div class="row" id="release_alert_button">
                         <div class="col text-center">
                         </div>
