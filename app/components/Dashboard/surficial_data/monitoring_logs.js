@@ -11,6 +11,7 @@ import Storage from '../../utils/storage';
 import { spinner_styles } from '../../../assets/styles/spinner_styles';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Sync from '../../utils/syncer';
+import Notification from '../../utils/alert_notification';
 
 export default class MonitoringLogs extends Component {
   constructor(props) {
@@ -192,8 +193,9 @@ export default class MonitoringLogs extends Component {
         'Are you sure you want raise to this alert?',
         [
           {
-            text: 'Cancel',
-            style: 'cancel'
+            text: 'Non-significant',
+            style: 'cancel',
+            onPress: () => this.setAlertForMoms(data, "0")
           },
           {
             text: 'Significant',
@@ -204,7 +206,7 @@ export default class MonitoringLogs extends Component {
             onPress: () => this.setAlertForMoms(data, "3"),
           },
         ],
-        { cancelable: false },
+        { cancelable: true },
       );
     }
   }
@@ -224,13 +226,16 @@ export default class MonitoringLogs extends Component {
     let int_sym = ""
     let offline_data = Storage.getItem("Pub&CandidAlert");
     offline_data.then(response => {
+      response = JSON.parse(response.candidate_alert)[0]
       if (response == null || response == undefined) {
         if (alert_level == "2") {
-          int_sym = "m"
+          int_sym = "m2"
           alert_validity = moment(data.date).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
         } else if (alert_level == "3") {
-          int_sym = "M"
+          int_sym = "m3"
           alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
+        } else if (alert_level == "0") {
+          int_sym = "m0"
         }
 
         let hour = moment(alert_validity).hours()
@@ -250,34 +255,49 @@ export default class MonitoringLogs extends Component {
 
         let cred = Storage.getItem("loginCredentials");
         cred.then(cred_response => {
-          let temp = {
+          console.log(cred_response)
+          let trigger_list = {
             alert_level: alert_level,
-            data_ts: current_timestamp,
-            user_id: cred_response.user_data.user.user_id,
-            alert_validity: alert_validity,
-            trig_list: []
-          }
-
-          let trig_list = {
-            int_sym: int_sym,
-            remarks: data.description,
-            f_name: data.name_of_feature,
-            f_type: data.type_of_feature
-          }
-
-          temp.trig_list.push(trig_list)
-          let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
+            alert_validity: alert_validity.toString(),
+            data_ts: data.date.toString(),
+            user_id: cred_response.user_data.account_id,
+            trig_list: [
+                {
+                    int_sym: int_sym,
+                    remarks: data.description,
+                    f_name: data.name_of_feature,
+                    f_type: data.type_of_feature
+                }
+            ]
+        }
+          let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms';
+          fetch(url, {
+              method: 'POST',
+              dataType: 'jsonp',
+              headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(trigger_list),
+          }).then((responseJson) => {
+              alert("Successfuly raise MOMs.");
+          });
+          // temp.trig_list.push(trig_list)
+          // let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
         })
       } else {
+        console.log(response)
         let hour_validity = 0
         if (alert_level == "2") {
-          int_sym = "m"
+          int_sym = "m2"
           hour_validity = 24
           alert_validity = moment(data.date).add(hour_validity, 'hours').format("YYYY-MM-DD HH:mm:00")
         } else if (alert_level == "3") {
-          int_sym = "M"
+          int_sym = "m3"
           hour_validity = 48
           alert_validity = moment(data.date).add(hour_validity, 'hours').format("YYYY-MM-DD HH:mm:00")
+        } else if (alert_level == "0") {
+          int_sym = "m0"
         }
 
         let hour = moment(alert_validity).hours()
@@ -299,18 +319,102 @@ export default class MonitoringLogs extends Component {
           response.validty = alert_validity
         }
 
-        let trig_list = {
-          int_sym: int_sym,
-          remarks: data.description,
-          f_name: data.name_of_feature,
-          f_type: data.type_of_feature
-        }
-        response.alert_level = alert_level
-        response.trig_list.push(trig_list)
-        let raised_alerts = Storage.setItem("Pub&CandidAlert", response);
+
+        let cred = Storage.getItem("loginCredentials");
+        cred.then(cred_response => {
+          let trigger_list = {
+            alert_level: alert_level,
+            alert_validity: alert_validity.toString(),
+            data_ts: data.date.toString(),
+            user_id: cred_response.user_data.account_id,
+            trig_list: [
+                {
+                    int_sym: int_sym,
+                    remarks: data.description,
+                    f_name: data.name_of_feature,
+                    f_type: data.type_of_feature
+                }
+            ]
+        } 
+
+          let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms';
+            fetch(url, {
+                method: 'POST',
+                dataType: 'jsonp',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(trigger_list),
+            }).then((responseJson) => {
+                alert("Successfuly raise MOMs.");
+            });
+          // .then((response) => {
+          //   console.log("HERE")
+          //   console.log(response)
+          //     let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms';
+          //     fetch(url, {
+          //         method: 'POST',
+          //         dataType: 'jsonp',
+          //         headers: {
+          //             Accept: 'application/json',
+          //             'Content-Type': 'application/json',
+          //         },
+          //         body: JSON.stringify(trigger_list),
+          //     }).then((responseJson) => {
+          //         console.log(responseJson)
+          //         // $("#raise_moms_modal").modal("hide");
+          //         // publicAlert(response);
+          //         // $("#confirm_release_ewi").trigger("click");
+          //         // $("#confirm_send_ewi").trigger("click");
+          //         alert("Successfuly raise MOMs.");
+          //     });
+          // })
+          // temp.trig_list.push(trig_list)
+          // let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
+        })
+        // response.alert_level = alert_level
+        // console.log("HOW")
+        // console.log(response.trigger_list_arr)
+        // response.trigger_list_arr.push(trig_list)
+        // let raised_alerts = Storage.setItem("Pub&CandidAlert", response);
       }
+      // Notification.formatCandidateAlerts(response)
     })
   }
+
+
+    async isOnSet(moms_alert_level) {
+    let candidate_alerts = this.updateEwiData();
+    console.log("here")
+    candidate_alerts.then((json_data)=> {
+      console.log(json_data)
+      const { leo: { overdue, latest } } = json_data;
+      const merged_arr = [...latest, ...overdue];
+      console.log("----")
+      console.log(leo)
+      console.log(merged_arr)
+      let public_alert_level = 0;
+      if (merged_arr.length !== 0) {
+        const [current_alert] = merged_arr;
+        const { public_alert_symbol: { alert_level } } = current_alert;
+        public_alert_level = alert_level;
+      }
+      if (moms_alert_level > public_alert_level) {
+        console.log("T")
+        return true;
+      }
+      else {
+        console.log("F")
+        return false;
+      }
+    })
+}
+
+ async updateEwiData() {
+  const response = await fetch('http://192.168.1.10:5000/api/monitoring/get_candidate_and_current_alerts');
+   return await response.json();
+}
 
   getMonitoringLogs() {
     let credentials = Storage.getItem("loginCredentials");

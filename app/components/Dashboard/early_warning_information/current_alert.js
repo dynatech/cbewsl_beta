@@ -56,9 +56,13 @@ export default class CurrentAlert extends Component {
         
         let alert_level = this.displayAlertLevel(latest[0].public_alert_symbol.alert_level);
         view.push(alert_level)
+        let as_of_current_release = latest[0].releases[0].data_ts.split(" ");
+        let as_of_current_release_ts = as_of_current_release[0] + " " + latest[0].releases[0].release_time
+        let temp_as_of = this.formatDateTime(as_of_current_release_ts)
+        view.push(<Text style={{fontSize: 15, padding: 10, textAlign: 'center'}}>As of Last Release Timestamp <Text style={{fontWeight: 'bold'}}>{temp_as_of["text_format_timestamp"]}</Text></Text>)
         let triggers = this.displayTrigger(latest[0].releases[0].triggers, latest);
-        this.setState({ retrigger_details: this.getRetriggers(candidate_alert) });
         view.push(triggers);
+        this.setState({ retrigger_details: this.getRetriggers(candidate_alert) });
         view.push(<Text style={{ fontSize: 20, paddingBottom: 20 }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text> {latest[0].public_alert_symbol.recommended_response}</Text>)
         release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
@@ -74,7 +78,6 @@ export default class CurrentAlert extends Component {
       }
 
       if (extended.length != 0) {
-        console.log(extended[0])
         let day_of_extended = "Day " + extended[0].day + " of Extended monitoring";
         let latest_release = extendegetCurrentAlertd[0].releases[0].release_time;
         let data_ts = this.formatDateTime(extended[0].releases[0].data_ts);
@@ -152,19 +155,14 @@ export default class CurrentAlert extends Component {
 
   displayTrigger(triggers, data) {
     let view = [];
-    console.log(triggers);
-    console.log(data);
 
     let event_start = this.formatDateTime(data[0].event.event_start);
-    this.setState({event_start_ts: data[0].event.event_start})
+    this.setState({ event_start_ts: data[0].event.event_start })
     let validity = this.formatDateTime(data[0].event.validity);
     let latest_release = data[0].releases[0].release_time;
     let data_ts = this.formatDateTime(data[0].releases[0].data_ts);
     let formatted_release_time = moment(latest_release, 'HH:mm').format('h:mm A');
     let latest_release_text = data_ts["date_only_format"] + " " + formatted_release_time;
-
-    if (triggers.length != 0) {
-
 
       triggers.forEach(element => {
         switch (element.internal_sym.alert_symbol) {
@@ -179,16 +177,18 @@ export default class CurrentAlert extends Component {
             view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Earthquake:</Text> {element.info}</Text>)
             break;
         }
-  
-        view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Event start:</Text> {event_start.text_format_timestamp}</Text>)
-        view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Data timestamp :</Text> {data_ts.text_format_timestamp}</Text>)
-        view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Latest release:</Text> {latest_release_text}</Text>)
-        view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Validity:</Text> {validity.text_format_timestamp}</Text>)
-
       });
+
+
+    if (triggers.length != 0) {
+
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Event start:</Text> {event_start.text_format_timestamp}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Data timestamp :</Text> {data_ts.text_format_timestamp}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Latest release:</Text> {latest_release_text}</Text>)
+      view.push(<Text style={{ fontSize: 20, paddingBottom: 5 }}><Text style={{ fontWeight: 'bold' }}>Validity:</Text> {validity.text_format_timestamp}</Text>)
+
     } else {
       let temp = data[0];
-      console.log(temp)
       let last_retirgger_ts = ""
       let last_data_ts = this.formatDateTime(data[0].releases[0].data_ts)
       let temp_info = ""
@@ -211,22 +211,27 @@ export default class CurrentAlert extends Component {
   }
 
   releaseAlertConfirmation(alert_data) {
-    if (alert_data.is_release_time == false) {
-      Alert.alert('Notice', 'Please wait for the next release time.')
+    console.log(alert_data);
+    if (alert_data != null) {
+      if (alert_data.is_release_time == false) {
+        Alert.alert('Notice', 'Please wait for the next release time.')
+      } else {
+        Alert.alert(
+          'Release Alert',
+          'Are you sure you want release this alert?',
+          [
+            {
+              text: 'No',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            { text: 'Yes', onPress: () => this.releaseAlert(alert_data) },
+          ],
+          { cancelable: false },
+        );
+      }
     } else {
-      Alert.alert(
-        'Release Alert',
-        'Are you sure you want release this alert?',
-        [
-          {
-            text: 'No',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          { text: 'Yes', onPress: () => this.releaseAlert(alert_data) },
-        ],
-        { cancelable: false },
-      );
+      Alert.alert('Notice', 'Please wait for the next release time.')
     }
   }
 
@@ -241,60 +246,61 @@ export default class CurrentAlert extends Component {
     let view = []
     let temp = []
 
+    if (data.length != 0) {
+      if (data[0].trigger_list_arr != 0) {
 
-    if (data[0].trigger_list_arr != 0) {
-
-      view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
-      )
-      let current_time = data[0].release_details.data_ts
-      temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time}</Text></Text></View>)
-  
-      this.setState({ trigger_length: data[0].trigger_list_arr.length })
-      data[0].trigger_list_arr.forEach(element => {
-        switch (element.trigger_type) {
-          case "rainfall":
-            invalid_flag = []
-            if (element.invalid == true) {
-              this.setState({ trigger_length: this.state.trigger_length - 1 })
-              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert (INVALID):</Text> {element.tech_info}</Text>)
-            } else {
-              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}</Text>)
-            }
-            break;
-          case "moms":
-            invalid_flag = []
-            if (element.invalid == true) {
-              this.setState({ trigger_length: this.state.trigger_length - 1 })
-              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Surficial Alert (INVALID):</Text> {element.tech_info}</Text>)
-            } else {
-              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Surficial Alert:</Text> {element.tech_info}</Text>)
-            }
-            break;
-          case "earthquake":
-            invalid_flag = []
-            if (element.invalid == true) {
-              this.setState({ trigger_length: this.state.trigger_length - 1 })
-              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Earthquake Alert (INVALID):</Text> {element.tech_info}</Text>)
-            } else {
-              invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Earthquake Alert:</Text> {element.tech_info}</Text>)
-            }
-            break;
-        }
-      })
-      temp.push(invalid_flag)
-
-    } else {
-
-      if (data[0].release_details.data_ts != this.state.event_start_ts) {
         view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
         )
         let current_time = data[0].release_details.data_ts
         temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time}</Text></Text></View>)
-    
-        temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
+
+        this.setState({ trigger_length: data[0].trigger_list_arr.length })
+        data[0].trigger_list_arr.forEach(element => {
+          switch (element.trigger_type) {
+            case "rainfall":
+              invalid_flag = []
+              if (element.invalid == true) {
+                this.setState({ trigger_length: this.state.trigger_length - 1 })
+                invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert (INVALID):</Text> {element.tech_info}</Text>)
+              } else {
+                invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}</Text>)
+              }
+              break;
+            case "moms":
+              invalid_flag = []
+              if (element.invalid == true) {
+                this.setState({ trigger_length: this.state.trigger_length - 1 })
+                invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Surficial Alert (INVALID):</Text> {element.tech_info}</Text>)
+              } else {
+                invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Surficial Alert:</Text> {element.tech_info}</Text>)
+              }
+              break;
+            case "earthquake":
+              invalid_flag = []
+              if (element.invalid == true) {
+                this.setState({ trigger_length: this.state.trigger_length - 1 })
+                invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Earthquake Alert (INVALID):</Text> {element.tech_info}</Text>)
+              } else {
+                invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Earthquake Alert:</Text> {element.tech_info}</Text>)
+              }
+              break;
+          }
+        })
+        temp.push(invalid_flag)
+
+      } else {
+
+        if (data[0].release_details.data_ts != this.state.event_start_ts) {
+
+          view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
+          )
+          let current_time = data[0].release_details.data_ts
+          temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time}</Text></Text></View>)
+
+          temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
+        }
       }
     }
-
     view.push(<View style={{ alignItems: 'center', textAlign: 'center' }}>{temp}</View>)
     return view;
   }

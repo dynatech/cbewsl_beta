@@ -169,7 +169,8 @@ function sendFieldSurveyViaEmail(date) {
         let url = "http://192.168.1.10:5000/api/field_survey/send_email";
         let data = {
             date: date,
-            email: $("#email_for_field_survey").val()
+            email: $("#email_for_field_survey").val(),
+            html: $("#field_survey_to_email").html()
         }
         $("#confirm_send_field_survey").prop('disabled', true);
         $.post(url, data).done(function (response) {
