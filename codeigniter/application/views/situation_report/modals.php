@@ -21,6 +21,10 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button class="btn btn-primary" type="button" id="send_situation_report_spinner" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Sending. . .
+            </button>
             <button type="button" class="btn btn-primary" id="confirm_send_situation_report">Confirm</button>
         </div>
         </div>

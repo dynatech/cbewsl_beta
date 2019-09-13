@@ -62,6 +62,10 @@
                     <div class="col">
                         <input type="file" id="image_file" multiple="multiple" />
                         <button type="button" class="btn btn-primary" id="save_hazard_map">Add</button>
+                        <button class="btn btn-primary" type="button" id="upload_hazard_map_spinner" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Uploading
+                        </button>
                     </div>
                 </div>
                 <div class="row">

@@ -212,13 +212,19 @@ function readImage(file) {
 }
 
 function uploadHazardMap() {
+
+    $("#upload_hazard_map_spinner").hide();
     $('#save_hazard_map').on('click', function (e) {
+        $("#upload_hazard_map_spinner").show();
+        $("#save_hazard_map").hide();
         $("#upload_status").text("Uploading. . . . . Please wait.");
         e.preventDefault();
         if ($('#image_file').val() == '') {
             alert("Please Select the File");
-        }
-        else {
+            $("#upload_status").text("");
+            $("#upload_hazard_map_spinner").hide();
+            $("#save_hazard_map").show();
+        } else {
             let form_data = new FormData();
             let ins = document.getElementById('image_file').files.length;
             for (let x = 0; x < ins; x++) {
@@ -243,6 +249,9 @@ function uploadHazardMap() {
                     else if (response.status == false) {
                         $("#upload_status").text(response.message);
                     }
+
+                    $("#upload_hazard_map_spinner").hide();
+                    $("#save_hazard_map").show();
                 }
             });
         }

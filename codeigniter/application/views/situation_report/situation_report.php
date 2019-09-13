@@ -8,16 +8,22 @@
     <div class="tab-pane fade show active" id="current_situation" role="tabpanel" aria-labelledby="current_situation_report_tab">
         <div class="card">
             <div class="card-body">
-                <img src="http://cbewsl.com/assets/images/letter_header1.png"  width="100%" height="100%"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="100%" height="100%"></img>
-                <p id="latest_situation_report_date_time">
-                </p>
-                <p id="latest_situation_report_summary">
-                </p>
-                <img src="http://cbewsl.com/assets/images/letter_footer1.png"  width="100%" height="100%"></img>
-                <div class="float-left" style="padding-top: 100px;">
-                    <button type="button" class="btn btn-primary btn-sm" id="send_current_situation_report">SEND</button>
-                    <button type="button" class="btn btn-primary btn-sm" id="print_current_situation_report">SAVE & PRINT</button>
+                <div id="situation_latest_report_details">
+                    <img src="http://cbewsl.com/assets/images/letter_header1.png"  width="100%" height="100%"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="100%" height="100%"></img>
+                    <p id="latest_situation_report_date_time">
+                    </p>
+                    <p id="latest_situation_report_summary">
+                    </p>
+                    <img src="http://cbewsl.com/assets/images/letter_footer1.png"  width="100%" height="100%"></img>
+                    <div class="float-left" style="padding-top: 100px;">
+                        <button type="button" class="btn btn-primary btn-sm" id="send_current_situation_report">SEND</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="print_current_situation_report">SAVE & PRINT</button>
+                    </div>
                 </div>
+                <div id="no_latest_situation_report">
+                    No latest report.
+                </div>
+               
             </div>
         </div>
     </div>
