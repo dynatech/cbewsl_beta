@@ -57,7 +57,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" id="logout" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          <div id="logout"><a class="dropdown-item"><i class="fas fa-sign-out-alt" ></i> Logout</a></div>
         </div>
     </form>
   </div>

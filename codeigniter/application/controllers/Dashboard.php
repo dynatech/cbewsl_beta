@@ -142,6 +142,8 @@ class Dashboard extends CI_Controller {
       } catch (Exception $e) {
         $status = false;
       }
+      echo "HEY";
+      redirect('/home');
       echo json_encode($status);
     }
     

@@ -31,9 +31,6 @@ class Home extends CI_Controller {
 		$this->load->view('templates/header');
 		$this->load->view('home');
 		$this->load->view('templates/home_footer');
-		if (isset($_SESSION) == true) {
-			header("Location: /dashboard");
-		}
 	}
 
 	public function registerSession() {

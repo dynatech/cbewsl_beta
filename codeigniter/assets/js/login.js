@@ -28,12 +28,14 @@ function validateCredentials(username, password) {
     }).done(function (data) {
         let credentials = JSON.parse(data)
         if (credentials.status == true) {
+            console.log(credentials)
             let session = {
                 role: credentials.role,
                 user_id: credentials.user_data.account_id,
-                first_name: credentials.user_data.user.first_name,
-                last_name: credentials.user_data.user.last_name,
+                first_name: credentials.user_data.username,
+                last_name: credentials.user_data.username,
             }
+            window.location.href = "http://cbewsl.com/dashboard";
             $.ajax({
                 url: "http://cbewsl.com/api/register_session",
                 type: "POST",
@@ -49,7 +51,7 @@ function validateCredentials(username, password) {
                 }
             });
         } else {
-            alert(data.message);
+            alert("Invalid login.");
         }
     });
 }
