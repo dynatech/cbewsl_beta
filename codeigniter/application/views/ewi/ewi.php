@@ -38,7 +38,7 @@
                             </div>
                         </div>
                     </div>
-                    <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/>
+                    <!-- <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/> -->
                     <div class="row" id="release_alert_button">
                         <div class="col text-center">
                         </div>

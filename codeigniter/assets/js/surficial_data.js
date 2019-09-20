@@ -40,6 +40,7 @@ function initializeSurficialData() {
                 let latest_moms_date = formatDateTime(surficial_summary[0].moms_data[0].date)
                 $(".surficial-measuremnt-container h5").text(last_data);
                 $(".moms-container").empty();
+                $(".moms-container").append("<h4 style='color: #717171'>Manifestations of movement</h4>");
                 $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Type of Feature: " + surficial_summary[0].moms_data[0].type_of_feature + "</p>");
                 $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Description: " + surficial_summary[0].moms_data[0].description + "</p>");
                 $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Name of Feature: " + surficial_summary[0].moms_data[0].name_of_feature + "</p>");
