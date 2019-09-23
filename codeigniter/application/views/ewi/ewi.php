@@ -19,7 +19,7 @@
                         </div>
                         <div class="row">
                             <div class="col text-center" id="triggers_column">
-                                <h5>Triggers</h5>
+                                <h5 id="triggers_label">Triggers</h5>
                                 <div id="triggers"></div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                     </div>
-                    <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/>
+                    <!-- <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/> -->
                     <div class="row" id="release_alert_button">
                         <div class="col text-center">
                         </div>
