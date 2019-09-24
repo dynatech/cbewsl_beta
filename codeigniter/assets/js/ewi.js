@@ -18,6 +18,8 @@ function getCandidateAndLatestAlerts() {
         let json_data = JSON.parse(data);
         let has_alert_data = false;
         let candidate_alerts = JSON.parse(json_data.candidate_alert);
+        console.log(json_data);
+        console.log(candidate_alerts);
         $("#current_alert_buttons").hide();
 
         if (json_data.leo.extended.length != 0) {
@@ -33,11 +35,11 @@ function getCandidateAndLatestAlerts() {
         }
 
         if (json_data.leo.latest.length != 0) {
-            displayLatestAlert(json_data.leo.latest, true);
+            displayLatestAlert(json_data.leo.latest, candidate_alerts, true);
         }
 
         if (json_data.leo.overdue.length != 0) {
-            displayOverdueAlert(json_data.leo.overdue, true);
+            displayOverdueAlert(json_data.leo.overdue, candidate_alerts, true);
         }
 
         if (candidate_alerts.length != 0) {
@@ -52,7 +54,7 @@ function getCandidateAndLatestAlerts() {
     });
 }
 
-function displayLatestAlert(latest_data, has_alert_data) {
+function displayLatestAlert(latest_data, candidate_alerts, has_alert_data) {
     let latest = latest_data[0];
     let alert_level = "Alert " + latest.public_alert_symbol.alert_level;
     if(alert_level == "Alert 0"){
@@ -70,7 +72,14 @@ function displayLatestAlert(latest_data, has_alert_data) {
         let validity = formatDateTime(latest.event.validity);
         let trigger = latest.releases[0].triggers;
         let latest_retrigger_timestamp = "none";
-        let formatted_as_of = formatDateTime(latest.releases[0].data_ts);
+
+        let formatted_as_of = "";
+        if(candidate_alerts.length == 0){
+            formatted_as_of = formatDateTime(latest.releases[0].data_ts);
+        }else{
+            formatted_as_of = formatDateTime(candidate_alerts[0].release_details.data_ts)
+        }
+
         let as_of_datetime = formatted_as_of["text_format_timestamp"] + "</b> data.";
         let latest_release_text = "none";
         let no_trigger = false;
@@ -132,7 +141,7 @@ function displayLatestAlert(latest_data, has_alert_data) {
     
 }
 
-function displayOverdueAlert(overdue_data, has_alert_data) {
+function displayOverdueAlert(overdue_data, candidate_alerts, has_alert_data) {
     let overdue = overdue_data[0];
     let alert_level = "Alert " + overdue.public_alert_symbol.alert_level;
     if(alert_level == "Alert 0"){
@@ -150,7 +159,12 @@ function displayOverdueAlert(overdue_data, has_alert_data) {
         let validity = formatDateTime(overdue.event.validity);
         let trigger = overdue.releases[0].triggers;
         let latest_retrigger_timestamp = "none";
-        let formatted_as_of = formatDateTime(overdue.releases[0].data_ts);
+        let formatted_as_of = "";
+        if(candidate_alerts.length == 0){
+            formatted_as_of = formatDateTime(overdue.releases[0].data_ts);
+        }else{
+            formatted_as_of = formatDateTime(candidate_alerts[0].release_details.data_ts)
+        }
         let as_of_datetime = formatted_as_of["text_format_timestamp"] + "</b> data.";
         let latest_release_text = "none";
         let no_trigger = false;
@@ -311,6 +325,7 @@ function displayCandidateAlert(candidate_alerts) {
                         }).then((response) => response.json()).then((responseJson) => {
                             let release_data = responseJson;
                             releaseAlert(release_data);
+                            $("#confirmReleaseModal").modal("hide");
                         });
                     } else {
                         alert('Notice! Please wait for the next releases time.')
@@ -320,8 +335,6 @@ function displayCandidateAlert(candidate_alerts) {
             });
         }
     }
-
-
 }
 
 function onValidateCandidateAlert(trigger_id, candidate_alerts, alert_data, trigger_type) {
