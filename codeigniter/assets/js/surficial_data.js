@@ -466,7 +466,7 @@ function displayRaiseMomsModal(data) {
                 }).then((responseJson) => {
                     console.log(responseJson)
                     $("#raise_moms_modal").modal("hide");
-                    publicAlert(response);
+                    publicAlert(true);
                     // $("#confirm_release_ewi").trigger("click");
                     // $("#confirm_send_ewi").trigger("click");
                     alert("Successfuly raise MOMs.");
