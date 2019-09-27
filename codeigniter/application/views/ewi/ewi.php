@@ -19,7 +19,7 @@
                         </div>
                         <div class="row">
                             <div class="col text-center" id="triggers_column">
-                                <h5 id="triggers_label">Triggers</h5>
+                                <h5>Triggers</h5>
                                 <div id="triggers"></div>
                             </div>
                         </div>

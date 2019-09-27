@@ -38,6 +38,7 @@
                                     <option value="Damage structures">Damage structures</option>
                                     <option value="Slope Failure">Slope failure</option>
                                     <option value="Bulding/Depression">Bulding/Depression</option>
+                                    <option value="none">None</option>
                                 </select>
                             </div>
                         </div>
@@ -148,6 +149,16 @@
             </button>
         </div>
         <div class="modal-body">
+            <div class="form-group">
+                <input type="text" id="moms_id" style="display: none;">
+                <label for="number_of_members">Observance Timestamp</label>
+                <div class="input-group date" id="observance_timestamp" data-target-input="nearest">
+                    <input type="text" class="form-control datetimepicker-input" data-target="#observance_timestamp" id="observance_ts"/>
+                    <div class="input-group-append" data-target="#observance_timestamp" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
+            </div>
             <label>Select alert level</label>
             <select id="moms_alert_level" class="form-control">
                 <option value="0">Non-significant</option>
