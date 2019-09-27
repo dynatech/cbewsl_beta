@@ -8,13 +8,28 @@ $(document).ready(function () {
     // uploadMomsData();
     $('#cancel_add_field_survey').modal('hide');
     $('#moms_dt').datetimepicker();
+    $('#observance_timestamp').datetimepicker();
+    initializeMomsFeatures();
 });
+
+function initializeMomsFeatures(){
+    let url = 'http://192.168.150.1.10:5000/api/moms/get_moms_features';
+    fetch(url).then((response) => response.json())
+        .then((responseJson) => {
+            let moms_features = responseJson;
+            $("#moms_t_feature").empty();
+            moms_features.forEach(function (value) {
+                let feature_value = value.feature_value;
+                $("#moms_t_feature").append('<option value="'+feature_value+'">'+value.feature_type+'</option>');
+            })
+        });
+}
 
 function initializeSurficialData() {
     $('#surficial-data-tab').on('click', function () {
         console.log("Loaded");
         $(".surficial-measuremnt-container h5").text("Change");
-        fetch('http://192.168.1.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
+        fetch('http://192.168.150.1.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
             .then((responseJson) => {
                 let surficial_summary = responseJson;
                 let graph_plot_data = [];
@@ -117,7 +132,7 @@ function initializeCurrentMeasurement() {
     $("#current_measurement_tab").on('click', function () {
         $('.measurement-header').empty();
         $('.measurements').empty();
-        fetch('http://192.168.1.10:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
+        fetch('http://192.168.150.1.10:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
             .then((responseJson) => {
                 let formmated_timestamp = formatDateTime(date = responseJson.current_measurement_date)
                 let crack_sets = []
@@ -135,12 +150,13 @@ function initializeCurrentMeasurement() {
 
 function initializeMonitoringLogs() {
     let formatted_data = []
-    fetch('http://192.168.1.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
+    fetch('http://192.168.150.1.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
         .then((responseJson) => {
             responseJson.forEach(function (value) {
                 let entry = {
                     moms_id: value.moms_id,
                     date: value.date,
+                    date_updated: value.date_updated,
                     feature_type: value.type_of_feature,
                     feature_name: value.name_of_feature,
                     description: value.description
@@ -152,6 +168,7 @@ function initializeMonitoringLogs() {
                 "bDestroy": true,
                 "columns": [
                     { "data": "date" },
+                    { "data": "date_updated" },
                     { "data": "feature_type" },
                     { "data": "feature_name" },
                     { "data": "description" },
@@ -198,6 +215,7 @@ function initializeCRUDLogs(datatable) {
     $('#moms_table tbody').on('click', '#release_moms', function () {
         let data = datatable.row($(this).parents('tr')).data();
         displayRaiseMomsModal(data);
+        console.log(data);
     });
 }
 
@@ -205,8 +223,8 @@ function initializeCRUDLogs(datatable) {
 function monitoringLogsMod(data) {
     $('#moms_id').val(data.moms_id);
     $('#moms_dt').val(data.date);
-    $('#moms_t_feature').val(data.feature_name);
-    $('#moms_n_feature').val(data.feature_type);
+    $('#moms_t_feature').val(data.feature_type);
+    $('#moms_n_feature').val(data.feature_name);
     $('#moms_description').val(data.description);
 }
 
@@ -214,6 +232,7 @@ function initializeAddMonitoringLogs() {
     $("#add_moms_form").on("click", function () {
         $('#moms_id').val(0);
         $('#moms_dt').val("");
+        $('#moms_date_time').val("");
         $('#moms_t_feature').val("");
         $('#moms_n_feature').val("");
         $('#moms_description').val("");
@@ -229,7 +248,7 @@ function deleteMonitoringLogsConfirmation(data) {
 }
 
 function deleteMonitoringLogs(moms_id) {
-    let url = "http://192.168.1.10:5000/api/moms_data/delete_moms_data";
+    let url = "http://192.168.150.1.10:5000/api/moms_data/delete_moms_data";
     let data = {
         "moms_id": moms_id
     }
@@ -250,7 +269,7 @@ function deleteMonitoringLogs(moms_id) {
 
 function initializeCRUDMonitoringLogs() {
     $('#add_monitoring_logs').on('click', function () {
-        let url = "http://192.168.1.10:5000/api/surficial_data/save_monitoring_log";
+        let url = "http://192.168.150.1.10:5000/api/surficial_data/save_monitoring_log";
         let date_picker = $("#moms_date_time").val();
         let formatted_datetime = moment(date_picker).format('YYYY-MM-DD H:mm:ss')
         let data = {
@@ -258,7 +277,8 @@ function initializeCRUDMonitoringLogs() {
             type_of_feature: $("#moms_t_feature").val(),
             description: $("#moms_description").val(),
             name_of_feature: $("#moms_n_feature").val(),
-            timestamp: formatted_datetime
+            timestamp: formatted_datetime,
+            observance_ts: formatted_datetime
         }
 
         $.post(url, data).done(function (response) {
@@ -407,9 +427,10 @@ function displayRaiseMomsModal(data) {
     $('#raise_moms').unbind();
     $('#raise_moms').on('click', function () {
         let alert_level = $("#moms_alert_level").val();
-        let current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS")
         let alert_validity = ""
         let int_sym = ""
+        let date_picker = $("#observance_ts").val();
+        let formatted_datetime = moment(date_picker).format('YYYY-MM-DD H:mm:ss')
 
         if (alert_level == "2") {
             int_sym = "m2"
@@ -439,7 +460,8 @@ function displayRaiseMomsModal(data) {
         let trigger_list = {
             alert_level: alert_level,
             alert_validity: alert_validity.toString(),
-            data_ts: data.date.toString(),
+            data_ts: formatted_datetime,
+            observance_ts: formatted_datetime,
             user_id: 1,
             trig_list: [
                 {
@@ -450,11 +472,21 @@ function displayRaiseMomsModal(data) {
                 }
             ]
         }
-        console.log(JSON.stringify(trigger_list));
+
+        
+        let moms_data = {
+            moms_id: data.moms_id,
+            type_of_feature: data.feature_type,
+            description: data.description,
+            name_of_feature: data.feature_type,
+            timestamp: data.date,
+            observance_ts: formatted_datetime
+        }
+        console.log(moms_data)
         isOnSet(alert_level)
             .then((response) => {
                 console.log(response)
-                let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms';
+                let url = 'http://192.168.150.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web';
                 fetch(url, {
                     method: 'POST',
                     dataType: 'jsonp',
@@ -467,12 +499,19 @@ function displayRaiseMomsModal(data) {
                     console.log(responseJson)
                     $("#raise_moms_modal").modal("hide");
                     publicAlert(true);
-                    // $("#confirm_release_ewi").trigger("click");
-                    // $("#confirm_send_ewi").trigger("click");
+                    updateObservanceTs(moms_data);
                     alert("Successfuly raise MOMs.");
                 });
             })
 
+    });
+}
+
+function updateObservanceTs(moms_data){
+    let url = "http://192.168.150.1.10:5000/api/surficial_data/save_monitoring_log";
+    $.post(url, moms_data).done(function (response) {
+        console.log("Updated observance timestamp");
+        initializeMonitoringLogs();
     });
 }
 

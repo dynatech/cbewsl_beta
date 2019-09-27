@@ -45,7 +45,8 @@
             <table id="moms_table" class="display table table-striped" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Date and Time</th>
+                                <th>Date Inserted</th>
+                                <th>Observance Timestamp</th>
                                 <th>Type of feature</th>
                                 <th>Name of feature</th>
                                 <th>Description</th>
@@ -54,7 +55,8 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Date and Time</th>
+                                <th>Date Inserted</th>
+                                <th>Observance Timestamp</th>
                                 <th>Type of feature</th>
                                 <th>Name of feature</th>
                                 <th>Description</th>
