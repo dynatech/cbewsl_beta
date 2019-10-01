@@ -66,7 +66,7 @@ export default class SituationLogs extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let credentials = Storage.getItem("loginCredentials");
     credentials.then(response => {
       let role_id = response.role_id;
