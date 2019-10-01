@@ -303,8 +303,17 @@ function onClickReleaseExtended() {
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
             let leo = json_data.leo;
-
-            if (candidate_alerts != 0) {
+            is_for_release = false;
+            if(candidate_alerts.length != 0){
+                let is_release_time = candidate_alerts[0].is_release_time;
+                if(is_release_time == true){
+                    is_for_release = true;
+                }
+            }else{
+                is_for_release = false;
+            }
+            
+            if (is_for_release == true) {
                 if (leo.extended.length != 0) {
                     let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
                     fetch(url, {
@@ -335,7 +344,7 @@ function onClickReleaseExtended() {
     
 }
 
-function releaseAlert(release_data) {
+function releaseAlert(release_data, is_moms=false) {
     let url = 'http://192.168.1.10:5000/api/monitoring/insert_ewi';
     fetch(url, {
         method: 'POST',
@@ -346,7 +355,7 @@ function releaseAlert(release_data) {
         },
         body: JSON.stringify(release_data),
     }).then((responseJson) => {
-        publicAlert();
+        publicAlert(is_moms);
     });
 }
 
@@ -360,33 +369,7 @@ function publicAlert(is_onset = false) {
 }
 
 function formatTriggerToText(trigger, is_overdue = false, as_of_latest_release) {
-    $("#triggers").empty();
-    if (trigger.length == 0) {
-        $("#triggers").append("As of <b>" + as_of_latest_release + "</b><br>");
-        $("#triggers").append("No new retriggers");
-    } else {
-        $("#triggers").append("As of " + as_of_latest_release + "<br>");
-        $.each(trigger, function (key, value) {
-            let internal_symbol = value.internal_sym.alert_symbol;
-            if (internal_symbol == "E") {
-                let trigger_type = "Earthquake: ";
-                let magnitude = value.trigger_misc.eq.magnitude;
-                let longitude = value.trigger_misc.eq.longitude;
-                let latitude = value.trigger_misc.eq.latitude;
-                let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-                $("#triggers").append("<b>" + trigger_type + "</b>" + earth_quake_info + "<br>");
-            } else if (internal_symbol == "R") {
-                let trigger_type = "Rainfall: ";
-                let info = value.info;
-                $("#triggers").append("<b>" + trigger_type + "</b>" + info + "<br>");
-            } else if (internal_symbol == "m" || internal_symbol == "M") {
-                let trigger_type = "Manifestations of movement: ";
-                let info = value.info;
-                $("#triggers").append("<b>" + trigger_type + "</b>" + info + "<br>");
-            }
-
-        });
-    }
+    
 
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
         .append('&nbsp;<input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
@@ -403,7 +386,29 @@ function formatTriggerToText(trigger, is_overdue = false, as_of_latest_release) 
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
             let leo = json_data.leo;
-            if (candidate_alerts != 0) {
+            is_for_release = false;
+            let is_moms = false
+            
+
+            if(candidate_alerts.length != 0){
+                let is_release_time = candidate_alerts[0].is_release_time;
+                let internal_alert_level = candidate_alerts[0].internal_alert_level;
+                let check_moms = internal_alert_level.split("")
+                $.each(check_moms, function (key, value) {
+                    if(is_moms == false){
+                        if(value == "m" || value == "M"){
+                            is_moms = true
+                        }
+                    }
+                });
+                if(is_release_time == true){
+                    is_for_release = true;
+                }
+            }else{
+                is_for_release = false;
+            }
+            
+            if (is_for_release == true) {
                 candidate_alerts[0].is_overdue = is_overdue;
                 if (leo.latest.length != 0 || leo.overdue.length != 0) {
                     let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert';
@@ -422,7 +427,7 @@ function formatTriggerToText(trigger, is_overdue = false, as_of_latest_release) 
                         $("#ewi_send_to_email").show();
                         $("#confirm_release_ewi").hide();
                         $("#confirmReleaseModal").modal("hide");
-                        releaseAlert(release_data);
+                        releaseAlert(release_data, is_moms);
                         $("#confirm_valid_alert_modal").modal("hide");
                     });
                 } else {
@@ -458,6 +463,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         let formatted_as_of = "";
         let latest_data_information = "";
         let has_trigger = false;
+        let trigger_list_trigger_id = 0;
 
         if(candidate_alerts.length == 0){
             formatted_as_of = formatDateTime(leo_data.releases[0].data_ts);
@@ -468,17 +474,23 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
             if(trigger_list_arr.length != 0){
                 has_trigger = true;
                 $.each(trigger_list_arr, function (key, value) {
-                    let trigger_type = value.trigger_type;
-                    let tech_info = value.tech_info;
-                    let latest_timestamp = value.ts_updated;
-                    formatted_as_of = formatDateTime(latest_timestamp);
-                    if(trigger_type == "rainfall"){
-                        latest_data_information += "<b>Rainfall Alert:</b> " + tech_info + "<br>";
-                    }else if(trigger_type == "moms"){
-                        latest_data_information += "<b>Manifestations of movement:</b> " + tech_info + "<br>";
-                    }else if(trigger_type == "earthquake"){
-                        latest_data_information += "<b>Earthquake Alert:</b> " + tech_info + "<br>";
+                    if(trigger_list_trigger_id == 0){
+                        trigger_list_trigger_id = value.trigger_id
                     }
+                    if(candidate_alerts[0].release_details.data_ts == value.ts_updated){
+                        let trigger_type = value.trigger_type;
+                        let tech_info = value.tech_info;
+                        if(trigger_type == "rainfall"){
+                            latest_data_information += "<b>Rainfall Alert:</b> " + tech_info + "<br>";
+                        }else if(trigger_type == "moms"){
+                            latest_data_information += "<b>Manifestations of movement:</b> " + tech_info + "<br>";
+                        }else if(trigger_type == "earthquake"){
+                            latest_data_information += "<b>Earthquake Alert:</b> " + tech_info + "<br>";
+                        }
+                    }else{
+                        latest_data_information += "No new retriggers<br>"
+                    }
+                    
                 });
             }else{
                 has_trigger = false;
@@ -492,61 +504,129 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         let latest_release_text = "none";
         let info = ""
         let release_ts = "";
-        let latest_release_trigger_id = leo_data.releases[0].triggers[0].trigger_id;
-
+        
         $("#recommended_response").empty();
         $.each(leo_data.releases, function (key, value) {
             if(latest_release_text == "none"){
                 let formatted_release_time = moment(value.release_time, 'HH:mm').format('h:mm A');
                 release_ts = formatDateTime(value.data_ts);
+                
+                if(release_ts["text_format_timestamp"] == event_start["text_format_timestamp"]){
+                    release_ts = formatDateTime(value.data_ts);
+                }else{
+                    let update_ts = moment(value.data_ts).add(30, "minutes").format("YYYY-MM-DD HH:mm:SS");
+                    release_ts = formatDateTime(update_ts);
+                }
                 latest_release_text = release_ts["date_only_format"] + " " + formatted_release_time;
             }
         });
 
         let latest_event_triggers = leo_data.latest_event_triggers;
-        let is_equal_trigger = false;
+        let latest_release_trigger_id = 0;
+        if (trigger.length != 0) {
+            latest_release_trigger_id = leo_data.releases[0].triggers[0].trigger_id;
+        }
+        let is_equal_trigger = true;
         if(latest_event_triggers.length != 0){
-            $.each(latest_event_triggers, function (key, value) {
-                let ts =  formatDateTime(value.release.data_ts);
-                let trigger_id = value.trigger_id;
-                if(trigger_id != latest_release_trigger_id){
-                    is_equal_trigger = true;
-                    let internal_symbol = value.internal_sym.alert_symbol;
-
-                    if (internal_symbol == "E") {
-                        let magnitude = value.trigger_misc.eq.magnitude;
-                        let longitude = value.trigger_misc.eq.longitude;
-                        let latitude = value.trigger_misc.eq.latitude;
-                        let as_of = "As of <b>last earthquake retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
-                        let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-                        info += as_of + earth_quake_info + "<br><br>";
-                    } else if (internal_symbol == "R") {
-                        let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
-                        let rain_info = value.info;
-                        info += as_of + rain_info + "<br><br>";
-                    } else if (internal_symbol == "m" || internal_symbol == "M") {
-                        let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
-                        let moms_info = value.info;
-                        info += as_of + moms_info + "<br><br>";
+            // let trigger_list_arr = candidate_alerts[0].trigger_list_arr;
+            // if(trigger_list_trigger_id.length != 0 ){
+            //     $("#recommended_response").append("<hr><br>");
+            //     $.each(trigger_list_arr, function (key, value) {
+            //         let ts = formatDateTime(value.ts_updated);
+            //         let trigger_type = value.trigger_type;
+            //         if(trigger_type == "rainfall"){
+            //             let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+            //             let rain_info = value.tech_info;
+            //             info += as_of + rain_info + "<br><br>";
+            //         }else if(trigger_type == "moms"){
+            //             let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+            //             let moms_info = value.tech_info;
+            //             info += as_of + moms_info + "<br><br>";
+            //         }else if(trigger_type == "earthquake"){
+            //             let magnitude = value.trigger_misc.eq.magnitude;
+            //                 let longitude = value.trigger_misc.eq.longitude;
+            //                 let latitude = value.trigger_misc.eq.latitude;
+            //                 let as_of = "As of <b>last earthquake retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+            //                 let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+            //                 info += as_of + earth_quake_info + "<br><br>";
+            //         }
+            //     });
+            // }else{
+                $.each(latest_event_triggers, function (key, value) {
+                    let ts = formatDateTime(value.release.data_ts);
+                    let trigger_id = value.trigger_id;
+                    
+                    if(trigger_id != latest_release_trigger_id){
+                        is_equal_trigger = false;
+                        let internal_symbol = value.internal_sym.alert_symbol;
+    
+                        if (internal_symbol == "E") {
+                            let magnitude = value.trigger_misc.eq.magnitude;
+                            let longitude = value.trigger_misc.eq.longitude;
+                            let latitude = value.trigger_misc.eq.latitude;
+                            let as_of = "As of <b>last earthquake retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+                            let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+                            info += as_of + earth_quake_info + "<br><br>";
+                        } else if (internal_symbol == "R") {
+                            let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+                            let rain_info = value.info;
+                            info += as_of + rain_info + "<br><br>";
+                        } else if (internal_symbol == "m" || internal_symbol == "M") {
+                            let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+                            let moms_info = value.info;
+                            info += as_of + moms_info + "<br><br>";
+                        }
                     }
-                }
-                
-            });
+                });
+            // }
+            
         }
         
         $("#ewi_alert_symbol").text(alert_level);
         $("#validity").empty().append("<b>Event started at </b>" + event_start["text_format_timestamp"]);
         $("#validity").append("<br><b>Valid until </b> " + validity["text_format_timestamp"]);
-        $("#validity").append("<br><br><b>Latest release as of </b> " + latest_release_text);
+        $("#validity").append("<br><br><b>Latest release timestamp: </b> " + latest_release_text);
         $("#validity").append("<br><b>Recommended response:</b> " + recommended_response);
-        if(is_equal_trigger == true){
+        
+        if(is_equal_trigger == false){
             $("#recommended_response").append("<hr><br>");
         }
 
         if(has_trigger == true){
-            $("#recommended_response").append("<hr><br>As of <b>" + as_of_datetime + "<br>" + latest_data_information);
+            $("#recommended_response").append(info + "<hr><br>As of <b>" + as_of_datetime + "<br>" + latest_data_information);
         }else{
             $("#recommended_response").append(info + latest_data_information);
+        }
+        
+        $("#triggers").empty();
+        if (trigger.length == 0) {
+            $("#triggers").append("As of <b>" + release_ts["text_format_timestamp"] + "</b><br>");
+            $("#triggers").append("No new retriggers");
+            $("#triggers_column > h5").hide();
+        } else {
+            $("#triggers_column > h5").show();
+            $("#triggers").append("As of " + release_ts["text_format_timestamp"] + "<br>");
+           
+            $.each(trigger, function (key, value) {
+                let internal_symbol = value.internal_sym.alert_symbol;
+                if (internal_symbol == "E") {
+                    let trigger_type = "Earthquake: ";
+                    let magnitude = value.trigger_misc.eq.magnitude;
+                    let longitude = value.trigger_misc.eq.longitude;
+                    let latitude = value.trigger_misc.eq.latitude;
+                    let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+                    $("#triggers").append("<b>" + trigger_type + "</b>" + earth_quake_info + "<br>");
+                } else if (internal_symbol == "R") {
+                    let trigger_type = "Rainfall: ";
+                    let info = value.info;
+                    $("#triggers").append("<b>" + trigger_type + "</b>" + info + "<br>");
+                } else if (internal_symbol == "m" || internal_symbol == "M") {
+                    let trigger_type = "Manifestations of movement: ";
+                    let info = value.info;
+                    $("#triggers").append("<b>" + trigger_type + "</b>" + info + "<br>");
+                }
+
+            });
         }
         formatTriggerToText(trigger, false, release_ts["text_format_timestamp"]);
     }

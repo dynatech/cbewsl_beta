@@ -22,7 +22,7 @@ export default class SaveMaintenanceLogs extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         Notification.endOfValidity();
         const { navigation } = this.props;
         const selected_date = navigation.getParam("data", "none");

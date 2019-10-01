@@ -11,7 +11,7 @@ export default class Login extends Component {
   }
 
 
-  componentWillMount() {
+  componentDidMount() {
     let credentials = Storage.getItem("loginCredentials")
     credentials.then(response => {
       if (response != null) {

@@ -46,7 +46,6 @@ const dashboard = StyleSheet.create({
         height: width * 0.25
     },
     menuButtons: {
-        flexWrap: 'wrap',
         flex: 1,
         alignItems: 'center'
     },

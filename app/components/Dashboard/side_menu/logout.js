@@ -17,7 +17,7 @@ export default class Logout extends Component {
     )
   };
 
-  componentWillMount(){
+  componentDidMount(){
     Storage.removeItem("loginCredentials");
     ToastAndroid.show('Logout successfully!', ToastAndroid.SHORT);
     this.props.navigation.navigate('login');

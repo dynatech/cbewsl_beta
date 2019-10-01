@@ -270,7 +270,7 @@ export default class MonitoringLogs extends Component {
                 }
             ]
         }
-          let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms';
+          let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web';
           fetch(url, {
               method: 'POST',
               dataType: 'jsonp',

@@ -24,7 +24,7 @@ export default class SaveSituationReport extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         Notification.endOfValidity();
         const { navigation } = this.props;
         const data = navigation.getParam("report_data", "none");
