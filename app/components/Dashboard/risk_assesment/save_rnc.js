@@ -21,7 +21,7 @@ export default class SaveResourcesAndCapacities extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         Notification.endOfValidity();
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
