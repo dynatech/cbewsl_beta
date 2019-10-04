@@ -125,56 +125,57 @@ function displayCandidateAlert(candidate_alerts) {
         });
         $("#no_candidate_alert").hide();
         $("#candidate_alert_information").show();
-    } else {
-        if (candidate_alerts[0].trigger_list_arr.length == 0) {
-            $("#no_candidate_alert").show();
-        } else {
-            $("#no_candidate_alert").hide();
-        }
+    } 
+    // else {
+    //     if (candidate_alerts[0].trigger_list_arr.length == 0) {
+    //         $("#no_candidate_alert").show();
+    //     } else {
+    //         $("#no_candidate_alert").hide();
+    //     }
         
-        $("#candidate_alert_information").hide();
-        let alert_level = candidate_alerts[0].public_alert_level;
-        let internal_alert_level = candidate_alerts[0].internal_alert_level;
-        if (candidate_alerts[0].general_status == "lowering") {
-            $("#ewi_lowering_details").text("Alert 0 for Lowering");
-            $("#ewi_current_alert_container").hide();
-            $("#ewi_no_current_alert").hide();
-            $("#ewi_for_lowering").show();
-            $("#ewi_lowering_details").show();
-            $("#lower_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_lower_ewi" value="Release" style="background-color: #28a745;">');
-            $("#confirm_lower_ewi").click(function () {
-                $("#confirmReleaseModal").modal("show");
-            });
+    //     $("#candidate_alert_information").hide();
+    //     let alert_level = candidate_alerts[0].public_alert_level;
+    //     let internal_alert_level = candidate_alerts[0].internal_alert_level;
+    //     if (candidate_alerts[0].general_status == "lowering") {
+    //         $("#ewi_lowering_details").text("Alert 0 for Lowering");
+    //         $("#ewi_current_alert_container").hide();
+    //         $("#ewi_no_current_alert").hide();
+    //         $("#ewi_for_lowering").show();
+    //         $("#ewi_lowering_details").show();
+    //         $("#lower_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_lower_ewi" value="Release" style="background-color: #28a745;">');
+    //         $("#confirm_lower_ewi").click(function () {
+    //             $("#confirmReleaseModal").modal("show");
+    //         });
 
-            $("#confirm_release_ewi_modal").unbind();
-            $("#confirm_release_ewi_modal").click(function () {
-                let candidate_alerts = updateEwiData();
-                candidate_alerts.done(function (data) {
-                    let json_data = JSON.parse(data);
-                    candidate_alerts = JSON.parse(json_data.candidate_alert);
-                    if (candidate_alerts != 0) {
-                        let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
-                        fetch(url, {
-                            method: 'POST',
-                            dataType: 'jsonp',
-                            headers: {
-                                Accept: 'application/json',
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(candidate_alerts[0]),
-                        }).then((response) => response.json()).then((responseJson) => {
-                            let release_data = responseJson;
-                            releaseAlert(release_data);
-                            $("#confirmReleaseModal").modal("hide");
-                        });
-                    } else {
-                        alert('Notice! Please wait for the next releases time.')
-                    }
+    //         $("#confirm_release_ewi_modal").unbind();
+    //         $("#confirm_release_ewi_modal").click(function () {
+    //             let candidate_alerts = updateEwiData();
+    //             candidate_alerts.done(function (data) {
+    //                 let json_data = JSON.parse(data);
+    //                 candidate_alerts = JSON.parse(json_data.candidate_alert);
+    //                 if (candidate_alerts != 0) {
+    //                     let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+    //                     fetch(url, {
+    //                         method: 'POST',
+    //                         dataType: 'jsonp',
+    //                         headers: {
+    //                             Accept: 'application/json',
+    //                             'Content-Type': 'application/json',
+    //                         },
+    //                         body: JSON.stringify(candidate_alerts[0]),
+    //                     }).then((response) => response.json()).then((responseJson) => {
+    //                         let release_data = responseJson;
+    //                         releaseAlert(release_data);
+    //                         $("#confirmReleaseModal").modal("hide");
+    //                     });
+    //                 } else {
+    //                     alert('Notice! Please wait for the next releases time.')
+    //                 }
 
-                });
-            });
-        }
-    }
+    //             });
+    //         });
+    //     }
+    // }
 }
 
 function onValidateCandidateAlert(trigger_id, candidate_alerts, alert_data, trigger_type) {
@@ -303,17 +304,17 @@ function onClickReleaseExtended() {
             let json_data = JSON.parse(data);
             candidate_alerts = JSON.parse(json_data.candidate_alert);
             let leo = json_data.leo;
-            is_for_release = false;
-            if(candidate_alerts.length != 0){
-                let is_release_time = candidate_alerts[0].is_release_time;
-                if(is_release_time == true){
-                    is_for_release = true;
-                }
-            }else{
-                is_for_release = false;
-            }
+            // is_for_release = false;
+            // if(candidate_alerts.length != 0){
+            //     let is_release_time = candidate_alerts[0].is_release_time;
+            //     if(is_release_time == true){
+            //         is_for_release = true;
+            //     }
+            // }else{
+            //     is_for_release = false;
+            // }
             
-            if (is_for_release == true) {
+            if (candidate_alerts.length != 0) {
                 if (leo.extended.length != 0) {
                     let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
                     fetch(url, {
@@ -363,14 +364,12 @@ function publicAlert(is_onset = false) {
     let url = 'http://192.168.1.10:5000/api/monitoring/update_alert_gen/' + is_onset;
     fetch(url).then((response) => response.json())
         .then((responseJson) => {
-
             getCandidateAndLatestAlerts();
         });
 }
 
-function formatTriggerToText(trigger, is_overdue = false, as_of_latest_release) {
+function onClickReleaseAlert(is_overdue = false) {
     
-
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
         .append('&nbsp;<input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
     sendEwiToEmail();
@@ -403,6 +402,9 @@ function formatTriggerToText(trigger, is_overdue = false, as_of_latest_release) 
                 });
                 if(is_release_time == true){
                     is_for_release = true;
+                }
+                if(candidate_alerts[0].public_alert_symbol == "A0"){
+                    is_for_release = true
                 }
             }else{
                 is_for_release = false;
@@ -464,13 +466,27 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         let latest_data_information = "";
         let has_trigger = false;
         let trigger_list_trigger_id = 0;
+        let release_schedule = "";
+        let is_moms_only = false
+        let general_status = ""
 
         if(candidate_alerts.length == 0){
             formatted_as_of = formatDateTime(leo_data.releases[0].data_ts);
         }else{
             formatted_as_of = formatDateTime(candidate_alerts[0].release_details.data_ts);
             let trigger_list_arr = candidate_alerts[0].trigger_list_arr;
-
+            general_status = candidate_alerts[0].general_status
+            if(candidate_alerts[0].public_alert_symbol == "A0"){
+                release_schedule = candidate_alerts[0].release_details.data_ts;
+                alert("a0");
+            }else{
+                release_schedule = candidate_alerts[0].release_schedule;
+                alert("not a0");
+            }
+            console.log(release_schedule)
+            let update_ts = moment(release_schedule).add(30, "minutes").format("YYYY-MM-DD HH:mm:SS");
+            console.log("update_ts",update_ts)
+            release_schedule = formatDateTime(update_ts);
             if(trigger_list_arr.length != 0){
                 has_trigger = true;
                 $.each(trigger_list_arr, function (key, value) {
@@ -481,11 +497,11 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                         let trigger_type = value.trigger_type;
                         let tech_info = value.tech_info;
                         if(trigger_type == "rainfall"){
-                            latest_data_information += "<b>Rainfall Alert:</b> " + tech_info + "<br>";
+                            latest_data_information += "<b>Rainfall: </b> " + tech_info + "<br>";
                         }else if(trigger_type == "moms"){
-                            latest_data_information += "<b>Manifestations of movement:</b> " + tech_info + "<br>";
+                            latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + "<br>";
                         }else if(trigger_type == "earthquake"){
-                            latest_data_information += "<b>Earthquake Alert:</b> " + tech_info + "<br>";
+                            latest_data_information += "<b>Earthquake Alert: </b> " + tech_info + "<br>";
                         }
                     }else{
                         latest_data_information += "No new retriggers<br>"
@@ -527,33 +543,10 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
             latest_release_trigger_id = leo_data.releases[0].triggers[0].trigger_id;
         }
         let is_equal_trigger = true;
-        if(latest_event_triggers.length != 0){
-            // let trigger_list_arr = candidate_alerts[0].trigger_list_arr;
-            // if(trigger_list_trigger_id.length != 0 ){
-            //     $("#recommended_response").append("<hr><br>");
-            //     $.each(trigger_list_arr, function (key, value) {
-            //         let ts = formatDateTime(value.ts_updated);
-            //         let trigger_type = value.trigger_type;
-            //         if(trigger_type == "rainfall"){
-            //             let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
-            //             let rain_info = value.tech_info;
-            //             info += as_of + rain_info + "<br><br>";
-            //         }else if(trigger_type == "moms"){
-            //             let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
-            //             let moms_info = value.tech_info;
-            //             info += as_of + moms_info + "<br><br>";
-            //         }else if(trigger_type == "earthquake"){
-            //             let magnitude = value.trigger_misc.eq.magnitude;
-            //                 let longitude = value.trigger_misc.eq.longitude;
-            //                 let latitude = value.trigger_misc.eq.latitude;
-            //                 let as_of = "As of <b>last earthquake retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
-            //                 let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-            //                 info += as_of + earth_quake_info + "<br><br>";
-            //         }
-            //     });
-            // }else{
+        if(has_trigger == false){
+            if(latest_event_triggers.length != 0){
                 $.each(latest_event_triggers, function (key, value) {
-                    let ts = formatDateTime(value.release.data_ts);
+                    let ts = formatDateTime(value.ts);
                     let trigger_id = value.trigger_id;
                     
                     if(trigger_id != latest_release_trigger_id){
@@ -578,11 +571,42 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                         }
                     }
                 });
-            // }
-            
+                
+            }
+        }else{
+            let trigger_list_arr = candidate_alerts[0].trigger_list_arr;
+            $.each(trigger_list_arr, function (key, value) {
+                let ts = formatDateTime(value.ts_updated);
+                let trigger_type = value.trigger_type;
+                let tech_info = value.tech_info;
+                let trigger_id = value.trigger_id;
+                if(trigger_id != trigger_list_trigger_id){
+                    is_equal_trigger = false;
+                    if(trigger_type == "rainfall"){
+                        let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+                        info += as_of + tech_info + "<br><br>";
+                    }else if(trigger_type == "moms"){
+                        let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+                        info += as_of + tech_info + "<br><br>";
+                    }else if(trigger_type == "earthquake"){
+                        let magnitude = value.trigger_misc.eq.magnitude;
+                        let longitude = value.trigger_misc.eq.longitude;
+                        let latitude = value.trigger_misc.eq.latitude;
+                        let as_of = "As of <b>last earthquake retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+                        let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+                        info += as_of + earth_quake_info + "<br><br>";
+                    }
+                }
+                
+            });
         }
         
-        $("#ewi_alert_symbol").text(alert_level);
+       
+        if(alert_level == "Alert 3"){
+            $("#ewi_alert_symbol").text(alert_level).css("color", "red");
+        }else{
+            $("#ewi_alert_symbol").text(alert_level);
+        }
         $("#validity").empty().append("<b>Event started at </b>" + event_start["text_format_timestamp"]);
         $("#validity").append("<br><b>Valid until </b> " + validity["text_format_timestamp"]);
         $("#validity").append("<br><br><b>Latest release timestamp: </b> " + latest_release_text);
@@ -600,12 +624,12 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         
         $("#triggers").empty();
         if (trigger.length == 0) {
-            $("#triggers").append("As of <b>" + release_ts["text_format_timestamp"] + "</b><br>");
+            $("#triggers").append("As of last release timestamp <b>" + release_ts["text_format_timestamp"] + "</b><br>");
             $("#triggers").append("No new retriggers");
             $("#triggers_column > h5").hide();
         } else {
             $("#triggers_column > h5").show();
-            $("#triggers").append("As of " + release_ts["text_format_timestamp"] + "<br>");
+            $("#triggers").append("As of last release timestamp <b>" + release_ts["text_format_timestamp"] + "</b><br>");
            
             $.each(trigger, function (key, value) {
                 let internal_symbol = value.internal_sym.alert_symbol;
@@ -628,9 +652,37 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
 
             });
         }
-        formatTriggerToText(trigger, false, release_ts["text_format_timestamp"]);
+
+        let for_lowering = false;
+        console.log("validity",validity["text_format_timestamp"]);
+        console.log("release_schedule",release_schedule["text_format_timestamp"]);
+        if(validity["text_format_timestamp"] == release_schedule["text_format_timestamp"]){
+            for_lowering = true;
+            alert()
+            $("#recommended_response").append("<br><b id='candidate_for_lowering'>Candidate for lowering.</b>");
+            onClickRaiseMomsData();
+        }
+
+        if(general_status == "lowering"){
+            $("#recommended_response").append("<br>END OF VALIDITY");
+            $("#raise_non_significant").hide();
+            $("#candidate_for_lowering").hide();
+        }
+        onClickReleaseAlert(false, for_lowering);
     }
     
+}
+
+function onClickRaiseMomsData(){
+    $("#recommended_response").append('<br><input class="btn btn-primary" type="button" id="raise_non_significant" value="Raise Non-Significant" style="background-color: #28a745;">')
+    $("#raise_non_significant").unbind();
+    $("#raise_non_significant").click(function () {
+        let data = {
+            feature_name: "none",
+            feature_type: "none"
+        }
+        displayRaiseMomsModal(data)
+    });
 }
 
 

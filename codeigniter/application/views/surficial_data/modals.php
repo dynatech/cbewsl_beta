@@ -15,13 +15,13 @@
                         <div class="col-5">
                             <div class="form-group">
                                 <input type="text" id="moms_id" style="display: none;">
-                                <label for="number_of_members">Date and Time</label>
+                                <!-- <label for="number_of_members">Date and Time</label>
                                 <div class="input-group date" id="moms_dt" data-target-input="nearest">
                                     <input type="text" class="form-control datetimepicker-input" data-target="#moms_dt" id="moms_date_time"/>
                                     <div class="input-group-append" data-target="#moms_dt" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -175,3 +175,41 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="isForLoweringModal" tabindex="-1" role="dialog" aria-labelledby="isForLoweringModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="isForLoweringModalLabel">Raise MOMs</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <input type="text" id="moms_id" style="display: none;">
+                <label for="number_of_members">Observance Timestamp</label>
+                <div class="input-group date" id="observance_timestamp" data-target-input="nearest">
+                    <input type="text" class="form-control datetimepicker-input" data-target="#observance_timestamp" id="observance_ts"/>
+                    <div class="input-group-append" data-target="#observance_timestamp" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
+            </div>
+            <label>Select alert level</label>
+            <select id="moms_alert_level" class="form-control">
+                <option value="0">Non-significant</option>
+                <option value="2">Significant</option>
+                <option value="3">Critical</option>
+            <select>
+            <label>Remarks</label>
+            <textarea class="form-control" id="moms_remarks" style="height : 100px"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="raise_moms">Raise</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>
+
