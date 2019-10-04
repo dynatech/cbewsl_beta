@@ -430,7 +430,7 @@ function displayRaiseMomsModal(data) {
         let alert_validity = ""
         let int_sym = ""
         let date_picker = $("#observance_ts").val();
-        let formatted_datetime = moment(date_picker).format('YYYY-MM-DD H:mm:ss')
+        let formatted_datetime = moment(date_picker).format('YYYY-MM-DD HH:mm:ss')
 
         if (alert_level == "2") {
             int_sym = "m2"
@@ -466,14 +466,13 @@ function displayRaiseMomsModal(data) {
             trig_list: [
                 {
                     int_sym: int_sym,
-                    remarks: data.description,
+                    remarks: $("#moms_remarks").val(),
                     f_name: data.feature_name,
                     f_type: data.feature_type
                 }
             ]
         }
 
-        
         let moms_data = {
             moms_id: data.moms_id,
             type_of_feature: data.feature_type,
@@ -482,11 +481,11 @@ function displayRaiseMomsModal(data) {
             timestamp: data.date,
             observance_ts: formatted_datetime
         }
-        console.log(moms_data)
+
+        let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
         isOnSet(alert_level)
             .then((response) => {
                 console.log(response)
-                let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web';
                 fetch(url, {
                     method: 'POST',
                     dataType: 'jsonp',
@@ -497,10 +496,14 @@ function displayRaiseMomsModal(data) {
                     body: JSON.stringify(trigger_list),
                 }).then((responseJson) => {
                     console.log(responseJson)
-                    $("#raise_moms_modal").modal("hide");
-                    publicAlert(true);
-                    updateObservanceTs(moms_data);
                     alert("Successfuly raise MOMs.");
+                    $("#raise_moms_modal").modal("hide");
+                    if(int_sym == "m0"){
+                        publicAlert()
+                    }else{
+                        publicAlert(true);
+                    }
+                    updateObservanceTs(moms_data);
                 });
             })
 

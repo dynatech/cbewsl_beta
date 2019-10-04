@@ -55,7 +55,6 @@ export default class CurrentAlert extends Component {
       if (latest.length != 0) {
         let event_details = this.formatEwiDetails(candidate_alert, latest[0], true);
         view.push(event_details)
-        push(<Text style={{ fontSize: 20, paddingBottom: 20 }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text> {latest[0].public_alert_symbol.recommended_response}</Text>)
         release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
           <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
             <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
@@ -178,10 +177,10 @@ export default class CurrentAlert extends Component {
         let formatted_release_time = moment(value.release_time, 'HH:mm').format('h:mm A');
         release_ts = this.formatDateTime(value.data_ts);
         if(release_ts["text_format_timestamp"] == event_start["text_format_timestamp"]){
-          release_ts = formatDateTime(value.data_ts);
+          release_ts = this.formatDateTime(value.data_ts);
         }else{
           let update_ts = moment(value.data_ts).add(30, "minutes").format("YYYY-MM-DD HH:mm:SS");
-          release_ts = formatDateTime(update_ts);
+          release_ts = this.formatDateTime(update_ts);
         }
         latest_release_text = release_ts["date_only_format"] + " " + formatted_release_time;
       }
@@ -216,35 +215,44 @@ export default class CurrentAlert extends Component {
     event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Valid until <Text style={{fontWeight: 'bold'}}>{validity.text_format_timestamp}</Text></Text>)
     event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Latest release timestamp: <Text style={{fontWeight: 'bold'}}>{latest_release_text}</Text></Text>)
     event_details.push(<Text style={{ fontSize: 20, paddingTop: 15, textAlign: 'center' }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text> {recommended_response}</Text>)
-
-    if(latest_event_triggers.length != 0){
-      latest_event_triggers.forEach(value => {
-        let ts = this.formatDateTime(value.release.data_ts);
-        let trigger_id = value.trigger_id;
-        if(trigger_id != latest_release_trigger_id){
-          event_details.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>)
-          let internal_symbol = value.internal_sym.alert_symbol;
-
-          if (internal_symbol == "E") {
-              let magnitude = value.trigger_misc.eq.magnitude;
-              let longitude = value.trigger_misc.eq.longitude;
-              let latitude = value.trigger_misc.eq.latitude;
-              let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last earthquake retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{earth_quake_info}</Text>)
-          } else if (internal_symbol == "R") {
-              let rain_info = value.info;
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
-          } else if (internal_symbol == "m" || internal_symbol == "M") {
-              let moms_info = value.info;
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last moms retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
-          }
-        }
-              
-     });
+    let has_trigger = false;
+    if(candidate_alert.length != 0){
+      if(candidate_alert[0].trigger_list_arr.length != 0){
+        has_trigger = true;
+      }
     }
+    console.log(has_trigger)
+    if(has_trigger = true){
+      if(latest_event_triggers.length != 0){
+        latest_event_triggers.forEach(value => {
+          let ts = this.formatDateTime(value.release.data_ts);
+          let trigger_id = value.trigger_id;
+          if(trigger_id != latest_release_trigger_id){
+            event_details.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>)
+            let internal_symbol = value.internal_sym.alert_symbol;
+  
+            if (internal_symbol == "E") {
+                let magnitude = value.trigger_misc.eq.magnitude;
+                let longitude = value.trigger_misc.eq.longitude;
+                let latitude = value.trigger_misc.eq.latitude;
+                let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last earthquake retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{earth_quake_info}</Text>)
+            } else if (internal_symbol == "R") {
+                let rain_info = value.info;
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
+            } else if (internal_symbol == "m" || internal_symbol == "M") {
+                let moms_info = value.info;
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last moms retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+            }
+          }
+                
+       });
+      }
+    }
+    
     this.setState({ retrigger_details: this.getRetriggers(candidate_alert) });
 
     return event_details
@@ -291,8 +299,8 @@ export default class CurrentAlert extends Component {
 
         view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
         )
-        let current_time = data[0].release_details.data_ts
-        temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time}</Text></Text></View>)
+        let current_time =  this.formatDateTime(data[0].release_details.data_ts);
+        temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time.text_format_timestamp}</Text></Text></View>)
 
         this.setState({ trigger_length: data[0].trigger_list_arr.length })
         data[0].trigger_list_arr.forEach(element => {
@@ -334,8 +342,8 @@ export default class CurrentAlert extends Component {
 
           view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
           )
-          let current_time = data[0].release_details.data_ts
-          temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time}</Text></Text></View>)
+          let current_time = this.formatDateTime(data[0].release_details.data_ts)
+          temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time.text_format_timestamp}</Text></Text></View>)
 
           temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
         }
