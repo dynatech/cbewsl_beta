@@ -168,8 +168,8 @@ const Notification = {
             Alert.alert('Success', 'Successfully Released!');
             this.fetchCandidateAlert();
         });
-    }, updateAlertGen: async function () {
-        fetch('http://192.168.1.10:5000/api/monitoring/update_alert_gen/false').then((response) => response.json())
+    }, updateAlertGen: async function (is_onset=false) {
+        fetch('http://192.168.1.10:5000/api/monitoring/update_alert_gen/'+is_onset).then((response) => response.json())
             .then((online_data) => {
                 console.log("Updating alert gen...")
                 if (online_data.status == true) {

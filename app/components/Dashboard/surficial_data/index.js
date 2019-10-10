@@ -3,6 +3,7 @@ import CurrentMeasurement from './current_measurement';
 import MonitoringLogs from './monitoring_logs.js';
 import SaveSurficialData from './save_surficial_data';
 import Summary from './summary';
+import RaiseMoms from './raise_moms';
 
 const SensorMaintenance = createStackNavigator({
   summary: {
@@ -25,6 +26,12 @@ const SensorMaintenance = createStackNavigator({
   },
   save_surficial_data: {
     screen: SaveSurficialData,
+    navigationOptions: {
+      header: null
+    }
+  },
+  raise_moms: {
+    screen: RaiseMoms,
     navigationOptions: {
       header: null
     }

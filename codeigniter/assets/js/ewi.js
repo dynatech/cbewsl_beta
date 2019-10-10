@@ -125,57 +125,7 @@ function displayCandidateAlert(candidate_alerts) {
         });
         $("#no_candidate_alert").hide();
         $("#candidate_alert_information").show();
-    } 
-    // else {
-    //     if (candidate_alerts[0].trigger_list_arr.length == 0) {
-    //         $("#no_candidate_alert").show();
-    //     } else {
-    //         $("#no_candidate_alert").hide();
-    //     }
-        
-    //     $("#candidate_alert_information").hide();
-    //     let alert_level = candidate_alerts[0].public_alert_level;
-    //     let internal_alert_level = candidate_alerts[0].internal_alert_level;
-    //     if (candidate_alerts[0].general_status == "lowering") {
-    //         $("#ewi_lowering_details").text("Alert 0 for Lowering");
-    //         $("#ewi_current_alert_container").hide();
-    //         $("#ewi_no_current_alert").hide();
-    //         $("#ewi_for_lowering").show();
-    //         $("#ewi_lowering_details").show();
-    //         $("#lower_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_lower_ewi" value="Release" style="background-color: #28a745;">');
-    //         $("#confirm_lower_ewi").click(function () {
-    //             $("#confirmReleaseModal").modal("show");
-    //         });
-
-    //         $("#confirm_release_ewi_modal").unbind();
-    //         $("#confirm_release_ewi_modal").click(function () {
-    //             let candidate_alerts = updateEwiData();
-    //             candidate_alerts.done(function (data) {
-    //                 let json_data = JSON.parse(data);
-    //                 candidate_alerts = JSON.parse(json_data.candidate_alert);
-    //                 if (candidate_alerts != 0) {
-    //                     let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
-    //                     fetch(url, {
-    //                         method: 'POST',
-    //                         dataType: 'jsonp',
-    //                         headers: {
-    //                             Accept: 'application/json',
-    //                             'Content-Type': 'application/json',
-    //                         },
-    //                         body: JSON.stringify(candidate_alerts[0]),
-    //                     }).then((response) => response.json()).then((responseJson) => {
-    //                         let release_data = responseJson;
-    //                         releaseAlert(release_data);
-    //                         $("#confirmReleaseModal").modal("hide");
-    //                     });
-    //                 } else {
-    //                     alert('Notice! Please wait for the next releases time.')
-    //                 }
-
-    //             });
-    //         });
-    //     }
-    // }
+    }
 }
 
 function onValidateCandidateAlert(trigger_id, candidate_alerts, alert_data, trigger_type) {
@@ -460,15 +410,13 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         let event_start = formatDateTime(leo_data.event.event_start);
         let validity = formatDateTime(leo_data.event.validity);
         let trigger = leo_data.releases[0].triggers;
-        let latest_retrigger_timestamp = "none";
 
         let formatted_as_of = "";
         let latest_data_information = "";
         let has_trigger = false;
         let trigger_list_trigger_id = 0;
         let release_schedule = "";
-        let is_moms_only = false
-        let general_status = ""
+        let general_status = "";
 
         if(candidate_alerts.length == 0){
             formatted_as_of = formatDateTime(leo_data.releases[0].data_ts);
@@ -478,10 +426,8 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
             general_status = candidate_alerts[0].general_status
             if(candidate_alerts[0].public_alert_symbol == "A0"){
                 release_schedule = candidate_alerts[0].release_details.data_ts;
-                alert("a0");
             }else{
                 release_schedule = candidate_alerts[0].release_schedule;
-                alert("not a0");
             }
             console.log(release_schedule)
             let update_ts = moment(release_schedule).add(30, "minutes").format("YYYY-MM-DD HH:mm:SS");
@@ -543,6 +489,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
             latest_release_trigger_id = leo_data.releases[0].triggers[0].trigger_id;
         }
         let is_equal_trigger = true;
+        let is_moms = false;
         if(has_trigger == false){
             if(latest_event_triggers.length != 0){
                 $.each(latest_event_triggers, function (key, value) {
@@ -565,6 +512,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                             let rain_info = value.info;
                             info += as_of + rain_info + "<br><br>";
                         } else if (internal_symbol == "m" || internal_symbol == "M") {
+                            is_moms = true;
                             let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
                             let moms_info = value.info;
                             info += as_of + moms_info + "<br><br>";
@@ -588,6 +536,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                     }else if(trigger_type == "moms"){
                         let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
                         info += as_of + tech_info + "<br><br>";
+                        is_moms = true;
                     }else if(trigger_type == "earthquake"){
                         let magnitude = value.trigger_misc.eq.magnitude;
                         let longitude = value.trigger_misc.eq.longitude;
@@ -654,13 +603,12 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         }
 
         let for_lowering = false;
-        console.log("validity",validity["text_format_timestamp"]);
-        console.log("release_schedule",release_schedule["text_format_timestamp"]);
+
         if(validity["text_format_timestamp"] == release_schedule["text_format_timestamp"]){
-            for_lowering = true;
-            alert()
             $("#recommended_response").append("<br><b id='candidate_for_lowering'>Candidate for lowering.</b>");
-            onClickRaiseMomsData();
+            if(is_moms == false){
+                onClickRaiseMomsData();
+            }
         }
 
         if(general_status == "lowering"){
@@ -668,7 +616,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
             $("#raise_non_significant").hide();
             $("#candidate_for_lowering").hide();
         }
-        onClickReleaseAlert(false, for_lowering);
+        onClickReleaseAlert(false);
     }
     
 }
