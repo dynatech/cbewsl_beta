@@ -188,26 +188,29 @@ export default class MonitoringLogs extends Component {
     if (role_id == 1) {
       Alert.alert('Access denied', 'Unable to access this feature.');
     } else {
-      Alert.alert(
-        'Raise Alert',
-        'Are you sure you want raise to this alert?',
-        [
-          {
-            text: 'Non-significant',
-            style: 'cancel',
-            onPress: () => this.setAlertForMoms(data, "0")
-          },
-          {
-            text: 'Significant',
-            onPress: () => this.setAlertForMoms(data, "2"),
-          },
-          {
-            text: 'Critical',
-            onPress: () => this.setAlertForMoms(data, "3"),
-          },
-        ],
-        { cancelable: true },
-      );
+      this.props.navigation.navigate('raise_moms', {
+        data: data
+      })
+      // Alert.alert(
+      //   'Raise Alert',
+      //   'Are you sure you want raise to this alert?',
+      //   [
+      //     {
+      //       text: 'Non-significant',
+      //       style: 'cancel',
+      //       onPress: () => this.setAlertForMoms(data, "0")
+      //     },
+      //     {
+      //       text: 'Significant',
+      //       onPress: () => this.setAlertForMoms(data, "2"),
+      //     },
+      //     {
+      //       text: 'Critical',
+      //       onPress: () => this.setAlertForMoms(data, "3"),
+      //     },
+      //   ],
+      //   { cancelable: true },
+      // );
     }
   }
 
@@ -270,7 +273,7 @@ export default class MonitoringLogs extends Component {
                 }
             ]
         }
-          let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web';
+          let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
           fetch(url, {
               method: 'POST',
               dataType: 'jsonp',

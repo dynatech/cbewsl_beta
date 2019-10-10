@@ -51,21 +51,25 @@ export default class CurrentAlert extends Component {
       let moms_temp = ""
       let has_alert_data = false;
       let release_button = [];
-      
+      console.log(response)
       if (latest.length != 0) {
         let event_details = this.formatEwiDetails(candidate_alert, latest[0], true);
         view.push(event_details)
-        release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
-          <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-            <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
-              <Text style={defaults.buttonText}>Release</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS(latest[0].internal_alert_level, latest[0].releases[0].data_ts) }}>
-              <Text style={defaults.buttonText}>Send EWI</Text>
-            </TouchableOpacity>
-          </View>
-        </View>);
-        this.setState({ release_button: release_button })
+        let current_alert_level = latest[0].public_alert_symbol.alert_level;
+        if(current_alert_level != 0){
+          release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
+            <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+              <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
+                <Text style={defaults.buttonText}>Release</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS(latest[0].internal_alert_level, latest[0].releases[0].data_ts) }}>
+                <Text style={defaults.buttonText}>Send EWI</Text>
+              </TouchableOpacity>
+            </View>
+          </View>);
+          this.setState({ release_button: release_button })
+        }
+        
       }
 
       if (extended.length != 0) {
@@ -96,17 +100,21 @@ export default class CurrentAlert extends Component {
       if (overdue.length != 0) {
         let event_details = this.formatEwiDetails(candidate_alert, overdue[0], true);
         view.push(event_details)
-        release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
-          <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-            <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
-              <Text style={defaults.buttonText}>Release</Text>
-            </TouchableOpacity>
-            <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
-              <Text style={defaults.buttonText}>Send EWI</Text>
-            </TouchableOpacity>
-          </View>
-        </View>);
-        this.setState({ release_button: release_button })
+        let current_alert_level = latest[0].public_alert_symbol.alert_level;
+        if(current_alert_level != 0){
+          release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
+            <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+              <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
+                <Text style={defaults.buttonText}>Release</Text>
+              </TouchableOpacity>
+              <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+                <Text style={defaults.buttonText}>Send EWI</Text>
+              </TouchableOpacity>
+            </View>
+          </View>);
+          this.setState({ release_button: release_button })
+        }
+        
       }
 
       if (latest.length == 0 || extended.length == 0 || overdue.length == 0) {
@@ -129,7 +137,7 @@ export default class CurrentAlert extends Component {
         view.push(<Text style={{ fontSize: 50, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 2</Text>)
         break;
       case 3:
-        view.push(<Text style={{ fontSize: 50, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 3</Text>)
+        view.push(<Text style={{ fontSize: 50, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 3</Text>)
         break;
       default:
         view.push(<Text style={{ fontSize: 50, color: "green", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>Alert 0</Text>)
@@ -163,97 +171,158 @@ export default class CurrentAlert extends Component {
     console.log(candidate_alert);
     console.log(leo_data);
 
-    let latest_event_triggers = leo_data.latest_event_triggers;
-    let latest_release_trigger_id = 0;
-    let event_start = this.formatDateTime(leo_data.event.event_start);
-    let validity = this.formatDateTime(leo_data.event.validity);
-    let latest_release_text = "none";
-    let release_ts = "";
-    let trigger = leo_data.releases[0].triggers;
-    let recommended_response = leo_data.public_alert_symbol.recommended_response;
-    
-    leo_data.releases.forEach(value => {
-      if(latest_release_text == "none"){
-        let formatted_release_time = moment(value.release_time, 'HH:mm').format('h:mm A');
-        release_ts = this.formatDateTime(value.data_ts);
-        if(release_ts["text_format_timestamp"] == event_start["text_format_timestamp"]){
-          release_ts = this.formatDateTime(value.data_ts);
-        }else{
-          let update_ts = moment(value.data_ts).add(30, "minutes").format("YYYY-MM-DD HH:mm:SS");
-          release_ts = this.formatDateTime(update_ts);
-        }
-        latest_release_text = release_ts["date_only_format"] + " " + formatted_release_time;
-      }
-    });
-   
     let event_details = [];
-    let alert_level = this.displayAlertLevel(leo_data.public_alert_symbol.alert_level);
-    event_details.push(alert_level)
-    event_details.push(<Text style={{fontSize: 20, padding: 10, textAlign: 'center'}}>As of <Text style={{fontWeight: 'bold'}}>{release_ts.text_format_timestamp}</Text></Text>)
-    if (trigger.length == 0) {
-      event_details.push(<Text style={{fontSize: 20, paddingBottom: 10, textAlign: 'center'}}>No new retriggers.</Text>)
-    } else {
-      latest_release_trigger_id = leo_data.releases[0].triggers[0].trigger_id;
-      trigger.forEach(value => {
-        let internal_symbol = value.internal_sym.alert_symbol;
-        if (internal_symbol == "E") {
-          let magnitude = value.trigger_misc.eq.magnitude;
-          let longitude = value.trigger_misc.eq.longitude;
-          let latitude = value.trigger_misc.eq.latitude;
-          let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-          event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Earthquake: {earth_quake_info}</Text>)
-        } else if (internal_symbol == "R") {
-          let rain_info = value.info;
-          event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Rainfall: {rain_info}</Text>)
-        } else if (internal_symbol == "m" || internal_symbol == "M") {
-          let moms_info = value.info;
-          event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {moms_info}</Text>)
+    let current_alert_level = leo_data.public_alert_symbol.alert_level;
+    if(current_alert_level != 0){
+      let latest_event_triggers = leo_data.latest_event_triggers;
+      let latest_release_trigger_id = 0;
+      let event_start = this.formatDateTime(leo_data.event.event_start);
+      let validity = this.formatDateTime(leo_data.event.validity);
+      let latest_release_text = "none";
+      let release_ts = "";
+      let trigger = leo_data.releases[0].triggers;
+      let recommended_response = leo_data.public_alert_symbol.recommended_response;
+      let formatted_as_of = "";
+      let latest_data_information = "";
+      let has_trigger = false;
+      let trigger_list_trigger_id = 0;
+      let release_schedule = "";
+      let general_status = "";
+
+      if(candidate_alert.length == 0){
+        formatted_as_of = this.formatDateTime(leo_data.releases[0].data_ts);
+      }else{
+        formatted_as_of = this.formatDateTime(candidate_alert[0].release_details.data_ts);
+        let trigger_list_arr = candidate_alert[0].trigger_list_arr;
+        general_status = candidate_alert[0].general_status
+        if(candidate_alert[0].public_alert_symbol == "A0"){
+            release_schedule = candidate_alert[0].release_details.data_ts;
+        }else{
+            release_schedule = candidate_alert[0].release_schedule;
+        }
+
+        let update_ts = moment(release_schedule).add(30, "minutes").format("YYYY-MM-DD HH:mm:SS");
+        release_schedule = this.formatDateTime(update_ts);
+        if(trigger_list_arr.length != 0){
+          has_trigger = true;
+          trigger_list_arr.forEach(value => {
+            if(trigger_list_trigger_id == 0){
+              trigger_list_trigger_id = value.trigger_id
+            }
+          });
+        }else{
+          has_trigger = false;
+        }
+      }
+
+
+      leo_data.releases.forEach(value => {
+        if(latest_release_text == "none"){
+          let formatted_release_time = moment(value.release_time, 'HH:mm').format('h:mm A');
+          release_ts = this.formatDateTime(value.data_ts);
+          if(release_ts["text_format_timestamp"] == event_start["text_format_timestamp"]){
+            release_ts = this.formatDateTime(value.data_ts);
+          }else{
+            let update_ts = moment(value.data_ts).add(30, "minutes").format("YYYY-MM-DD HH:mm:SS");
+            release_ts = this.formatDateTime(update_ts);
+          }
+          latest_release_text = release_ts["date_only_format"] + " " + formatted_release_time;
         }
       });
-    }
-    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Event started at <Text style={{fontWeight: 'bold'}}>{event_start.text_format_timestamp}</Text></Text>)
-    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Valid until <Text style={{fontWeight: 'bold'}}>{validity.text_format_timestamp}</Text></Text>)
-    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Latest release timestamp: <Text style={{fontWeight: 'bold'}}>{latest_release_text}</Text></Text>)
-    event_details.push(<Text style={{ fontSize: 20, paddingTop: 15, textAlign: 'center' }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text> {recommended_response}</Text>)
-    let has_trigger = false;
-    if(candidate_alert.length != 0){
-      if(candidate_alert[0].trigger_list_arr.length != 0){
-        has_trigger = true;
+      
+      let alert_level = this.displayAlertLevel(leo_data.public_alert_symbol.alert_level);
+      event_details.push(alert_level)
+      event_details.push(<Text style={{fontSize: 20, padding: 10, textAlign: 'center'}}>As of last release timestamp <Text style={{fontWeight: 'bold'}}>{release_ts.text_format_timestamp}</Text></Text>)
+      if (trigger.length == 0) {
+        event_details.push(<Text style={{fontSize: 20, paddingBottom: 10, textAlign: 'center'}}>No new retriggers.</Text>)
+      } else {
+        latest_release_trigger_id = leo_data.releases[0].triggers[0].trigger_id;
+        trigger.forEach(value => {
+          let internal_symbol = value.internal_sym.alert_symbol;
+          if (internal_symbol == "E") {
+            let magnitude = value.trigger_misc.eq.magnitude;
+            let longitude = value.trigger_misc.eq.longitude;
+            let latitude = value.trigger_misc.eq.latitude;
+            let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+            event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Earthquake: {earth_quake_info}</Text>)
+          } else if (internal_symbol == "R") {
+            let rain_info = value.info;
+            event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Rainfall: {rain_info}</Text>)
+          } else if (internal_symbol == "m" || internal_symbol == "M") {
+            let moms_info = value.info;
+            event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {moms_info}</Text>)
+          }
+        });
       }
-    }
-    console.log(has_trigger)
-    if(has_trigger = true){
-      if(latest_event_triggers.length != 0){
-        latest_event_triggers.forEach(value => {
-          let ts = this.formatDateTime(value.release.data_ts);
+      event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Event started at <Text style={{fontWeight: 'bold'}}>{event_start.text_format_timestamp}</Text></Text>)
+      event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Valid until <Text style={{fontWeight: 'bold'}}>{validity.text_format_timestamp}</Text></Text>)
+      event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Latest release timestamp: <Text style={{fontWeight: 'bold'}}>{latest_release_text}</Text></Text>)
+      event_details.push(<Text style={{ fontSize: 20, paddingTop: 15, textAlign: 'center' }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text> {recommended_response}</Text>)
+      let is_moms = false;
+      if(has_trigger == false){
+        if(latest_event_triggers.length != 0){
+          latest_event_triggers.forEach(value => {
+            let ts = this.formatDateTime(value.ts);
+            let trigger_id = value.trigger_id;
+            if(trigger_id != latest_release_trigger_id){
+              event_details.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>)
+              let internal_symbol = value.internal_sym.alert_symbol;
+    
+              if (internal_symbol == "E") {
+                  let magnitude = value.trigger_misc.eq.magnitude;
+                  let longitude = value.trigger_misc.eq.longitude;
+                  let latitude = value.trigger_misc.eq.latitude;
+                  let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last earthquake retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{earth_quake_info}</Text>)
+              } else if (internal_symbol == "R") {
+                  let rain_info = value.info;
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
+              } else if (internal_symbol == "m" || internal_symbol == "M") {
+                  is_moms = true;
+                  let moms_info = value.info;
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last moms retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+              }
+            }
+                  
+        });
+        }
+      }else{
+        let trigger_list_arr = candidate_alert[0].trigger_list_arr;
+        trigger_list_arr.forEach(value => {
+          let ts = this.formatDateTime(value.ts_updated);
+          let trigger_type = value.trigger_type;
+          let tech_info = value.tech_info;
           let trigger_id = value.trigger_id;
-          if(trigger_id != latest_release_trigger_id){
+          if(trigger_id != trigger_list_trigger_id){
             event_details.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>)
-            let internal_symbol = value.internal_sym.alert_symbol;
-  
-            if (internal_symbol == "E") {
-                let magnitude = value.trigger_misc.eq.magnitude;
-                let longitude = value.trigger_misc.eq.longitude;
-                let latitude = value.trigger_misc.eq.latitude;
-                let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last earthquake retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
-                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{earth_quake_info}</Text>)
-            } else if (internal_symbol == "R") {
-                let rain_info = value.info;
-                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
-                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
-            } else if (internal_symbol == "m" || internal_symbol == "M") {
-                let moms_info = value.info;
-                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last moms retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
-                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+            if(trigger_type == "rainfall"){
+              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{tech_info}</Text>)
+            }else if(trigger_type == "moms"){
+              is_moms = true;
+              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last moms retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{tech_info}</Text>)
+            }else if(trigger_type == "earthquake"){
+              let magnitude = value.trigger_misc.eq.magnitude;
+              let longitude = value.trigger_misc.eq.longitude;
+              let latitude = value.trigger_misc.eq.latitude;
+              let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last earthquake retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{earth_quake_info}</Text>)
             }
           }
-                
-       });
+        });
+        
       }
+      let candidate_for_lowering = false
+      if(validity["text_format_timestamp"] == release_schedule["text_format_timestamp"]){
+        candidate_for_lowering = true;
+      }
+      this.setState({ retrigger_details: this.getRetriggers(candidate_alert, candidate_for_lowering, general_status, is_moms) });
     }
-    
-    this.setState({ retrigger_details: this.getRetriggers(candidate_alert) });
 
     return event_details
   }
@@ -286,11 +355,12 @@ export default class CurrentAlert extends Component {
   releaseAlert(alert_data) {
     Notification.formatCandidateAlerts(alert_data)
     setTimeout(() => {
-      this.getCurrentAlert()
+      Alert.alert('Success', 'Successfully release!')
+      this.getCurrentAlert();
     }, 3000);
   }
 
-  getRetriggers(data) {
+  getRetriggers(data, candidate_for_lowering, general_status, is_moms) {
     let view = []
     let temp = []
 
@@ -350,6 +420,22 @@ export default class CurrentAlert extends Component {
       }
     }
     view.push(<View style={{ alignItems: 'center', textAlign: 'center' }}>{temp}</View>)
+
+    if(candidate_for_lowering == true){
+      if(general_status == "lowering"){
+        view.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}><Text style={{fontWeight: 'bold'}}>END OF VALIDITY</Text></Text>)
+      }else{
+        view.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}><Text style={{fontWeight: 'bold'}}>Candidate for lowering.</Text></Text>)
+        if(is_moms == false){
+          view.push(<View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+          <TouchableOpacity style={defaults.button} onPress={() => { this.raiseNonSignificantPrompt() }}>
+            <Text style={defaults.buttonText}>Raise Non-Significant</Text>
+          </TouchableOpacity>
+        </View>);
+        }
+      }
+      
+    }
     return view;
   }
 
@@ -363,7 +449,7 @@ export default class CurrentAlert extends Component {
     let time_format2 = ""
     let for_file_name = ""
     if (timestamp == null) {
-      current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS");
+      current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:ss");
       date_format = moment(new Date()).format("YYYY-MM-DD");
       date_only_format = moment(new Date()).format("MMMM D, YYYY");
       time_format = moment(new Date()).format("hh:MM a");
@@ -371,7 +457,7 @@ export default class CurrentAlert extends Component {
       text_format_timestamp = moment(new Date()).format("LLL");
       for_file_name = moment(new Date()).format("YYYY_MM_DD_HH_MM_SS");
     } else {
-      current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS");
+      current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:ss");
       date_format = moment(date).format("YYYY-MM-DD");
       date_only_format = moment(date).format("MMMM D, YYYY");
       time_format = moment(date).format("hh:MM a");
@@ -389,6 +475,69 @@ export default class CurrentAlert extends Component {
       text_format_timestamp: text_format_timestamp,
       for_file_name: for_file_name
     }
+  }
+
+  raiseNonSignificantPrompt(){
+    Alert.alert(
+      'Raise Non-Significant',
+      'Are you sure you want release this non-significant?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: () => this.raiseNonSignificant() },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  raiseNonSignificant(){
+    let current_ts = this.formatDateTime();
+    let alert_validity = current_ts.current_timestamp;
+    let hour = moment(alert_validity).hours()
+        if (hour >= 0 && hour < 4) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 04:00:00")
+        } else if (hour >= 4 && hour < 8) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 08:00:00")
+        } else if (hour >= 8 && hour < 12) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 12:00:00")
+        } else if (hour >= 12 && hour < 16) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 16:00:00")
+        } else if (hour >= 16 && hour < 20) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 20:00:00")
+        } else if (hour >= 20) {
+          alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
+        }
+    let trigger_list = {
+      alert_level: 0,
+      alert_validity: alert_validity,
+      data_ts: current_ts.current_timestamp,
+      observance_ts: current_ts.current_timestamp,
+      user_id: 1,
+      trig_list: [
+          {
+              int_sym: "m0",
+              remarks: "Lowering",
+              f_name: "none",
+              f_type: "none"
+          }
+      ]
+    }
+    console.log(trigger_list)
+    let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
+    fetch(url, {
+        method: 'POST',
+        dataType: 'jsonp',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(trigger_list),
+    }).then((responseJson) => {
+        Alert.alert('Success', 'Successfully raise non-significant')
+    });
   }
 
   render() {
