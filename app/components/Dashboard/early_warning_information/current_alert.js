@@ -100,14 +100,14 @@ export default class CurrentAlert extends Component {
       if (overdue.length != 0) {
         let event_details = this.formatEwiDetails(candidate_alert, overdue[0], true);
         view.push(event_details)
-        let current_alert_level = latest[0].public_alert_symbol.alert_level;
+        let current_alert_level = overdue[0].public_alert_symbol.alert_level;
         if(current_alert_level != 0){
           release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
             <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
               <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
                 <Text style={defaults.buttonText}>Release</Text>
               </TouchableOpacity>
-              <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS() }}>
+              <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS(overdue[0].internal_alert_level, overdue[0].releases[0].data_ts) }}>
                 <Text style={defaults.buttonText}>Send EWI</Text>
               </TouchableOpacity>
             </View>

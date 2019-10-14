@@ -498,6 +498,8 @@ function displayRaiseMomsModal(data) {
                     console.log(responseJson)
                     alert("Successfuly raise MOMs.");
                     $("#raise_moms_modal").modal("hide");
+                    $("#observance_ts").val();
+                    $("#moms_remarks").val();
                     if(int_sym == "m0"){
                         publicAlert()
                     }else{
