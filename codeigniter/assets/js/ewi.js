@@ -417,6 +417,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         let trigger_list_trigger_id = 0;
         let release_schedule = "";
         let general_status = "";
+        let latest_trigger_details = [];
 
         if(candidate_alerts.length == 0){
             formatted_as_of = formatDateTime(leo_data.releases[0].data_ts);
@@ -436,12 +437,13 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
             if(trigger_list_arr.length != 0){
                 has_trigger = true;
                 $.each(trigger_list_arr, function (key, value) {
-                    if(trigger_list_trigger_id == 0){
+                    let trigger_type = value.trigger_type;
+                    let tech_info = value.tech_info;
+                    if(trigger_list_trigger_id == 0 && trigger_type == "rainfall"){
                         trigger_list_trigger_id = value.trigger_id
                     }
+
                     if(candidate_alerts[0].release_details.data_ts == value.ts_updated){
-                        let trigger_type = value.trigger_type;
-                        let tech_info = value.tech_info;
                         if(trigger_type == "rainfall"){
                             latest_data_information += "<b>Rainfall: </b> " + tech_info + "<br>";
                         }else if(trigger_type == "moms"){
@@ -450,9 +452,18 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                             latest_data_information += "<b>Earthquake Alert: </b> " + tech_info + "<br>";
                         }
                     }else{
-                        latest_data_information += "No new retriggers<br>"
+                        if(trigger_type == "moms"){
+                            latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + "<br>";
+                        }else{
+                            latest_data_information += "No new retriggers<br>"
+                        }
                     }
                     
+                    latest_trigger_details.push({
+                        "ts_updated" : value.ts_updated,
+                        "tech_info" : tech_info,
+                        "trigger_type": trigger_type
+                    })
                 });
             }else{
                 has_trigger = false;
@@ -466,8 +477,11 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         let latest_release_text = "none";
         let info = ""
         let release_ts = "";
-        
+        let all_triggers = []
         $("#recommended_response").empty();
+        let has_latest_rainfall_trigger = false;
+        let latest_moms_id = 0;
+        let moms_instance_ids = []
         $.each(leo_data.releases, function (key, value) {
             if(latest_release_text == "none"){
                 let formatted_release_time = moment(value.release_time, 'HH:mm').format('h:mm A');
@@ -481,8 +495,38 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                 }
                 latest_release_text = release_ts["date_only_format"] + " " + formatted_release_time;
             }
-        });
 
+
+            let release_triggers = value.triggers;
+            $.each(release_triggers, function (key, value) {
+                let internal_symbol = value.internal_sym.alert_symbol;
+                let ts = formatDateTime(value.ts)
+                if (internal_symbol == "E") {
+                    let trigger_type = "Earthquake: ";
+                    let magnitude = value.trigger_misc.eq.magnitude;
+                    let longitude = value.trigger_misc.eq.longitude;
+                    let latitude = value.trigger_misc.eq.latitude;
+                    let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+                    all_triggers.push({"trigger_type": "earthquake", "tech_info": earth_quake_info, "ts": ts["text_format_timestamp"]})
+                } else if (internal_symbol == "R") {
+                    if(has_latest_rainfall_trigger == false){
+                        has_latest_rainfall_trigger = true;
+                        let trigger_type = "Rainfall: ";
+                        let info = value.info;
+                        all_triggers.push({"trigger_type": "rainfall", "tech_info": info, "ts": ts["text_format_timestamp"]})
+                    }
+                } else if (internal_symbol == "m" || internal_symbol == "M") {
+                    let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
+                    let moms_instance_id_checker = moms_instance_ids.includes(instance_id);
+                    if(moms_instance_id_checker == false){
+                        moms_instance_ids.push(instance_id);
+                        let info = value.info;
+                        all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"]})
+                    }
+                }
+            });
+        });
+        
         let latest_event_triggers = leo_data.latest_event_triggers;
         let latest_release_trigger_id = 0;
         if (trigger.length != 0) {
@@ -490,13 +534,13 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         }
         let is_equal_trigger = true;
         let is_moms = false;
-        if(has_trigger == false){
+        let has_rainfall = false;
+        // if(has_trigger == false){
             if(latest_event_triggers.length != 0){
                 $.each(latest_event_triggers, function (key, value) {
                     let ts = formatDateTime(value.ts);
                     let trigger_id = value.trigger_id;
-                    
-                    if(trigger_id != latest_release_trigger_id){
+                    // if(trigger_id != latest_release_trigger_id){
                         is_equal_trigger = false;
                         let internal_symbol = value.internal_sym.alert_symbol;
     
@@ -508,47 +552,114 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                             let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
                             info += as_of + earth_quake_info + "<br><br>";
                         } else if (internal_symbol == "R") {
-                            let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+                            let timestamp = ts["text_format_timestamp"];
                             let rain_info = value.info;
+                            has_rainfall = true;
+                            if(latest_trigger_details.length != 0){
+                                $.each(latest_trigger_details, function (key, value) {
+                                    if(value.trigger_type == "rainfall"){
+                                        let ts_updated = formatDateTime(latest_trigger_details[0].ts_updated);
+                                        timestamp = ts_updated["text_format_timestamp"];
+                                        rain_info = latest_trigger_details[0].tech_info;
+                                    }
+                                });
+                            }
+                            let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
                             info += as_of + rain_info + "<br><br>";
                         } else if (internal_symbol == "m" || internal_symbol == "M") {
                             is_moms = true;
-                            let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+                            let timestamp = ts["text_format_timestamp"];
+                            let as_of = "";
                             let moms_info = value.info;
-                            info += as_of + moms_info + "<br><br>";
+                            if(all_triggers.length != 0){
+                                $.each(all_triggers, function (key, value) {
+                                    if(value.trigger_type == "moms"){
+                                        timestamp = value.ts;
+                                        moms_info = value.tech_info;
+                                        if(internal_symbol == "m"){
+                                            as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                        }else{
+                                            as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                        }
+                                        info += as_of + moms_info + "<br><br>";
+                                    }
+                                });
+                            }else{
+                                if(internal_symbol == "m"){
+                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                }else{
+                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                }
+                                info += as_of + moms_info + "<br><br>";
+                            }
+                            
                         }
-                    }
+                        if(has_rainfall == false && internal_symbol == "R"){
+                            let timestamp = ts["text_format_timestamp"];
+                            let rain_info = value.info;
+                            let as_of = "";
+                            if(latest_trigger_details.length != 0){
+                                $.each(latest_trigger_details, function (key, value) {
+                                    if(value.trigger_type == "rainfall"){
+                                        let ts_updated = formatDateTime(value.ts_updated);
+                                        timestamp = ts_updated["text_format_timestamp"];
+                                        rain_info = value.tech_info;
+                                        as_of = "As of <b>last rainfall retrigger2</b> at " + "<b>"+timestamp+ "</b><br>";
+                                        info += as_of + rain_info + "<br><br>";
+                                    }
+                                });
+                            }
+                        }
+
+                        if(is_moms == false && internal_symbol == "m" || internal_symbol == "M"){;
+                            let as_of = "";
+                            if(all_triggers.length != 0){
+                                $.each(all_triggers, function (key, value) {
+                                    if(value.trigger_type == "moms"){
+                                        let timestamp = value.ts;
+                                        moms_info = value.tech_info;
+                                        if(internal_symbol == "m"){
+                                            as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                        }else{
+                                            as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                        }
+                                        info += as_of + moms_info + "<br><br>";
+                                    }
+                                });
+                            }
+                        }
+                    // }
                 });
                 
             }
-        }else{
-            let trigger_list_arr = candidate_alerts[0].trigger_list_arr;
-            $.each(trigger_list_arr, function (key, value) {
-                let ts = formatDateTime(value.ts_updated);
-                let trigger_type = value.trigger_type;
-                let tech_info = value.tech_info;
-                let trigger_id = value.trigger_id;
-                if(trigger_id != trigger_list_trigger_id){
-                    is_equal_trigger = false;
-                    if(trigger_type == "rainfall"){
-                        let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
-                        info += as_of + tech_info + "<br><br>";
-                    }else if(trigger_type == "moms"){
-                        let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
-                        info += as_of + tech_info + "<br><br>";
-                        is_moms = true;
-                    }else if(trigger_type == "earthquake"){
-                        let magnitude = value.trigger_misc.eq.magnitude;
-                        let longitude = value.trigger_misc.eq.longitude;
-                        let latitude = value.trigger_misc.eq.latitude;
-                        let as_of = "As of <b>last earthquake retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
-                        let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-                        info += as_of + earth_quake_info + "<br><br>";
-                    }
-                }
+        // }else{
+        //     let trigger_list_arr = candidate_alerts[0].trigger_list_arr;
+        //     $.each(trigger_list_arr, function (key, value) {
+        //         let ts = formatDateTime(value.ts_updated);
+        //         let trigger_type = value.trigger_type;
+        //         let tech_info = value.tech_info;
+        //         let trigger_id = value.trigger_id;
+        //         if(trigger_id != trigger_list_trigger_id){
+        //             is_equal_trigger = false;
+        //             if(trigger_type == "rainfall"){
+        //                 let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+        //                 info += as_of + tech_info + "<br><br>";
+        //             }else if(trigger_type == "moms"){
+        //                 let as_of = "As of <b>last moms retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+        //                 info += as_of + tech_info + "<br><br>";
+        //                 is_moms = true;
+        //             }else if(trigger_type == "earthquake"){
+        //                 let magnitude = value.trigger_misc.eq.magnitude;
+        //                 let longitude = value.trigger_misc.eq.longitude;
+        //                 let latitude = value.trigger_misc.eq.latitude;
+        //                 let as_of = "As of <b>last earthquake retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+        //                 let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+        //                 info += as_of + earth_quake_info + "<br><br>";
+        //             }
+        //         }
                 
-            });
-        }
+        //     });
+        // }
         
        
         if(alert_level == "Alert 3"){
@@ -572,35 +683,30 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         }
         
         $("#triggers").empty();
-        if (trigger.length == 0) {
-            $("#triggers").append("As of last release timestamp <b>" + release_ts["text_format_timestamp"] + "</b><br>");
-            $("#triggers").append("No new retriggers");
-            $("#triggers_column > h5").hide();
-        } else {
+        // if (trigger.length == 0) {
+        //     $("#triggers").append("As of last release timestamp <b>" + release_ts["text_format_timestamp"] + "</b><br>");
+        //     $("#triggers").append("No new retriggers");
+        //     $("#triggers_column > h5").hide();
+        // } else {
             $("#triggers_column > h5").show();
-            $("#triggers").append("As of last release timestamp <b>" + release_ts["text_format_timestamp"] + "</b><br>");
+            $("#triggers").append("As of last release timestamp <b>" + release_ts["text_format_timestamp"] + "</b><br><br>");
            
-            $.each(trigger, function (key, value) {
-                let internal_symbol = value.internal_sym.alert_symbol;
-                if (internal_symbol == "E") {
-                    let trigger_type = "Earthquake: ";
-                    let magnitude = value.trigger_misc.eq.magnitude;
-                    let longitude = value.trigger_misc.eq.longitude;
-                    let latitude = value.trigger_misc.eq.latitude;
-                    let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-                    $("#triggers").append("<b>" + trigger_type + "</b>" + earth_quake_info + "<br>");
-                } else if (internal_symbol == "R") {
-                    let trigger_type = "Rainfall: ";
-                    let info = value.info;
-                    $("#triggers").append("<b>" + trigger_type + "</b>" + info + "<br>");
-                } else if (internal_symbol == "m" || internal_symbol == "M") {
-                    let trigger_type = "Manifestations of movement: ";
-                    let info = value.info;
-                    $("#triggers").append("<b>" + trigger_type + "</b>" + info + "<br>");
+            $.each(all_triggers, function (key, value) {
+                let trigger_type = value.trigger_type
+                let tech_info = value.tech_info;
+                if (trigger_type == "earthquake") {
+                    let trigger_type_label = "Earthquake (" + value.ts + "): ";
+                    $("#triggers").append("<b>" + trigger_type_label + "</b>" + tech_info + "<br>");
+                } else if (trigger_type == "rainfall") {
+                    let trigger_type_label = "Rainfall (" + value.ts + "): ";
+                    $("#triggers").append("<b>" + trigger_type_label + "</b>" + tech_info + "<br>");
+                } else if (trigger_type == "moms" || trigger_type == "M") {
+                    let trigger_type_label = "Manifestations of movement (" + value.ts + "): ";
+                    $("#triggers").append("<b>" + trigger_type_label + "</b>" + tech_info + "<br>");
                 }
 
             });
-        }
+        // }
 
         let for_lowering = false;
 
