@@ -86,9 +86,23 @@ function reportData() {
 
 function logout() {
     $("#logout").on("click", function () {
-        fetch('http://cbewsl.com/dashboard/unregisterSession').then(function (response) {
-            window.location.href = "http://cbewsl.com/home";
-        });
+        $("#loadingModal").modal("show");
+        $.ajax({
+            url: "http://192.168.1.10:5000/api/logout",
+            beforeSend: function (xhr) {
+                // xhr.overrideMimeType("text/plain; charset=x-user-defined");
+            }
+        }).done(function () {
+            setTimeout(function(){
+                $("#loadingModal").modal("hide"); 
+                window.location.href = "http://cbewsl.com/home";
+            }, 2000);
+        })
+        // fetch('http://192.168.1.10:5000/api/logout').then(function (response) {
+        //     setTimeout(function(){ 
+        //         window.location.href = "http://cbewsl.com/home";
+        //     }, 3000);
+        // });
     })
 }
 

@@ -25,6 +25,10 @@
 								<label for="password">Password</label>
 								<input type="password" class="form-control" id="password" placeholder="Password" data-validation="length alphanumeric" data-validation-length="min6">
 							</div>
+							<button class="btn btn-primary btn-sm float-right" style="display: none;" type="button" id="submit_spinner" disabled>
+								<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+								Logging in. . .
+							</button>
 							<button id="submit" class="btn btn-primary btn-sm float-right">Login</button>
 						</div>
 						</div>
@@ -91,3 +95,6 @@
 		</div>
 	</div>
 </div>
+
+
+<?php $this->load->view('templates/loading_modal');?>

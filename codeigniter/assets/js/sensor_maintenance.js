@@ -103,6 +103,7 @@ function initializeMaintenanceLogsCalendar() {
             },
             events: maintenance_logs
         });
+        calendar.setOption('height', 700);
         calendar.destroy();
         calendar.render();
         calendar.render();

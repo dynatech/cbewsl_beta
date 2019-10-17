@@ -34,7 +34,10 @@
                     <div class="col" id="situation_report_calendar"></div>
                     <div class="col" id="situation_report_data">
                         <div class="row">
+                        <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
+                        <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"/>
                             <div class="col" id="situation_report_log">
+                                
                                 <div id="current_situation_report_container">
                                     <p id="situation_report_date_time">
                                         Date : June 21, 2019

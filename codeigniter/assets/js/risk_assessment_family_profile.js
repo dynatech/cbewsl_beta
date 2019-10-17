@@ -63,6 +63,11 @@ function getAllFamilyRiskProfile() {
     });
 }
 
+function stringTruncate(str, max, add){
+    add = add || '...';
+    return (typeof str === 'string' && str.length > max ? str.substring(0, max) + add : str);
+};
+
 function getRiskProfile() {
     $.ajax({
         url: "http://192.168.1.10:5000/api/family_profile/get_all_risk_profile",
@@ -82,10 +87,14 @@ function getRiskProfile() {
             "bDestroy": true,
             "columns": [
                 { "data": "timestamp" },
-                { "data": "entry" },
                 {
                     render(data, type, full) {
-                        // ${full.resources_and_capacities_id}
+                        data = stringTruncate(full.entry, 80);
+                        return data;
+                    }
+                },
+                {
+                    render(data, type, full) {
                         return `<a href="#risk_profile" id="edit_risk_profile"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#risk_profile" id="remove_risk_profile"><i class="fas fa-minus-circle text-center"></i></a>`;
                     }
                 }
@@ -120,47 +129,71 @@ function setFamilyRiskDataForm(data) {
 
 function saveFamilyRisk() {
     $("#add_family_risk").click(function () {
+        $("#add_family_risk_spinner").show();
+        $("#add_family_risk").hide();
         let url = "http://192.168.1.10:5000/api/family_profile/save_family_profile";
+        let members_count_field = $("#number_of_members").val();
+        let vulnerable_members_count_field = $("#number_of_vulnerable").val();
+        let vulnerability_nature_field = $("#nature_of_vulnerability").val();
         let data = {
             family_profile_id: $("#family_profile_id").val(),
-            members_count: $("#number_of_members").val(),
-            vulnerable_members_count: $("#number_of_vulnerable").val(),
-            vulnerability_nature: $("#nature_of_vulnerability").val()
+            members_count: members_count_field,
+            vulnerable_members_count: vulnerable_members_count_field,
+            vulnerability_nature: vulnerability_nature_field
         }
-
-        $.post(url, data).done(function (response) {
-            alert(response.message);
-            if (response.status == true) {
-                $("#family_profile_id").val(0);
-                $("#number_of_members").val("");
-                $("#number_of_vulnerable").val("");
-                $("#nature_of_vulnerability").val("");
-                $("#add_family_risk").text("Add");
-                $('#family_risk_profile_table tbody').unbind();
-                getAllFamilyRiskProfile();
-            }
-        });
+        console.log(data)
+        if(members_count_field != "" && vulnerable_members_count_field != "" && vulnerability_nature_field != ""){
+            $.post(url, data).done(function (response) {
+                $("#add_family_risk_spinner").hide();
+                $("#add_family_risk").show();
+                alert(response.message);
+                if (response.status == true) {
+                    $("#family_profile_id").val(0);
+                    $("#number_of_members").val("");
+                    $("#number_of_vulnerable").val("");
+                    $("#nature_of_vulnerability").val("");
+                    $("#add_family_risk").text("Add");
+                    $('#family_risk_profile_table tbody').unbind();
+                    getAllFamilyRiskProfile();
+                }
+            });
+        }else{
+            alert("All fields are required")
+            $("#add_family_risk_spinner").hide();
+            $("#add_family_risk").show();
+        }
     });
 }
 
 function saveRiskProfile() {
     $("#add_risk_profile").click(function () {
+        $("#add_risk_profile_spinner").show();
+        $("#add_risk_profile").hide();
         let url = "http://192.168.1.10:5000/api/family_profile/save_risk_profile";
+        let entry_field = $("#entry").val()
         let data = {
             risk_profile_id: $("#risk_profile_id").val(),
-            entry: $("#entry").val()
+            entry: entry_field
         }
 
-        $.post(url, data).done(function (response) {
-            alert(response.message);
-            if (response.status == true) {
-                $("#risk_profile_id").val(0);
-                $("#entry").val("");
-                $("#add_risk_profile").text("Add");
-                $('#risk_profile_table tbody').unbind();
-                getRiskProfile();
-            }
-        });
+        if(entry_field != ""){
+            $.post(url, data).done(function (response) {
+                $("#add_risk_profile_spinner").hide();
+                $("#add_risk_profile").show();
+                if (response.status == true) {
+                    $("#risk_profile_id").val(0);
+                    $("#entry").val("");
+                    $("#add_risk_profile").text("Add");
+                    $('#risk_profile_table tbody').unbind();
+                    getRiskProfile();
+                }
+                alert(response.message);
+            });
+        }else{
+            alert("Entry field is required");
+            $("#add_risk_profile_spinner").hide();
+            $("#add_risk_profile").show();
+        }
     });
 }
 

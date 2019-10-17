@@ -42,72 +42,79 @@ export default class RaiseMoms extends Component {
         let feature_name = this.state.feature_name;
         let alert_validity = "";
         let int_sym = "";
-        if(alert_level == ""){
-            alert_level = 0;
-        }
-        if(datetime != "" && alert_level != ""){
-            if (alert_level == "2") {
-                int_sym = "m2"
-                alert_validity = moment(datetime).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
-            } else if (alert_level == "3") {
-                int_sym = "m3"
-                alert_validity = moment(datetime).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
-            } else {
-                int_sym = "m0"
-            }
-    
-            let hour = moment(alert_validity).hours()
-            if (hour >= 0 && hour < 4) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 04:00:00")
-            } else if (hour >= 4 && hour < 8) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 08:00:00")
-            } else if (hour >= 8 && hour < 12) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 12:00:00")
-            } else if (hour >= 12 && hour < 16) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 16:00:00")
-            } else if (hour >= 16 && hour < 20) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 20:00:00")
-            } else if (hour >= 20) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
-            }
 
-            let trigger_list = {
-                alert_level: alert_level,
-                alert_validity: alert_validity.toString(),
-                data_ts: datetime,
-                observance_ts: datetime,
-                user_id: 1,
-                trig_list: [
-                    {
-                        int_sym: int_sym,
-                        remarks: this.state.remarks,
-                        f_name: feature_type,
-                        f_type: feature_name
-                    }
-                ]
-            }
-            console.log(trigger_list)
-            let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
-            fetch(url, {
-                method: 'POST',
-                dataType: 'jsonp',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(trigger_list),
-            }).then((responseJson) => {
-                Alert.alert('Success', 'Successfully raise moms!')
-                
-                if(int_sym == "m0"){
-                    Notification.updateAlertGen();
-                }else{
-                    Notification.updateAlertGen(true);
-                }
-                this.props.navigation.navigate('monitoring_logs');
-            });
+        let current_date = moment(new Date()).format("YYYY-MM-DD H:mm:ss");
+        let compare_date = moment(current_date).isSameOrAfter(datetime);
+        if(compare_date == false){
+            Alert.alert('Notice', 'Unable to add future date and time');
         }else{
-            Alert.alert('Notice', 'Alert level and Observance timestamp are required!')
+            if(alert_level == ""){
+                alert_level = 0;
+            }
+            if(datetime != "" && alert_level != ""){
+                if (alert_level == "2") {
+                    int_sym = "m2"
+                    alert_validity = moment(datetime).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
+                } else if (alert_level == "3") {
+                    int_sym = "m3"
+                    alert_validity = moment(datetime).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
+                } else {
+                    int_sym = "m0"
+                }
+        
+                let hour = moment(alert_validity).hours()
+                if (hour >= 0 && hour < 4) {
+                    alert_validity = moment(alert_validity).format("YYYY-MM-DD 04:00:00")
+                } else if (hour >= 4 && hour < 8) {
+                    alert_validity = moment(alert_validity).format("YYYY-MM-DD 08:00:00")
+                } else if (hour >= 8 && hour < 12) {
+                    alert_validity = moment(alert_validity).format("YYYY-MM-DD 12:00:00")
+                } else if (hour >= 12 && hour < 16) {
+                    alert_validity = moment(alert_validity).format("YYYY-MM-DD 16:00:00")
+                } else if (hour >= 16 && hour < 20) {
+                    alert_validity = moment(alert_validity).format("YYYY-MM-DD 20:00:00")
+                } else if (hour >= 20) {
+                    alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
+                }
+    
+                let trigger_list = {
+                    alert_level: alert_level,
+                    alert_validity: alert_validity.toString(),
+                    data_ts: datetime,
+                    observance_ts: datetime,
+                    user_id: 1,
+                    trig_list: [
+                        {
+                            int_sym: int_sym,
+                            remarks: this.state.remarks,
+                            f_name: feature_type,
+                            f_type: feature_name
+                        }
+                    ]
+                }
+                console.log(trigger_list)
+                let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
+                fetch(url, {
+                    method: 'POST',
+                    dataType: 'jsonp',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(trigger_list),
+                }).then((responseJson) => {
+                    Alert.alert('Success', 'Successfully raise moms!')
+                    
+                    if(int_sym == "m0"){
+                        Notification.updateAlertGen();
+                    }else{
+                        Notification.updateAlertGen(true);
+                    }
+                    this.props.navigation.navigate('monitoring_logs');
+                });
+            }else{
+                Alert.alert('Notice', 'Alert level and Observance timestamp are required!')
+            }
         }
     }
 

@@ -114,28 +114,45 @@ function setHazardDataForm(data) {
 
 function saveHazardData() {
     $("#add_hazard_data").click(function () {
+        $("#add_hazard_data_spinner").show();
+        $("#add_hazard_data").hide();
         let url = "http://192.168.1.10:5000/api/hazard_data/save_hazard_data";
+        let hazard_data_id_field = $("#hazard_data_id").val();
+        let hazard_field = $("#hazard").val();
+        let speed_of_onset_field = $("#speed_of_onset").val();
+        let early_warning_field = $("#early_warning").val();
+        let impact_field = $("#impact").val();
         let data = {
-            hazard_data_id: $("#hazard_data_id").val(),
-            hazard: $("#hazard").val(),
-            speed_of_onset: $("#speed_of_onset").val(),
-            early_warning: $("#early_warning").val(),
-            impact: $("#impact").val()
+            hazard_data_id: hazard_data_id_field,
+            hazard: hazard_field,
+            speed_of_onset: speed_of_onset_field,
+            early_warning: early_warning_field,
+            impact: impact_field
         }
 
-        $.post(url, data).done(function (response) {
-            alert(response.message);
-            if (response.status == true) {
-                $("#hazard_data_id").val(0);
-                $("#hazard").val("");
-                $("#speed_of_onset").val("");
-                $("#early_warning").val("");
-                $("#impact").val("");
-                $("#add_hazard_data").text("Add");
-                $('#hazard_data_table tbody').unbind();
-                getAllHazardData();
-            }
-        });
+        if(hazard_field != "" && speed_of_onset_field != "" && early_warning_field != "" && impact_field != ""){
+            $.post(url, data).done(function (response) {
+                $("#add_hazard_data_spinner").hide();
+                $("#add_hazard_data").show();
+                alert(response.message);
+                if (response.status == true) {
+                    $("#hazard_data_id").val(0);
+                    $("#hazard").val("");
+                    $("#speed_of_onset").val("");
+                    $("#early_warning").val("");
+                    $("#impact").val("");
+                    $("#add_hazard_data").text("Add");
+                    $('#hazard_data_table tbody').unbind();
+                    getAllHazardData();
+                }
+            });
+        }else{
+            $("#add_hazard_data_spinner").hide();
+            $("#add_hazard_data").show();
+            alert("All fields are required.");
+        }
+
+        
     });
 }
 

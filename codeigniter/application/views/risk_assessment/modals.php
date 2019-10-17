@@ -15,6 +15,10 @@
                     <textarea class="form-control" id="entry" style="height : 200px"></textarea>
                     <input type="hidden" class="form-control" id="risk_profile_id" value="0">
                 </div>
+                <button class="btn btn-primary btn-sm float-right" style="display: none;" type="button" id="add_risk_profile_spinner" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Saving. . .
+                </button>
                 <button type="button" class="btn btn-primary btn-sm float-right" id="add_risk_profile">Add</button>
                 <br>
                 <br>
@@ -140,7 +144,10 @@
                         </div>
                     </div>
                 </div>
-                
+                <button class="btn btn-primary btn-sm float-right" style="display: none;" type="button" id="add_hazard_data_spinner" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Saving. . .
+                </button>
                 <button type="button" class="btn btn-primary btn-sm float-right" id="add_hazard_data">Add</button>
                 <br>
                 <br>
@@ -208,7 +215,10 @@
                         </div>
                     </div>
                 </div>
-                
+                <button class="btn btn-primary btn-sm float-right" style="display: none;" type="button" id="add_resources_capacity_spinner" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Saving. . .
+                </button>
                 <button type="button" class="btn btn-primary btn-sm float-right" id="add_resources_capacity">Add</button>
                 <br>
                 <br>
@@ -258,13 +268,13 @@
                     <div class="col">
                         <div class="form-group">
                             <label for="number_of_members">Number of Members                         </label>
-                            <input type="text" class="form-control" id="number_of_members" placeholder="E.g. 1">
+                            <input type="number" class="form-control" id="number_of_members" placeholder="E.g. 1">
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-group">
                             <label for="number_of_vulnerable">Number of vulnerable</label>
-                            <input type="text" class="form-control" id="number_of_vulnerable" placeholder="E.g. 1">
+                            <input type="number" class="form-control" id="number_of_vulnerable" placeholder="E.g. 1">
                         </div>
                     </div>
                     <div class="col">
@@ -274,10 +284,26 @@
                         </div>
                     </div>
                 </div>
-                
+                <button class="btn btn-primary btn-sm float-right" style="display: none;" type="button" id="add_family_risk_spinner" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Saving. . .
+                </button>
                 <button type="button" class="btn btn-primary btn-sm float-right" id="add_family_risk">Add</button>
                 <br>
                 <br>
+                <div class="container" id="family_risk_field_alert" style="display: none;">
+                    <div class="row">
+                        <div class="col-sm">
+                        </div>
+                        <div class="col-sm">
+                            <div class="alert alert-primary text-center" role="alert">
+                                All <b>fields</b> are required.
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                        </div>
+                    </div>
+                </div>
             </form>
 
             <table id="family_risk_profile_table" class="display table table-striped" style="width:100%">

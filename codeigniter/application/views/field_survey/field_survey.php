@@ -14,33 +14,49 @@
                         <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
                         <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"/>
                         <div id="field_survey_to_email">
-                        <table class="table table-borderless">
-                            <tbody>
-                                <tr>
-                                    <td colspan="3" id="latest_date_of_survey">Date: 00-00-00</td>
-                                </tr>
-                                <tr>
-                                    <td>Features</td>
-                                    <td id="latest_features">[data here]</td>
-                                </tr>
-                                <tr>
-                                    <td>Materials characterization</td>
-                                    <td id="latest_mat_characterization">[data here]</td>
-                                </tr>
-                                <tr>
-                                    <td>Mechanism</td>
-                                    <td id="latest_mechanism">[data here]</td>
-                                </tr>
-                                <tr>
-                                    <td>Exposure</td>
-                                    <td id="latest_exposure">[data here]</td>
-                                </tr>
-                                <tr>
-                                    <td>Note</td>
-                                    <td id="latest_note">[data here]</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td id="latest_date_of_survey">Date: 00-00-00</td>
+                                            <td> </td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Features</td>
+                                            <td id="latest_features">[data here]</td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Materials characterization</td>
+                                            <td id="latest_mat_characterization">[data here]</td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mechanism</td>
+                                            <td id="latest_mechanism">[data here]</td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Exposure</td>
+                                            <td id="latest_exposure">[data here]</td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Note</td>
+                                            <td id="latest_note">[data here]</td>
+                                            <td> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </div>
+                                <div class="col-sm">
+                                </div>
+                            </div>
+                        </div>
+                        
                         </div>
                         <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/>
                     </div>

@@ -48,6 +48,10 @@
                         </div>
                     </div>
                     <div class="float-right">
+                        <button class="btn btn-primary btn-sm" style="display: none;" type="button" id="add_field_survey_spinner" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Saving. . .
+                        </button>
                         <button type="button" class="btn btn-primary btn-sm" id="add_field_survey">Add</button>
                         <button type="button" class="btn btn-danger btn-sm" id="cancel_add_field_survey">Cancel</button>
                     </div>
