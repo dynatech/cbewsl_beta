@@ -3,6 +3,17 @@ $(document).ready(function () {
 });
 
 function initializeLogin() {
+    $.ajax({
+        url: "http://192.168.1.10:5000/api/check_session",
+        beforeSend: function (xhr) {
+            // xhr.overrideMimeType("text/plain; charset=x-user-defined");
+        }
+    }).done(function (data) {
+            console.log(data)
+        if(data == true){
+            window.location.replace("http://cbewsl.com/dashboard");
+        }
+    })
     $('#login-form #submit').on('click', function () {
         if ($('#username').val() != "" || $('#password').val() != "") {
             let username = $('#username').val();
@@ -15,6 +26,8 @@ function initializeLogin() {
 }
 
 function validateCredentials(username, password) {
+    $("#submit_spinner").show();
+    $("#submit").hide();
     $.ajax({
         url: "http://192.168.1.10:5000/api/login/validate_credentials",
         type: "POST",
@@ -28,6 +41,8 @@ function validateCredentials(username, password) {
     }).done(function (data) {
         let credentials = JSON.parse(data)
         if (credentials.status == true) {
+            $("#submit_spinner").hide();
+            $("#submit").show();
             console.log(credentials)
             let session = {
                 role: credentials.role,
@@ -35,22 +50,12 @@ function validateCredentials(username, password) {
                 first_name: credentials.user_data.username,
                 last_name: credentials.user_data.username,
             }
-            window.location.href = "http://cbewsl.com/dashboard";
-            $.ajax({
-                url: "http://cbewsl.com/api/register_session",
-                type: "POST",
-                data: session,
-                beforeSend: function (xhr) {
-                    xhr.overrideMimeType("text/plain; charset=x-user-defined");
-                }
-            }).done(function (data) {
-                if (data == 1) {
-                    window.location.href = "http://cbewsl.com/dashboard";
-                } else {
-                    alert("Failed to login.")
-                }
-            });
+            setTimeout(function(){ 
+                window.location.href = "http://cbewsl.com/dashboard";
+            }, 2000);
         } else {
+            $("#submit_spinner").hide();
+            $("#submit").show();
             alert("Invalid login.");
         }
     });

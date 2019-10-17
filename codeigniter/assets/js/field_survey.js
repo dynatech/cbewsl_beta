@@ -159,7 +159,10 @@ function sendFieldSurveyViaEmail(date) {
     $("#send_field_survey_spinner").hide();
     $("#send_latest_field_survey").unbind();
     $("#send_latest_field_survey").click(function () {
-        $("#sendEmailFieldSurveyModal").modal("show");
+        $("#sendEmailFieldSurveyModal").modal({
+            backdrop: "static",
+            keyboard: false
+        })
     });
 
     $("#confirm_send_field_survey").unbind();
@@ -200,32 +203,46 @@ function setFieldSurveyDataForm(data) {
 
 function fieldSurveyButtonAction() {
     $("#add_field_survey").click(function () {
+        $("#add_field_survey_spinner").show();
+        $("#add_field_survey").hide();
         let url = "http://192.168.1.10:5000/api/field_survey/save_field_survey";
+        let features_field = $("#features").val();
+        let mat_characterization_field = $("#mat_characterization").val();
+        let mechanism_field = $("#mechanism").val();
+        let exposure_field = $("#exposure").val();
+        let note_field = $("#note").val();
         let data = {
             field_survey_id: $("#field_survey_id").val(),
-            features: $("#features").val(),
-            mat_characterization: $("#mat_characterization").val(),
-            mechanism: $("#mechanism").val(),
-            exposure: $("#exposure").val(),
-            note: $("#note").val()
+            features: features_field,
+            mat_characterization: mat_characterization_field,
+            mechanism: mechanism_field,
+            exposure: exposure_field,
+            note: note_field
         }
-
-        $.post(url, data).done(function (response) {
-            alert(response.message);
-            if (response.status == true) {
-                $("#field_survey_id").val(0);
-                $("#features").val("");
-                $("#mat_characterization").val("");
-                $("#mechanism").val("");
-                $("#exposure").val("");
-                $("#note").val("");
-                $("#add_field_survey").text("Add");
-                $('#field_survey_logs_table tbody').unbind();
-                $("#field_survey_form_container").hide(300);
-                $("#field_survey_modal").modal("hide");
-                getAllFieldSurvey();
-            }
-        });
+        if(features_field != "" && mat_characterization_field != "" && mechanism_field != "" && exposure_field != "" && note_field != "" ){
+            $.post(url, data).done(function (response) {
+                $("#add_field_survey_spinner").hide();
+                $("#add_field_survey").show();
+                alert(response.message);
+                if (response.status == true) {
+                    $("#field_survey_id").val(0);
+                    $("#features").val("");
+                    $("#mat_characterization").val("");
+                    $("#mechanism").val("");
+                    $("#exposure").val("");
+                    $("#note").val("");
+                    $("#add_field_survey").text("Add");
+                    $('#field_survey_logs_table tbody').unbind();
+                    $("#field_survey_form_container").hide(300);
+                    $("#field_survey_modal").modal("hide");
+                    getAllFieldSurvey();
+                }
+            });
+        }else{
+            $("#add_field_survey_spinner").hide();
+            $("#add_field_survey").show();
+            alert("All fields are required")
+        }
     });
 
     $("#cancel_add_field_survey").click(function () {

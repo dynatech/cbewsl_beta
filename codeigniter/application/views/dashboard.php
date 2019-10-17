@@ -63,3 +63,4 @@
 <?php $this->load->view('surficial_data/modals');?>
 <?php $this->load->view('situation_report/modals');?>
 <?php $this->load->view('ewi/modals');?>
+<?php $this->load->view('templates/loading_modal');?>

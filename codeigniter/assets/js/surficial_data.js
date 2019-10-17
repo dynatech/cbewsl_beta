@@ -9,6 +9,9 @@ $(document).ready(function () {
     $('#cancel_add_field_survey').modal('hide');
     $('#moms_dt').datetimepicker();
     $('#observance_timestamp').datetimepicker();
+    jQuery('#observance_ts').bind('keypress', function(e) {
+        e.preventDefault(); 
+    });
     initializeMomsFeatures();
 });
 
@@ -272,29 +275,40 @@ function initializeCRUDMonitoringLogs() {
         let url = "http://192.168.1.10:5000/api/surficial_data/save_monitoring_log";
         let date_picker = $("#moms_date_time").val();
         let formatted_datetime = moment(date_picker).format('YYYY-MM-DD H:mm:ss')
+        let type_of_feature_field = $("#moms_t_feature").val();
+        let description_field = $("#moms_description").val();
+        let name_of_feature = $("#moms_n_feature").val();
+    
         let data = {
             moms_id: $("#moms_id").val(),
-            type_of_feature: $("#moms_t_feature").val(),
-            description: $("#moms_description").val(),
-            name_of_feature: $("#moms_n_feature").val(),
+            type_of_feature: type_of_feature_field,
+            description: description_field,
+            name_of_feature: name_of_feature,
             timestamp: formatted_datetime,
             observance_ts: formatted_datetime
         }
+        if(type_of_feature_field != "" && name_of_feature != "" && description_field != ""){
+            $.post(url, data).done(function (response) {
+                alert(response.message);
+                if (response.status == true) {
+                    $('#moms_id').val(0);
+                    $('#moms_dt').val("");
+                    $('#moms_t_feature').val("");
+                    $('#moms_n_feature').val("");
+                    $('#moms_description').val("");
+                    $('#moms_table tbody').unbind();
+                    $("#add_monitoring_logs").text("Add");
+                    $("#surficial_data_modal").modal("hide");
+                    initializeMonitoringLogs();
+                }
+            });
+        }else{
+            alert("All fields are required");
+        }
+    });
 
-        $.post(url, data).done(function (response) {
-            alert(response.message);
-            if (response.status == true) {
-                $('#moms_id').val(0);
-                $('#moms_dt').val("");
-                $('#moms_t_feature').val("");
-                $('#moms_n_feature').val("");
-                $('#moms_description').val("");
-                $('#moms_table tbody').unbind();
-                $("#add_monitoring_logs").text("Add");
-                $("#surficial_data_modal").modal("hide");
-                initializeMonitoringLogs();
-            }
-        });
+    $('#cancel_monitoring_logs').on('click', function () {
+        $("#surficial_data_modal").modal("hide")
     });
 }
 
@@ -426,88 +440,96 @@ function displayRaiseMomsModal(data) {
     console.log(document.cookie);
     $('#raise_moms').unbind();
     $('#raise_moms').on('click', function () {
+        
         let alert_level = $("#moms_alert_level").val();
         let alert_validity = ""
         let int_sym = ""
         let date_picker = $("#observance_ts").val();
         let formatted_datetime = moment(date_picker).format('YYYY-MM-DD HH:mm:ss')
 
-        if (alert_level == "2") {
-            int_sym = "m2"
-            alert_validity = moment(data.date).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
-        } else if (alert_level == "3") {
-            int_sym = "m3"
-            alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
-        } else {
-            int_sym = "m0"
-        }
-
-        let hour = moment(alert_validity).hours()
-        if (hour >= 0 && hour < 4) {
-            alert_validity = moment(alert_validity).format("YYYY-MM-DD 04:00:00")
-        } else if (hour >= 4 && hour < 8) {
-            alert_validity = moment(alert_validity).format("YYYY-MM-DD 08:00:00")
-        } else if (hour >= 8 && hour < 12) {
-            alert_validity = moment(alert_validity).format("YYYY-MM-DD 12:00:00")
-        } else if (hour >= 12 && hour < 16) {
-            alert_validity = moment(alert_validity).format("YYYY-MM-DD 16:00:00")
-        } else if (hour >= 16 && hour < 20) {
-            alert_validity = moment(alert_validity).format("YYYY-MM-DD 20:00:00")
-        } else if (hour >= 20) {
-            alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
-        }
-
-        let trigger_list = {
-            alert_level: alert_level,
-            alert_validity: alert_validity.toString(),
-            data_ts: formatted_datetime,
-            observance_ts: formatted_datetime,
-            user_id: 1,
-            trig_list: [
-                {
-                    int_sym: int_sym,
-                    remarks: $("#moms_remarks").val(),
-                    f_name: data.feature_name,
-                    f_type: data.feature_type
-                }
-            ]
-        }
-
-        let moms_data = {
-            moms_id: data.moms_id,
-            type_of_feature: data.feature_type,
-            description: data.description,
-            name_of_feature: data.feature_type,
-            timestamp: data.date,
-            observance_ts: formatted_datetime
-        }
-
-        let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
-        isOnSet(alert_level)
-            .then((response) => {
-                console.log(response)
-                fetch(url, {
-                    method: 'POST',
-                    dataType: 'jsonp',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(trigger_list),
-                }).then((responseJson) => {
-                    console.log(responseJson)
-                    alert("Successfuly raise MOMs.");
-                    $("#raise_moms_modal").modal("hide");
-                    $("#observance_ts").val();
-                    $("#moms_remarks").val();
-                    if(int_sym == "m0"){
-                        publicAlert()
-                    }else{
-                        publicAlert(true);
+        let current_date = moment(new Date()).format("YYYY-MM-DD H:mm:ss");
+        let compare_date = moment(current_date).isSameOrAfter(formatted_datetime);
+        if(compare_date == false){
+            alert('Unable to add future date and time');
+        }else{
+            if (alert_level == "2") {
+                int_sym = "m2"
+                alert_validity = moment(data.date).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
+            } else if (alert_level == "3") {
+                int_sym = "m3"
+                alert_validity = moment(data.date).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
+            } else {
+                int_sym = "m0"
+            }
+    
+            let hour = moment(alert_validity).hours()
+            if (hour >= 0 && hour < 4) {
+                alert_validity = moment(alert_validity).format("YYYY-MM-DD 04:00:00")
+            } else if (hour >= 4 && hour < 8) {
+                alert_validity = moment(alert_validity).format("YYYY-MM-DD 08:00:00")
+            } else if (hour >= 8 && hour < 12) {
+                alert_validity = moment(alert_validity).format("YYYY-MM-DD 12:00:00")
+            } else if (hour >= 12 && hour < 16) {
+                alert_validity = moment(alert_validity).format("YYYY-MM-DD 16:00:00")
+            } else if (hour >= 16 && hour < 20) {
+                alert_validity = moment(alert_validity).format("YYYY-MM-DD 20:00:00")
+            } else if (hour >= 20) {
+                alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
+            }
+    
+            let trigger_list = {
+                alert_level: alert_level,
+                alert_validity: alert_validity.toString(),
+                data_ts: formatted_datetime,
+                observance_ts: formatted_datetime,
+                user_id: 1,
+                trig_list: [
+                    {
+                        int_sym: int_sym,
+                        remarks: $("#moms_remarks").val(),
+                        f_name: data.feature_name,
+                        f_type: data.feature_type
                     }
-                    updateObservanceTs(moms_data);
-                });
-            })
+                ]
+            }
+    
+            let moms_data = {
+                moms_id: data.moms_id,
+                type_of_feature: data.feature_type,
+                description: data.description,
+                name_of_feature: data.feature_type,
+                timestamp: data.date,
+                observance_ts: formatted_datetime
+            }
+
+            let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
+            isOnSet(alert_level)
+                .then((response) => {
+                    console.log(response)
+                    fetch(url, {
+                        method: 'POST',
+                        dataType: 'jsonp',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(trigger_list),
+                    }).then((responseJson) => {
+                        console.log(responseJson)
+                        alert("Successfuly raise MOMs.");
+                        $("#raise_moms_modal").modal("hide");
+                        $("#observance_ts").val();
+                        $("#moms_remarks").val();
+                        if(int_sym == "m0"){
+                            publicAlert()
+                        }else{
+                            publicAlert(true);
+                        }
+                        updateObservanceTs(moms_data);
+                    });
+                })
+        }
+        
 
     });
 }

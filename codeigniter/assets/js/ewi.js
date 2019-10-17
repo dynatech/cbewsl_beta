@@ -56,13 +56,13 @@ function getCandidateAndLatestAlerts() {
 
 function displayLatestAlert(latest_data, candidate_alerts, has_alert_data) {
     let latest = latest_data[0];
-    formatEwiDetails(candidate_alerts, latest, has_alert_data);
+    formatEwiDetails(candidate_alerts, latest, has_alert_data, false);
     
 }
 
 function displayOverdueAlert(overdue_data, candidate_alerts, has_alert_data) {
     let overdue = overdue_data[0];
-    formatEwiDetails(candidate_alerts, overdue, has_alert_data);   
+    formatEwiDetails(candidate_alerts, overdue, has_alert_data, true);   
 }
 
 function displayExtendedAlert(extended_data) {
@@ -125,6 +125,8 @@ function displayCandidateAlert(candidate_alerts) {
         });
         $("#no_candidate_alert").hide();
         $("#candidate_alert_information").show();
+    }else{
+        $("#no_candidate_alert").show();
     }
 }
 
@@ -318,7 +320,7 @@ function publicAlert(is_onset = false) {
         });
 }
 
-function onClickReleaseAlert(is_overdue = false) {
+function onClickReleaseAlert(is_overdue) {
     
     $("#release_ewi").empty().append('<br><input class="btn btn-success" type="button" id="confirm_release_ewi" value="Release" style="background-color: #28a745;">')
         .append('&nbsp;<input class="btn btn-success" type="button" id="ewi_send_to_email" value="Send to email" style="background-color: #28a745;">');
@@ -360,7 +362,7 @@ function onClickReleaseAlert(is_overdue = false) {
                 is_for_release = false;
             }
             
-            if (is_for_release == true) {
+            if (is_for_release == true || is_overdue == true) {
                 candidate_alerts[0].is_overdue = is_overdue;
                 if (leo.latest.length != 0 || leo.overdue.length != 0) {
                     let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert';
@@ -394,7 +396,7 @@ function onClickReleaseAlert(is_overdue = false) {
     });
 }
 
-function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
+function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue){
     let alert_level = "Alert " + leo_data.public_alert_symbol.alert_level;
     if(alert_level == "Alert 0"){
         if (has_alert_data == true) {
@@ -461,7 +463,8 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                     latest_trigger_details.push({
                         "ts_updated" : value.ts_updated,
                         "tech_info" : tech_info,
-                        "trigger_type": trigger_type
+                        "trigger_type": trigger_type,
+                        "alert" : value.alert
                     })
                 });
             }else{
@@ -504,12 +507,12 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                     let longitude = value.trigger_misc.eq.longitude;
                     let latitude = value.trigger_misc.eq.latitude;
                     let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-                    all_triggers.push({"trigger_type": "earthquake", "tech_info": earth_quake_info, "ts": ts["text_format_timestamp"]})
+                    all_triggers.push({"trigger_type": "earthquake", "tech_info": earth_quake_info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
                 } else if (internal_symbol == "R") {
                     if(has_latest_rainfall_trigger == false){
                         has_latest_rainfall_trigger = true;
                         let info = value.info;
-                        all_triggers.push({"trigger_type": "rainfall", "tech_info": info, "ts": ts["text_format_timestamp"]})
+                        all_triggers.push({"trigger_type": "rainfall", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
                     }
                 } else if (internal_symbol == "m" || internal_symbol == "M") {
                     let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
@@ -517,7 +520,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                     if(moms_instance_id_checker == false){
                         moms_instance_ids.push(instance_id);
                         let info = value.info;
-                        all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"]})
+                        all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
                     }
                 }
             });
@@ -527,10 +530,11 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         let is_equal_trigger = true;
         let is_moms = false;
         let has_rainfall = false;
+        console.log(all_triggers)
+        console.log(latest_trigger_details)
         if(latest_event_triggers.length != 0){
             $.each(latest_event_triggers, function (key, value) {
                 let ts = formatDateTime(value.ts);
-                let trigger_id = value.trigger_id;
                 is_equal_trigger = false;
                 let internal_symbol = value.internal_sym.alert_symbol;
 
@@ -543,30 +547,95 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                     info += as_of + earth_quake_info + "<br><br>";
                 } else if (internal_symbol == "R") {
                     let timestamp = ts["text_format_timestamp"];
-                    let rain_info = value.info;
-                    has_rainfall = true;
-                    if(latest_trigger_details.length != 0){
-                        $.each(latest_trigger_details, function (key, value) {
-                            if(value.trigger_type == "rainfall"){
-                                let ts_updated = formatDateTime(value.ts_updated);
-                                timestamp = ts_updated["text_format_timestamp"];
-                                rain_info = value.tech_info;
-                            }
-                        });
+                    let rain_info = value.info
+                    if(has_rainfall == false){
+                        has_rainfall = true;
+                        if(latest_trigger_details.length != 0){
+                            $.each(latest_trigger_details, function (key, value) {
+                                if(value.trigger_type == "rainfall"){
+                                    let ts_updated = formatDateTime(value.ts_updated);
+                                    timestamp = ts_updated["text_format_timestamp"];
+                                    rain_info = value.tech_info;
+                                }
+                                let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
+                                info += as_of + rain_info + "<br><br>";
+                            });
+                            
+                        }else{
+                            let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
+                            info += as_of + rain_info + "<br><br>";
+                        }
                     }
-                    let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
-                    info += as_of + rain_info + "<br><br>";
                 } else if (internal_symbol == "m" || internal_symbol == "M") {
-                    is_moms = true;
+                    
                     let timestamp = ts["text_format_timestamp"];
                     let as_of = "";
                     let moms_info = value.info;
-                    if(all_triggers.length != 0){
+                    if(is_moms == false){
+                        is_moms = true;
+                        if(all_triggers.length != 0 || latest_trigger_details.length != 0){
+                            $.each(all_triggers, function (key, value) {
+                                if(value.trigger_type == "moms"){
+                                    timestamp = value.ts;
+                                    moms_info = value.tech_info;
+                                    if(value.internal_sym == "m"){
+                                        as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                    }else{
+                                        as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                    }
+                                    info += as_of + moms_info + "<br><br>";
+                                }
+                            });
+                        }else{
+                            if(internal_symbol == "m"){
+                                as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                            }else{
+                                as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                            }
+                            info += as_of + moms_info + "<br><br>";
+                        }
+                    }
+                    
+                }
+                if(has_rainfall == false){
+                    if(latest_trigger_details.length != 0){
+                        has_rainfall = true;
+                        $.each(latest_trigger_details, function (key, value) {
+                            if(value.trigger_type == "rainfall"){
+                                let ts_updated = formatDateTime(value.ts_updated);
+                                let timestamp = ts_updated["text_format_timestamp"];
+                                let rain_info = value.tech_info;
+                                let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
+                                info += as_of + rain_info + "<br><br>";
+                            }
+                        });
+                    }else{
+                        has_rainfall = false;
+                    }
+                }
+
+                if(is_moms == false){
+                    let as_of = "";
+                    if(all_triggers.length != 0 || latest_trigger_details.length != 0){
                         $.each(all_triggers, function (key, value) {
                             if(value.trigger_type == "moms"){
-                                timestamp = value.ts;
-                                moms_info = value.tech_info;
-                                if(internal_symbol == "m"){
+                                is_moms = true;
+                                let timestamp = value.ts;
+                                let moms_info = value.tech_info;
+                                if(value.internal_sym == "m"){
+                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                }else{
+                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                }
+                                info += as_of + moms_info + "<br><br>";
+                            }
+                        });
+                        $.each(latest_trigger_details, function (key, value) {
+                            if(value.trigger_type == "moms"){
+                                let ts_updated = formatDateTime(value.ts_updated);
+                                let timestamp = ts_updated["text_format_timestamp"];
+                                let moms_info = value.tech_info;
+                                if(value.alert == "m2"){
                                     as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
                                 }else{
                                     as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
@@ -575,44 +644,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
                             }
                         });
                     }else{
-                        if(internal_symbol == "m"){
-                            as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
-                        }else{
-                            as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
-                        }
-                        info += as_of + moms_info + "<br><br>";
-                    }
-                    
-                }
-                if(has_rainfall == false && internal_symbol == "R"){ // remove  && internal_symbol == "R"
-                    if(latest_trigger_details.length != 0){
-                        $.each(latest_trigger_details, function (key, value) {
-                            if(value.trigger_type == "rainfall"){
-                                let ts_updated = formatDateTime(value.ts_updated);
-                                let timestamp = ts_updated["text_format_timestamp"];
-                                let rain_info = value.tech_info;
-                                let as_of = "As of <b>last rainfall retrigger2</b> at " + "<b>"+timestamp+ "</b><br>";
-                                info += as_of + rain_info + "<br><br>";
-                            }
-                        });
-                    }
-                }
-
-                if(is_moms == false && internal_symbol == "m" || internal_symbol == "M"){ //remove && internal_symbol == "m" || internal_symbol == "M"
-                    let as_of = "";
-                    if(all_triggers.length != 0){
-                        $.each(all_triggers, function (key, value) {
-                            if(value.trigger_type == "moms"){
-                                let timestamp = value.ts;
-                                let moms_info = value.tech_info;
-                                if(internal_symbol == "m"){
-                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
-                                }else{
-                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
-                                }
-                                info += as_of + moms_info + "<br><br>";
-                            }
-                        });
+                        is_moms = false;
                     }
                 }
             });
@@ -642,7 +674,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
         
         $("#triggers").empty();
         $("#triggers_column > h5").show();
-        $("#triggers").append("As of last release timestamp <b>" + release_ts["text_format_timestamp"] + "</b><br><br>");
+        $("#triggers").append("As of <b>" + release_ts["text_format_timestamp"] + "</b><br><br>");
         
         $.each(all_triggers, function (key, value) {
             let trigger_type = value.trigger_type
@@ -659,7 +691,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
             }
 
         });
-
+        console.log(is_moms)
         if(validity["text_format_timestamp"] == release_schedule["text_format_timestamp"]){
             $("#recommended_response").append("<br><b id='candidate_for_lowering'>Candidate for lowering.</b>");
             if(is_moms == false){
@@ -672,7 +704,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data){
             $("#raise_non_significant").hide();
             $("#candidate_for_lowering").hide();
         }
-        onClickReleaseAlert(false);
+        onClickReleaseAlert(is_overdue);
     }
     
 }

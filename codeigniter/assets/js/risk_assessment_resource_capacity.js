@@ -62,26 +62,39 @@ function setRNCDataForm(data) {
 
 function saveRNC() {
     $("#add_resources_capacity").click(function () {
+        $("#add_resources_capacity_spinner").show();
+        $("#add_resources_capacity").hide();
         let url = "http://192.168.1.10:5000/api/resources_and_capacities/save_resources_and_capacities";
+        let resource_and_capacity_field = $("#resources_capacity").val();
+        let status_field = $("#status").val();
+        let owner_field = $("#owner").val();
         let data = {
             resources_and_capacities_id: $("#resources_and_capacities_id").val(),
-            resource_and_capacity: $("#resources_capacity").val(),
-            status: $("#status").val(),
-            owner: $("#owner").val()
+            resource_and_capacity: resource_and_capacity_field,
+            status: status_field,
+            owner: owner_field
         }
 
-        $.post(url, data).done(function (response) {
-            alert(response.message);
-            if (response.status == true) {
-                $("#resources_and_capacities_id").val(0);
-                $("#resources_capacity").val("");
-                $("#status").val("");
-                $("#owner").val("");
-                $("#add_resources_capacity").text("Add");
-                $('#resources_and_capacities_table tbody').unbind();
-                getAllResourcesAndCapacity();
-            }
-        });
+        if(resource_and_capacity_field != "" && status_field != "" && owner_field != ""){
+            $.post(url, data).done(function (response) {
+                alert(response.message);
+                if (response.status == true) {
+                    $("#add_resources_capacity_spinner").hide();
+                    $("#add_resources_capacity").show();
+                    $("#resources_and_capacities_id").val(0);
+                    $("#resources_capacity").val("");
+                    $("#status").val("");
+                    $("#owner").val("");
+                    $("#add_resources_capacity").text("Add");
+                    $('#resources_and_capacities_table tbody').unbind();
+                    getAllResourcesAndCapacity();
+                }
+            });
+        }else{
+            $("#add_resources_capacity_spinner").hide();
+            $("#add_resources_capacity").show();
+            alert("All fields are required");
+        }
     });
 }
 
