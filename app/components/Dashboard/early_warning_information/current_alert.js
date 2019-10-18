@@ -221,7 +221,8 @@ export default class CurrentAlert extends Component {
             latest_trigger_details.push({
               "ts_updated" : value.ts_updated,
               "tech_info" : value.tech_info,
-              "trigger_type": value.trigger_type
+              "trigger_type": value.trigger_type,
+              "alert" : value.alert
             })
           });
         }else{
@@ -332,7 +333,7 @@ export default class CurrentAlert extends Component {
               let moms_info = value.info;
               if(is_moms == false){
                 is_moms = true;
-                if(all_triggers.length != 0){
+                if(all_triggers.length != 0 || latest_trigger_details.length != 0){
                   all_triggers.forEach(value => {
                     if(value.trigger_type == "moms"){
                       timestamp = value.ts;
@@ -345,6 +346,20 @@ export default class CurrentAlert extends Component {
                         event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
                       }
                     }
+                  });
+                  latest_trigger_details.forEach(value => {
+                    if(value.trigger_type == "moms"){
+                      let ts_updated = formatDateTime(value.ts_updated);
+                      let timestamp = ts_updated["text_format_timestamp"];
+                      let moms_info = value.tech_info;
+                      if(value.alert == "m2"){
+                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
+                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+                      }else{
+                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>As of last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
+                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+                      }
+                      }
                   });
                 }else{
                   if(internal_symbol == "m"){

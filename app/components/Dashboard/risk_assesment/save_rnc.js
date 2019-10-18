@@ -190,6 +190,7 @@ export default class SaveResourcesAndCapacities extends Component {
                     this.setState({spinner: true});
                 });
         } else {
+            this.setState({spinner: false})
             Alert.alert(
                 'Resources and Capacities',
                 'All fields are required.',

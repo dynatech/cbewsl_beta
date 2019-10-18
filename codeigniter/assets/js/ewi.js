@@ -327,11 +327,17 @@ function onClickReleaseAlert(is_overdue) {
     sendEwiToEmail();
     $("#confirm_release_ewi").unbind();
     $("#confirm_release_ewi").click(function () {
-        $("#confirmReleaseModal").modal("show");
+        $("#confirmReleaseModal").modal({
+            backdrop: 'static',
+            keyboard: false
+        })
     });
 
     $("#confirm_release_ewi_modal").unbind();
     $("#confirm_release_ewi_modal").click(function () {
+        $("#confirm_release_ewi_modal_spinner").show();
+        $("#close_release_ewi_modal").hide();
+        $("#confirm_release_ewi_modal").hide();
         let candidate_alerts = updateEwiData();
         candidate_alerts.done(function (data) {
             let json_data = JSON.parse(data);
@@ -363,6 +369,9 @@ function onClickReleaseAlert(is_overdue) {
             }
             
             if (is_for_release == true || is_overdue == true) {
+                $("#confirm_release_ewi_modal_spinner").hide();
+                $("#close_release_ewi_modal").show();
+                $("#confirm_release_ewi_modal").show();
                 candidate_alerts[0].is_overdue = is_overdue;
                 if (leo.latest.length != 0 || leo.overdue.length != 0) {
                     let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert';
@@ -388,6 +397,9 @@ function onClickReleaseAlert(is_overdue) {
                     alert('Please wait for the next release time.')
                 }
             } else {
+                $("#confirm_release_ewi_modal_spinner").hide();
+                $("#close_release_ewi_modal").show();
+                $("#confirm_release_ewi_modal").show();
                 alert('Unable to release this time.')
                 $("#confirmReleaseModal").modal("hide");
             }
@@ -530,8 +542,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
         let is_equal_trigger = true;
         let is_moms = false;
         let has_rainfall = false;
-        console.log(all_triggers)
-        console.log(latest_trigger_details)
+
         if(latest_event_triggers.length != 0){
             $.each(latest_event_triggers, function (key, value) {
                 let ts = formatDateTime(value.ts);
@@ -579,6 +590,19 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                     timestamp = value.ts;
                                     moms_info = value.tech_info;
                                     if(value.internal_sym == "m"){
+                                        as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                    }else{
+                                        as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                    }
+                                    info += as_of + moms_info + "<br><br>";
+                                }
+                            });
+                            $.each(latest_trigger_details, function (key, value) {
+                                if(value.trigger_type == "moms"){
+                                    let ts_updated = formatDateTime(value.ts_updated);
+                                    let timestamp = ts_updated["text_format_timestamp"];
+                                    let moms_info = value.tech_info;
+                                    if(value.alert == "m2"){
                                         as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
                                     }else{
                                         as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
@@ -726,10 +750,16 @@ function sendEwiToEmail() {
     // $("#ewi_send_to_email").hide();
     $("#ewi_send_to_email").unbind();
     $("#ewi_send_to_email").click(function () {
-        $("#sendEwiToEmailModal").modal("show");
+        $("#sendEwiToEmailModal").modal({
+            backdrop: 'static',
+            keyboard: false
+        })
     });
 
     $("#confirm_send_ewi").click(function () {
+        $("#confirm_send_ewi_spinner").show();
+        $("#close_send_ewi").hide();
+        $("#confirm_send_ewi").hide();
         let email = $("#email_for_ewi").val();
         let html = $("#report_to_email").html();
         let url = "http://192.168.1.10:5000/api/ewi/send_ewi_via_email";
@@ -740,6 +770,9 @@ function sendEwiToEmail() {
         $("#confirm_send_ewi").prop('disabled', true);
 
         $.post(url, data).done(function (response) {
+            $("#confirm_send_ewi_spinner").hide();
+            $("#close_send_ewi").show();
+            $("#confirm_send_ewi").show();
             alert(response.message);
             if (response.status == true) {
                 $("#email_for_ewi").val("");

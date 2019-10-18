@@ -186,6 +186,7 @@ export default class SaveFamilyRiskProfile extends Component {
                     });
                 });
         } else {
+            this.setState({spinner: false})
             Alert.alert(
                 'Family Risk Profile',
                 'All fields are required.',
@@ -202,6 +203,16 @@ export default class SaveFamilyRiskProfile extends Component {
 
     }
 
+    hadleInputChange(text,type) {
+        if (/^\d+$/.test(text)) {
+            if(type == "members"){
+                this.setState({ members_count: text })
+            }else{
+                this.setState({ vulnerable_members_count: text })
+            }
+        }
+    }
+
     render() {
         return (
             <ScrollView style={rassessment_styles.container}>
@@ -211,8 +222,8 @@ export default class SaveFamilyRiskProfile extends Component {
                     textStyle={spinner_styles.spinnerTextStyle}
                 />
                 <View style={rassessment_styles.menuSection}>
-                    <TextInput style={defaults.inputs} placeholder="Number of Members: E.g. 5" value={this.state.members_count} onChangeText={text => this.setState({ members_count: text })} />
-                    <TextInput style={defaults.inputs} placeholder="Vulnerable groups: E.g. 2" value={this.state.vulnerable_members_count} onChangeText={text => this.setState({ vulnerable_members_count: text })} />
+                    <TextInput style={defaults.inputs} placeholder="Number of Members: E.g. 5" value={this.state.members_count} onChangeText={text => this.hadleInputChange(text,"members")} keyboardType={'numeric'}/>
+                    <TextInput style={defaults.inputs} placeholder="Vulnerable groups: E.g. 2" value={this.state.vulnerable_members_count} onChangeText={text => this.hadleInputChange(text,"vulnerable")} keyboardType={'numeric'}/>
                     <TextInput style={defaults.inputs} placeholder="Nature of vulnerability: E.g. Children" value={this.state.vulnerability_nature} onChangeText={text => this.setState({ vulnerability_nature: text })} />
                 </View>
                 <View>

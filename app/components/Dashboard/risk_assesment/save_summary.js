@@ -202,6 +202,7 @@ export default class SaveSummary extends Component {
                     // 1 - adding |2 - modified |3 - old_data
                 });
         } else {
+            this.setState({spinner: false})
             Alert.alert(
                 'Risk Assessment Summary',
                 'All fields are required.',

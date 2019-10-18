@@ -201,6 +201,7 @@ export default class SaveHazardData extends Component {
                     });
                 });
         } else {
+            this.setState({spinner: false})
             Alert.alert(
                 'Hazard Data',
                 'All fields are required.',
