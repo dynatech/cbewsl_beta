@@ -19,13 +19,14 @@ export default class SaveSurficialData extends Component {
             local_storage_id: 0,
             sync_status: 0,
             datetime: "",
-            type_of_feature: "",
+            type_of_feature: "crack",
             description: "",
             name_of_feature: "",
             guidelines: [],
             isModelVisible: false,
             server_number: ['09088137584'],
-            spinner: true
+            spinner: true,
+            feature_types: []
         };
     }
 
@@ -50,7 +51,7 @@ export default class SaveSurficialData extends Component {
                 local_storage_id: 0,
                 sync_status: 0,
                 datetime: "",
-                type_of_feature: "",
+                type_of_feature: "crack",
                 description: "",
                 name_of_feature: "",
                 spinner: false
@@ -204,7 +205,9 @@ export default class SaveSurficialData extends Component {
             type_of_feature,
             description,
             name_of_feature } = this.state
-
+        console.log("datetime", datetime)
+        console.log("type_of_feature", type_of_feature)
+        console.log("description", description)
         if (datetime != "" && type_of_feature != "" && description != "") {
             Alert.alert(
                 'Notice',
@@ -451,14 +454,15 @@ export default class SaveSurficialData extends Component {
                                 onValueChange={(itemValue, itemIndex) =>
                                     this.setState({ type_of_feature: itemValue })
                                 }>
-                                <Picker.Item label="Scarp" value="Scarp" />
-                                <Picker.Item label="Crack" value="Crack" />
-                                <Picker.Item label="Seepage" value="Seepage" />
-                                <Picker.Item label="Tilted/Split Trees" value="Tilted/Split Trees" />
-                                <Picker.Item label="Ponding" value="Ponding" />
-                                <Picker.Item label="Damaged Structures" value="Damaged Structures" />
-                                <Picker.Item label="Slope Failure" value="Slope Failure" />
-                                <Picker.Item label="Bulging/Depression" value="Bulging/Depression" />
+                                <Picker.Item label="Crack" value="crack" />
+                                <Picker.Item label="Scarp" value="scarp" />
+                                <Picker.Item label="Seepage" value="seepage" />
+                                <Picker.Item label="Tilted/Split Trees" value="tilted/split Trees" />
+                                <Picker.Item label="Ponding" value="ponding" />
+                                <Picker.Item label="Damaged Structures" value="damaged structures" />
+                                <Picker.Item label="Slope Failure" value="slope failure" />
+                                <Picker.Item label="Bulging/Depression" value="bulging/depression" />
+                                <Picker.Item label="General no new landslide manifestation observed" value="none" />
                             </Picker>
                         </View>
                     </View>

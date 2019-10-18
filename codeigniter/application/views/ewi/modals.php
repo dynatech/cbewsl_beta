@@ -61,7 +61,11 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button class="btn btn-primary" type="button" style="display:none" id="confirm_send_ewi_spinner" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Sending. . .
+            </button>
+            <button type="button" class="btn btn-secondary" id="close_send_ewi" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" id="confirm_send_ewi">Confirm</button>
         </div>
         </div>
@@ -91,7 +95,11 @@
             </form> -->
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button class="btn btn-primary" type="button" style="display:none" id="confirm_release_ewi_modal_spinner" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Releasing. . .
+            </button>
+            <button type="button" class="btn btn-secondary" id="close_release_ewi_modal" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" id="confirm_release_ewi_modal">Confirm</button>
         </div>
         </div>
