@@ -149,24 +149,33 @@
             </button>
         </div>
         <div class="modal-body">
-            <div class="form-group">
-                <input type="text" id="moms_id" style="display: none;">
-                <label for="number_of_members">Observation Timestamp</label>
-                <div class="input-group date" id="observance_timestamp" data-target-input="nearest">
-                    <input type="text" class="form-control datetimepicker-input" data-target="#observance_timestamp" id="observance_ts"/>
-                    <div class="input-group-append" data-target="#observance_timestamp" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            <div>
+                <div class="form-group">
+                    <input type="text" id="moms_id" style="display: none;">
+                    <label for="number_of_members">Observation Timestamp</label>
+                    <div class="input-group date" id="observance_timestamp" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#observance_timestamp" id="observance_ts"/>
+                        <div class="input-group-append" data-target="#observance_timestamp" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
                     </div>
                 </div>
+                <label>Select alert level</label>
+                <select id="moms_alert_level" class="form-control .moms_alert_level">
+                    <option value="0">Non-significant</option>
+                    <option value="2">Significant</option>
+                    <option value="3">Critical</option>
+                <select>
+                <label>Remarks</label>
+                <textarea class="form-control .moms_remarks" id="moms_remarks" style="height : 100px"></textarea>
+                <div id="moms_forms">
+                </div>
+                <hr>
             </div>
-            <label>Select alert level</label>
-            <select id="moms_alert_level" class="form-control">
-                <option value="0">Non-significant</option>
-                <option value="2">Significant</option>
-                <option value="3">Critical</option>
-            <select>
-            <label>Remarks</label>
-            <textarea class="form-control" id="moms_remarks" style="height : 100px"></textarea>
+            <div>
+                <button type="button" class="btn btn-primary" id="add_moms_forms">Add Form</button>
+                <button type="button" class="btn btn-danger" id="clear_moms_forms">Clear Form</button>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" id="raise_moms">Confirm</button>
