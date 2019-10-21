@@ -35,6 +35,7 @@ function initializeSurficialData() {
         fetch('http://192.168.1.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
             .then((responseJson) => {
                 let surficial_summary = responseJson;
+                console.log(surficial_summary)
                 let graph_plot_data = [];
                 for (let counter = 0; counter < surficial_summary[0].surficial_data.length; counter++) {
                     let temp_data_cont = []
@@ -54,15 +55,22 @@ function initializeSurficialData() {
                 let end_date = surficial_summary[0].surficial_data[0].ts[surficial_summary[0].surficial_data[0].ts.length - 1]
                 let formatted_date = formatDateTime(end_date);
                 let last_data = "Last surficial data received is on " + formatted_date.text_format_timestamp;
-                console.log(surficial_summary[0].moms_data[0].date)
-                let latest_moms_date = formatDateTime(surficial_summary[0].moms_data[0].date)
-                $(".surficial-measuremnt-container h5").text(last_data);
-                $(".moms-container").empty();
-                $(".moms-container").append("<h4 style='color: #717171'>Manifestations of movement</h4>");
-                $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Type of Feature: " + surficial_summary[0].moms_data[0].type_of_feature + "</p>");
-                $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Description: " + surficial_summary[0].moms_data[0].description + "</p>");
-                $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Name of Feature: " + surficial_summary[0].moms_data[0].name_of_feature + "</p>");
-                $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Latest Date Time: " + latest_moms_date.text_format_timestamp + "</p>");
+                // console.log(surficial_summary[0].moms_data[0].date)
+                if(surficial_summary[0].moms_data.length != 0){let latest_moms_date = formatDateTime(surficial_summary[0].moms_data[0].date)
+                    $(".surficial-measuremnt-container h5").text(last_data);
+                    $(".moms-container").empty();
+                    $(".moms-container").append("<h4 style='color: #717171'>Manifestations of movement</h4>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Type of Feature: " + surficial_summary[0].moms_data[0].type_of_feature + "</p>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Description: " + surficial_summary[0].moms_data[0].description + "</p>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Name of Feature: " + surficial_summary[0].moms_data[0].name_of_feature + "</p>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Latest Date Time: " + latest_moms_date.text_format_timestamp + "</p>");
+                }else{
+                    $(".surficial-measuremnt-container h5").text(last_data);
+                    $(".moms-container").empty();
+                    $(".moms-container").append("<h4 style='color: #717171'>Manifestations of movement</h4>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>No latest manifestation of movements</p>");
+                }
+                
                 console.log(graph_plot_data)
                 $(".surficial-graph-container").highcharts({
                     series: graph_plot_data,
@@ -516,14 +524,15 @@ function displayRaiseMomsModal(data) {
                         body: JSON.stringify(trigger_list),
                     }).then((responseJson) => {
                         console.log(responseJson)
-                        alert("Successfuly raise MOMs.");
                         $("#raise_moms_modal").modal("hide");
-                        $("#observance_ts").val();
-                        $("#moms_remarks").val();
+                        $("#observance_ts").val("");
+                        $("#moms_remarks").val("");
                         if(int_sym == "m0"){
                             publicAlert()
+                            alert("Successfuly comfirmed MOMs.");
                         }else{
                             publicAlert(true);
+                            alert("Successfuly raised MOMs.");
                         }
                         updateObservanceTs(moms_data);
                     });

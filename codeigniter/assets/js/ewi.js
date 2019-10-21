@@ -388,7 +388,7 @@ function onClickReleaseAlert(is_overdue) {
                     }).then((response) => response.json()).then((responseJson) => {
                         console.log(responseJson)
                         let release_data = responseJson;
-                        alert("Successfully Release!");
+                        alert("Successfully Released!");
                         $("#ewi_send_to_email").show();
                         $("#confirm_release_ewi").hide();
                         $("#confirmReleaseModal").modal("hide");
@@ -413,6 +413,7 @@ function onClickReleaseAlert(is_overdue) {
 function getAllReleases(releases, event_start, validity){
     let all_triggers = []
     let moms_instance_ids = []
+    let moms_int_sym = []
     let has_latest_rainfall_trigger = false;
     $.each(releases, function (key, value) {
         let release_triggers = value.triggers;
@@ -421,6 +422,7 @@ function getAllReleases(releases, event_start, validity){
             let ts = formatDateTime(value.ts)
             let update_ts = moment(ts.current_timestamp).add(1, "minutes").format("YYYY-MM-DD HH:mm:SS");
             let check_date_range = moment(update_ts).isBetween(event_start, validity);
+            console.log(value)
             if(check_date_range == true){
                 if (internal_symbol == "E") {
                 let magnitude = value.trigger_misc.eq.magnitude;
@@ -436,9 +438,13 @@ function getAllReleases(releases, event_start, validity){
                     }
                 } else if (internal_symbol == "m" || internal_symbol == "M") {
                     let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
+                    let internal_sym = value.internal_sym.alert_symbol;
                     let moms_instance_id_checker = moms_instance_ids.includes(instance_id);
-                    if(moms_instance_id_checker == false){
+                    let moms_int_sym_checker = moms_int_sym.includes(internal_sym);
+
+                    if(moms_instance_id_checker == false || moms_int_sym_checker == false){
                         moms_instance_ids.push(instance_id);
+                        moms_int_sym.push(internal_sym);
                         let info = value.info;
                         all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
                     }
@@ -449,6 +455,21 @@ function getAllReleases(releases, event_start, validity){
     });
 
     return all_triggers
+}
+
+function recommendedResponse(alert_level){
+    let recommended_response = "Monitor routine monitoring data sent by the LEWC";//alert 0
+
+    if(alert_level == "Alert 1"){
+        recommended_response = "<br>&#9679;Alert validation<br>&#9679;Normal OpCen operations<br>&#9679;Once a day EWI";
+    }else if(alert_level == "Alert 2"){
+        recommended_response = "<br>&#9679;Shifting<br>&#9679;Mobilize additional staff<br>&#9679;Activate EOC<br>&#9679;6x a day EWI";
+    }else if(alert_level == "Alert 3"){
+        recommended_response = "<br>&#9679;Forced evacuate community members/stakeholders<br>&#9679;Pre-positioning of response rescue<br>&#9679;Convene MDRRMC<br>&#9679;6x a day EWI";
+    }
+
+    return recommended_response
+
 }
 
 function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue, releases){
@@ -463,7 +484,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
     }else{
         $("#ewi_no_current_alert").hide();
         $("#ewi_current_alert_container").show();
-        let recommended_response = leo_data.public_alert_symbol.recommended_response;
+        let recommended_response = recommendedResponse(alert_level);
         let event_start = formatDateTime(leo_data.event.event_start);
         let validity = formatDateTime(leo_data.event.validity);
         let trigger = leo_data.releases[0].triggers;
@@ -508,10 +529,14 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                             latest_data_information += "<b>Earthquake Alert: </b> " + tech_info + "<br>";
                         }
                     }else{
+                        let with_triggers = false;
                         if(trigger_type == "moms"){
+                            with_triggers = true
                             latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + "<br>";
                         }else{
-                            latest_data_information += "No new retriggers<br>"
+                            if(with_triggers == false){
+                                latest_data_information += "No new retriggers<br>"
+                            }
                         }
                     }
                     
@@ -588,6 +613,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
         console.log("all_triggers",all_triggers)
         console.log("latest_trigger_details",latest_trigger_details)
         console.log("latest_event_triggers",latest_event_triggers)
+        console.log("all_release_trig",all_releases_triggers)
         if(latest_event_triggers.length != 0){
             $.each(latest_event_triggers, function (key, value) {
                 let ts = formatDateTime(value.ts);
@@ -598,7 +624,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                     let magnitude = value.trigger_misc.eq.magnitude;
                     let longitude = value.trigger_misc.eq.longitude;
                     let latitude = value.trigger_misc.eq.latitude;
-                    let as_of = "As of <b>last earthquake retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
+                    let as_of = "<b>Last earthquake retrigger</b> at " + "<b>"+ts["text_format_timestamp"]+ "</b><br>";
                     let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
                     info += as_of + earth_quake_info + "<br><br>";
                 } else if (internal_symbol == "R") {
@@ -614,16 +640,16 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                     timestamp = ts_updated["text_format_timestamp"];
                                     rain_info = value.tech_info;
                                 }
-                                as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
+                                as_of = "<b>Last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
                             });
                             
                         }else{
-                            as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
+                            as_of = "<b>Last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
                         }
                         info += as_of + rain_info + "<br><br>";
                     }
                 } else if (internal_symbol == "m" || internal_symbol == "M") {
-                    
+                    // alert()
                     let timestamp = ts["text_format_timestamp"];
                     let as_of = "";
                     let moms_info = value.info;
@@ -635,20 +661,35 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                     timestamp = value.ts;
                                     moms_info = value.tech_info;
                                     if(value.internal_sym == "m"){
-                                        as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                        as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
                                     }else{
-                                        as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                        as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                    }
+                                    info += as_of + moms_info + "<br><br>";
+                                }
+                            });
+                            $.each(latest_trigger_details, function (key, value) {
+                                if(value.trigger_type == "moms"){
+                                    console.log(value)
+                                    let ts_updated = formatDateTime(value.ts_updated);
+                                    let timestamp = ts_updated["text_format_timestamp"];
+                                    let moms_info = value.tech_info;
+                                    if(value.alert == "m2"){
+                                        as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                    }else{
+                                        as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
                                     }
                                     info += as_of + moms_info + "<br><br>";
                                 }
                             });
                         }else{
                             if(internal_symbol == "m"){
-                                as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
                             }else{
-                                as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
                             }
                             info += as_of + moms_info + "<br><br>";
+                            
                         }
                     }
                     
@@ -661,7 +702,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                 let ts_updated = formatDateTime(value.ts_updated);
                                 let timestamp = ts_updated["text_format_timestamp"];
                                 let rain_info = value.tech_info;
-                                let as_of = "As of <b>last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
+                                let as_of = "<b>Last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
                                 info += as_of + rain_info + "<br><br>";
                             }
                         });
@@ -679,9 +720,9 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                 let timestamp = value.ts;
                                 let moms_info = value.tech_info;
                                 if(value.internal_sym == "m"){
-                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                    as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
                                 }else{
-                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                    as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
                                 }
                                 info += as_of + moms_info + "<br><br>";
                             }
@@ -692,9 +733,9 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                 let timestamp = ts_updated["text_format_timestamp"];
                                 let moms_info = value.tech_info;
                                 if(value.alert == "m2"){
-                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                    as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
                                 }else{
-                                    as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
+                                    as_of = "<b>Last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
                                 }
                                 info += as_of + moms_info + "<br><br>";
                             }
@@ -733,6 +774,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
         $("#triggers").append("As of <b>" + release_ts["text_format_timestamp"] + "</b><br><br>");
         
         $.each(all_releases_triggers, function (key, value) {
+            console.log("111", value)
             let trigger_type = value.trigger_type
             let tech_info = value.tech_info;
             if (trigger_type == "earthquake") {
@@ -766,7 +808,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
 }
 
 function onClickRaiseMomsData(){
-    $("#recommended_response").append('<br><input class="btn btn-primary" type="button" id="raise_non_significant" value="Raise Non-Significant" style="background-color: #28a745;">')
+    $("#recommended_response").append('<br><input class="btn btn-primary" type="button" id="raise_non_significant" value="Confirm non-significant ground movement" style="background-color: #28a745;">')
     $("#raise_non_significant").unbind();
     $("#raise_non_significant").click(function () {
         let data = {

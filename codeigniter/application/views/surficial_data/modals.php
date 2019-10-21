@@ -143,7 +143,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="raiseMomsModalLabel">Raise MOMs</h5>
+            <h5 class="modal-title" id="raiseMomsModalLabel">Confirm non-significant ground movement</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
@@ -151,7 +151,7 @@
         <div class="modal-body">
             <div class="form-group">
                 <input type="text" id="moms_id" style="display: none;">
-                <label for="number_of_members">Observance Timestamp</label>
+                <label for="number_of_members">Observation Timestamp</label>
                 <div class="input-group date" id="observance_timestamp" data-target-input="nearest">
                     <input type="text" class="form-control datetimepicker-input" data-target="#observance_timestamp" id="observance_ts"/>
                     <div class="input-group-append" data-target="#observance_timestamp" data-toggle="datetimepicker">
@@ -169,7 +169,7 @@
             <textarea class="form-control" id="moms_remarks" style="height : 100px"></textarea>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="raise_moms">Raise</button>
+            <button type="button" class="btn btn-primary" id="raise_moms">Confirm</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
         </div>
