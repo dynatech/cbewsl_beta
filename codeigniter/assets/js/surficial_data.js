@@ -13,10 +13,11 @@ $(document).ready(function () {
         e.preventDefault(); 
     });
     initializeMomsFeatures();
+    inializeAddMomsorm();
 });
 
 function initializeMomsFeatures(){
-    let url = 'http://192.168.1.10:5000/api/moms/get_moms_features';
+    let url = 'http://192.168.150.7:5000/api/moms/get_moms_features';
     fetch(url).then((response) => response.json())
         .then((responseJson) => {
             let moms_features = responseJson;
@@ -32,7 +33,7 @@ function initializeSurficialData() {
     $('#surficial-data-tab').on('click', function () {
         console.log("Loaded");
         $(".surficial-measuremnt-container h5").text("Change");
-        fetch('http://192.168.1.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
+        fetch('http://192.168.150.7:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
             .then((responseJson) => {
                 let surficial_summary = responseJson;
                 console.log(surficial_summary)
@@ -143,7 +144,7 @@ function initializeCurrentMeasurement() {
     $("#current_measurement_tab").on('click', function () {
         $('.measurement-header').empty();
         $('.measurements').empty();
-        fetch('http://192.168.1.10:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
+        fetch('http://192.168.150.7:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
             .then((responseJson) => {
                 let formmated_timestamp = formatDateTime(date = responseJson.current_measurement_date)
                 let crack_sets = []
@@ -159,9 +160,37 @@ function initializeCurrentMeasurement() {
     });
 }
 
+
+function inializeAddMomsorm(){
+    let count = 0
+    $("#add_moms_forms").on('click', function () {
+        count+=1;
+        $("#moms_forms").append(count);
+        $("#moms_forms").append("<hr><label for='number_of_members'>Observation Timestamp</label>"+
+        "<div class='input-group date' id='observance_timestamp"+count+"' data-target-input='nearest'>"+
+        "<input type='text' class='form-control datetimepicker-input' data-target='#observance_timestamp"+count+"' id='observance_ts_"+count+"'/>"+
+        "<div class='input-group-append' data-target='#observance_timestamp"+count+"' data-toggle='datetimepicker'>"+
+        "<div class='input-group-text'><i class='fa fa-calendar'></i></div>"+
+        "</div></div>");
+        $("#moms_forms").append("<label>Select alert level</label>"+
+        "<select id='moms_alert_level_"+count+"'' class='form-control .moms_alert_level'>"+
+        "<option value='0'>Non-significant</option>"+
+        "<option value='2'>Significant</option>"+
+        "<option value='3'>Critical</option>"+
+        "<select>");
+        $("#moms_forms").append("<label>Remarks</label>"+
+        "<textarea class='form-control .moms_remarks' id='moms_remarks_"+count+"'' style='height : 100px'></textarea>");
+    });
+
+    $("#clear_moms_forms").on('click', function () {
+        $("#moms_forms").empty();
+        count = 0;
+    });
+}
+
 function initializeMonitoringLogs() {
     let formatted_data = []
-    fetch('http://192.168.1.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
+    fetch('http://192.168.150.7:5000/api/surficial_data/get_moms_data').then((response) => response.json())
         .then((responseJson) => {
             responseJson.forEach(function (value) {
                 let entry = {
@@ -226,6 +255,8 @@ function initializeCRUDLogs(datatable) {
     $('#moms_table tbody').on('click', '#release_moms', function () {
         let data = datatable.row($(this).parents('tr')).data();
         displayRaiseMomsModal(data);
+        $("#raiseMomsModalLabel").text("Raise Moms");
+        $("#moms_forms").empty();
         console.log(data);
     });
 }
@@ -259,7 +290,7 @@ function deleteMonitoringLogsConfirmation(data) {
 }
 
 function deleteMonitoringLogs(moms_id) {
-    let url = "http://192.168.1.10:5000/api/moms_data/delete_moms_data";
+    let url = "http://192.168.150.7:5000/api/moms_data/delete_moms_data";
     let data = {
         "moms_id": moms_id
     }
@@ -280,7 +311,7 @@ function deleteMonitoringLogs(moms_id) {
 
 function initializeCRUDMonitoringLogs() {
     $('#add_monitoring_logs').on('click', function () {
-        let url = "http://192.168.1.10:5000/api/surficial_data/save_monitoring_log";
+        let url = "http://192.168.150.7:5000/api/surficial_data/save_monitoring_log";
         let date_picker = $("#moms_date_time").val();
         let formatted_datetime = moment(date_picker).format('YYYY-MM-DD H:mm:ss')
         let type_of_feature_field = $("#moms_t_feature").val();
@@ -510,7 +541,7 @@ function displayRaiseMomsModal(data) {
                 observance_ts: formatted_datetime
             }
 
-            let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
+            let url = 'http://192.168.150.7:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
             isOnSet(alert_level)
                 .then((response) => {
                     console.log(response)
@@ -544,7 +575,7 @@ function displayRaiseMomsModal(data) {
 }
 
 function updateObservanceTs(moms_data){
-    let url = "http://192.168.1.10:5000/api/surficial_data/save_monitoring_log";
+    let url = "http://192.168.150.7:5000/api/surficial_data/save_monitoring_log";
     $.post(url, moms_data).done(function (response) {
         console.log("Updated observance timestamp");
         initializeMonitoringLogs();
