@@ -172,11 +172,11 @@ export default class CurrentAlert extends Component {
     let all_triggers = []
     let moms_instance_ids = []
     let has_latest_rainfall_trigger = false;
-    $.each(releases, function (key, value) {
+    releases.forEach(value => {
         let release_triggers = value.triggers;
-        $.each(release_triggers, function (key, value) {
+        release_triggers.forEach(value => {
             let internal_symbol = value.internal_sym.alert_symbol;
-            let ts = formatDateTime(value.ts)
+            let ts = this.formatDateTime(value.ts)
             let update_ts = moment(ts.current_timestamp).add(1, "minutes").format("YYYY-MM-DD HH:mm:SS");
             let check_date_range = moment(update_ts).isBetween(event_start, validity);
             if(check_date_range == true){
@@ -209,7 +209,7 @@ export default class CurrentAlert extends Component {
     return all_triggers
   }
 
-  formatEwiDetails(candidate_alert, leo_data, has_alert_data){
+  formatEwiDetails(candidate_alert, leo_data, has_alert_data, releases){
     console.log(candidate_alert);
     console.log(leo_data);
 

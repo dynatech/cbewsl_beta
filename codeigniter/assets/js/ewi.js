@@ -707,7 +707,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
             
         }
         
-       
+
         if(alert_level == "Alert 3"){
             $("#ewi_alert_symbol").text(alert_level).css("color", "red");
         }else{
