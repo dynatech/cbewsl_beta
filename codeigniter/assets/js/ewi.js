@@ -419,12 +419,9 @@ function getAllReleases(releases, event_start, validity){
         $.each(release_triggers, function (key, value) {
             let internal_symbol = value.internal_sym.alert_symbol;
             let ts = formatDateTime(value.ts)
-            let check_date_range = moment(ts.current_timestamp).isBetween(event_start, validity);
-            console.log("ts.current_timestamp", ts.current_timestamp)
-            console.log("event_start", event_start)
-            console.log("validity", validity)
-            console.log("check", check_date_range)
-            // if(check_date_range == true){
+            let update_ts = moment(ts.current_timestamp).add(1, "minutes").format("YYYY-MM-DD HH:mm:SS");
+            let check_date_range = moment(update_ts).isBetween(event_start, validity);
+            if(check_date_range == true){
                 if (internal_symbol == "E") {
                 let magnitude = value.trigger_misc.eq.magnitude;
                 let longitude = value.trigger_misc.eq.longitude;
@@ -446,7 +443,7 @@ function getAllReleases(releases, event_start, validity){
                         all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
                     }
                 }
-            // }
+            }
             
         });
     });
@@ -471,7 +468,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
         let validity = formatDateTime(leo_data.event.validity);
         let trigger = leo_data.releases[0].triggers;
         let all_releases_triggers = getAllReleases(releases, event_start.current_timestamp, validity.current_timestamp);
-        console.log("all_releases_triggers", all_releases_triggers)
         let formatted_as_of = "";
         let latest_data_information = "";
         let has_trigger = false;
@@ -646,19 +642,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                     info += as_of + moms_info + "<br><br>";
                                 }
                             });
-                            // $.each(latest_trigger_details, function (key, value) {
-                            //     if(value.trigger_type == "moms"){
-                            //         let ts_updated = formatDateTime(value.ts_updated);
-                            //         let timestamp = ts_updated["text_format_timestamp"];
-                            //         let moms_info = value.tech_info;
-                            //         if(value.alert == "m2"){
-                            //             as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
-                            //         }else{
-                            //             as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:red'>(CRITICAL)</b><br>";
-                            //         }
-                            //         info += as_of + moms_info + "<br><br>";
-                            //     }
-                            // });
                         }else{
                             if(internal_symbol == "m"){
                                 as_of = "As of <b>last moms retrigger</b> at " + "<b>"+timestamp+ "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
@@ -686,7 +669,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                         has_rainfall = false;
                     }
                 }
-                console.log(is_moms)
+
                 if(is_moms == false){
                     let as_of = "";
                     if(all_releases_triggers.length != 0 || latest_trigger_details.length != 0){
