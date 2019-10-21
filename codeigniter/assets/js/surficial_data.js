@@ -13,7 +13,7 @@ $(document).ready(function () {
         e.preventDefault(); 
     });
     initializeMomsFeatures();
-    inializeAddMomsorm();
+    
 });
 
 function initializeMomsFeatures(){
@@ -161,8 +161,9 @@ function initializeCurrentMeasurement() {
 }
 
 
-function inializeAddMomsorm(){
+function inializeAddMomsorm(data){
     let count = 0
+    $("#add_moms_forms").unbind();
     $("#add_moms_forms").on('click', function () {
         count+=1;
         $("#moms_forms").append(count);
@@ -182,6 +183,7 @@ function inializeAddMomsorm(){
         "<textarea class='form-control .moms_remarks' id='moms_remarks_"+count+"'' style='height : 100px'></textarea>");
     });
 
+    $("#add_moms_forms").unbind();
     $("#clear_moms_forms").on('click', function () {
         $("#moms_forms").empty();
         count = 0;
@@ -250,6 +252,7 @@ function initializeCRUDLogs(datatable) {
     $('#moms_table tbody').on('click', '#view_moms_images', function () {
         let data = datatable.row($(this).parents('tr')).data();
         displayMomsImages(data);
+        inializeAddMomsorm(data);
     });
 
     $('#moms_table tbody').on('click', '#release_moms', function () {
