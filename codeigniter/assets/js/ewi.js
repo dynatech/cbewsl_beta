@@ -469,33 +469,31 @@ function getAllLastRetrigger(releases, event_start, validity){
             let ts = formatDateTime(value.ts)
             let update_ts = moment(ts.current_timestamp).add(1, "minutes").format("YYYY-MM-DD HH:mm:SS");
             let check_date_range = moment(update_ts).isBetween(event_start, validity);
-            // if(check_date_range == true){
-                if (internal_symbol == "E") {
-                let magnitude = value.trigger_misc.eq.magnitude;
-                let longitude = value.trigger_misc.eq.longitude;
-                let latitude = value.trigger_misc.eq.latitude;
-                let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-                all_triggers.push({"trigger_type": "earthquake", "tech_info": earth_quake_info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
-                } else if (internal_symbol == "R") {
-                    if(has_latest_rainfall_trigger == false){
-                        has_latest_rainfall_trigger = true;
-                        let info = value.info;
-                        all_triggers.push({"trigger_type": "rainfall", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
-                    }
-                } else if (internal_symbol == "m" || internal_symbol == "M") {
-                    let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
-                    let internal_sym = value.internal_sym.alert_symbol;
-                    let moms_instance_id_checker = moms_instance_ids.includes(instance_id);
-                    let moms_int_sym_checker = moms_int_sym.includes(internal_sym);
-
-                    if(moms_instance_id_checker == false){
-                        moms_instance_ids.push(instance_id);
-                        moms_int_sym.push(internal_sym);
-                        let info = value.info;
-                        all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol, "instance_id": instance_id, "timestamp": ts["current_timestamp"]})
-                    }
+            if (internal_symbol == "E") {
+            let magnitude = value.trigger_misc.eq.magnitude;
+            let longitude = value.trigger_misc.eq.longitude;
+            let latitude = value.trigger_misc.eq.latitude;
+            let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+            all_triggers.push({"trigger_type": "earthquake", "tech_info": earth_quake_info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
+            } else if (internal_symbol == "R") {
+                if(has_latest_rainfall_trigger == false){
+                    has_latest_rainfall_trigger = true;
+                    let info = value.info;
+                    all_triggers.push({"trigger_type": "rainfall", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
                 }
-            // }
+            } else if (internal_symbol == "m" || internal_symbol == "M") {
+                let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
+                let internal_sym = value.internal_sym.alert_symbol;
+                let moms_instance_id_checker = moms_instance_ids.includes(instance_id);
+                let moms_int_sym_checker = moms_int_sym.includes(internal_sym);
+
+                if(moms_instance_id_checker == false){
+                    moms_instance_ids.push(instance_id);
+                    moms_int_sym.push(internal_sym);
+                    let info = value.info;
+                    all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol, "instance_id": instance_id, "timestamp": ts["current_timestamp"]})
+                }
+            }
             
         });
     });
@@ -784,9 +782,9 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                     console.log(value)
                                     let ts_updated = formatDateTime(value.ts_updated);
                                     let timestamp = ts_updated["text_format_timestamp"];
-                                    let moms_info = value.tech_info;
+                                    let rain_info = value.tech_info;
                                     as_of = "<b>Last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
-                                    info += as_of + moms_info + "<br><br>";
+                                    info += as_of + rain_info + "<br><br>";
                                 }
                             });
                             if(has_latest == false){
@@ -800,7 +798,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                     }
                     
                 }else if(trigger_type == "earthquake"){
-                    has_rainfall = true;
                     let as_of = "<b>Last earthquake retrigger</b> at " + "<b>"+ts+ "</b><br>";
                     info += as_of + tech_info + "<br><br>";
                 }

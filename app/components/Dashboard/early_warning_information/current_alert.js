@@ -181,34 +181,31 @@ export default class CurrentAlert extends Component {
             let ts = this.formatDateTime(value.ts)
             let update_ts = moment(ts.current_timestamp).add(1, "minutes").format("YYYY-MM-DD HH:mm:SS");
             let check_date_range = moment(update_ts).isBetween(event_start, validity);
-            if(check_date_range == true){
-                if (internal_symbol == "E") {
-                let magnitude = value.trigger_misc.eq.magnitude;
-                let longitude = value.trigger_misc.eq.longitude;
-                let latitude = value.trigger_misc.eq.latitude;
-                let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-                all_triggers.push({"trigger_type": "earthquake", "tech_info": earth_quake_info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
-                } else if (internal_symbol == "R") {
-                    if(has_latest_rainfall_trigger == false){
-                        has_latest_rainfall_trigger = true;
-                        let info = value.info;
-                        all_triggers.push({"trigger_type": "rainfall", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
-                    }
-                } else if (internal_symbol == "m" || internal_symbol == "M") {
-                    let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
-                    let internal_sym = value.internal_sym.alert_symbol;
-                    let moms_instance_id_checker = moms_instance_ids.includes(instance_id);
-                    let moms_int_sym_checker = moms_int_sym.includes(internal_sym);
+            if (internal_symbol == "E") {
+            let magnitude = value.trigger_misc.eq.magnitude;
+            let longitude = value.trigger_misc.eq.longitude;
+            let latitude = value.trigger_misc.eq.latitude;
+            let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+            all_triggers.push({"trigger_type": "earthquake", "tech_info": earth_quake_info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
+            } else if (internal_symbol == "R") {
+                if(has_latest_rainfall_trigger == false){
+                    has_latest_rainfall_trigger = true;
+                    let info = value.info;
+                    all_triggers.push({"trigger_type": "rainfall", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
+                }
+            } else if (internal_symbol == "m" || internal_symbol == "M") {
+                let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
+                let internal_sym = value.internal_sym.alert_symbol;
+                let moms_instance_id_checker = moms_instance_ids.includes(instance_id);
+                let moms_int_sym_checker = moms_int_sym.includes(internal_sym);
 
-                    if(moms_instance_id_checker == false){
-                        moms_instance_ids.push(instance_id);
-                        moms_int_sym.push(internal_sym);
-                        let info = value.info;
-                        all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol, "instance_id": instance_id, "timestamp": ts["current_timestamp"]})
-                    }
+                if(moms_instance_id_checker == false){
+                    moms_instance_ids.push(instance_id);
+                    moms_int_sym.push(internal_sym);
+                    let info = value.info;
+                    all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol, "instance_id": instance_id, "timestamp": ts["current_timestamp"]})
                 }
             }
-            
         });
     });
 
@@ -229,17 +226,27 @@ export default class CurrentAlert extends Component {
   }
 
   recommendResponse(alert_level){
-    let recommended_response = "Monitor routine monitoring data sent by the LEWC";//alert 0
+    let recommended_response_constainer = [];
 
-    if(alert_level == "Alert 1"){
-        recommended_response = "<br>&#9679;Alert validation<br>&#9679;Normal OpCen operations<br>&#9679;Once a day EWI";
-    }else if(alert_level == "Alert 2"){
-        recommended_response = "<br>&#9679;Shifting<br>&#9679;Mobilize additional staff<br>&#9679;Activate EOC<br>&#9679;6x a day EWI";
-    }else if(alert_level == "Alert 3"){
-        recommended_response = "<br>&#9679;Forced evacuate community members/stakeholders<br>&#9679;Pre-positioning of response rescue<br>&#9679;Convene MDRRMC<br>&#9679;6x a day EWI";
+    if(alert_level == 1){
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Alert validation</Text>)
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Normal OpCen operations</Text>)
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Once a day EWI</Text>)
+    }else if(alert_level == 2){
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Shifting</Text>)
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Mobilize additional staff</Text>)
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Activate EOC</Text>)
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;6x a day EWI</Text>)
+    }else if(alert_level == 3){
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Forced evacuate community members/stakeholders</Text>)
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Pre-positioning of response rescue</Text>)
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Convene MDRRMC</Text>)
+        recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;6x a day EWI</Text>)
+    }else{
+      recommended_response_constainer.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>&#9679;Monitor routine monitoring data sent by the LEWC</Text>)
     }
 
-    return recommended_response
+    return recommended_response_constainer;
   }
 
   formatEwiDetails(candidate_alert, leo_data, has_alert_data, releases, latest_release_moms){
@@ -256,7 +263,7 @@ export default class CurrentAlert extends Component {
       let release_ts = "";
       let trigger = leo_data.releases[0].triggers;
       let all_latest_triggers = this.getAllLastRetrigger(releases, event_start.current_timestamp, validity.current_timestamp);
-      let recommended_response = this.recommendedResponse(current_alert_level);
+      let recommended_response = this.recommendResponse(current_alert_level);
       let latest_release_moms_per_instance = this.latestReleaseMoms(latest_release_moms);
       let formatted_as_of = "";
       let latest_data_information = "";
@@ -289,11 +296,16 @@ export default class CurrentAlert extends Component {
         if(trigger_list_arr.length != 0){
           has_trigger = true;
           trigger_list_arr.forEach(value => {
+            let tech_info = value.tech_info;
             let trigger_type = value.trigger_type;
             if(trigger_list_trigger_id == 0){
               trigger_list_trigger_id = value.trigger_id
             }
-
+            let instance_id = 0
+            let moms_list = value.moms_list;
+            moms_list.forEach(value => {
+                instance_id = value.moms_instance.instance_id;
+            });
             if(candidate_alert[0].release_details.data_ts != value.ts_updated){
               no_new_trigger = false;
             }else{
@@ -314,8 +326,7 @@ export default class CurrentAlert extends Component {
           has_trigger = false;
         }
       }
-
-
+      let critical_instance_ids = []
       leo_data.releases.forEach(value => {
         if(latest_release_text == "none"){
           let formatted_release_time = moment(value.release_time, 'HH:mm').format('h:mm A');
@@ -328,6 +339,40 @@ export default class CurrentAlert extends Component {
           }
           latest_release_text = release_ts["date_only_format"] + " " + formatted_release_time;
         }
+
+        let release_triggers = value.triggers;
+        release_triggers.forEach(value => {
+          let internal_symbol = value.internal_sym.alert_symbol;
+          let ts = this.formatDateTime(value.ts)
+          if (internal_symbol == "E") {
+              let magnitude = value.trigger_misc.eq.magnitude;
+              let longitude = value.trigger_misc.eq.longitude;
+              let latitude = value.trigger_misc.eq.latitude;
+              let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+              all_triggers.push({"trigger_type": "earthquake", "tech_info": earth_quake_info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
+          } else if (internal_symbol == "R") {
+              if(has_latest_rainfall_trigger == false){
+                  has_latest_rainfall_trigger = true;
+                  let info = value.info;
+                  all_triggers.push({"trigger_type": "rainfall", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
+              }
+          } else if (internal_symbol == "m" || internal_symbol == "M") {
+              let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
+              let moms_instance_id_checker = moms_instance_ids.includes(instance_id);
+              if(moms_instance_id_checker == false){
+                  moms_instance_ids.push(instance_id);
+                  let info = value.info;
+                  all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
+              }
+
+              let critical_instance_id_checker = critical_instance_ids.includes(instance_id);
+              if(internal_symbol == "M"){
+                  if(critical_instance_id_checker == false){
+                      critical_instance_ids.push(instance_id);
+                  }
+              }
+          }
+        });
       });
       
       let alert_level = this.displayAlertLevel(leo_data.public_alert_symbol.alert_level);
@@ -344,18 +389,27 @@ export default class CurrentAlert extends Component {
         } else if (trigger_type == "rainfall") {
           event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Rainfall: {tech_info}</Text>)
         } else if (trigger_type == "moms") {
-          if(latest_release_moms_per_instance.length != 0){
-            latest_release_moms_per_instance.forEach(value => {
-              let latest_instance_id = value.instance_id;
-              let ts_updated = this.formatDateTime(value.ts);
-              let latest_ts = ts_updated.text_format_timestamp
-              if(has_moms_triggers == false){
-                  release_ts = latest_ts
-              }
-              if(latest_instance_id == instance_id){
-                if(value.trigger_type == "moms"){
-                  let ts_updated = this.formatDateTime(value.ts_updated);
-                  let moms_info = value.tech_info;
+          latest_release_moms_per_instance.forEach(value => {
+            let latest_instance_id = value.instance_id;
+            let ts_updated = this.formatDateTime(value.ts);
+            let latest_ts = ts_updated.text_format_timestamp
+            let moms_info = value.tech_info;
+            if(has_moms_triggers == false){
+                release_ts = latest_ts
+            }
+            if(latest_instance_id == instance_id){
+              if(value.trigger_type == "moms"){
+                let ts_updated = this.formatDateTime(value.ts_updated);
+                if(critical_instance_ids.length !=0){
+                  critical_instance_ids.forEach(value => {
+                    let critical_instance_id = value;
+                    if(latest_instance_id == critical_instance_id){
+                      event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {moms_info} <Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
+                    }else{
+                      event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {moms_info} <Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
+                    }
+                  });
+                }else{
                   if(value.op_trigger == 2){
                     event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {moms_info} <Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
                   }else{
@@ -363,22 +417,22 @@ export default class CurrentAlert extends Component {
                   }
                 }
               }
-            });
-          }else{
-            event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {tech_info}</Text>)
-          }
+            }
+          });
         }
       });
 
       event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Event started at <Text style={{fontWeight: 'bold'}}>{event_start.text_format_timestamp}</Text></Text>)
       event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Valid until <Text style={{fontWeight: 'bold'}}>{validity.text_format_timestamp}</Text></Text>)
       event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Latest release timestamp: <Text style={{fontWeight: 'bold'}}>{latest_release_text}</Text></Text>)
-      event_details.push(<Text style={{ fontSize: 20, paddingTop: 15, textAlign: 'center' }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text> {recommended_response}</Text>)
+      event_details.push(<Text style={{ fontSize: 20, paddingTop: 15, textAlign: 'center' }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text></Text>)
+      event_details.push(<View style={{ fontSize: 20, paddingTop: 15, textAlign: 'center' }}>{recommended_response}</View>)
       let is_moms = false;
       let has_rainfall = false;
+      let latest_release_moms_instance = [];
       if(all_latest_triggers.length != 0){
         event_details.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>)
-        latest_event_triggers.forEach(value => {
+        all_latest_triggers.forEach(value => {
           let ts = value.ts;
           let latest_timestamp = value.timestamp
           let internal_sym = value.internal_sym;
@@ -387,144 +441,144 @@ export default class CurrentAlert extends Component {
           let instance_id = value.instance_id;
           if(trigger_type == "moms"){
             if(latest_release_moms_per_instance.length != 0){
-              console.log("")
+              is_moms = true;
+              let has_latest = false;
+              latest_release_moms_per_instance.forEach(value => {
+                let latest_instance_id = value.instance_id;
+                let ts_updated = this.formatDateTime(value.ts);
+                let latest_ts = ts_updated.text_format_timestamp
+                if(latest_instance_id == instance_id){
+                  if(value.trigger_type == "moms"){
+                    has_latest = true
+                    let ts_updated = this.formatDateTime(value.ts_updated);
+                    let timestamp = ts_updated.text_format_timestamp
+                    let moms_info = value.tech_info;
+                    if(critical_instance_ids.length != 0){
+                      critical_instance_ids.forEach(value => {
+                        let critical_instance_id = value;
+                        if(latest_instance_id == critical_instance_id){
+                          event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{latest_ts} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
+                          event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+                        }else{
+                          event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{latest_ts} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
+                          event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+                        }
+                      });
+                    }else{
+                      if(value.op_trigger == 2){
+                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{latest_ts} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
+                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+                      }else{
+                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{latest_ts} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
+                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+                      }
+                    }
+
+                    if(latest_timestamp != value.ts){
+                      latest_release_moms_instance.push(value)
+                    }
+                  }
+                }
+              });
+              if(has_latest == false){
+                if(value.internal_sym == "m"){
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{ts} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{tech_info}</Text>)
+                }else{
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{ts} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{tech_info}</Text>)
+                }
+              }
             }else{
-              console.log("")
+              is_moms = true;
+              if(value.internal_sym == "m"){
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>4Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{ts} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{tech_info}</Text>)
+              }else{
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>4Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{ts} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{tech_info}</Text>)
+              }
             }
           }else if(trigger_type == "rainfall"){
-            console.log("")
+            if(has_rainfall == false){
+              if(latest_trigger_details.length != 0){
+                has_rainfall = true;
+                let has_latest = false;
+                latest_trigger_details.forEach(value => {
+                  if(value.trigger_type == "rainfall"){
+                    has_latest = true
+                    let ts_updated = this.formatDateTime(value.ts_updated);
+                    timestamp = ts_updated.text_format_timestamp;
+                    rain_info = value.tech_info;
+                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp}</Text></Text>)
+                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
+                  }
+                });
+                if(has_latest == false){
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{ts}</Text></Text>)
+                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{tech_info}</Text>)
+                }
+              }else{
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{ts}</Text></Text>)
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{tech_info}</Text>)
+              }
+            }
           }else if(trigger_type == "earthquake"){
-            console.log("")
+            let magnitude = value.trigger_misc.eq.magnitude;
+            let longitude = value.trigger_misc.eq.longitude;
+            let latitude = value.trigger_misc.eq.latitude;
+            let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
+            event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last earthquake retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
+            event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{earth_quake_info}</Text>)
           }
         });
       }
 
-      if(latest_event_triggers.length != 0){
-        event_details.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>)
-        latest_event_triggers.forEach(value => {
-          let ts = this.formatDateTime(value.ts);
-          let internal_symbol = value.internal_sym.alert_symbol;
-
-          if (internal_symbol == "E") {
-              let magnitude = value.trigger_misc.eq.magnitude;
-              let longitude = value.trigger_misc.eq.longitude;
-              let latitude = value.trigger_misc.eq.latitude;
-              let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last earthquake retrigger at <Text style={{fontWeight: 'bold'}}>{ts.text_format_timestamp}</Text></Text>)
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{earth_quake_info}</Text>)
-          } else if (internal_symbol == "R") {
-              let rain_info = value.info;
-              let timestamp = ts.text_format_timestamp;
-              if(has_rainfall == false){
-                if(latest_trigger_details.length != 0){
-                  latest_trigger_details.forEach(value => {
-                    if(value.trigger_type == "rainfall"){
-                      has_rainfall = true;
-                      let ts_updated = this.formatDateTime(value.ts_updated);
-                      timestamp = ts_updated.text_format_timestamp;
-                      rain_info = value.tech_info;
-                    }
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp}</Text></Text>)
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
-                  });
-                }else{
-                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp}</Text></Text>)
-                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
-                }
-              }
-              
-          } else if (internal_symbol == "m" || internal_symbol == "M") {
-              let timestamp = ts.text_format_timestamp;
-              let moms_info = value.info;
-              if(is_moms == false){
-                is_moms = true;
-                if(all_releases_triggers.length != 0 || latest_trigger_details.length != 0){
-                  all_releases_triggers.forEach(value => {
-                    if(value.trigger_type == "moms"){
-                      timestamp = value.ts;
-                      moms_info = value.tech_info;
-                      if(value.internal_sym == "m"){
-                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
-                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
-                      }else{
-                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
-                        event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
-                      }
-                    }
-                  });
-                }else{
-                  if(internal_symbol == "m"){
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
-                  }else{
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
-                  }
-                }
-              }
-              
-          }
-
-          if(has_rainfall == false){
-            if(latest_trigger_details.length != 0){
-              latest_trigger_details.forEach(value => {
-                if(value.trigger_type == "rainfall"){
-                  has_rainfall = true;
-                  let ts_updated = this.formatDateTime(value.ts_updated);
-                  let timestamp = ts_updated["text_format_timestamp"];
-                  let rain_info = value.tech_info;
-                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp}</Text></Text>)
-                  event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
-                }
-              });
-            }else{
-              has_rainfall = false;
+      if(has_rainfall == false){
+        if(latest_trigger_details.length != 0){
+          has_rainfall = true;
+          latest_trigger_details.forEach(value => {
+            if(value.trigger_type == "rainfall"){
+              has_latest = true
+              let ts_updated = this.formatDateTime(value.ts_updated);
+              timestamp = ts_updated.text_format_timestamp;
+              rain_info = value.tech_info;
+              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp}</Text></Text>)
+              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
             }
-          }
+          });
+        }else{
+          has_rainfall = false
+        }
+      }
 
-          if(is_moms == false){
-            if(all_releases_triggers.length != 0 || latest_trigger_details.length != 0){
-              all_releases_triggers.forEach(value => {
-                if(value.trigger_type == "moms"){
-                  is_moms = true;
-                  let timestamp = value.ts;
-                  let moms_info = value.tech_info;
-                  if(value.internal_sym == "m"){
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
-                  }else{
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
-                  }
-                }
-              });
-              latest_trigger_details.forEach(value => {
-                if(value.trigger_type == "moms"){
-                  let ts_updated = formatDateTime(value.ts_updated);
-                  let timestamp = ts_updated["text_format_timestamp"];
-                  let moms_info = value.tech_info;
-                  if(value.alert == "m2"){
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
-                  }else{
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
-                  }
-                  }
-              });
-            }else{
-              is_moms = false;
+      if(is_moms == false){
+        if(latest_release_moms_per_instance.length != 0){
+          is_moms = true
+          latest_release_moms_per_instance.forEach(value => {
+            if(value.trigger_type == "moms"){
+              let ts_updated = this.formatDateTime(value.ts_updated);
+              let timestamp = ts_updated.text_format_timestamp;
+              let moms_info = value.tech_info;
+              if(value.op_trigger == 2){
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+              }else{
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last moms retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp} </Text><Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{moms_info}</Text>)
+              }
             }
+          });
+          }else{
+            is_moms = false
           }
-                
-      });
       }
 
       let candidate_for_lowering = false
       if(validity["text_format_timestamp"] == release_schedule["text_format_timestamp"]){
         candidate_for_lowering = true;
       }
-      this.setState({ retrigger_details: this.getRetriggers(candidate_alert, candidate_for_lowering, general_status, is_moms, no_new_trigger) });
+      this.setState({ retrigger_details: this.getRetriggers(candidate_alert, candidate_for_lowering, general_status, is_moms, no_new_trigger, has_moms_triggers, latest_release_moms_instance) });
     }
 
     return event_details
@@ -563,7 +617,7 @@ export default class CurrentAlert extends Component {
     }, 3000);
   }
 
-  getRetriggers(data, candidate_for_lowering, general_status, is_moms, no_new_trigger) {
+  getRetriggers(data, candidate_for_lowering, general_status, is_moms, no_new_trigger, has_moms_triggers, latest_release_moms_instance) {
     let view = []
     let temp = []
 
@@ -578,25 +632,78 @@ export default class CurrentAlert extends Component {
         this.setState({ trigger_length: data[0].trigger_list_arr.length })
         data[0].trigger_list_arr.forEach(element => {
           if(no_new_trigger == false){
-            temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
+            // invalid_flag = []
+            if(element.trigger_type == "moms"){
+              if(latest_release_moms_instance.length != 0){
+                latest_release_moms_instance.forEach(value => {
+                  let ts_updated = this.formatDateTime(value.ts);
+                  let latest_ts = ts_updated.text_format_timestamp
+                  if(value.trigger_type == "moms"){
+                    let ts_updated = this.formatDateTime(value.ts_updated);
+                    let timestamp = ts_updated.text_format_timestamp
+                    let moms_info = value.tech_info;
+                    if(value.op_trigger == 2){
+                      temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}</Text>)
+                    }else{
+                      temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}</Text>)
+                    }
+                  }
+                });
+              }else{
+                if (element.invalid == true) {
+                  this.setState({ trigger_length: this.state.trigger_length - 1 })
+                  temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movements (INVALID):</Text> {element.tech_info}</Text>)
+                } else {
+                  temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movements:</Text> {element.tech_info}</Text>)
+                }
+              }
+            }else{
+              temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers1.</Text></View>)
+            }
           }else{
             switch (element.trigger_type) {
               case "rainfall":
                 invalid_flag = []
                 if (element.invalid == true) {
                   this.setState({ trigger_length: this.state.trigger_length - 1 })
-                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert (INVALID):</Text> {element.tech_info}</Text>)
+                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert (INVALID):</Text> {element.tech_info}<Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
                 } else {
-                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}</Text>)
+                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}<Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
                 }
                 break;
               case "moms":
                 invalid_flag = []
-                if (element.invalid == true) {
-                  this.setState({ trigger_length: this.state.trigger_length - 1 })
-                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Surficial Alert (INVALID):</Text> {element.tech_info}</Text>)
-                } else {
-                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Surficial Alert:</Text> {element.tech_info}</Text>)
+                if(has_moms_triggers == true){
+                  if(latest_release_moms_instance.length != 0){
+                    latest_release_moms_instance.forEach(value => {
+                      let ts_updated = this.formatDateTime(value.ts);
+                      let latest_ts = ts_updated.text_format_timestamp
+                      if(value.trigger_type == "moms"){
+                        let ts_updated = this.formatDateTime(value.ts_updated);
+                        let timestamp = ts_updated.text_format_timestamp
+                        let moms_info = value.tech_info;
+                        if(value.op_trigger == 2){
+                          invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}</Text>)
+                        }else{
+                          invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}</Text>)
+                        }
+                      }
+                    });
+                  }else{
+                    if (element.invalid == true) {
+                      this.setState({ trigger_length: this.state.trigger_length - 1 })
+                      invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movements (INVALID):</Text> {element.tech_info}</Text>)
+                    } else {
+                      invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movements:</Text> {element.tech_info}</Text>)
+                    }
+                  }
+                }else{
+                  if (element.invalid == true) {
+                    this.setState({ trigger_length: this.state.trigger_length - 1 })
+                    invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movements (INVALID):</Text> {element.tech_info}</Text>)
+                  } else {
+                    invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movements:</Text> {element.tech_info}</Text>)
+                  }
                 }
                 break;
               case "earthquake":
