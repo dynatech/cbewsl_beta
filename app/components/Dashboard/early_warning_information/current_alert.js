@@ -44,6 +44,7 @@ export default class CurrentAlert extends Component {
       let extended = response.leo.extended
       let overdue = response.leo.overdue
       let releases = response.releases
+      let latest_release_moms = response.latest_release_moms;
       let alert_details = []
       let alert_level = []
       let moms_header_container = []
@@ -54,7 +55,7 @@ export default class CurrentAlert extends Component {
       let release_button = [];
       console.log(response)
       if (latest.length != 0) {
-        let event_details = this.formatEwiDetails(candidate_alert, latest[0], true, releases);
+        let event_details = this.formatEwiDetails(candidate_alert, latest[0], true, releases, latest_release_moms);
         view.push(event_details)
         let current_alert_level = latest[0].public_alert_symbol.alert_level;
         if(current_alert_level != 0){
@@ -99,7 +100,7 @@ export default class CurrentAlert extends Component {
       }
 
       if (overdue.length != 0) {
-        let event_details = this.formatEwiDetails(candidate_alert, overdue[0], true, releases);
+        let event_details = this.formatEwiDetails(candidate_alert, overdue[0], true, releases, latest_release_moms);
         view.push(event_details)
         let current_alert_level = overdue[0].public_alert_symbol.alert_level;
         if(current_alert_level != 0){
@@ -168,9 +169,10 @@ export default class CurrentAlert extends Component {
     return view;
   }
 
-  getAllReleases(releases, event_start, validity){
+  getAllLastRetrigger(releases, event_start, validity){
     let all_triggers = []
     let moms_instance_ids = []
+    let moms_int_sym = []
     let has_latest_rainfall_trigger = false;
     releases.forEach(value => {
         let release_triggers = value.triggers;
@@ -194,11 +196,15 @@ export default class CurrentAlert extends Component {
                     }
                 } else if (internal_symbol == "m" || internal_symbol == "M") {
                     let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
+                    let internal_sym = value.internal_sym.alert_symbol;
                     let moms_instance_id_checker = moms_instance_ids.includes(instance_id);
+                    let moms_int_sym_checker = moms_int_sym.includes(internal_sym);
+
                     if(moms_instance_id_checker == false){
                         moms_instance_ids.push(instance_id);
+                        moms_int_sym.push(internal_sym);
                         let info = value.info;
-                        all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
+                        all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol, "instance_id": instance_id, "timestamp": ts["current_timestamp"]})
                     }
                 }
             }
@@ -209,7 +215,34 @@ export default class CurrentAlert extends Component {
     return all_triggers
   }
 
-  formatEwiDetails(candidate_alert, leo_data, has_alert_data, releases){
+  latestReleaseMoms(latest_moms){
+    let moms_data = [];
+    latest_moms.forEach(value => {
+        let remarks = value.narrative.narrative;
+        let observance_ts = value.observance_ts;
+        let instance_id = value.moms_instance.instance_id;
+        let op_trigger = value.op_trigger;
+        moms_data.push({"trigger_type": "moms", "tech_info": remarks, "ts": observance_ts, "instance_id": instance_id, "op_trigger": op_trigger});
+    });
+    console.log("MOMS", moms_data)
+    return moms_data
+  }
+
+  recommendResponse(alert_level){
+    let recommended_response = "Monitor routine monitoring data sent by the LEWC";//alert 0
+
+    if(alert_level == "Alert 1"){
+        recommended_response = "<br>&#9679;Alert validation<br>&#9679;Normal OpCen operations<br>&#9679;Once a day EWI";
+    }else if(alert_level == "Alert 2"){
+        recommended_response = "<br>&#9679;Shifting<br>&#9679;Mobilize additional staff<br>&#9679;Activate EOC<br>&#9679;6x a day EWI";
+    }else if(alert_level == "Alert 3"){
+        recommended_response = "<br>&#9679;Forced evacuate community members/stakeholders<br>&#9679;Pre-positioning of response rescue<br>&#9679;Convene MDRRMC<br>&#9679;6x a day EWI";
+    }
+
+    return recommended_response
+  }
+
+  formatEwiDetails(candidate_alert, leo_data, has_alert_data, releases, latest_release_moms){
     console.log(candidate_alert);
     console.log(leo_data);
 
@@ -222,8 +255,9 @@ export default class CurrentAlert extends Component {
       let latest_release_text = "none";
       let release_ts = "";
       let trigger = leo_data.releases[0].triggers;
-      let all_releases_triggers = this.getAllReleases(releases, event_start.current_timestamp, validity.current_timestamp);
-      let recommended_response = leo_data.public_alert_symbol.recommended_response;
+      let all_latest_triggers = this.getAllLastRetrigger(releases, event_start.current_timestamp, validity.current_timestamp);
+      let recommended_response = this.recommendedResponse(current_alert_level);
+      let latest_release_moms_per_instance = this.latestReleaseMoms(latest_release_moms);
       let formatted_as_of = "";
       let latest_data_information = "";
       let has_trigger = false;
@@ -235,6 +269,8 @@ export default class CurrentAlert extends Component {
       let all_triggers = []
       let has_latest_rainfall_trigger = false;
       let moms_instance_ids = []
+      let has_moms_triggers = false;
+
 
       if(candidate_alert.length == 0){
         formatted_as_of = this.formatDateTime(leo_data.releases[0].data_ts);
@@ -253,20 +289,26 @@ export default class CurrentAlert extends Component {
         if(trigger_list_arr.length != 0){
           has_trigger = true;
           trigger_list_arr.forEach(value => {
+            let trigger_type = value.trigger_type;
             if(trigger_list_trigger_id == 0){
               trigger_list_trigger_id = value.trigger_id
             }
 
             if(candidate_alert[0].release_details.data_ts != value.ts_updated){
               no_new_trigger = false;
+            }else{
+              if(trigger_type == "moms"){
+                has_moms_triggers = true;
+              }
             }
 
             latest_trigger_details.push({
               "ts_updated" : value.ts_updated,
-              "tech_info" : value.tech_info,
-              "trigger_type": value.trigger_type,
-              "alert" : value.alert
-            })
+              "tech_info" : tech_info,
+              "trigger_type": trigger_type,
+              "alert" : value.alert,
+              "instance_id": instance_id
+            });
           });
         }else{
           has_trigger = false;
@@ -286,48 +328,45 @@ export default class CurrentAlert extends Component {
           }
           latest_release_text = release_ts["date_only_format"] + " " + formatted_release_time;
         }
-
-        let release_triggers = value.triggers;
-        release_triggers.forEach(value => {
-          let internal_symbol = value.internal_sym.alert_symbol;
-          let ts = this.formatDateTime(value.ts);
-          if (internal_symbol == "E") {
-            let magnitude = value.trigger_misc.eq.magnitude;
-            let longitude = value.trigger_misc.eq.longitude;
-            let latitude = value.trigger_misc.eq.latitude;
-            let earth_quake_info = "Magnitude: " + magnitude + " Longitude: " + longitude + " Latitude:" + latitude;
-            all_triggers.push({"trigger_type": "earthquake", "tech_info": earth_quake_info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
-          } else if (internal_symbol == "R") {
-            if(has_latest_rainfall_trigger == false){
-                has_latest_rainfall_trigger = true;
-                let info = value.info;
-                all_triggers.push({"trigger_type": "rainfall", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
-            }
-          } else if (internal_symbol == "m" || internal_symbol == "M") {
-            let instance_id = value.trigger_misc.moms_releases[0].moms_details.moms_instance.instance_id;
-            let moms_instance_id_checker = moms_instance_ids.includes(instance_id);
-            if(moms_instance_id_checker == false){
-                moms_instance_ids.push(instance_id);
-                let info = value.info;
-                all_triggers.push({"trigger_type": "moms", "tech_info": info, "ts": ts["text_format_timestamp"], "internal_sym": internal_symbol})
-            }
-          }
-        });
       });
       
       let alert_level = this.displayAlertLevel(leo_data.public_alert_symbol.alert_level);
       event_details.push(alert_level)
       event_details.push(<Text style={{fontSize: 20, padding: 10, textAlign: 'center'}}>As of <Text style={{fontWeight: 'bold'}}>{release_ts.text_format_timestamp}</Text></Text>)
       
-      all_releases_triggers.forEach(value => {
+      all_latest_triggers.forEach(value => {
         let trigger_type = value.trigger_type
         let tech_info = value.tech_info;
+        let instance_id = value.instance_id;
+        let release_ts = value.ts
         if (trigger_type == "earthquake") {
           event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Earthquake: {tech_info}</Text>)
         } else if (trigger_type == "rainfall") {
           event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Rainfall: {tech_info}</Text>)
         } else if (trigger_type == "moms") {
-          event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {tech_info}</Text>)
+          if(latest_release_moms_per_instance.length != 0){
+            latest_release_moms_per_instance.forEach(value => {
+              let latest_instance_id = value.instance_id;
+              let ts_updated = this.formatDateTime(value.ts);
+              let latest_ts = ts_updated.text_format_timestamp
+              if(has_moms_triggers == false){
+                  release_ts = latest_ts
+              }
+              if(latest_instance_id == instance_id){
+                if(value.trigger_type == "moms"){
+                  let ts_updated = this.formatDateTime(value.ts_updated);
+                  let moms_info = value.tech_info;
+                  if(value.op_trigger == 2){
+                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {moms_info} <Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
+                  }else{
+                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {moms_info} <Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
+                  }
+                }
+              }
+            });
+          }else{
+            event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Moms: {tech_info}</Text>)
+          }
         }
       });
 
@@ -337,6 +376,29 @@ export default class CurrentAlert extends Component {
       event_details.push(<Text style={{ fontSize: 20, paddingTop: 15, textAlign: 'center' }}><Text style={{ fontWeight: 'bold' }}>Recommended response:</Text> {recommended_response}</Text>)
       let is_moms = false;
       let has_rainfall = false;
+      if(all_latest_triggers.length != 0){
+        event_details.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>)
+        latest_event_triggers.forEach(value => {
+          let ts = value.ts;
+          let latest_timestamp = value.timestamp
+          let internal_sym = value.internal_sym;
+          let trigger_type = value.trigger_type;
+          let tech_info = value.tech_info;
+          let instance_id = value.instance_id;
+          if(trigger_type == "moms"){
+            if(latest_release_moms_per_instance.length != 0){
+              console.log("")
+            }else{
+              console.log("")
+            }
+          }else if(trigger_type == "rainfall"){
+            console.log("")
+          }else if(trigger_type == "earthquake"){
+            console.log("")
+          }
+        });
+      }
+
       if(latest_event_triggers.length != 0){
         event_details.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>)
         latest_event_triggers.forEach(value => {
@@ -595,7 +657,7 @@ export default class CurrentAlert extends Component {
     let time_format2 = ""
     let for_file_name = ""
     if (timestamp == null) {
-      current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:ss");
+      current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
       date_format = moment(new Date()).format("YYYY-MM-DD");
       date_only_format = moment(new Date()).format("MMMM D, YYYY");
       time_format = moment(new Date()).format("hh:MM a");
@@ -603,7 +665,7 @@ export default class CurrentAlert extends Component {
       text_format_timestamp = moment(new Date()).format("LLL");
       for_file_name = moment(new Date()).format("YYYY_MM_DD_HH_MM_SS");
     } else {
-      current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:ss");
+      current_timestamp = moment(date).format("YYYY-MM-DD HH:mm:ss");
       date_format = moment(date).format("YYYY-MM-DD");
       date_only_format = moment(date).format("MMMM D, YYYY");
       time_format = moment(date).format("hh:MM a");

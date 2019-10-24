@@ -3,11 +3,15 @@ package com.cbewslprototype;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.reactlibrary.RNReactNativePingPackage;
+import com.tkporter.sendsms.SendSMSPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.tkporter.sendsms.SendSMSPackage;
 import com.reactlibrary.RNReactNativePingPackage;
-import com.centaurwarchief.smslistener.SmsListenerPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -29,11 +33,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNCWebViewPackage(),
-            new VectorIconsPackage(),
+            new AsyncStoragePackage(),
             SendSMSPackage.getInstance(),
+            new VectorIconsPackage(),
+            new RNCWebViewPackage(),
             new RNReactNativePingPackage(),
-            new SmsListenerPackage(),
             new RNGestureHandlerPackage()
       );
     }

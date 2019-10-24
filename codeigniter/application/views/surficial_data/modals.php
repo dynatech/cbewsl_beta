@@ -150,8 +150,10 @@
         </div>
         <div class="modal-body">
             <div>
+
+                <div id="current_moms_selected"></div>
                 <div class="form-group">
-                    <input type="text" id="moms_id" style="display: none;">
+                    <input type="hidden" id="moms_id" style="display: none;">
                     <label for="number_of_members">Observation Timestamp</label>
                     <div class="input-group date" id="observance_timestamp" data-target-input="nearest">
                         <input type="text" class="form-control datetimepicker-input" data-target="#observance_timestamp" id="observance_ts"/>
@@ -170,6 +172,7 @@
                 <textarea class="form-control .moms_remarks" id="moms_remarks" style="height : 100px"></textarea>
                 <div id="moms_forms">
                 </div>
+                <input type="hidden" id="moms_form_count" value="0" style="display: none;">
                 <hr>
             </div>
             <div>

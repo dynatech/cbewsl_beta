@@ -14,22 +14,23 @@ let specialElementHandlers = {
 $(document).ready(function () {
     reportData();
     logout();
-    checkSession();
+    // checkSession();
 });
 
-function checkSession() {
-    $.ajax({
-        url: "http://192.168.1.10:5000/api/check_session",
-        beforeSend: function (xhr) {
-            // xhr.overrideMimeType("text/plain; charset=x-user-defined");
-        }
-    }).done(function (data) {
-            console.log(data)
-        if(data == false){
-            window.location.replace("http://cbewsl.com/home");
-        }
-    })
-}
+// function checkSession() {
+//     $.ajax({
+//         url: "http://192.168.1.10:5000/api/check_session",
+//         beforeSend: function (xhr) {
+//             // xhr.overrideMimeType("text/plain; charset=x-user-defined");
+//         }
+//     }).done(function (data) {
+//             console.log(data)
+//         if(data == false){
+//             window.location.replace("http://cbewsl.com/home");
+//         }
+//     })
+// }
+
 function formatDateTime(date = null) {
     let timestamp = date
     let current_timestamp = ""
@@ -40,7 +41,7 @@ function formatDateTime(date = null) {
     let time_format2 = ""
     let for_file_name = ""
     if (timestamp == null) {
-        current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:MM:SS");
+        current_timestamp = moment(new Date()).format("YYYY-MM-DD HH:mm:SS");
         date_format = moment(new Date()).format("YYYY-MM-DD");
         date_only_format = moment(new Date()).format("MMMM D, YYYY");
         time_format = moment(new Date()).format("hh:MM a");
@@ -48,7 +49,7 @@ function formatDateTime(date = null) {
         text_format_timestamp = moment(new Date()).format("LLL");
         for_file_name = moment(new Date()).format("YYYY_MM_DD_HH_MM_SS");
     } else {
-        current_timestamp = moment(date).format("YYYY-MM-DD HH:MM:SS");
+        current_timestamp = moment(date).format("YYYY-MM-DD HH:mm:SS");
         date_format = moment(date).format("YYYY-MM-DD");
         date_only_format = moment(date).format("MMMM D, YYYY");
         time_format = moment(date).format("hh:MM a");
