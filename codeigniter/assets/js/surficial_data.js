@@ -632,52 +632,104 @@ function displayRaiseMomsModal(data) {
                 }
             }
             console.log("final_trig_list_collection",final_trig_list_collection)
-            moms_collection[0].trig_list = final_trig_list_collection;
-            console.log(moms_collection)
-            let moms_data = {
-                moms_id: data.moms_id,
-                type_of_feature: data.feature_type,
-                description: data.description,
-                name_of_feature: data.feature_name,
-                timestamp: data.date,
-                observance_ts: formatted_datetime
-            }
+            let has_same_timestamp = false;
+            let has_blank_remarks = false;
+            let has_blank_timestamp = false;
+            let observance_timestamp_collections = [];
+            $.each(final_trig_list_collection, function (key, value) {
+                let remarks = value.remarks;
+                let observance_ts = value.observance_ts;
+                let obs_ts_checker  = observance_timestamp_collections.includes(observance_ts);
+                console.log(observance_ts)
+                if(has_blank_timestamp == false){
+                    if(observance_ts == "Invalid date"){
+                        has_blank_timestamp = true;
+                    }
+                }
+                
+                if(has_same_timestamp == false){
+                    if(obs_ts_checker == false){
+                        observance_timestamp_collections.push(observance_ts);
+                    }else{
+                        has_same_timestamp = true;
+                    }
+                }
 
-            let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
-            isOnSet(alert_level)
-                .then((response) => {
-                    console.log(response)
-                    fetch(url, {
-                        method: 'POST',
-                        dataType: 'jsonp',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(moms_collection),
-                    }).then((responseJson) => {
-                        console.log(responseJson)
-                        $("#moms_forms").empty();
-                        $("#raise_moms_modal").modal("hide");
-                        $("#observance_ts").val("");
-                        $("#moms_remarks").val("");
-                        if(int_sym == "m0"){
-                            publicAlert()
-                            alert("Successfuly comfirmed MOMs.");
-                        }else{
-                            publicAlert(true);
-                            alert("Successfuly raised MOMs.");
-                        }
-                        updateObservanceTs(moms_data);
-                        $("#moms_forms").empty();
-                        $("#moms_form_count").val(0);
-                        initializeMonitoringLogs();
-                        $("body > ul > li:nth-child(6) > a").trigger("click")
-                    });
-                })
+                let remarks_checker = isBlank(remarks);
+                if(has_blank_remarks == false){
+                    if(remarks_checker == true){
+                        has_blank_remarks = true;
+                    }
+                }
+            });
+            let validation_message = "";
+            if(has_same_timestamp == true || has_blank_remarks == true || has_blank_timestamp == true ){
+                validation_message += "Please check the following:\n"
+            }
+            if(has_same_timestamp == true){
+                validation_message += "-Same observance timestamp.\n";
+            }
+            if(has_blank_remarks == true){
+                validation_message += "-Blank/empty remarks.\n";
+            }
+            if(has_blank_timestamp == true){
+                validation_message += "-Blank or Empty observance timestamp.\n";
+            }
+            if(validation_message != ""){
+                alert(validation_message);
+            }else{
+                moms_collection[0].trig_list = final_trig_list_collection;
+                console.log("moms_collection",moms_collection)
+                let moms_data = {
+                    moms_id: data.moms_id,
+                    type_of_feature: data.feature_type,
+                    description: data.description,
+                    name_of_feature: data.feature_name,
+                    timestamp: data.date,
+                    observance_ts: formatted_datetime
+                }
+
+                let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
+                isOnSet(alert_level)
+                    .then((response) => {
+                        console.log(response)
+                        fetch(url, {
+                            method: 'POST',
+                            dataType: 'jsonp',
+                            headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(moms_collection),
+                        }).then((responseJson) => {
+                            console.log(responseJson)
+                            $("#moms_forms").empty();
+                            $("#raise_moms_modal").modal("hide");
+                            $("#observance_ts").val("");
+                            $("#moms_remarks").val("");
+                            if(int_sym == "m0"){
+                                publicAlert()
+                                alert("Successfuly comfirmed MOMs.");
+                            }else{
+                                publicAlert(true);
+                                alert("Successfuly raised MOMs.");
+                            }
+                            updateObservanceTs(moms_data);
+                            $("#moms_forms").empty();
+                            $("#moms_form_count").val(0);
+                            initializeMonitoringLogs();
+                            $("body > ul > li:nth-child(6) > a").trigger("click")
+                        });
+                    })
+            }
+            
         }
         
     });
+}
+
+function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
 }
 
 function updateObservanceTs(moms_data){

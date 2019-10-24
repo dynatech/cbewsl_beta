@@ -40,6 +40,7 @@ export default class RaiseMoms extends Component {
         let alert_level = this.state.alert_level;
         let feature_type = this.state.feature_type;
         let feature_name = this.state.feature_name;
+        let remarks = this.state.remarks;
         let alert_validity = "";
         let int_sym = "";
 
@@ -51,7 +52,7 @@ export default class RaiseMoms extends Component {
             if(alert_level == ""){
                 alert_level = 0;
             }
-            if(datetime != "" && alert_level != ""){
+            if(datetime != "" && alert_level != "" && remarks != ""){
                 if (alert_level == "2") {
                     int_sym = "m2"
                     alert_validity = moment(datetime).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
