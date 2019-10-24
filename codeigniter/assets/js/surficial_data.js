@@ -1,7 +1,6 @@
 $(document).ready(function () {
     initializeSurficialData();
     initializeCurrentMeasurement();
-    initializeMonitoringLogs();
     initializeAddMonitoringLogs();
     initializeCRUDMonitoringLogs();
     onUploadMOMSChange();
@@ -30,11 +29,13 @@ function initializeMomsFeatures(){
 
 function initializeSurficialData() {
     $('#surficial-data-tab').on('click', function () {
+        initializeMonitoringLogs();
         console.log("Loaded");
         $(".surficial-measuremnt-container h5").text("Change");
         fetch('http://192.168.1.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
             .then((responseJson) => {
                 let surficial_summary = responseJson;
+                console.log(surficial_summary)
                 let graph_plot_data = [];
                 for (let counter = 0; counter < surficial_summary[0].surficial_data.length; counter++) {
                     let temp_data_cont = []
@@ -54,15 +55,22 @@ function initializeSurficialData() {
                 let end_date = surficial_summary[0].surficial_data[0].ts[surficial_summary[0].surficial_data[0].ts.length - 1]
                 let formatted_date = formatDateTime(end_date);
                 let last_data = "Last surficial data received is on " + formatted_date.text_format_timestamp;
-                console.log(surficial_summary[0].moms_data[0].date)
-                let latest_moms_date = formatDateTime(surficial_summary[0].moms_data[0].date)
-                $(".surficial-measuremnt-container h5").text(last_data);
-                $(".moms-container").empty();
-                $(".moms-container").append("<h4 style='color: #717171'>Manifestations of movement</h4>");
-                $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Type of Feature: " + surficial_summary[0].moms_data[0].type_of_feature + "</p>");
-                $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Description: " + surficial_summary[0].moms_data[0].description + "</p>");
-                $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Name of Feature: " + surficial_summary[0].moms_data[0].name_of_feature + "</p>");
-                $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Latest Date Time: " + latest_moms_date.text_format_timestamp + "</p>");
+                // console.log(surficial_summary[0].moms_data[0].date)
+                if(surficial_summary[0].moms_data.length != 0){let latest_moms_date = formatDateTime(surficial_summary[0].moms_data[0].date)
+                    $(".surficial-measuremnt-container h5").text(last_data);
+                    $(".moms-container").empty();
+                    $(".moms-container").append("<h4 style='color: #717171'>Manifestations of movement</h4>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Type of Feature: " + surficial_summary[0].moms_data[0].type_of_feature + "</p>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Description: " + surficial_summary[0].moms_data[0].description + "</p>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Name of Feature: " + surficial_summary[0].moms_data[0].name_of_feature + "</p>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>Latest Date Time: " + latest_moms_date.text_format_timestamp + "</p>");
+                }else{
+                    $(".surficial-measuremnt-container h5").text(last_data);
+                    $(".moms-container").empty();
+                    $(".moms-container").append("<h4 style='color: #717171'>Manifestations of movement</h4>");
+                    $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>No latest manifestation of movements</p>");
+                }
+                
                 console.log(graph_plot_data)
                 $(".surficial-graph-container").highcharts({
                     series: graph_plot_data,
@@ -151,7 +159,72 @@ function initializeCurrentMeasurement() {
     });
 }
 
+
+function inializeAddMomsForm(data, all_moms,count){
+    let counter = count;
+    $("#add_moms_forms").unbind();
+    $("#add_moms_forms").on('click', function () {
+        counter+=1;
+        $("#moms_forms").append("<hr><label>Select Moms</label><select id='moms_data_"+counter+"' class='form-control'>"+
+        "</select>")
+        $("#moms_forms").append("<label for='number_of_members'>Observation Timestamp</label>"+
+        "<div class='input-group date' id='observance_timestamp"+counter+"' data-target-input='nearest'>"+
+        "<input type='text' class='form-control datetimepicker-input' data-target='#observance_timestamp"+counter+"' id='observance_ts_"+counter+"'/>"+
+        "<div class='input-group-append' data-target='#observance_timestamp"+counter+"' data-toggle='datetimepicker'>"+
+        "<div class='input-group-text'><i class='fa fa-calendar'></i></div>"+
+        "</div></div>");
+        $("#moms_forms").append("<label>Select alert level</label>"+
+        "<select id='moms_alert_level_"+counter+"'' class='form-control .moms_alert_level'>"+
+        "<option value='0'>Non-significant</option>"+
+        "<option value='2'>Significant</option>"+
+        "<option value='3'>Critical</option>"+
+        "<select>");
+        $("#moms_forms").append("<label>Remarks</label>"+
+        "<textarea class='form-control .moms_remarks' id='moms_remarks_"+counter+"'' style='height : 100px'></textarea>");
+        all_moms.forEach(function (value) {
+            let moms_data_value = value.feature_type+"|"+value.feature_name;
+            let moms_data_label = "Feature type: "+value.feature_type+" | Feature name: "+value.feature_name +" | Description: "+value.description;
+            $("#moms_data_"+counter).append("<option value='"+moms_data_value+"'>"+moms_data_label+"</option>")
+        });
+        $("#moms_form_count").val(counter);
+
+        jQuery('.datetimepicker-input').bind('keypress', function(e) {
+            e.preventDefault(); 
+        });
+    });
+
+    $("#clear_moms_forms").unbind();
+    $("#clear_moms_forms").on('click', function () {
+        $("#moms_forms").empty();
+        counter = 0;
+        $("#moms_form_count").val(0);
+    });
+}
+
 function initializeMonitoringLogs() {
+    $("#moms_forms").empty();
+    $("#moms_form_count").val(0);
+    $('#moms_table').empty();
+    $('#moms_table').append("<thead>"+
+    "<tr>"+
+    "<th>Date Inserted</th>"+
+    "<th>Observance Timestamp</th>"+
+    "<th>Type of feature</th>"+
+    "<th>Name of feature</th>"+
+    "<th>Description</th>"+
+    "<th>Actions</th>"+
+    "</tr>"+
+    "</thead>"+
+    "<tfoot>"+
+    "<tr>"+
+    "<th>Date Inserted</th>"+
+    "<th>Observance Timestamp</th>"+
+    "<th>Type of feature</th>"+
+    "<th>Name of feature</th>"+
+    "<th>Description</th>"+
+    "<th>Actions</th>"+
+    "</tr>"+
+    "</tfoot>");
     let formatted_data = []
     fetch('http://192.168.1.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
         .then((responseJson) => {
@@ -184,14 +257,14 @@ function initializeMonitoringLogs() {
                 ]
             });
 
-            initializeCRUDLogs(datatable);
+            initializeCRUDLogs(datatable, formatted_data);
         })
         .catch((error) => {
             console.log(error)
         });
 }
 
-function initializeCRUDLogs(datatable) {
+function initializeCRUDLogs(datatable, all_moms) {
     $('#moms_table tbody').on('click', '#edit_monitoring_logs', function () {
         let data = datatable.row($(this).parents('tr')).data();
         monitoringLogsMod(data);
@@ -217,8 +290,16 @@ function initializeCRUDLogs(datatable) {
 
     $('#moms_table tbody').on('click', '#release_moms', function () {
         let data = datatable.row($(this).parents('tr')).data();
+        $("#add_moms_form").show();
+        $("#clear_moms_form").show();
         displayRaiseMomsModal(data);
-        console.log(data);
+        console.log(data)
+        $("#raiseMomsModalLabel").text("Raise Moms");
+        $("#moms_forms").empty();
+        $("#observance_ts").val("");
+        $("#moms_remarks").val("");
+        inializeAddMomsForm(data, all_moms, 0);
+        console.log(all_moms);
     });
 }
 
@@ -437,10 +518,17 @@ function displayMomsImages(data) {
 
 function displayRaiseMomsModal(data) {
     $("#raise_moms_modal").modal("show");
-    console.log(document.cookie);
+    let selected_feature_name = data.feature_name;
+    let selected_feature_type = data.feature_type;
+    let selected_feature_description = data.description;
+    $("#current_moms_selected").empty();
+    $("#current_moms_selected").append("<b>Type of feature:</b> "+selected_feature_type+ "<br>");
+    $("#current_moms_selected").append("<b>Name of feature:</b> "+selected_feature_name+ "<br>");
+    $("#current_moms_selected").append("<b>Description:</b> "+selected_feature_description+ "<br><br>");
+
     $('#raise_moms').unbind();
     $('#raise_moms').on('click', function () {
-        
+        let moms_forms_count = $("#moms_form_count").val();
         let alert_level = $("#moms_alert_level").val();
         let alert_validity = ""
         let int_sym = ""
@@ -452,6 +540,8 @@ function displayRaiseMomsModal(data) {
         if(compare_date == false){
             alert('Unable to add future date and time');
         }else{
+            let moms_collection = []
+            
             if (alert_level == "2") {
                 int_sym = "m2"
                 alert_validity = moment(data.date).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
@@ -462,29 +552,16 @@ function displayRaiseMomsModal(data) {
                 int_sym = "m0"
             }
     
-            let hour = moment(alert_validity).hours()
-            if (hour >= 0 && hour < 4) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 04:00:00")
-            } else if (hour >= 4 && hour < 8) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 08:00:00")
-            } else if (hour >= 8 && hour < 12) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 12:00:00")
-            } else if (hour >= 12 && hour < 16) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 16:00:00")
-            } else if (hour >= 16 && hour < 20) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 20:00:00")
-            } else if (hour >= 20) {
-                alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
-            }
+            
     
             let trigger_list = {
-                alert_level: alert_level,
                 alert_validity: alert_validity.toString(),
                 data_ts: formatted_datetime,
-                observance_ts: formatted_datetime,
                 user_id: 1,
                 trig_list: [
                     {
+                        alert_level: alert_level,
+                        observance_ts: formatted_datetime,
                         int_sym: int_sym,
                         remarks: $("#moms_remarks").val(),
                         f_name: data.feature_name,
@@ -492,12 +569,76 @@ function displayRaiseMomsModal(data) {
                     }
                 ]
             }
-    
+            moms_collection.push(trigger_list);
+            console.log(moms_collection)
+            for (i = 1; i <= moms_forms_count; i++) {
+                let moms_data = $("#moms_data_"+i).val();
+                let moms = moms_data.split("|")
+                let moms_observance_ts = $("#observance_ts_"+i).val();
+                let moms_formatted_datetime = moment(moms_observance_ts).format('YYYY-MM-DD HH:mm:ss');
+                let moms_alert_validity = ""
+                let moms_int_sym = ""
+                let moms_remarks = $("#moms_remarks_"+i).val();
+                let moms_alert_level = $("#moms_alert_level_"+i).val();
+                if (moms_alert_level == "2") {
+                    moms_int_sym = "m2"
+                    moms_alert_validity = moment(moms_formatted_datetime).add(24, 'hours').format("YYYY-MM-DD HH:mm:00")
+                } else if (moms_alert_level == "3") {
+                    moms_int_sym = "m3"
+                    moms_alert_validity = moment(moms_formatted_datetime).add(48, 'hours').format("YYYY-MM-DD HH:mm:00")
+                } else {
+                    moms_int_sym = "m0"
+                }
+
+                let hour = moment(alert_validity).hours()
+                if (hour >= 0 && hour < 4) {
+                    moms_alert_validity = moment(moms_alert_validity).format("YYYY-MM-DD 04:00:00")
+                } else if (hour >= 4 && hour < 8) {
+                    moms_alert_validity = moment(moms_alert_validity).format("YYYY-MM-DD 08:00:00")
+                } else if (hour >= 8 && hour < 12) {
+                    moms_alert_validity = moment(moms_alert_validity).format("YYYY-MM-DD 12:00:00")
+                } else if (hour >= 12 && hour < 16) {
+                    moms_alert_validity = moment(moms_alert_validity).format("YYYY-MM-DD 16:00:00")
+                } else if (hour >= 16 && hour < 20) {
+                    moms_alert_validity = moment(moms_alert_validity).format("YYYY-MM-DD 20:00:00")
+                } else if (hour >= 20) {
+                    moms_alert_validity = moment(moms_alert_validity).format("YYYY-MM-DD 00:00:00")
+                }
+                
+                moms_collection[0].trig_list.push({
+                    alert_level: moms_alert_level,
+                    observance_ts: moms_formatted_datetime,
+                    int_sym: moms_int_sym,
+                    remarks: moms_remarks,
+                    f_name: moms[1],
+                    f_type: moms[0]
+                })
+            }
+            console.log(moms_collection)
+            let trig_list_collection = moms_collection[0].trig_list
+            let final_trig_list_collection = [];
+            const map = new Map();
+            for (const item of trig_list_collection) {
+                if(!map.has(item.f_name) && !map.has(item.f_type) && !map.has(item.alert_level)){
+                    map.set(item.f_name, true);    // set any value to Map
+                    final_trig_list_collection.push({
+                        alert_level: item.alert_level,
+                        observance_ts: item.observance_ts,
+                        int_sym: item.int_sym,
+                        remarks: item.remarks,
+                        f_name: item.f_name,
+                        f_type: item.f_type
+                    });
+                }
+            }
+            console.log("final_trig_list_collection",final_trig_list_collection)
+            moms_collection[0].trig_list = final_trig_list_collection;
+            console.log(moms_collection)
             let moms_data = {
                 moms_id: data.moms_id,
                 type_of_feature: data.feature_type,
                 description: data.description,
-                name_of_feature: data.feature_type,
+                name_of_feature: data.feature_name,
                 timestamp: data.date,
                 observance_ts: formatted_datetime
             }
@@ -513,24 +654,29 @@ function displayRaiseMomsModal(data) {
                             Accept: 'application/json',
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(trigger_list),
+                        body: JSON.stringify(moms_collection),
                     }).then((responseJson) => {
                         console.log(responseJson)
-                        alert("Successfuly raise MOMs.");
+                        $("#moms_forms").empty();
                         $("#raise_moms_modal").modal("hide");
-                        $("#observance_ts").val();
-                        $("#moms_remarks").val();
+                        $("#observance_ts").val("");
+                        $("#moms_remarks").val("");
                         if(int_sym == "m0"){
                             publicAlert()
+                            alert("Successfuly comfirmed MOMs.");
                         }else{
                             publicAlert(true);
+                            alert("Successfuly raised MOMs.");
                         }
                         updateObservanceTs(moms_data);
+                        $("#moms_forms").empty();
+                        $("#moms_form_count").val(0);
+                        initializeMonitoringLogs();
+                        $("body > ul > li:nth-child(6) > a").trigger("click")
                     });
                 })
         }
         
-
     });
 }
 
@@ -538,7 +684,6 @@ function updateObservanceTs(moms_data){
     let url = "http://192.168.1.10:5000/api/surficial_data/save_monitoring_log";
     $.post(url, moms_data).done(function (response) {
         console.log("Updated observance timestamp");
-        initializeMonitoringLogs();
     });
 }
 
