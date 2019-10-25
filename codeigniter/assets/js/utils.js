@@ -14,22 +14,22 @@ let specialElementHandlers = {
 $(document).ready(function () {
     reportData();
     logout();
-    // checkSession();
+    checkSession();
 });
 
-// function checkSession() {
-//     $.ajax({
-//         url: "http://192.168.1.10:5000/api/check_session",
-//         beforeSend: function (xhr) {
-//             // xhr.overrideMimeType("text/plain; charset=x-user-defined");
-//         }
-//     }).done(function (data) {
-//             console.log(data)
-//         if(data == false){
-//             window.location.replace("http://cbewsl.com/home");
-//         }
-//     })
-// }
+function checkSession() {
+    $.ajax({
+        url: "http://192.168.1.10:5000/api/check_session",
+        beforeSend: function (xhr) {
+            // xhr.overrideMimeType("text/plain; charset=x-user-defined");
+        }
+    }).done(function (data) {
+            console.log(data)
+        if(data == false){
+            window.location.replace("http://cbewsl.com/home");
+        }
+    })
+}
 
 function formatDateTime(date = null) {
     let timestamp = date
