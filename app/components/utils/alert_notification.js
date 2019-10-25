@@ -44,8 +44,8 @@ const Notification = {
                 //     });
             } else {
 
-                let candidate_alerts = JSON.parse(response.candidate_alerts);
-                let current_alerts = response.current_alerts;
+                // let candidate_alerts = JSON.parse(response.candidate_alerts);
+                // let current_alerts = response.current_alerts;
 
                 // if () {
 
@@ -82,7 +82,7 @@ const Notification = {
         })
     },
     fetchCandidateAlert: async function () {
-        this.updateAlertGen()
+        this.updateAlertGen(false)
         let offline_data = Storage.getItem("Pub&CandidAlert");
         offline_data.then(offline_response => {
             if (offline_response != null || offline_response != undefined) {
@@ -169,7 +169,13 @@ const Notification = {
             this.fetchCandidateAlert();
         });
     }, updateAlertGen: async function (is_onset=false) {
-        fetch('http://192.168.1.10:5000/api/monitoring/update_alert_gen/'+is_onset).then((response) => response.json())
+        let url = ""
+        if(is_onset == false){
+            url = "http://192.168.1.10:5000/api/monitoring/update_alert_gen"
+        }else{
+            url = 'http://192.168.1.10:5000/api/monitoring/update_alert_gen/'+is_onset
+        }
+        fetch(url).then((response) => response.json())
             .then((online_data) => {
                 console.log("Updating alert gen...")
                 if (online_data.status == true) {

@@ -34,6 +34,7 @@ export default class CurrentAlert extends Component {
   }
 
   getCurrentAlert() {
+
     Notification.endOfValidity();
     let offline_data = Storage.getItem("Pub&CandidAlert")
     offline_data.then(response => {
@@ -53,7 +54,7 @@ export default class CurrentAlert extends Component {
       let moms_temp = ""
       let has_alert_data = false;
       let release_button = [];
-      console.log(response)
+      
       if (latest.length != 0) {
         let event_details = this.formatEwiDetails(candidate_alert, latest[0], true, releases, latest_release_moms);
         view.push(event_details)
@@ -125,7 +126,7 @@ export default class CurrentAlert extends Component {
       }
 
       this.setState({ alert_details: view })
-      this.setState({ spinner: false })
+      // this.setState({ spinner: false })
     })
   }
 
@@ -221,7 +222,6 @@ export default class CurrentAlert extends Component {
         let op_trigger = value.op_trigger;
         moms_data.push({"trigger_type": "moms", "tech_info": remarks, "ts": observance_ts, "instance_id": instance_id, "op_trigger": op_trigger});
     });
-    console.log("MOMS", moms_data)
     return moms_data
   }
 
@@ -250,10 +250,8 @@ export default class CurrentAlert extends Component {
   }
 
   formatEwiDetails(candidate_alert, leo_data, has_alert_data, releases, latest_release_moms){
-    console.log(candidate_alert);
-    console.log(leo_data);
-
     let event_details = [];
+    
     let current_alert_level = leo_data.public_alert_symbol.alert_level;
     if(current_alert_level != 0){
       let latest_event_triggers = leo_data.latest_event_triggers;
@@ -301,11 +299,13 @@ export default class CurrentAlert extends Component {
             if(trigger_list_trigger_id == 0){
               trigger_list_trigger_id = value.trigger_id
             }
-            let instance_id = 0
+            let instance_id = 0;
             let moms_list = value.moms_list;
-            moms_list.forEach(value => {
-                instance_id = value.moms_instance.instance_id;
-            });
+            if(moms_list != undefined || moms_list != null){
+              moms_list.forEach(value => {
+                  instance_id = value.moms_instance.instance_id;
+              });
+            }
             if(candidate_alert[0].release_details.data_ts != value.ts_updated){
               no_new_trigger = false;
             }else{
@@ -585,7 +585,6 @@ export default class CurrentAlert extends Component {
   }
 
   releaseAlertConfirmation(alert_data) {
-    console.log(alert_data);
     if (alert_data != null) {
       if (alert_data.is_release_time == false) {
         Alert.alert('Notice', 'Please wait for the next release time.')
@@ -643,9 +642,9 @@ export default class CurrentAlert extends Component {
                     let timestamp = ts_updated.text_format_timestamp
                     let moms_info = value.tech_info;
                     if(value.op_trigger == 2){
-                      temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}</Text>)
+                      temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info} <Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
                     }else{
-                      temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}</Text>)
+                      temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info} <Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
                     }
                   }
                 });
@@ -658,7 +657,7 @@ export default class CurrentAlert extends Component {
                 }
               }
             }else{
-              temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers1.</Text></View>)
+              temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
             }
           }else{
             switch (element.trigger_type) {
@@ -666,9 +665,9 @@ export default class CurrentAlert extends Component {
                 invalid_flag = []
                 if (element.invalid == true) {
                   this.setState({ trigger_length: this.state.trigger_length - 1 })
-                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert (INVALID):</Text> {element.tech_info}<Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
+                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert (INVALID):</Text> {element.tech_info}</Text>)
                 } else {
-                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}<Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
+                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}</Text>)
                 }
                 break;
               case "moms":
@@ -683,9 +682,9 @@ export default class CurrentAlert extends Component {
                         let timestamp = ts_updated.text_format_timestamp
                         let moms_info = value.tech_info;
                         if(value.op_trigger == 2){
-                          invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}</Text>)
+                          invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}<Text style={{ fontSize: 20, color: "#ee9d01", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(SIGNIFICANT)</Text></Text>)
                         }else{
-                          invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}</Text>)
+                          invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movement:</Text> {moms_info}<Text style={{ fontSize: 20, color: "#ff0018", fontWeight: 'bold', width: '100%', textAlign: 'center' }}>(CRITICAL)</Text></Text>)
                         }
                       }
                     });
@@ -722,7 +721,6 @@ export default class CurrentAlert extends Component {
         })
 
       } else {
-
         if (data[0].release_details.data_ts != this.state.event_start_ts) {
 
           view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
@@ -826,13 +824,13 @@ export default class CurrentAlert extends Component {
       alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
     }
     let trigger_list = {
-      alert_level: 0,
       alert_validity: alert_validity,
       data_ts: current_ts.current_timestamp,
-      observance_ts: current_ts.current_timestamp,
       user_id: 1,
       trig_list: [
           {
+              alert_level: 0,
+              observance_ts: current_ts.current_timestamp,
               int_sym: "m0",
               remarks: "Lowering",
               f_name: "none",
@@ -840,7 +838,7 @@ export default class CurrentAlert extends Component {
           }
       ]
     }
-    console.log(trigger_list)
+
     let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
     fetch(url, {
         method: 'POST',
