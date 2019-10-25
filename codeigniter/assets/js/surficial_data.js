@@ -667,13 +667,13 @@ function displayRaiseMomsModal(data) {
                 validation_message += "Please check the following:\n"
             }
             if(has_same_timestamp == true){
-                validation_message += "-Same observance timestamp.\n";
+                validation_message += "-Same observation timestamp.\n";
             }
             if(has_blank_remarks == true){
                 validation_message += "-Blank/empty remarks.\n";
             }
             if(has_blank_timestamp == true){
-                validation_message += "-Blank or Empty observance timestamp.\n";
+                validation_message += "-Blank or Empty observation timestamp.\n";
             }
             if(validation_message != ""){
                 alert(validation_message);

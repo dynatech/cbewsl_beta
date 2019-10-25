@@ -24,7 +24,7 @@ export default class SaveSurficialData extends Component {
             name_of_feature: "",
             guidelines: [],
             isModelVisible: false,
-            server_number: ['09088137584'],
+            server_number: ['09088125645'],
             spinner: true,
             feature_types: []
         };

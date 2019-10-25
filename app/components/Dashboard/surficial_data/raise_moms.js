@@ -77,15 +77,15 @@ export default class RaiseMoms extends Component {
                 } else if (hour >= 20) {
                     alert_validity = moment(alert_validity).format("YYYY-MM-DD 00:00:00")
                 }
-    
+                let moms_collection = []
                 let trigger_list = {
-                    alert_level: alert_level,
                     alert_validity: alert_validity.toString(),
                     data_ts: datetime,
-                    observance_ts: datetime,
                     user_id: 1,
                     trig_list: [
-                        {
+                        {   
+                            alert_level: alert_level,
+                            observance_ts: datetime,
                             int_sym: int_sym,
                             remarks: this.state.remarks,
                             f_name: feature_type,
@@ -93,7 +93,7 @@ export default class RaiseMoms extends Component {
                         }
                     ]
                 }
-                console.log(trigger_list)
+                moms_collection.push(trigger_list);
                 let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
                 fetch(url, {
                     method: 'POST',
@@ -102,7 +102,7 @@ export default class RaiseMoms extends Component {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(trigger_list),
+                    body: JSON.stringify(moms_collection),
                 }).then((responseJson) => {
                     Alert.alert('Success', 'Successfully raise moms!')
                     
