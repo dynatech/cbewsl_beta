@@ -178,6 +178,7 @@ function alertValidation(trigger_id, valid, user_id, candidate_alerts, alert_dat
                 $("#candidate_alert_invalid_" + trigger_id).prop('disabled', false);
                 formatCandidateAlerts(trigger_id);
             } else {
+                publicAlert();
                 alert_message = "Alert invalidated!";
                 alert_level = $("#alert_level_" + trigger_id).text();
                 $("#alert_level_" + trigger_id).text(alert_level + " (invalid)").css("color", "red")
