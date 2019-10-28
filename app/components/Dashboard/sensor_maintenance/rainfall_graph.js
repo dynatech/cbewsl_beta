@@ -53,8 +53,6 @@ export default class RainfallGraph extends Component {
 
     console.log(data_availability)
     return data_availability
-    // console.log(dataset_a)
-    // console.log(dataset_b)
   }
 
   renderTrendGraph(data, one_day, three_day) {
@@ -64,7 +62,9 @@ export default class RainfallGraph extends Component {
     let previous_one_day = 0
     let previous_three_day = 0
     let ts_container = []
-
+    let max_24 = 0;
+    let max_72 = 0;
+    let final_max_data = 0
     data.forEach(element => {
       if (element['24hr cumulative rainfall'] == null) {
         element['24hr cumulative rainfall'] = previous_one_day
@@ -78,10 +78,24 @@ export default class RainfallGraph extends Component {
         previous_three_day = element['72hr cumulative rainfall']
       }
 
+      if(element['24hr cumulative rainfall'] > max_24){
+        max_24 = element['24hr cumulative rainfall']
+      }
+
+      if(element['72hr cumulative rainfall'] > max_72){
+        max_72 = element['72hr cumulative rainfall']
+      }
+
       temp_a.push([element['24hr cumulative rainfall']])
       temp_b.push([element['72hr cumulative rainfall']])
       ts_container.push(element.ts)
     });
+
+    if(max_24 > max_72){
+      final_max_data = max_24;
+    }else{
+      final_max_data = max_72;
+    }
 
     this.setState({
       hr24: temp_a,
@@ -108,7 +122,7 @@ export default class RainfallGraph extends Component {
         title: {
           text: 'Value (mm)'
         },
-        max: Math.max(0, three_day) + parseFloat(Math.max(three_day)),
+        max: Math.max(0, (final_max_data - parseFloat(three_day))) + parseFloat(three_day),
         min: 0,
         plotBands: [{
           value: Math.round(parseFloat(one_day)),

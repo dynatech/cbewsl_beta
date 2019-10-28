@@ -20,7 +20,6 @@ function getAllResourcesAndCapacity() {
                 { "data": "owner" },
                 {
                     render(data, type, full) {
-                        // ${full.resources_and_capacities_id}
                         return `<a href="#resources_and_capacities" id="edit_rnc"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#resources_and_capacities" id="remove_rnc"><i class="fas fa-minus-circle text-center"></i></a>`;
                     }
                 }

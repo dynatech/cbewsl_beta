@@ -30,12 +30,10 @@ function initializeMomsFeatures(){
 function initializeSurficialData() {
     $('#surficial-data-tab').on('click', function () {
         initializeMonitoringLogs();
-        console.log("Loaded");
         $(".surficial-measuremnt-container h5").text("Change");
         fetch('http://192.168.1.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
             .then((responseJson) => {
                 let surficial_summary = responseJson;
-                console.log(surficial_summary)
                 let graph_plot_data = [];
                 for (let counter = 0; counter < surficial_summary[0].surficial_data.length; counter++) {
                     let temp_data_cont = []
@@ -55,7 +53,7 @@ function initializeSurficialData() {
                 let end_date = surficial_summary[0].surficial_data[0].ts[surficial_summary[0].surficial_data[0].ts.length - 1]
                 let formatted_date = formatDateTime(end_date);
                 let last_data = "Last surficial data received is on " + formatted_date.text_format_timestamp;
-                // console.log(surficial_summary[0].moms_data[0].date)
+                
                 if(surficial_summary[0].moms_data.length != 0){let latest_moms_date = formatDateTime(surficial_summary[0].moms_data[0].date)
                     $(".surficial-measuremnt-container h5").text(last_data);
                     $(".moms-container").empty();
@@ -71,7 +69,6 @@ function initializeSurficialData() {
                     $(".moms-container").append("<p style='padding-left: 10px; color: #717171'>No latest manifestation of movements</p>");
                 }
                 
-                console.log(graph_plot_data)
                 $(".surficial-graph-container").highcharts({
                     series: graph_plot_data,
                     chart: {
@@ -279,7 +276,6 @@ function initializeCRUDLogs(datatable, all_moms) {
 
     $('#moms_table tbody').on('click', '#add_moms_images', function () {
         let data = datatable.row($(this).parents('tr')).data();
-        console.log(data);
         uploadMomsData(data.moms_id);
     });
 
@@ -293,13 +289,11 @@ function initializeCRUDLogs(datatable, all_moms) {
         $("#add_moms_form").show();
         $("#clear_moms_form").show();
         displayRaiseMomsModal(data);
-        console.log(data)
         $("#raiseMomsModalLabel").text("Raise Moms");
         $("#moms_forms").empty();
         $("#observance_ts").val("");
         $("#moms_remarks").val("");
         inializeAddMomsForm(data, all_moms, 0);
-        console.log(all_moms);
     });
 }
 
@@ -452,7 +446,6 @@ function uploadMomsData(moms_id) {
             for (let x = 0; x < ins; x++) {
                 form_data.append("files[]", document.getElementById('moms_image').files[x]);
             }
-            console.log(form_data)
             $.ajax({
                 url: "http://cbewsl.com/dashboard/uploadMomsImages/" + moms_id,
                 method: "POST",
@@ -462,7 +455,6 @@ function uploadMomsData(moms_id) {
                 processData: false,
                 dataType: "json",
                 success: function (response) {
-                    console.log(response);
                     if (response.status == true) {
                         $('#moms_image').val('');
                         $('#momsUploadPreview').empty();
@@ -570,7 +562,6 @@ function displayRaiseMomsModal(data) {
                 ]
             }
             moms_collection.push(trigger_list);
-            console.log(moms_collection)
             for (i = 1; i <= moms_forms_count; i++) {
                 let moms_data = $("#moms_data_"+i).val();
                 let moms = moms_data.split("|")
@@ -614,7 +605,6 @@ function displayRaiseMomsModal(data) {
                     f_type: moms[0]
                 })
             }
-            console.log(moms_collection)
             let trig_list_collection = moms_collection[0].trig_list
             let final_trig_list_collection = [];
             const map = new Map();
@@ -631,7 +621,6 @@ function displayRaiseMomsModal(data) {
                     });
                 }
             }
-            console.log("final_trig_list_collection",final_trig_list_collection)
             let has_same_timestamp = false;
             let has_blank_remarks = false;
             let has_blank_timestamp = false;
@@ -640,7 +629,6 @@ function displayRaiseMomsModal(data) {
                 let remarks = value.remarks;
                 let observance_ts = value.observance_ts;
                 let obs_ts_checker  = observance_timestamp_collections.includes(observance_ts);
-                console.log(observance_ts)
                 if(has_blank_timestamp == false){
                     if(observance_ts == "Invalid date"){
                         has_blank_timestamp = true;
@@ -679,7 +667,6 @@ function displayRaiseMomsModal(data) {
                 alert(validation_message);
             }else{
                 moms_collection[0].trig_list = final_trig_list_collection;
-                console.log("moms_collection",moms_collection)
                 let moms_data = {
                     moms_id: data.moms_id,
                     type_of_feature: data.feature_type,
@@ -692,7 +679,6 @@ function displayRaiseMomsModal(data) {
                 let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
                 isOnSet(alert_level)
                     .then((response) => {
-                        console.log(response)
                         fetch(url, {
                             method: 'POST',
                             dataType: 'jsonp',
@@ -702,7 +688,6 @@ function displayRaiseMomsModal(data) {
                             },
                             body: JSON.stringify(moms_collection),
                         }).then((responseJson) => {
-                            console.log(responseJson)
                             $("#moms_forms").empty();
                             $("#raise_moms_modal").modal("hide");
                             $("#observance_ts").val("");

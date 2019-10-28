@@ -122,7 +122,6 @@ export default class ViewReport extends Component {
         let moms_temp = ""
         let rain_temp = ""
         if ('moms_id' in response.triggers) {
-            console.log("may moms")
             moms_temp = "Feature type: " + response.triggers.type_of_feature + "(" + response.triggers.name_of_feature + ")\n" +
                 "Description: " + response.triggers.description + "\n"
             moms_header.push(<Text style={{ fontWeight: 'bold', fontSize: 20 }}>Manifestation of Movements</Text>)
@@ -249,7 +248,6 @@ export default class ViewReport extends Component {
         </DataTable.Row>)
 
         for (const [index, value] of response.entries()) {
-            // console.log(value)
             report_datas.push(<DataTable.Row style={{ width: 500 }}>
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.members_count}</DataTable.Cell>
                 <DataTable.Cell style={{ marginRight: 10 }}>{value.vulnerable_members_count}</DataTable.Cell>
@@ -318,13 +316,11 @@ export default class ViewReport extends Component {
                 </View>
             </View>
         </View>)
-        console.log(data.report_name)
         this.setState({ report_name: data.report_name })
         this.setState({ reports: latest_report })
     }
 
     renderSituationReport(data) {
-        console.log(data)
         let response = data.data
         let report = []
 
@@ -348,7 +344,6 @@ export default class ViewReport extends Component {
     }
 
     renderRainfallSummaryReport(data) {
-        console.log(data)
         let response = data.data
         let report = []
         let one_day_rain = Math.round((response["1D cml"] / response["half of 2yr max"]) * 100)

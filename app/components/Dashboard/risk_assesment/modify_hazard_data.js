@@ -29,7 +29,6 @@ export default class ModifyHazardData extends Component {
   }
 
   removeConfirmation(id) {
-    console.log(id)
     Alert.alert(
       'Confirmation',
       'Are you sure do you want to delete ?',

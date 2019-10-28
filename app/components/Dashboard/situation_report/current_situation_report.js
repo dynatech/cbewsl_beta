@@ -60,8 +60,6 @@ export default class CurrentSituationReport extends Component {
     Notification.endOfValidity();
     fetch('http://192.168.1.10:5000/api/situation_report/get_latest_situation_report_data').then((response) => response.json())
       .then((responseJson) => {
-        console.log("GO HERE")
-        console.log(responseJson)
         let to_local_data = [];
         if (Object.entries(responseJson[0]).length != 0 && responseJson[0].constructor === Object) {
           for (const [index, value] of responseJson.entries()) {
@@ -95,8 +93,6 @@ export default class CurrentSituationReport extends Component {
         this.setState({ spinner: false })
       })
       .catch((error) => {
-        console.log("NAH GO HERE")
-        console.log(error)
         let data_container = Storage.getItem("SituationReportLatest")
         let latest_report = [];
         data_container.then(response => {

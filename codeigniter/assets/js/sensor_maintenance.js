@@ -212,7 +212,6 @@ function initalizeSensorMaintenanceData() {
         }
     }).done(function (data) {
         let rainfall_data = JSON.parse(data);
-        console.log(rainfall_data[0])
         let rain_percentage = displaySensorMaintenanceSummary(rainfall_data);
         renderRainfallChart(rainfall_data[0], rain_percentage);
     });
@@ -266,7 +265,9 @@ function renderCumulativeRainfallGraph(data, container, three_day_threshold) {
     let previous_one_day = 0
     let previous_three_day = 0
     let ts_container = []
-
+    let max_24 = 0;
+    let max_72 = 0;
+    let final_max_data = 0
     const div = `#${container}`;
     let rain_data = data.data;
     rain_data.forEach(element => {
@@ -282,11 +283,25 @@ function renderCumulativeRainfallGraph(data, container, three_day_threshold) {
             previous_three_day = element['72hr cumulative rainfall']
         }
 
+        if(element['24hr cumulative rainfall'] > max_24){
+            max_24 = element['24hr cumulative rainfall']
+        }
+
+        if(element['72hr cumulative rainfall'] > max_72){
+            max_72 = element['72hr cumulative rainfall']
+        }
+
         temp_a.push([element['24hr cumulative rainfall']])
         temp_b.push([element['72hr cumulative rainfall']])
         ts_container.push(element.ts)
     });
 
+
+    if(max_24 > max_72){
+        final_max_data = max_24;
+    }else{
+        final_max_data = max_72;
+    }
     $(div).highcharts({
         series: [{
             name: '24hr',
@@ -328,7 +343,7 @@ function renderCumulativeRainfallGraph(data, container, three_day_threshold) {
             title: {
                 text: "<b>Value (mm)</b>"
             },
-            max: Math.max(0, (three_day_threshold - parseFloat(three_day_threshold))) + parseFloat(three_day_threshold),
+            max: Math.max(0, (final_max_data - parseFloat(three_day_threshold))) + parseFloat(three_day_threshold),
             min: 0,
             plotBands: [{
                 value: Math.round(parseFloat(three_day_threshold / 2) * 10) / 10,

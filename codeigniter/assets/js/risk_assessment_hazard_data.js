@@ -24,7 +24,6 @@ function getAllHazardData() {
                 { "data": "impact" },
                 {
                     render(data, type, full) {
-                        // ${full.resources_and_capacities_id}
                         return `<a href="#hazard_data" id="edit_hazard_data"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#hazard_data" id="remove_hazard_data"><i class="fas fa-minus-circle text-center"></i></a>`;
                     }
                 }
@@ -256,7 +255,6 @@ function uploadHazardMap() {
                 processData: false,
                 dataType: "json",
                 success: function (response) {
-                    console.log(response);
                     if (response.status == true) {
                         $('#image_file').val('');
                         $('#uploadPreview').empty();

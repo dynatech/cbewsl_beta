@@ -98,7 +98,6 @@ function initializeSituationReportCalendar() {
                 let formatted_date = formatDateTime(situation_report_summary.start);
                 let date = formatted_date.date_only_format;
                 situation_date_selected = formatted_date.date;
-                console.log(situation_date_selected)
                 $("#situation_report_id").val(situation_report_summary.id);
                 $("#summary").val(situation_report_summary.title);
                 $("#situation_report_label").text("").append("Update summary for " + date);
@@ -176,7 +175,6 @@ function saveSituationReport() {
         let url = "http://192.168.1.10:5000/api/situation_report/save_situation_report";
         let summary = $("#summary").val();
         let time = $("#situation_log_time_picker").val();
-        console.log(situation_date_selected)
         let data = {
             situation_report_id: $("#situation_report_id").val(),
             timestamp: situation_date_selected,
@@ -185,7 +183,6 @@ function saveSituationReport() {
             pdf_path: "",
             image_path: ""
         }
-        console.log(data)
         if (situation_date_selected != "none") {
             if (summary != "" && time != "") {
                 $.post(url, data).done(function (response) {
@@ -219,7 +216,6 @@ function situationReportSummaryAction() {
         $("#situation_report_form").show(300);
         $("#situation_report_log").hide(300);
         $("#add_situation_report").text("Update");
-        console.log(situation_date_selected)
     });
 
     $("#delete_situation_report").click(function () {

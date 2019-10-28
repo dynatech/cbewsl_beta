@@ -25,7 +25,6 @@ export default class RaiseMoms extends Component {
         Notification.endOfValidity();
         const { navigation } = this.props;
         const data = navigation.getParam("data", "none");
-        console.log(data);
         if (data != "none") {
             this.setState({
                 feature_name: data.name_of_feature,

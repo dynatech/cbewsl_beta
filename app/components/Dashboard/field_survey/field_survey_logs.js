@@ -203,7 +203,6 @@ export default class FieldSurveyLogs extends Component {
             let data_container = Storage.getItem('FieldSurveyLogs')
             let field_logs = [];
             data_container.then(response => {
-              console.log(response)
               if (response != null) {
                 for (const [index, value] of response.entries()) {
                   let format_date_time = this.formatDateTime(date = value.date);
