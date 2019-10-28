@@ -552,7 +552,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
         let general_status = "";
         let latest_trigger_details = [];
         let has_moms_triggers = false;
-        
         if(candidate_alerts.length == 0){
             formatted_as_of = formatDateTime(leo_data.releases[0].data_ts);
         }else{
@@ -567,12 +566,13 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
 
             let update_ts = moment(release_schedule).add(30, "minutes").format("YYYY-MM-DD HH:mm:SS");
             release_schedule = formatDateTime(update_ts);
-
+            console.log(trigger_list_arr)
             if(trigger_list_arr.length != 0){
                 has_trigger = true;
                 $.each(trigger_list_arr, function (key, value) {
                     let trigger_type = value.trigger_type;
                     let tech_info = value.tech_info;
+                    let invalid = value.invalid;
                     if(trigger_list_trigger_id == 0 && trigger_type == "rainfall"){
                         trigger_list_trigger_id = value.trigger_id
                     }
@@ -583,7 +583,9 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                     });
                     if(candidate_alerts[0].release_details.data_ts == value.ts_updated){
                         if(trigger_type == "rainfall"){
-                            latest_data_information += "<b>Rainfall: </b> " + tech_info + "<br>";
+                            if(invalid != true){
+                                latest_data_information += "<b>Rainfall: </b> " + tech_info + "<br>";
+                            }
                         }else if(trigger_type == "moms"){
                             latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + "<br>";
                         }else if(trigger_type == "earthquake"){
@@ -594,7 +596,8 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                             "tech_info" : tech_info,
                             "trigger_type": trigger_type,
                             "alert" : value.alert,
-                            "instance_id": instance_id
+                            "instance_id": instance_id,
+                            "invalid": invalid
                         });
                     }else{
                         if(trigger_type == "moms"){
@@ -610,7 +613,8 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                             "tech_info" : tech_info,
                             "trigger_type": trigger_type,
                             "alert" : value.alert,
-                            "instance_id": instance_id
+                            "instance_id": instance_id,
+                            "invalid": invalid
                         });
                     }
                     
@@ -623,7 +627,9 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
             }
             
         }
-
+        console.log("all_latest_triggers",all_latest_triggers)
+        console.log("latest_trigger_details",latest_trigger_details)
+        console.log("latest_release_moms_per_instance",latest_release_moms_per_instance)
         $("#recommended_response").empty();
         let as_of_datetime = formatted_as_of["text_format_timestamp"] + "</b>";
         let latest_release_text = "none";
@@ -686,6 +692,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
         let is_moms = false;
         let has_rainfall = false;
         let latest_release_moms_instance = [];
+        console.log(latest_trigger_details)
         if(all_latest_triggers.length != 0){
 
             $("#recommended_response").append("<hr><br>");
@@ -762,12 +769,14 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                             let has_latest = false;
                             $.each(latest_trigger_details, function (key, value) {
                                 if(value.trigger_type == "rainfall"){
-                                    has_latest = true
-                                    let ts_updated = formatDateTime(value.ts_updated);
-                                    let timestamp = ts_updated["text_format_timestamp"];
-                                    let rain_info = value.tech_info;
-                                    as_of = "<b>Last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
-                                    info += as_of + rain_info + "<br><br>";
+                                    if(value.invalid != true){
+                                        has_latest = true
+                                        let ts_updated = formatDateTime(value.ts_updated);
+                                        let timestamp = ts_updated["text_format_timestamp"];
+                                        let rain_info = value.tech_info;
+                                        as_of = "<b>Last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
+                                        info += as_of + rain_info + "<br><br>";
+                                    }
                                 }
                             });
                             if(has_latest == false){
@@ -794,12 +803,14 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                     let has_latest = false;
                     $.each(latest_trigger_details, function (key, value) {
                         if(value.trigger_type == "rainfall"){
-                            has_latest = true
-                            let ts_updated = formatDateTime(value.ts_updated);
-                            let timestamp = ts_updated["text_format_timestamp"];
-                            let moms_info = value.tech_info;
-                            as_of = "<b>Last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
-                            info += as_of + moms_info + "<br><br>";
+                            if(value.invalid != true){
+                                has_latest = true
+                                let ts_updated = formatDateTime(value.ts_updated);
+                                let timestamp = ts_updated["text_format_timestamp"];
+                                let moms_info = value.tech_info;
+                                as_of = "<b>Last rainfall retrigger</b> at " + "<b>"+timestamp+ "</b><br>";
+                                info += as_of + moms_info + "<br><br>";
+                            }
                         }
                     });
                 }else{
@@ -809,6 +820,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
     
             if(is_moms == false){
                 if(latest_release_moms_per_instance.length != 0){
+                    has_moms_triggers = true
                     is_moms = true
                     $.each(latest_release_moms_per_instance, function (key, value) {
                         if(value.trigger_type == "moms"){
@@ -851,14 +863,45 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                     let tech_info = value.tech_info;
                     let moms_type = value.alert;
                     if(trigger_type == "moms"){
-                        if(moms_type == "m2"){
-                            latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + " <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
-                        }else{
-                            latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + " <b style='color:red'>(CRITICAL)</b><br>";
+                        if(value.invalid != true){
+                            if(moms_type == "m2"){
+                                latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + " <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                            }else{
+                                latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + " <b style='color:red'>(CRITICAL)</b><br>";
+                            }
                         }
                     }
                 });
             }
+        }else{
+            $.each(latest_release_moms_per_instance, function (key, value) {
+                let latest_instance_id = value.instance_id;
+                let ts_updated = formatDateTime(value.ts);
+                let latest_ts = ts_updated.text_format_timestamp
+                let tech_info = value.tech_info
+                    if(value.trigger_type == "moms"){
+                        has_latest = true
+                        let ts_updated = formatDateTime(value.ts_updated);
+                        let timestamp = ts_updated.text_format_timestamp
+                        let moms_info = value.tech_info;
+                        if(critical_instance_ids.length != 0){
+                            $.each(critical_instance_ids, function (key, value) {
+                                let critical_instance_id = value;
+                                if(latest_instance_id == critical_instance_id){
+                                    latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + " <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                                }else{
+                                    latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + " <b style='color:red'>(CRITICAL)</b><br>";
+                                }
+                            });
+                        }else{
+                            if(value.op_trigger == 2){
+                                latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + " <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
+                            }else{
+                                latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + " <b style='color:red'>(CRITICAL)</b><br>";
+                            }
+                        }
+                    }
+            });
         }
         
 

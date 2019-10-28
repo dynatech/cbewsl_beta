@@ -319,7 +319,8 @@ export default class CurrentAlert extends Component {
               "tech_info" : tech_info,
               "trigger_type": trigger_type,
               "alert" : value.alert,
-              "instance_id": instance_id
+              "instance_id": instance_id,
+              "invalid": value.invalid
             });
           });
         }else{
@@ -506,12 +507,15 @@ export default class CurrentAlert extends Component {
                 let has_latest = false;
                 latest_trigger_details.forEach(value => {
                   if(value.trigger_type == "rainfall"){
-                    has_latest = true
-                    let ts_updated = this.formatDateTime(value.ts_updated);
-                    timestamp = ts_updated.text_format_timestamp;
-                    rain_info = value.tech_info;
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp}</Text></Text>)
-                    event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
+                    if(value.invalid != true){
+                      has_latest = true
+                      let ts_updated = this.formatDateTime(value.ts_updated);
+                      timestamp = ts_updated.text_format_timestamp;
+                      rain_info = value.tech_info;
+                      event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp}</Text></Text>)
+                      event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
+                    }
+                    
                   }
                 });
                 if(has_latest == false){
@@ -539,12 +543,14 @@ export default class CurrentAlert extends Component {
           has_rainfall = true;
           latest_trigger_details.forEach(value => {
             if(value.trigger_type == "rainfall"){
-              has_latest = true
-              let ts_updated = this.formatDateTime(value.ts_updated);
-              timestamp = ts_updated.text_format_timestamp;
-              rain_info = value.tech_info;
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp}</Text></Text>)
-              event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
+              if(value.invalid != true){
+                has_latest = true
+                let ts_updated = this.formatDateTime(value.ts_updated);
+                timestamp = ts_updated.text_format_timestamp;
+                rain_info = value.tech_info;
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>Last rainfall retrigger at <Text style={{fontWeight: 'bold'}}>{timestamp}</Text></Text>)
+                event_details.push(<Text style={{ fontSize: 20, paddingBottom: 5, textAlign: 'center' }}>{rain_info}</Text>)
+              }
             }
           });
         }else{
@@ -622,7 +628,6 @@ export default class CurrentAlert extends Component {
 
     if (data.length != 0) {
       if (data[0].trigger_list_arr != 0) {
-
         view.push(<View style={{ borderWidth: 1, marginLeft: 20, marginRight: 20, marginBottom: 20, marginTop: 15, borderColor: '#083451', borderRadius: 10 }}></View>
         )
         let current_time =  this.formatDateTime(data[0].release_details.data_ts);
@@ -650,14 +655,50 @@ export default class CurrentAlert extends Component {
                 });
               }else{
                 if (element.invalid == true) {
-                  this.setState({ trigger_length: this.state.trigger_length - 1 })
                   temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movements (INVALID):</Text> {element.tech_info}</Text>)
                 } else {
                   temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movements:</Text> {element.tech_info}</Text>)
                 }
               }
+              
+              if(element.trigger_type == "rainfall"){
+                if (element.invalid == true) {
+                  temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}>No new retriggers</Text>)
+                } else {
+                  temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}</Text>)
+                }
+              }
+
+              if(element.trigger_type == "earthquake"){
+                if (element.invalid == true) {
+                  temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Earthquake Alert (INVALID):</Text> {element.tech_info}</Text>)
+                } else {
+                  temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Earthquake Alert:</Text> {element.tech_info}</Text>)
+                }
+              }
             }else{
-              temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
+              if(latest_release_moms_instance.length == 0){
+                temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers</Text></View>)
+              }else{
+
+              if(element.trigger_type == "moms"){
+                if (element.invalid != true) {
+                  temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Manifestations of movements:</Text> {element.tech_info}</Text>)
+                }
+              }
+
+              if(element.trigger_type == "rainfall"){
+                if (element.invalid != true) {
+                  temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}</Text>)
+                }
+              }
+
+              if(element.trigger_type == "earthquake"){
+                if (element.invalid != true) {
+                  temp.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Earthquake Alert:</Text> {element.tech_info}</Text>)
+                }
+              }
+              }
             }
           }else{
             switch (element.trigger_type) {
@@ -665,7 +706,7 @@ export default class CurrentAlert extends Component {
                 invalid_flag = []
                 if (element.invalid == true) {
                   this.setState({ trigger_length: this.state.trigger_length - 1 })
-                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%', color: 'red' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert (INVALID):</Text> {element.tech_info}</Text>)
+                  invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}>No new retriggers</Text>)
                 } else {
                   invalid_flag.push(<Text style={{ paddingBottom: 20, textAlign: 'center', fontSize: 20, width: '100%' }}><Text style={{ fontWeight: 'bold' }}>Rainfall Alert:</Text> {element.tech_info}</Text>)
                 }
@@ -728,7 +769,7 @@ export default class CurrentAlert extends Component {
           let current_time = this.formatDateTime(data[0].release_details.data_ts)
           temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>As of <Text style={{ fontWeight: 'bold' }}>{current_time.text_format_timestamp}</Text></Text></View>)
 
-          temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers.</Text></View>)
+          temp.push(<View><Text style={{ fontSize: 20, paddingBottom: 5 }}>No new retriggers</Text></View>)
         }
       }
     }
