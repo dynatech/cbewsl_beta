@@ -57,7 +57,6 @@ export default class ModifySummary extends Component {
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson)
         if (responseJson.status == true) {
           this.props.navigation.navigate('modify_summary');
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);

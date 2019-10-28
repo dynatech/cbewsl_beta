@@ -204,7 +204,6 @@ export default class MaintenanceLogs extends Component {
               for (const [index, value] of response.entries()) {
                 let format_date_time = this.formatDateTime(date = value.timestamp);
                 let timestamp = format_date_time["date"]
-                console.log(timestamp + "|" + date_selected)
                 if (timestamp == date_selected) {
                   logs.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
                     <Text style={{ fontSize: 15 }}>Working Nodes: {value.working_nodes}</Text>

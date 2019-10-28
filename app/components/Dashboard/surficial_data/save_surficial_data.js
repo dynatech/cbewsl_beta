@@ -60,7 +60,6 @@ export default class SaveSurficialData extends Component {
     }
 
     momsGuidelines() {
-        console.log("TEST")
         let images_container = []
         let images = {}
 
@@ -205,9 +204,6 @@ export default class SaveSurficialData extends Component {
             type_of_feature,
             description,
             name_of_feature } = this.state
-        console.log("datetime", datetime)
-        console.log("type_of_feature", type_of_feature)
-        console.log("description", description)
         if (datetime != "" && type_of_feature != "" && description != "") {
             Alert.alert(
                 'Notice',

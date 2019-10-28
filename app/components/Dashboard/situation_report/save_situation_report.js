@@ -34,7 +34,6 @@ export default class SaveSituationReport extends Component {
                     timestamp: data.date_selected,
                     spinner: false
                 });
-                console.log("add")
             } else {
                 this.setState({
                     situation_report_id: data.situation_report_id,
@@ -46,15 +45,8 @@ export default class SaveSituationReport extends Component {
                     image_path: "",
                     spinner: false
                 })
-                console.log("update")
             }
-        } else {
-            console.log(data)
-            // this.setState({
-            //     timestamp: selected_date,
-            //     spinner: false
-            // })
-        }
+        } 
     }
 
     saveSituationReport() {

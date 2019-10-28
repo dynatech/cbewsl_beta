@@ -57,7 +57,6 @@ export default class ModifyFamilyRisk extends Component {
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson)
         if (responseJson.status == true) {
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);
           this.props.navigation.navigate('modify_family_risk_profile');

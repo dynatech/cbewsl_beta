@@ -57,7 +57,6 @@ export default class ModifyResourceAndCapacities extends Component {
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson)
         if (responseJson.status == true) {
           this.props.navigation.navigate('modify_rnc');
           ToastAndroid.show(responseJson.message, ToastAndroid.SHORT);

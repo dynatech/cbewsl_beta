@@ -65,7 +65,6 @@ function getAllFieldSurvey() {
 
         $('#field_survey_logs_table tbody').on('click', '#remove_field_survey', function () {
             let data = table.row($(this).parents('tr')).data();
-            console.log(data)
             deleteFieldSurveyConfirmation(data);
         });
 

@@ -118,7 +118,6 @@ export default class SituationLogs extends Component {
 
             let data_container = Storage.getItem("SituationReportLogs")
             data_container.then(response => {
-              console.log(response)
               if (response != null) {
                 for (const [index, value] of response.entries()) {
                   let format_date_time = this.formatDateTime(date = value.timestamp);
@@ -185,7 +184,6 @@ export default class SituationLogs extends Component {
                   situation_report_id: data.situation_report_id
                 }),
               }).then((response) => response.json()).then((responseJson) => {
-                console.log(responseJson)
                 if (responseJson.status == true) {
                   this.displaySituationReportPerDay()
                   ToastAndroid.show('Delete successfull!', ToastAndroid.SHORT);

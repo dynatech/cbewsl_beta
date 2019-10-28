@@ -24,7 +24,6 @@ function checkSession() {
             // xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
     }).done(function (data) {
-            console.log(data)
         if(data == false){
             window.location.replace("http://cbewsl.com/home");
         }
@@ -113,12 +112,7 @@ function logout() {
                 $("#loadingModal").modal("hide"); 
                 window.location.href = "http://cbewsl.com/home";
             }, 2000);
-        })
-        // fetch('http://192.168.1.10:5000/api/logout').then(function (response) {
-        //     setTimeout(function(){ 
-        //         window.location.href = "http://cbewsl.com/home";
-        //     }, 3000);
-        // });
+        });
     })
 }
 
@@ -267,19 +261,6 @@ function printData(data) {
                 header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         }
-        // if (data.length != 0 || data[0] != undefined) {
-        //     printJS({
-        //         printable: data,
-        //         type: 'json',
-        //         properties: [
-        //             { field: 'title', displayName: 'Summary' },
-        //             { field: 'start', displayName: 'Date' }
-        //         ],
-        //         header: '<h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="105px"></img>'
-        //     });
-        // } else {
-        //     alert("No data.");
-        // }
     }
 
 }

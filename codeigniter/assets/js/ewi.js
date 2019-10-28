@@ -21,9 +21,6 @@ function getCandidateAndLatestAlerts() {
         let releases = json_data.releases;
         let latest_release_moms = json_data.latest_release_moms;
 
-        console.log(json_data);
-        console.log(candidate_alerts);
-
         $("#current_alert_buttons").hide();
         if (json_data.leo.extended.length != 0) {
             has_alert_data = true;
@@ -69,7 +66,6 @@ function displayOverdueAlert(overdue_data, candidate_alerts, has_alert_data, rel
 }
 
 function displayExtendedAlert(extended_data) {
-    console.log(extended_data)
     $("#ewi_current_alert_container").show();
     $("#lower_ewi").hide();
     $("#triggers_column").hide();
@@ -201,7 +197,6 @@ function formatCandidateAlerts(trigger_id) {
     candidate_alerts.done(function (data) {
         let json_data = JSON.parse(data);
         updated_data = JSON.parse(json_data.candidate_alert);
-        console.log("HERE", updated_data)
         $.each(updated_data[0].trigger_list_arr, function (key, value) {
             if (value.invalid != true) {
                 let public_alert_symbol = "Alert " + value.alert_level;
@@ -281,7 +276,6 @@ function onClickReleaseExtended() {
                         },
                         body: JSON.stringify(candidate_alerts[0]),
                     }).then((response) => response.json()).then((responseJson) => {
-                        console.log(responseJson)
                         $("#confirmReleaseModal").modal("hide");
                         let release_data = responseJson;
                         releaseAlert(release_data);
@@ -387,7 +381,6 @@ function onClickReleaseAlert(is_overdue) {
                         },
                         body: JSON.stringify(candidate_alerts[0]),
                     }).then((response) => response.json()).then((responseJson) => {
-                        console.log(responseJson)
                         let release_data = responseJson;
                         alert("Successfully Released!");
                         $("#ewi_send_to_email").show();
@@ -510,7 +503,6 @@ function latestReleaseMoms(latest_moms){
         let op_trigger = value.op_trigger;
         moms_data.push({"trigger_type": "moms", "tech_info": remarks, "ts": observance_ts, "instance_id": instance_id, "op_trigger": op_trigger});
     });
-    console.log("MOMS", moms_data)
     return moms_data
 }
 
@@ -692,19 +684,12 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
         let latest_event_triggers = leo_data.latest_event_triggers;
         let is_moms = false;
         let has_rainfall = false;
-        console.log("all_triggers",all_triggers)
-        console.log("latest_trigger_details",latest_trigger_details)
-        console.log("latest_event_triggers",latest_event_triggers)
-        console.log("all_release_trig",all_releases_triggers)
-        console.log("all_latest_triggers",all_latest_triggers)
-        console.log("latest_release_moms_per_instance",latest_release_moms_per_instance)
         let latest_release_moms_instance = [];
         if(all_latest_triggers.length != 0){
 
             $("#recommended_response").append("<hr><br>");
             
             $.each(all_latest_triggers, function (key, value) {
-                // console.log(value)
                 let ts = value.ts;
                 let latest_timestamp = value.timestamp
                 let internal_sym = value.internal_sym;
@@ -712,7 +697,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                 let tech_info = value.tech_info;
                 let instance_id = value.instance_id;
                 if(trigger_type == "moms"){
-                    // if(is_moms == false){
                         if(latest_release_moms_per_instance.length != 0){
                             is_moms = true;
                             let has_latest = false;
@@ -769,7 +753,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                             }
                             info += as_of + tech_info + "<br><br>";
                         }
-                    // }
                     
                 }else if(trigger_type == "rainfall"){
                     if(has_rainfall == false){
@@ -779,7 +762,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                             $.each(latest_trigger_details, function (key, value) {
                                 if(value.trigger_type == "rainfall"){
                                     has_latest = true
-                                    console.log(value)
                                     let ts_updated = formatDateTime(value.ts_updated);
                                     let timestamp = ts_updated["text_format_timestamp"];
                                     let rain_info = value.tech_info;
@@ -812,7 +794,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                     $.each(latest_trigger_details, function (key, value) {
                         if(value.trigger_type == "rainfall"){
                             has_latest = true
-                            console.log(value)
                             let ts_updated = formatDateTime(value.ts_updated);
                             let timestamp = ts_updated["text_format_timestamp"];
                             let moms_info = value.tech_info;
@@ -847,7 +828,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
             }
         }
         
-        console.log("has_moms_triggers", has_moms_triggers)
         if(has_moms_triggers == true){
             if(latest_release_moms_instance.length != 0){
                 $.each(latest_release_moms_instance, function (key, value) {

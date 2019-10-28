@@ -137,15 +137,6 @@ export default class Summary extends Component {
           this.setState({ moms_summary: moms_data, spinner: false })
         });
 
-        // let moms_data = []
-        //   for (const [index, value] of response[0].moms_data.entries()) {
-        //     moms_data.push(<View style={{ paddingTop: 10, paddingBottom: 10 }}>
-        //       <Text style={{ fontSize: 15 }}>Type of feature: {value.type_of_feature}</Text>
-        //       <Text style={{ fontSize: 15 }}>Description: {value.description}</Text>
-        //       <Text style={{ fontSize: 15 }}>Name of feature: {value.name_of_feature}</Text>
-        //     </View>)
-        //   }
-        //   this.setState({ moms_summary: moms_data })
       });
   }
 

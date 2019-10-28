@@ -66,7 +66,6 @@ export default class ResourcesAndCapacities extends Component {
   }
 
   changeSubView(tab) {
-    console.log(tab)
     if (tab == 'maps') {
       this.setState({ subView: tab })
       this.setState({ buttonMap: rassessment_styles.subActiveButton })

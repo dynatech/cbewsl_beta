@@ -110,7 +110,6 @@ export default class AlertValidation extends Component {
                         <Text style={defaults.buttonText}>Invalid</Text>
                       </TouchableOpacity>)
                   } else {
-                    console.log(element)
                     invalid_flag.push(<Text style={{ paddingTop: '10%', textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>As of {as_of_current_ts["text_format_timestamp"]}</Text>)
                     invalid_flag.push(<Text style={{ color: "#f59823", textAlign: 'center', fontSize: 15, fontWeight: 'bold', width: '100%' }}>Rainfall Alert: {element.tech_info}</Text>)
                     disable_invalid.push(

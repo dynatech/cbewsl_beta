@@ -258,7 +258,6 @@ export default class MonitoringLogs extends Component {
 
         let cred = Storage.getItem("loginCredentials");
         cred.then(cred_response => {
-          console.log(cred_response)
           let trigger_list = {
             alert_level: alert_level,
             alert_validity: alert_validity.toString(),
@@ -289,7 +288,6 @@ export default class MonitoringLogs extends Component {
           // let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
         })
       } else {
-        console.log(response)
         let hour_validity = 0
         if (alert_level == "2") {
           int_sym = "m2"
@@ -352,51 +350,17 @@ export default class MonitoringLogs extends Component {
             }).then((responseJson) => {
                 alert("Successfuly raise MOMs.");
             });
-          // .then((response) => {
-          //   console.log("HERE")
-          //   console.log(response)
-          //     let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms';
-          //     fetch(url, {
-          //         method: 'POST',
-          //         dataType: 'jsonp',
-          //         headers: {
-          //             Accept: 'application/json',
-          //             'Content-Type': 'application/json',
-          //         },
-          //         body: JSON.stringify(trigger_list),
-          //     }).then((responseJson) => {
-          //         console.log(responseJson)
-          //         // $("#raise_moms_modal").modal("hide");
-          //         // publicAlert(response);
-          //         // $("#confirm_release_ewi").trigger("click");
-          //         // $("#confirm_send_ewi").trigger("click");
-          //         alert("Successfuly raise MOMs.");
-          //     });
-          // })
-          // temp.trig_list.push(trig_list)
-          // let raised_alerts = Storage.setItem("Pub&CandidAlert", temp);
         })
-        // response.alert_level = alert_level
-        // console.log("HOW")
-        // console.log(response.trigger_list_arr)
-        // response.trigger_list_arr.push(trig_list)
-        // let raised_alerts = Storage.setItem("Pub&CandidAlert", response);
       }
-      // Notification.formatCandidateAlerts(response)
     })
   }
 
 
     async isOnSet(moms_alert_level) {
     let candidate_alerts = this.updateEwiData();
-    console.log("here")
     candidate_alerts.then((json_data)=> {
-      console.log(json_data)
       const { leo: { overdue, latest } } = json_data;
       const merged_arr = [...latest, ...overdue];
-      console.log("----")
-      console.log(leo)
-      console.log(merged_arr)
       let public_alert_level = 0;
       if (merged_arr.length !== 0) {
         const [current_alert] = merged_arr;
@@ -404,11 +368,9 @@ export default class MonitoringLogs extends Component {
         public_alert_level = alert_level;
       }
       if (moms_alert_level > public_alert_level) {
-        console.log("T")
         return true;
       }
       else {
-        console.log("F")
         return false;
       }
     })
@@ -476,7 +438,6 @@ export default class MonitoringLogs extends Component {
             let data_container = Storage.getItem('SurficialDataMomsSummary')
             let monitoring_logs_data = [];
             data_container.then(response => {
-              console.log(response)
               let counter = 0
               if (response.length != 0) {
                 for (const [index, value] of response.entries()) {

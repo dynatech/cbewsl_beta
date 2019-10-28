@@ -9,7 +9,6 @@ function initializeLogin() {
             // xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
     }).done(function (data) {
-            console.log(data)
         if(data == true){
             window.location.replace("http://cbewsl.com/dashboard");
         }
@@ -41,9 +40,8 @@ function validateCredentials(username, password) {
     }).done(function (data) {
         let credentials = JSON.parse(data)
         if (credentials.status == true) {
-            $("#submit_spinner").hide();
-            $("#submit").show();
-            console.log(credentials)
+            $("#submit_spinner").show();
+            $("#submit").hide();
             let session = {
                 role: credentials.role,
                 user_id: credentials.user_data.account_id,

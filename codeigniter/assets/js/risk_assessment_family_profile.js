@@ -32,7 +32,6 @@ function getAllFamilyRiskProfile() {
                 { "data": "vulnerability_nature" },
                 {
                     render(data, type, full) {
-                        // ${full.resources_and_capacities_id}
                         return `<a href="#family_risk_profile" id="edit_family_risk"><i class="fas fa-pencil-alt text-center"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#family_risk_profile" id="remove_family_risk"><i class="fas fa-minus-circle text-center"></i></a>`;
                     }
                 }
@@ -141,7 +140,6 @@ function saveFamilyRisk() {
             vulnerable_members_count: vulnerable_members_count_field,
             vulnerability_nature: vulnerability_nature_field
         }
-        console.log(data)
         if(members_count_field != "" && vulnerable_members_count_field != "" && vulnerability_nature_field != ""){
             $.post(url, data).done(function (response) {
                 $("#add_family_risk_spinner").hide();
