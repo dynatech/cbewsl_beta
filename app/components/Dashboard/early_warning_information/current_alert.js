@@ -44,6 +44,7 @@ export default class CurrentAlert extends Component {
       let latest = response.leo.latest
       let extended = response.leo.extended
       let overdue = response.leo.overdue
+      let routine = response.leo.routine
       let releases = response.releases
       let latest_release_moms = response.latest_release_moms;
       let alert_details = []
@@ -120,7 +121,30 @@ export default class CurrentAlert extends Component {
         
       }
 
-      if (latest.length == 0 || extended.length == 0 || overdue.length == 0) {
+      if (routine.length > 0) {
+        console.log("MAY ROUTINE", routine)
+        console.log("CNAROU ", candidate_alert)
+        console.log("releases ", releases)
+        console.log("latest_release_moms ", latest_release_moms)
+        let event_details = this.formatEwiDetails(candidate_alert, routine[0], true, releases, latest_release_moms);
+        console.log("event_details", event_details)
+        view.push(event_details)
+        let current_alert_level = routine[0].public_alert_symbol.alert_level;
+        if(current_alert_level != 0){
+          release_button.push(<View style={{ textAlign: 'center', flex: 0.5 }}>
+            <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+              <TouchableOpacity style={defaults.button} onPress={() => { this.releaseAlertConfirmation(candidate_alert[0]) }}>
+                <Text style={defaults.buttonText}>Release</Text>
+              </TouchableOpacity>
+              <TouchableOpacity disabled={true} style={defaults.button} onPress={() => { EwiTemplate.EWI_SMS(routine[0].internal_alert_level, routine[0].releases[0].data_ts) }}>
+                <Text style={defaults.buttonText}>Send EWI</Text>
+              </TouchableOpacity>
+            </View>
+          </View>);
+          this.setState({ release_button: release_button })
+        }
+
+      if (latest.length == 0 || extended.length == 0 || overdue.length == 0 || routine.length == 0) {
         release_button.push(<Text style={{ paddingTop: '20%', fontSize: 20, fontWeight: 'bold', width: '100%', textAlign: 'center' }}>No current alert</Text>);
         this.setState({ release_button: release_button })
       }
@@ -880,7 +904,7 @@ export default class CurrentAlert extends Component {
       ]
     }
 
-    let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
+    let url = 'http://192.168.1.9:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
     fetch(url, {
         method: 'POST',
         dataType: 'jsonp',
