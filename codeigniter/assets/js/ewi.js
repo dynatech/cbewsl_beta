@@ -25,6 +25,7 @@ function getCandidateAndLatestAlerts() {
                 xhr.overrideMimeType("text/plain; charset=x-user-defined");
             }
         }).done(function (data) {
+            console.log("candidate data", data);
             let json_data = JSON.parse(data);
             let has_alert_data = false;
             let candidate_alerts = JSON.parse(json_data.candidate_alert);
@@ -79,6 +80,7 @@ function displayOverdueAlert(overdue_data, candidate_alerts, has_alert_data, jso
 }
 
 function displayRoutine(overdue_data, candidate_alerts, has_alert_data, json_data) {
+    console.log("displaying routine")
     let overdue = overdue_data[0];
     formatEwiDetails(candidate_alerts, overdue, has_alert_data, true, json_data);
 }
