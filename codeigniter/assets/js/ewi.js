@@ -9,51 +9,61 @@ function getCandidateAndLatestAlerts() {
     $("#ewi_for_lowering").hide();
     $("#ewi_lowering_details").hide();
     $("#extended_column").hide();
+
+    // FIX ON SERVER ADD THIS SHIT
     $.ajax({
-        url: "http://192.168.1.10:5000/api/monitoring/get_candidate_and_current_alerts",
+        url: "http://192.168.1.9:5000/api/monitoring/update_alert_gen",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
-    }).done(function (data) {
-        let json_data = JSON.parse(data);
-        let has_alert_data = false;
-        let candidate_alerts = JSON.parse(json_data.candidate_alert);
-        let releases = json_data.releases;
-        let latest_event_moms = json_data.latest_event_moms;
-        let latest_released_moms = json_data.latest_released_moms;
+    }).done(alert_gen_data => {
+    // }).done(() => {
+        console.log("alertgen_data", alert_gen_data);
+        $.ajax({
+            url: "http://192.168.1.9:5000/api/monitoring/get_candidate_and_current_alerts",
+            beforeSend: function (xhr) {
+                xhr.overrideMimeType("text/plain; charset=x-user-defined");
+            }
+        }).done(function (data) {
+            let json_data = JSON.parse(data);
+            let has_alert_data = false;
+            let candidate_alerts = JSON.parse(json_data.candidate_alert);
+            let releases = json_data.releases;
+            let latest_event_moms = json_data.latest_event_moms;
+            let latest_released_moms = json_data.latest_released_moms;
+    
+            $("#current_alert_buttons").hide();
+            if (json_data.leo.extended.length != 0) {
+                has_alert_data = true;
+                displayExtendedAlert(json_data.leo.extended);
+                $("#ewi_no_current_alert").hide();
+            }
+    
+            if (has_alert_data == false) {
+                $("#ewi_no_current_alert").show();
+            } else {
+                $("#ewi_no_current_alert").hide();
+            }
+    
+            if (json_data.leo.latest.length != 0) {
+                displayLatestAlert(json_data.leo.latest, candidate_alerts, true, json_data);
+            }
+    
+            if (json_data.leo.overdue.length != 0) {
+                displayOverdueAlert(json_data.leo.overdue, candidate_alerts, true, json_data);
+            }
 
-        console.log("json_data", json_data);
-
-        $("#current_alert_buttons").hide();
-        if (json_data.leo.extended.length != 0) {
-            has_alert_data = true;
-            displayExtendedAlert(json_data.leo.extended);
-            $("#ewi_no_current_alert").hide();
-        }
-
-        if (has_alert_data == false) {
-            $("#ewi_no_current_alert").show();
-        } else {
-            $("#ewi_no_current_alert").hide();
-        }
-
-        if (json_data.leo.latest.length != 0) {
-            displayLatestAlert(json_data.leo.latest, candidate_alerts, true, json_data);
-        }
-
-        if (json_data.leo.overdue.length != 0) {
-            displayOverdueAlert(json_data.leo.overdue, candidate_alerts, true, json_data);
-        }
-
-        if (candidate_alerts.length != 0) {
-            $("#no_candidate_alert").hide();
-            displayCandidateAlert(candidate_alerts);
-        } else {
-            $("#no_candidate_alert").show();
-        }
-
-
-
+            if (json_data.leo.routine.length > 0) {
+                displayRoutine(json_data.leo.routine, candidate_alerts, true, json_data)
+            }
+    
+            if (candidate_alerts.length != 0) {
+                $("#no_candidate_alert").hide();
+                displayCandidateAlert(candidate_alerts);
+            } else {
+                $("#no_candidate_alert").show();
+            }
+        });
     });
 }
 
@@ -64,6 +74,11 @@ function displayLatestAlert(latest_data, candidate_alerts, has_alert_data, json_
 }
 
 function displayOverdueAlert(overdue_data, candidate_alerts, has_alert_data, json_data) {
+    let overdue = overdue_data[0];
+    formatEwiDetails(candidate_alerts, overdue, has_alert_data, true, json_data);
+}
+
+function displayRoutine(overdue_data, candidate_alerts, has_alert_data, json_data) {
     let overdue = overdue_data[0];
     formatEwiDetails(candidate_alerts, overdue, has_alert_data, true, json_data);
 }
@@ -87,9 +102,13 @@ function displayExtendedAlert(extended_data) {
 
 }
 
+function updateAlertGen () {
+    return fetch("http://192.168.1.9:5000/api/monitoring/update_alert_gen");
+}
+
 function updateEwiData() {
     return $.ajax({
-        url: "http://192.168.1.10:5000/api/monitoring/get_candidate_and_current_alerts",
+        url: "http://192.168.1.9:5000/api/monitoring/get_candidate_and_current_alerts",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -156,7 +175,7 @@ function alertValidation(trigger_id, valid, user_id, candidate_alerts, alert_dat
     $("#save_alert_validation").unbind();
     $("#save_alert_validation").click(function () {
 
-        let url = "http://192.168.1.10:5000/api/monitoring/update_alert_status"
+        let url = "http://192.168.1.9:5000/api/monitoring/update_alert_status"
         let remarks = $("#alert_remarks").val();
 
         fetch(url, {
@@ -224,7 +243,7 @@ function formatCandidateAlerts(trigger_id) {
 
         $("#confirm_release_alert").unbind();
         $("#confirm_release_alert").click(function () {
-            let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+            let url = 'http://192.168.1.9:5000/api/monitoring/format_candidate_alerts_for_insert'
             fetch(url, {
                 method: 'POST',
                 dataType: 'jsonp',
@@ -270,7 +289,7 @@ function onClickReleaseExtended() {
 
             if (candidate_alerts.length != 0) {
                 if (leo.extended.length != 0) {
-                    let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert'
+                    let url = 'http://192.168.1.9:5000/api/monitoring/format_candidate_alerts_for_insert'
                     fetch(url, {
                         method: 'POST',
                         dataType: 'jsonp',
@@ -299,7 +318,7 @@ function onClickReleaseExtended() {
 }
 
 function releaseAlert(release_data, is_moms = false) {
-    let url = 'http://192.168.1.10:5000/api/monitoring/insert_ewi';
+    let url = 'http://192.168.1.9:5000/api/monitoring/insert_ewi';
     fetch(url, {
         method: 'POST',
         dataType: 'jsonp',
@@ -314,7 +333,7 @@ function releaseAlert(release_data, is_moms = false) {
 }
 
 function publicAlert(is_onset = false) {
-    let url = 'http://192.168.1.10:5000/api/monitoring/update_alert_gen/' + is_onset;
+    let url = 'http://192.168.1.9:5000/api/monitoring/update_alert_gen/' + is_onset;
     fetch(url).then((response) => response.json())
         .then((responseJson) => {
             getCandidateAndLatestAlerts();
@@ -375,7 +394,7 @@ function onClickReleaseAlert(is_overdue) {
                 $("#confirm_release_ewi_modal").show();
                 candidate_alerts[0].is_overdue = is_overdue;
                 if (leo.latest.length != 0 || leo.overdue.length != 0) {
-                    let url = 'http://192.168.1.10:5000/api/monitoring/format_candidate_alerts_for_insert';
+                    let url = 'http://192.168.1.9:5000/api/monitoring/format_candidate_alerts_for_insert';
                     fetch(url, {
                         method: 'POST',
                         dataType: 'jsonp',
@@ -532,18 +551,15 @@ function returnFormattedMomsDetails (released_moms, triggers, critical_instance_
     const str_validator = `${reporter.first_name} ${reporter.last_name}`;
     const instance_name = `(${f_type.toUpperCase()}) ${feature_name}`; 
 
-    console.log("critical_instance_ids".toUpperCase(), critical_instance_ids);
     let color_code = critical_instance_ids.includes(instance_id) ? 3 : 2;
     // override if m0
     let retrigger_status = is_triggering ? `Retriggered at ${str_obs_ts}` : `No retrigger as of ${str_obs_ts}`;
-    console.log("op_trigger", op_trigger);
+
     if (op_trigger === 0) {
         color_code = 0;
         retrigger_status = `Resolved as of ${str_obs_ts}`;
     }
 
-    console.log("critical_instance_ids", critical_instance_ids);
-    console.log("color_code", color_code);
     const temp2 = identifyOPTriggerDisplay(color_code, "html");
     let summary = `${str_reporter}: ${narrative} ${temp2}`
     summary = `${summary} ${retrigger_status}`;
@@ -637,15 +653,12 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                     $.each(moms_list, function (key, value) {
                         instance_id = value.moms_instance.instance_id;
                     });
-                    console.log("candidate_alerts", candidate_alerts);
-                    console.log("value", value);
                     if (candidate_alerts[0].release_details.data_ts == value.ts_updated) {
                         if (trigger_type == "rainfall") {
                             if (invalid != true) {
                                 latest_data_information += "<b>Rainfall: </b> " + tech_info + "<br>";
                             }
                         } else if (trigger_type == "moms") {
-                            console.log("value", value);
                             // latest_data_information += "<b>Manifestations of movement: </b> " + tech_info + "<br>";
 
                             let moms_trigger = "<b>Manifestations of movement: </b> " + tech_info + "<br>";
@@ -664,8 +677,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                 moms_detail = `${moms_detail} <li>${summary}</li>`;
                             })
                             moms_detail = `${moms_detail} </ul>`;
-
-                            console.log("latest_data_information", latest_data_information);
 
                             latest_data_information += `${moms_trigger}${moms_detail}`;
                         } else if (trigger_type == "earthquake") {
@@ -698,8 +709,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                                 moms_detail = `${moms_detail} <li>${summary}</li>`;
                             })
                             moms_detail = `${moms_detail} </ul>`;
-
-                            console.log("latest_data_information", latest_data_information);
 
                             latest_data_information += `${moms_trigger}${moms_detail}`;
                         } else {
@@ -753,8 +762,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
 
 
             let release_triggers = value.triggers;
-            console.log("value", value);
-            console.log("release_triggers", release_triggers);
             $.each(release_triggers, function (key, value) {
                 let internal_symbol = value.internal_sym.alert_symbol;
                 let ts = formatDateTime(value.ts)
@@ -804,8 +811,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
         //////////////////////////
 
         $("#recommended_response").append("<hr><br>");
-        console.log("all_latest_triggers", all_latest_triggers);
-        console.log("latest_event_triggers", latest_event_triggers);
 
         all_latest_triggers.forEach(value => {
         // latest_event_triggers.forEach(value => {
@@ -930,9 +935,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                 has_rainfall = false
             }
         }
-        // LOUIE: Is moms shit
-        console.log("latest_event_moms", latest_event_moms)
-        console.log("latest_release_moms_per_instance", latest_release_moms_per_instance)
         if (is_moms == false) {
             if (latest_release_moms_per_instance.length != 0) {
                 has_moms_triggers = true
@@ -940,8 +942,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
                 $.each(latest_release_moms_per_instance, function (key, value) {
                     if (value.trigger_type == "moms") {
                         let ts_updated = formatDateTime(value.ts);
-                        let timestamp = ts_updated.text_format_timestamp
-                        console.log("value", value);
+                        let timestamp = ts_updated.text_format_timestamp;
                         let moms_info = value.tech_info;
                         if (value.op_trigger == 2) {
                             as_of = "<b>Last moms retrigger</b> at " + "<b>" + timestamp + "</b> <b style='color:#ee9d01;'>(SIGNIFICANT)</b><br>";
@@ -1066,10 +1067,6 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
         let moms_trigger = `<b>Manifestations of movement: </b><br />`;
         let moms_detail = "<ul style='list-style-type: none;'>";
 
-        console.log("latest_release_moms_per_instance", latest_release_moms_per_instance);
-        console.log("critical_instance_ids", critical_instance_ids);
-        console.log("latest_event_moms", latest_event_moms);
-
         // all_latest_triggers
 
         latest_released_moms.forEach(moms => {
@@ -1101,7 +1098,7 @@ function formatEwiDetails(candidate_alerts, leo_data, has_alert_data, is_overdue
 }
 
 function getLatestMomsPerInstance(instance_ids) {
-    let url = "http://192.168.1.10:5000/api/manifestations_of_movement/get_latest_site_moms_alerts"
+    let url = "http://192.168.1.9:5000/api/manifestations_of_movement/get_latest_site_moms_alerts"
     fetch(url, {
         method: 'POST',
         dataType: 'jsonp',
@@ -1146,7 +1143,7 @@ function sendEwiToEmail() {
         $("#confirm_send_ewi").hide();
         let email = $("#email_for_ewi").val();
         let html = $("#report_to_email").html();
-        let url = "http://192.168.1.10:5000/api/ewi/send_ewi_via_email";
+        let url = "http://192.168.1.9:5000/api/ewi/send_ewi_via_email";
         let data = {
             email: email,
             html: html
