@@ -14,7 +14,7 @@
     "link": "^0.1.5",
     "lz-string": "^1.4.4",
     "lzutf8": "^0.5.5",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "native-base": "^2.12.2",
     "react": "16.8.6",
     "react-native": "0.60.0",
