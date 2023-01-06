@@ -15,7 +15,7 @@ $(document).ready(function () {
 });
 
 function initializeMomsFeatures(){
-    let url = 'http://192.168.1.10:5000/api/moms/get_moms_features';
+    let url = 'http://192.168.1.101:5000/api/moms/get_moms_features';
     fetch(url).then((response) => response.json())
         .then((responseJson) => {
             let moms_features = responseJson;
@@ -31,7 +31,7 @@ function initializeSurficialData() {
     $('#surficial-data-tab').on('click', function () {
         initializeMonitoringLogs();
         $(".surficial-measuremnt-container h5").text("Change");
-        fetch('http://192.168.1.10:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
+        fetch('http://192.168.1.101:5000/api/surficial_data/get_surficial_data').then((response) => response.json())
             .then((responseJson) => {
                 let surficial_summary = responseJson;
                 let graph_plot_data = [];
@@ -140,7 +140,7 @@ function initializeCurrentMeasurement() {
     $("#current_measurement_tab").on('click', function () {
         $('.measurement-header').empty();
         $('.measurements').empty();
-        fetch('http://192.168.1.10:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
+        fetch('http://192.168.1.101:5000/api/surficial_data/get_current_measurement').then((response) => response.json())
             .then((responseJson) => {
                 let formmated_timestamp = formatDateTime(date = responseJson.current_measurement_date)
                 let crack_sets = []
@@ -223,7 +223,7 @@ function initializeMonitoringLogs() {
     "</tr>"+
     "</tfoot>");
     let formatted_data = []
-    fetch('http://192.168.1.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
+    fetch('http://192.168.1.101:5000/api/surficial_data/get_moms_data').then((response) => response.json())
         .then((responseJson) => {
             responseJson.forEach(function (value) {
                 let entry = {
@@ -326,7 +326,7 @@ function deleteMonitoringLogsConfirmation(data) {
 }
 
 function deleteMonitoringLogs(moms_id) {
-    let url = "http://192.168.1.10:5000/api/moms_data/delete_moms_data";
+    let url = "http://192.168.1.101:5000/api/moms_data/delete_moms_data";
     let data = {
         "moms_id": moms_id
     }
@@ -347,7 +347,7 @@ function deleteMonitoringLogs(moms_id) {
 
 function initializeCRUDMonitoringLogs() {
     $('#add_monitoring_logs').on('click', function () {
-        let url = "http://192.168.1.10:5000/api/surficial_data/save_monitoring_log";
+        let url = "http://192.168.1.101:5000/api/surficial_data/save_monitoring_log";
         let date_picker = $("#moms_date_time").val();
         let formatted_datetime = moment(date_picker).format('YYYY-MM-DD H:mm:ss')
         let type_of_feature_field = $("#moms_t_feature").val();
@@ -447,7 +447,7 @@ function uploadMomsData(moms_id) {
                 form_data.append("files[]", document.getElementById('moms_image').files[x]);
             }
             $.ajax({
-                url: "http://cbewsl.com/dashboard/uploadMomsImages/" + moms_id,
+                url: "http://192.168.1.101/dashboard/uploadMomsImages/" + moms_id,
                 method: "POST",
                 data: form_data,
                 contentType: false,
@@ -485,7 +485,7 @@ function displayMomsImages(data) {
     $("#moms_details").append("<b>Description:</b>" + data.description + "<br>");
 
     $.ajax({
-        url: "http://cbewsl.com/dashboard/get_moms_files/" + moms_id,
+        url: "http://192.168.1.101/dashboard/get_moms_files/" + moms_id,
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
             $("#moms_image_container").append("<b>Loading images. . . .  Please wait</b>");
@@ -497,7 +497,7 @@ function displayMomsImages(data) {
             let files = data.files;
             $.each(files, function (key, value) {
                 let file_name = value;
-                let file_source = "http://cbewsl.com/uploads/moms/" + moms_id + "/" + file_name;
+                let file_source = "http://192.168.1.101/uploads/moms/" + moms_id + "/" + file_name;
                 $("#moms_image_container").append("<a href='" + file_source + "' target='_blank'><img src='" + file_source + "' alt='" + file_name + "' class='img-thumbnail' height='200px' width='200px'></a>");
             });
 
@@ -676,7 +676,7 @@ function displayRaiseMomsModal(data) {
                     observance_ts: formatted_datetime
                 }
 
-                let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
+                let url = 'http://192.168.1.101:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
                 isOnSet(alert_level)
                     .then((response) => {
                         fetch(url, {
@@ -718,7 +718,7 @@ function isBlank(str) {
 }
 
 function updateObservanceTs(moms_data){
-    let url = "http://192.168.1.10:5000/api/surficial_data/save_monitoring_log";
+    let url = "http://192.168.1.101:5000/api/surficial_data/save_monitoring_log";
     $.post(url, moms_data).done(function (response) {
         console.log("Updated observance timestamp");
     });

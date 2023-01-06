@@ -19,13 +19,13 @@ $(document).ready(function () {
 
 function checkSession() {
     $.ajax({
-        url: "http://192.168.1.10:5000/api/check_session",
+        url: "http://192.168.1.101:5000/api/check_session",
         beforeSend: function (xhr) {
             // xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
     }).done(function (data) {
         if(data == false){
-            window.location.replace("http://cbewsl.com/home");
+            window.location.replace("http://192.168.1.101/home");
         }
     })
 }
@@ -103,14 +103,14 @@ function logout() {
     $("#logout").on("click", function () {
         $("#loadingModal").modal("show");
         $.ajax({
-            url: "http://192.168.1.10:5000/api/logout",
+            url: "http://192.168.1.101:5000/api/logout",
             beforeSend: function (xhr) {
                 // xhr.overrideMimeType("text/plain; charset=x-user-defined");
             }
         }).done(function () {
             setTimeout(function(){
                 $("#loadingModal").modal("hide"); 
-                window.location.href = "http://cbewsl.com/home";
+                window.location.href = "http://192.168.1.101/home";
             }, 2000);
         });
     })
@@ -127,7 +127,7 @@ function printData(data) {
                     { field: 'entry', displayName: 'Entry' },
                     { field: 'timestamp', displayName: 'Timestamp' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Risk Profile</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Risk Profile</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -142,7 +142,7 @@ function printData(data) {
                     { field: 'vulnerable_members_count', displayName: 'Number of Vulnerable' },
                     { field: 'vulnerability_nature', displayName: 'Nature of Vulnerability' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Family Risk Profile</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Family Risk Profile</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -160,7 +160,7 @@ function printData(data) {
                     { field: 'note', displayName: 'Note' },
                     { field: 'date', displayName: 'Date' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Field Survey Logs</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Field Survey Logs</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -176,7 +176,7 @@ function printData(data) {
                     { field: 'early_warning', displayName: 'Early Warning' },
                     { field: 'impact', displayName: 'Impact' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Hazard Data</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Hazard Data</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -191,7 +191,7 @@ function printData(data) {
                     { field: 'status', displayName: 'Status' },
                     { field: 'owner', displayName: 'Owner' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Resources and Capacities</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Resources and Capacities</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -207,7 +207,7 @@ function printData(data) {
                     { field: 'rain_gauge_status', displayName: 'Rain Gauge Status' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Maintenance Log</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Maintenance Log</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -221,7 +221,7 @@ function printData(data) {
                     { field: 'title', displayName: 'Summary' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Situation Report</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Situation Report</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -240,7 +240,7 @@ function printData(data) {
                     { field: 'note', displayName: 'Note' },
                     { field: 'date', displayName: 'Date' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Latest Field Survey Log</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Latest Field Survey Log</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -258,7 +258,7 @@ function printData(data) {
                     { field: 'title', displayName: 'Summary' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Current Situation Report</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         }
     }

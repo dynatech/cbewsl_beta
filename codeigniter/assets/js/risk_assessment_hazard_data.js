@@ -8,7 +8,7 @@ $(document).ready(function () {
 
 function getAllHazardData() {
     $.ajax({
-        url: "http://192.168.1.10:5000/api/hazard_data/get_all_hazard_data",
+        url: "http://192.168.1.101:5000/api/hazard_data/get_all_hazard_data",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -56,7 +56,7 @@ function getAllHazardData() {
 
 function getAllHazardMapData() {
     $.ajax({
-        url: "http://192.168.1.10:5000/api/hazard_data/get_all_hazard_map_data",
+        url: "http://192.168.1.101:5000/api/hazard_data/get_all_hazard_map_data",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -64,7 +64,7 @@ function getAllHazardMapData() {
         let response_data = JSON.parse(data);
         if (response_data[0].path) {
             $("#latest_hazard_map_preview").empty();
-            $("#latest_hazard_map_preview").append('<img src="http://cbewsl.com' + response_data[0].path + '" class="img-fluid" alt="Latest hazard map" style="width: 100 % ">');
+            $("#latest_hazard_map_preview").append('<img src="http://192.168.1.101' + response_data[0].path + '" class="img-fluid" alt="Latest hazard map" style="width: 100 % ">');
         }
         hazard_map_data = []
         $.each(response_data, function (key, value) {
@@ -72,7 +72,7 @@ function getAllHazardMapData() {
             hazard_map_data.push({
                 "date_time": formatted_datetime["text_format_timestamp"],
                 "file_name": "hazard_map_" + value.hazard_map_id,
-                "link": "http://cbewsl.com" + value.path
+                "link": "http://192.168.1.101" + value.path
             });
         });
         let table = $('#hazard_map_table').DataTable({
@@ -115,7 +115,7 @@ function saveHazardData() {
     $("#add_hazard_data").click(function () {
         $("#add_hazard_data_spinner").show();
         $("#add_hazard_data").hide();
-        let url = "http://192.168.1.10:5000/api/hazard_data/save_hazard_data";
+        let url = "http://192.168.1.101:5000/api/hazard_data/save_hazard_data";
         let hazard_data_id_field = $("#hazard_data_id").val();
         let hazard_field = $("#hazard").val();
         let speed_of_onset_field = $("#speed_of_onset").val();
@@ -164,7 +164,7 @@ function deleteHazardDataConfirmation(data) {
 }
 
 function deleteHazardData(hazard_data_id) {
-    let url = "http://192.168.1.10:5000/api/hazard_data/delete_hazard_data";
+    let url = "http://192.168.1.101:5000/api/hazard_data/delete_hazard_data";
     let data = {
         "hazard_data_id": hazard_data_id
     }
@@ -247,7 +247,7 @@ function uploadHazardMap() {
                 form_data.append("files[]", document.getElementById('image_file').files[x]);
             }
             $.ajax({
-                url: "http://cbewsl.com/dashboard/uploadHazardMap",
+                url: "http://192.168.1.101/dashboard/uploadHazardMap",
                 method: "POST",
                 data: form_data,
                 contentType: false,

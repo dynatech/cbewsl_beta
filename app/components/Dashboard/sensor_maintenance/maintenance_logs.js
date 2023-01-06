@@ -83,7 +83,7 @@ export default class MaintenanceLogs extends Component {
 
     Sync.clientToServer("SensorMaintenanceLogs").then(() => {
       setTimeout(() => {
-        fetch('http://192.168.1.10:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
+        fetch('http://192.168.1.101:5000/api/sensor_maintenance/get_all_sensor_maintenance').then((response) => response.json())
           .then((responseJson) => {
             let to_local_data = [];
             for (const [index, value] of responseJson.entries()) {
@@ -157,7 +157,7 @@ export default class MaintenanceLogs extends Component {
       let selected_date = this.formatDateTime(date = date)
       button_text = "Add Report for " + selected_date["text_format_timestamp"]
       this.setState({ add_report_text: button_text })
-      fetch('http://192.168.1.10:5000/api/sensor_maintenance/get_report_by_date', {
+      fetch('http://192.168.1.101:5000/api/sensor_maintenance/get_report_by_date', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

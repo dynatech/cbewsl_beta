@@ -4,13 +4,13 @@ $(document).ready(function () {
 
 function initializeLogin() {
     $.ajax({
-        url: "http://192.168.1.10:5000/api/check_session",
+        url: "http://192.168.1.101:5000/api/check_session",
         beforeSend: function (xhr) {
             // xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
     }).done(function (data) {
         if(data == true){
-            window.location.replace("http://cbewsl.com/dashboard");
+            window.location.replace("http://192.168.1.101/dashboard");
         }
     })
     $('#login-form #submit').on('click', function () {
@@ -28,7 +28,7 @@ function validateCredentials(username, password) {
     $("#submit_spinner").show();
     $("#submit").hide();
     $.ajax({
-        url: "http://192.168.1.10:5000/api/login/validate_credentials",
+        url: "http://192.168.1.101:5000/api/login/validate_credentials",
         type: "POST",
         data: {
             "username": username,
@@ -49,7 +49,7 @@ function validateCredentials(username, password) {
                 last_name: credentials.user_data.username,
             }
             setTimeout(function(){ 
-                window.location.href = "http://cbewsl.com/dashboard";
+                window.location.href = "http://192.168.1.101/dashboard";
             }, 2000);
         } else {
             $("#submit_spinner").hide();

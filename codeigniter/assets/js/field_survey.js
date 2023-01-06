@@ -6,7 +6,7 @@ $(document).ready(function () {
 
 function getAllFieldSurvey() {
     $.ajax({
-        url: "http://192.168.1.10:5000/api/field_survey/get_all_field_survey",
+        url: "http://192.168.1.101:5000/api/field_survey/get_all_field_survey",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -80,7 +80,7 @@ function deleteFieldSurveyConfirmation(data) {
 }
 
 function deleteFieldSurvey(field_survey_id) {
-    let url = "http://192.168.1.10:5000/api/field_survey/delete_field_survey";
+    let url = "http://192.168.1.101:5000/api/field_survey/delete_field_survey";
     let data = {
         "field_survey_id": field_survey_id
     }
@@ -145,7 +145,7 @@ function generateFieldSurveyPDF(data, date) {
                     { field: 'note', displayName: 'Note' },
                     { field: 'date', displayName: 'Date' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Latest Field Survey Log</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Latest Field Survey Log</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         } else {
             alert("No data.");
@@ -168,7 +168,7 @@ function sendFieldSurveyViaEmail(date) {
     $("#confirm_send_field_survey").click(function () {
         $("#send_field_survey_spinner").show();
         $("#confirm_send_field_survey").hide();
-        let url = "http://192.168.1.10:5000/api/field_survey/send_email";
+        let url = "http://192.168.1.101:5000/api/field_survey/send_email";
         let data = {
             date: date,
             email: $("#email_for_field_survey").val(),
@@ -204,7 +204,7 @@ function fieldSurveyButtonAction() {
     $("#add_field_survey").click(function () {
         $("#add_field_survey_spinner").show();
         $("#add_field_survey").hide();
-        let url = "http://192.168.1.10:5000/api/field_survey/save_field_survey";
+        let url = "http://192.168.1.101:5000/api/field_survey/save_field_survey";
         let features_field = $("#features").val();
         let mat_characterization_field = $("#mat_characterization").val();
         let mechanism_field = $("#mechanism").val();

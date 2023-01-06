@@ -61,7 +61,7 @@ export default class SaveHazardData extends Component {
             early_warning,
             impact } = this.state
         if (hazard != "" && speed_of_onset != "" && early_warning != "" && impact != "") {
-            fetch('http://192.168.1.10:5000/api/hazard_data/save_hazard_data', {
+            fetch('http://192.168.1.101:5000/api/hazard_data/save_hazard_data', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

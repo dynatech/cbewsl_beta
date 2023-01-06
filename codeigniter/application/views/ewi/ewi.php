@@ -9,8 +9,8 @@
         <div class="card">
             <div class="card-body">
                 <div id="ewi_current_alert_container">
-                <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
-                    <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"/>
+                <img src="http://192.168.1.101/assets/images/letter_header1.png" style="width: 100%"/>
+                    <img src="http://192.168.1.101/assets/images/banner_new.png" style="width: 100%"/>
                     <div id="report_to_email">
                         <div class="row">
                             <div class="col text-center" style="color: #ee9d01;">
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/> -->
+                    <!-- <img src="http://192.168.1.101/assets/images/letter_footer1.png" style="width: 100%"/> -->
                     <div class="row" id="release_alert_button">
                         <div class="col text-center">
                         </div>

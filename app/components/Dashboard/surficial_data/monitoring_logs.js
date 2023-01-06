@@ -135,7 +135,7 @@ export default class MonitoringLogs extends Component {
   }
 
   removeLog(id) {
-    fetch('http://192.168.1.10:5000/api/moms_data/delete_moms_data', {
+    fetch('http://192.168.1.101:5000/api/moms_data/delete_moms_data', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -272,7 +272,7 @@ export default class MonitoringLogs extends Component {
                 }
             ]
         }
-          let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
+          let url = 'http://192.168.1.101:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
           fetch(url, {
               method: 'POST',
               dataType: 'jsonp',
@@ -338,7 +338,7 @@ export default class MonitoringLogs extends Component {
             ]
         } 
 
-          let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms';
+          let url = 'http://192.168.1.101:5000/api/monitoring/insert_cbewsl_moms';
             fetch(url, {
                 method: 'POST',
                 dataType: 'jsonp',
@@ -377,7 +377,7 @@ export default class MonitoringLogs extends Component {
 }
 
  async updateEwiData() {
-  const response = await fetch('http://192.168.1.10:5000/api/monitoring/get_candidate_and_current_alerts');
+  const response = await fetch('http://192.168.1.101:5000/api/monitoring/get_candidate_and_current_alerts');
    return await response.json();
 }
 
@@ -390,7 +390,7 @@ export default class MonitoringLogs extends Component {
 
     Sync.clientToServer("SurficialDataMomsSummary").then(() => {
       setTimeout(() => {
-        fetch('http://192.168.1.10:5000/api/surficial_data/get_moms_data').then((response) => response.json())
+        fetch('http://192.168.1.101:5000/api/surficial_data/get_moms_data').then((response) => response.json())
           .then((responseJson) => {
 
             let monitoring_logs_data = []

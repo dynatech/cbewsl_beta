@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '192.168.1.10',
+	'hostname' => 'localhost',
 	'username' => 'root',
-	'password' => 'senslope',
+	'password' => 'dynaslopeDay2022',
 	'database' => 'commons_db',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

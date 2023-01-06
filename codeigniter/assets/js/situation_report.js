@@ -19,7 +19,7 @@ function initializeSituationReportCalendar() {
     $("#situation_report_calendar").empty();
     let situation_reports = [];
     $.ajax({
-        url: "http://192.168.1.10:5000/api/situation_report/get_all_situation_report",
+        url: "http://192.168.1.101:5000/api/situation_report/get_all_situation_report",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -132,7 +132,7 @@ function generateSituationReportPDF(data) {
                     { field: 'title', displayName: 'Summary' },
                     { field: 'start', displayName: 'Date' }
                 ],
-                header: '<img src="http://cbewsl.com/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://cbewsl.com/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Current Situation Report</h3><img src="http://cbewsl.com/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
+                header: '<img src="http://192.168.1.101/assets/images/letter_header1.png" width="1200px" height="70px"></img><img src="http://192.168.1.101/assets/images/banner_new.png" width="1200px" height="90px"></img><h3>Current Situation Report</h3><img src="http://192.168.1.101/assets/images/letter_footer1.png" width="1200px" height="90px" style="position: fixed;left: 0;bottom: 0;width: 100%;"></img>'
             });
         }
     });
@@ -152,7 +152,7 @@ function sendSituationReportViaEmail(date) {
     $("#confirm_send_situation_report").click(function () {
         $("#send_situation_report_spinner").show();
         $("#confirm_send_situation_report").hide();
-        let url = "http://192.168.1.10:5000/api/situation_report/send_email";
+        let url = "http://192.168.1.101:5000/api/situation_report/send_email";
         let data = {
             date: date,
             email: $("#email_for_situation_report").val()
@@ -172,7 +172,7 @@ function sendSituationReportViaEmail(date) {
 
 function saveSituationReport() {
     $("#add_situation_report").click(function () {
-        let url = "http://192.168.1.10:5000/api/situation_report/save_situation_report";
+        let url = "http://192.168.1.101:5000/api/situation_report/save_situation_report";
         let summary = $("#summary").val();
         let time = $("#situation_log_time_picker").val();
         let data = {
@@ -220,7 +220,7 @@ function situationReportSummaryAction() {
 
     $("#delete_situation_report").click(function () {
         if (confirm('Are you sure you want to delete this entry?')) {
-            let url = "http://192.168.1.10:5000/api/situation_report/delete_situation_report";
+            let url = "http://192.168.1.101:5000/api/situation_report/delete_situation_report";
             let data = {
                 "situation_report_id": $("#situation_report_id").val()
             }

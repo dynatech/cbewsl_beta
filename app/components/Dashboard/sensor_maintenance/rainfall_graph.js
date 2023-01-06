@@ -190,7 +190,7 @@ export default class RainfallGraph extends Component {
 
   componentDidMount() {
     Notification.endOfValidity();
-    fetch('http://192.168.1.10:5000/api/rainfall/get_rainfall_plot_data/umi', {
+    fetch('http://192.168.1.101:5000/api/rainfall/get_rainfall_plot_data/umi', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

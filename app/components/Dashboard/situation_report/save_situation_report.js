@@ -67,7 +67,7 @@ export default class SaveSituationReport extends Component {
             console.log(date_time)
             console.log(time_split)
             console.log(time_selected)
-            fetch('http://192.168.1.10:5000/api/situation_report/save_situation_report', {
+            fetch('http://192.168.1.101:5000/api/situation_report/save_situation_report', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

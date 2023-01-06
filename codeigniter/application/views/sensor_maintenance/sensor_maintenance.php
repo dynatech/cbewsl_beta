@@ -45,8 +45,8 @@
                     <div class="col" id="maintenance_logs_data">
                         <div class="row">
                             <div class="col" id="maintenance_log">
-                                <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
-                                <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"/>
+                                <img src="http://192.168.1.101/assets/images/letter_header1.png" style="width: 100%"/>
+                                <img src="http://192.168.1.101/assets/images/banner_new.png" style="width: 100%"/>
                                 <p id="maintenance_log_date_time">
                                     Date : June 21, 2019
                                     Time : 3:30 pm

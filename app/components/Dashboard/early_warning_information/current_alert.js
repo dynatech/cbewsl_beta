@@ -904,7 +904,7 @@ export default class CurrentAlert extends Component {
       ]
     }
 
-    let url = 'http://192.168.1.10:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
+    let url = 'http://192.168.1.101:5000/api/monitoring/insert_cbewsl_moms_ewi_web2';
     fetch(url, {
         method: 'POST',
         dataType: 'jsonp',

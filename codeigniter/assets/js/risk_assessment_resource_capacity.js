@@ -5,7 +5,7 @@ $(document).ready(function () {
 
 function getAllResourcesAndCapacity() {
     $.ajax({
-        url: "http://192.168.1.10:5000/api/resources_and_capacities/get_all_resources_and_capacities",
+        url: "http://192.168.1.101:5000/api/resources_and_capacities/get_all_resources_and_capacities",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -63,7 +63,7 @@ function saveRNC() {
     $("#add_resources_capacity").click(function () {
         $("#add_resources_capacity_spinner").show();
         $("#add_resources_capacity").hide();
-        let url = "http://192.168.1.10:5000/api/resources_and_capacities/save_resources_and_capacities";
+        let url = "http://192.168.1.101:5000/api/resources_and_capacities/save_resources_and_capacities";
         let resource_and_capacity_field = $("#resources_capacity").val();
         let status_field = $("#status").val();
         let owner_field = $("#owner").val();
@@ -108,7 +108,7 @@ function deleteRNCConfirmation(data) {
 }
 
 function deleteRNC(resources_and_capacities_id) {
-    let url = "http://192.168.1.10:5000/api/resources_and_capacities/delete_resources_and_capacities";
+    let url = "http://192.168.1.101:5000/api/resources_and_capacities/delete_resources_and_capacities";
     let data = {
         "resources_and_capacities_id": resources_and_capacities_id
     }

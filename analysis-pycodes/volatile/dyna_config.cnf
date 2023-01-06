@@ -1,10 +1,10 @@
 [Hosts]
-local = 192.168.1.10
-senslope = 192.168.1.10
-dynaslope = 192.168.1.10
-gsm = 192.168.1.10
-gsm2 = 192.168.1.10
-sandbox = 192.168.1.10
+local = 127.0.0.1
+senslope = 127.0.0.1
+dynaslope = 127.0.0.1
+gsm = 127.0.0.1
+gsm2 = 127.0.0.1
+sandbox = 127.0.0.1
 
 
 [Resource]
@@ -23,9 +23,9 @@ resources4 = sb_remote,sb_rack_remote_1,sb_local
 
 
 [Db]
-password = senslope
+password = dynaslopeDay2022
 name = senslopedb
-user = dynaslope
+user = softwareuser
 
 [Serial]
 baudrate = 57600

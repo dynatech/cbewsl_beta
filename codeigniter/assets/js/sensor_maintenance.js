@@ -16,7 +16,7 @@ function initializeMaintenanceLogsCalendar() {
     $("#maintenance_logs_calendar").empty();
     let maintenance_logs = [];
     $.ajax({
-        url: "http://192.168.1.10:5000/api/sensor_maintenance/get_all_sensor_maintenance",
+        url: "http://192.168.1.101:5000/api/sensor_maintenance/get_all_sensor_maintenance",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
         }
@@ -112,7 +112,7 @@ function initializeMaintenanceLogsCalendar() {
 
 function saveMaintenanceLogs() {
     $("#add_maintenance_logs").click(function () {
-        let url = "http://192.168.1.10:5000/api/sensor_maintenance/save_sensor_maintenance_logs";
+        let url = "http://192.168.1.101:5000/api/sensor_maintenance/save_sensor_maintenance_logs";
         let working_nodes = $("#working_nodes").val();
         let anomalous_nodes = $("#anomalous_nodes").val();
         let rain_gauge_status = $("#rain_gauge_status").val();
@@ -161,7 +161,7 @@ function maintenanceLogsDataAction() {
 
     $("#delete_maintenance_log").click(function () {
         if (confirm('Are you sure you want to delete this entry?')) {
-            let url = "http://192.168.1.10:5000/api/sensor_maintenance/delete_sensor_maintenance";
+            let url = "http://192.168.1.101:5000/api/sensor_maintenance/delete_sensor_maintenance";
             let data = {
                 "sensor_maintenance_id": $("#sensor_maintenance_id").val()
             }
@@ -204,7 +204,7 @@ function latestSensorMaintenanceData(latest_data) {
 
 function initalizeSensorMaintenanceData() {
     $.ajax({
-        url: "http://192.168.1.10:5000/api/rainfall/get_rainfall_plot_data/umi",
+        url: "http://192.168.1.101:5000/api/rainfall/get_rainfall_plot_data/umi",
         beforeSend: function (xhr) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
             $("#one_day_rain").text("Loading. . . ");
@@ -395,10 +395,11 @@ function renderInstantaneousRainfallGraph(data, container) {
     let max_rval = 0
     let start_date = "";
     let end_date = "";
+    
     $.each(rain_data, function (key, value) {
-        let ts = value.ts;
-        let converted_ts = Date.parse(ts);
-        rain_values.push([converted_ts, value.rain]);
+        let ts = `${value.ts}:00`;
+        let converted_ts = moment(ts).add(8, "hours").format("YYYY-MM-DD HH:mm:ss")
+        rain_values.push([Date.parse(converted_ts), value.rain]);
         if (value.rain > max_rval) {
             max_rval = value.rain;
         }
@@ -439,7 +440,7 @@ function renderInstantaneousRainfallGraph(data, container) {
             }
         },
         title: {
-            text: `<b>Instantaneous Rainfall Chart of UMI}</b>`,
+            text: `<b>Instantaneous Rainfall Chart of UMI</b>`,
             style: { fontSize: "13px" },
             margin: 20,
             y: 16

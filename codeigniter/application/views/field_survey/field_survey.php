@@ -11,8 +11,8 @@
                 <p id="field_survey_status"></p>
                 <div class="row" id="latest_report_summary_details">
                     <div>
-                        <img src="http://cbewsl.com/assets/images/letter_header1.png" style="width: 100%"/>
-                        <img src="http://cbewsl.com/assets/images/banner_new.png" style="width: 100%"/>
+                        <img src="http://192.168.1.101/assets/images/letter_header1.png" style="width: 100%"/>
+                        <img src="http://192.168.1.101/assets/images/banner_new.png" style="width: 100%"/>
                         <div id="field_survey_to_email">
                         <div class="container">
                             <div class="row">
@@ -58,7 +58,7 @@
                         </div>
                         
                         </div>
-                        <img src="http://cbewsl.com/assets/images/letter_footer1.png" style="width: 100%"/>
+                        <img src="http://192.168.1.101/assets/images/letter_footer1.png" style="width: 100%"/>
                     </div>
                     <div class="float-left" style="padding-top: 100px;">
                         <button type="button" class="btn btn-primary btn-sm" id="send_latest_field_survey">SEND</button>
